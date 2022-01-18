@@ -5,7 +5,7 @@ pipeline {
 	
 	environment {
 		BuildConfiguration="Debug"
-		ImageName ="cr.yggdrasill.dev/tgs/profit-rebate-service"
+		ImageName ="harbor.rpgp.cc/tgs/report-service"
 	}
 
 	stages {
@@ -62,14 +62,14 @@ pipeline {
 		
 		stage('Push packages') {
 			steps {
-				sh 'dotnet pack -c $BuildConfiguration "Tgs.ProfitRebate.Client/Tgs.ProfitRebate.Client.csproj" --no-build'
-				sh 'dotnet nuget push "Tgs.ProfitRebate.Client/bin/$BuildConfiguration/*.nupkg" --source "raypro-baget" -k admin --skip-duplicate'
+				sh 'dotnet pack -c $BuildConfiguration "Tgs.Report.Client/Tgs.Report.Client.csproj" --no-build'
+				sh 'dotnet nuget push "Tgs.Report.Client/bin/$BuildConfiguration/*.nupkg" --source "raypro-baget" -k admin --skip-duplicate'
 			}
 		}
 
         stage('Build Docker Image') {
 			steps {
-                sh 'dotnet build "Tgs.ProfitRebate.Service/Tgs.ProfitRebate.Service.csproj" -c $BuildConfiguration -t:ContainerBuild -p:DockerfileTag="$ImageName:${TAG}" --no-restore '
+                sh 'dotnet build "Tgs.Report.Service/Tgs.Report.Service.csproj" -c $BuildConfiguration -t:ContainerBuild -p:DockerfileTag="$ImageName:${TAG}" --no-restore '
 			}
 		}
 
@@ -100,32 +100,20 @@ pipeline {
 				withKubeConfig([credentialsId: env.k8s_config]) {
                     withCredentials([string(credentialsId: "tgs-${kube_ns}-connectionstring", variable: "tgs_tgs")]) {
                         sh '''
-                            helm template deployment/k8s/profit-rebate-service \
+                            helm template deployment/k8s/report-service \
                                 --set image.tag=${TAG} \
                                 --set namespace=${kube_ns} \
                                 --set autoscaling.enabled=${tgs_autoscaling} \
 								--set connectionStrings.tgs="$tgs_tgs" \
-								--set connectionStrings.redis="$tgs_redis" \
-                                --set nats.urls="$tgs_nats" \
-                                --set rabbit.url="$tgs_rabbit_url" \
-                                --set rabbit.user="$tgs_rabbit_user" \
-                                --set rabbit.password="$tgs_rabbit_pass" \
-                                --set rabbit.vhost="$tgs_rabbit_vhost" \
-                                --set cash.url="$tgs_cash_url"
+								--set connectionStrings.redis="$tgs_redis"
                         '''
                         sh '''
-                            helm template deployment/k8s/profit-rebate-service \
+                            helm template deployment/k8s/report-service \
                                 --set image.tag=${TAG} \
                                 --set namespace=${kube_ns} \
                                 --set autoscaling.enabled=${tgs_autoscaling} \
 								--set connectionStrings.tgs="$tgs_tgs" \
 								--set connectionStrings.redis="$tgs_redis" \
-                                --set nats.urls="$tgs_nats" \
-                                --set rabbit.url="$tgs_rabbit_url" \
-                                --set rabbit.user="$tgs_rabbit_user" \
-                                --set rabbit.password="$tgs_rabbit_pass" \
-                                --set rabbit.vhost="$tgs_rabbit_vhost" \
-                                --set cash.url="$tgs_cash_url" \
                                 | kubectl -n ${kube_ns} apply -f -
                         '''
                     }
