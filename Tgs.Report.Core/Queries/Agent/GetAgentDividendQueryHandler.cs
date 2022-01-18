@@ -1,0 +1,123 @@
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Tgs.Report.Repository;
+using Tgs.Report.ViewModel;
+using Tgs.Report.ViewModel.Agent;
+
+namespace Tgs.Report.Core.Queries.Agent
+{
+    internal class
+        GetAgentDividendQueryHandler : IRequestHandler<GetAgentDividendsRequest, PagedResponse<AgentDividendModel>>
+    {
+        private readonly ITgsRepository _repository;
+
+        public GetAgentDividendQueryHandler(ITgsRepository repository)
+        {
+            _repository = repository;
+        }
+
+        public async Task<PagedResponse<AgentDividendModel>> Handle(
+            GetAgentDividendsRequest request,
+            CancellationToken cancellationToken)
+        {
+            var mainAgent = await _repository.Agents.Where(x => x.BrandId == request.BrandId)
+                .Where(request.Username, x => request.Username == x.Username)
+                .Where(request.AgentId, x => x.Id == request.AgentId).FirstOrDefaultAsync(cancellationToken);
+
+            if (mainAgent is null)
+            {
+                return new PagedResponse<AgentDividendModel> { Valid = false, Message = Resources.Agent.NotFound };
+            }
+
+            var playerWithdrawals = await _repository.WithdrawForms
+                .Where(x => x.BrandId == request.BrandId)
+                .Where(x => x.UserType == 1 && x.Status == 9000)
+                .Where(x => x.CreatedOn >= request.From && x.CreatedOn < request.To)
+                .Join(_repository.Players,
+                    withdrawForm => withdrawForm.UserId,
+                    player => player.PlayerCode,
+                    (withdrawForm, player) => new
+                    {
+                        player.AgentId,
+                        player.PlayerCode,
+                        WithdrawalAmount = withdrawForm.ActualAmount ?? withdrawForm.Amount
+                    })
+                .GroupBy(x => new
+                    {
+                        x.AgentId,
+                        x.PlayerCode
+                    },
+                    (x, withdrawals) => new
+                    {
+                        x.AgentId,
+                        x.PlayerCode,
+                        WithdrawalAmount = withdrawals.Sum(w => w.WithdrawalAmount)
+                    })
+                .ToArrayAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            var subAgents = await _repository.Agents.Where(x => x.ParentAgentId == mainAgent.Id)
+                .ToListAsync(cancellationToken);
+
+            var agents = new List<Repository.Configurations.Agent> { mainAgent };
+            agents.AddRange(subAgents);
+
+            var agentIds = agents.Select(x => x.Id).ToArray();
+
+            var agentDividends = await _repository.AgentDividends
+                .Where(x => x.BrandId == request.BrandId)
+                .Where(x => x.CreatedOn >= request.From)
+                .Where(x => x.CreatedOn < request.To)
+                .Where(x => agentIds.Contains(x.AgentId))
+                .GroupBy(x => x.AgentId,
+                    (agentId, list) => new
+                    {
+                        AgentId = agentId,
+                        DepositAmount = list.Sum(l => l.DepositAmount),
+                        WithdrawalAmount = list.Sum(l => l.WithdrawalAmount),
+                        AdjustmentAmount = list.Sum(l => l.AdjustmentAmount),
+                        BonusAmount = list.Sum(l => l.BonusAmount),
+                        BetAmount = list.Sum(l => l.BetAmount),
+                        ValidBetAmount = list.Sum(l => l.ValidBetAmount),
+                        OriginalTurnover = list.Sum(l => l.OriginalTurnover),
+                        Turnover = list.Sum(l => l.Turnover),
+                        WinLossAmount = list.Sum(l => l.WinLossAmount),
+                        NetProfit = list.Sum(l => l.NetProfit),
+                        AgentDividendAmount = list.Sum(l => l.AgentDividendAmount)
+                    }).ToArrayAsync(cancellationToken);
+
+            var models = agentDividends.Join(agents.ToArray(),
+                ad => ad.AgentId,
+                a => a.Id,
+                (ad, a) => new AgentDividendModel
+                {
+                    Id = ad.AgentId,
+                    Username = a.Username,
+                    DepositAmount = ad.DepositAmount,
+                    WithdrawalAmount = playerWithdrawals.Where(w => w.AgentId == ad.AgentId)
+                        .Sum(w => w.WithdrawalAmount),
+                    AdjustmentAmount = ad.AdjustmentAmount,
+                    BonusAmount = ad.BonusAmount,
+                    BetAmount = ad.BetAmount,
+                    ValidBetAmount = ad.OriginalTurnover,
+                    Turnover = ad.Turnover,
+                    WinLossAmount = ad.WinLossAmount,
+                    NetProfit = ad.NetProfit,
+                    AgentDividendAmount = ad.AgentDividendAmount,
+                    FromPlayerAgentDividendAmount = _repository.AgentDividendMultipleLayers
+                        .Where(x => x.AgentId == ad.AgentId)
+                        .Where(x => x.AgentDividend.CreatedOn >= request.From)
+                        .Where(x => x.AgentDividend.CreatedOn < request.To)
+                        .Where(x => x.AgentId == x.DividendProviderAgentId)
+                        .Sum(a => a.Dividend),
+                    FromTeamAgentDividendAmount = _repository.AgentDividendMultipleLayers
+                        .Where(x => x.AgentId == ad.AgentId)
+                        .Where(x => x.AgentDividend.CreatedOn >= request.From)
+                        .Where(x => x.AgentDividend.CreatedOn < request.To)
+                        .Where(x => x.AgentId != x.DividendProviderAgentId).Sum(a => a.Dividend)
+                }).ToArray();
+
+            return await models.CreatePagedResponseAsync(models.Length);
+        }
+    }
+}

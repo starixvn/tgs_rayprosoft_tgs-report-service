@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Commands\**" />
+    <Compile Remove="Interface\**" />
+    <EmbeddedResource Remove="Commands\**" />
+    <EmbeddedResource Remove="Interface\**" />
+    <None Remove="Commands\**" />
+    <None Remove="Interface\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Aggregate.cs" />
+    <Compile Remove="AggregateBase.cs" />
+    <Compile Remove="AggregateFactory.cs" />
+    <Compile Remove="DateFilterPlayerAggregate.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.95.4" />
+    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="Tgs.MessageQueue" Version="1.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Tgs.Report.Repository\Tgs.Report.Repository.csproj" />
+    <ProjectReference Include="..\Tgs.Report.ViewModel\Tgs.Report.ViewModel.csproj" />
+  </ItemGroup>
+
+</Project>
