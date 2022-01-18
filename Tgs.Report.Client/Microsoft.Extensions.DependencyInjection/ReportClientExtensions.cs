@@ -8,7 +8,7 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ReportClientExtensions
     {
-        public static IServiceCollection AddProfitRebateClient(this IServiceCollection services,
+        public static IServiceCollection AddReportClient(this IServiceCollection services,
             IConfiguration configuration, string configSectionName = "Report")
         {
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly(), ServiceLifetime.Singleton);
