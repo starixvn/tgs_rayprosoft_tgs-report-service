@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "reprot-service.fullname" . }}
+  name: {{ include "report-service.fullname" . }}
   labels:
-    {{- include "reprot-service.labels" . | nindent 4 }}
+    {{- include "report-service.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,4 +12,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "reprot-service.selectorLabels" . | nindent 4 }}
+    {{- include "report-service.selectorLabels" . | nindent 4 }}
