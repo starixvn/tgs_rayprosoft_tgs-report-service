@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
+#nullable disable
+
 namespace Tgs.Report.Repository.Entities.Configurations
 {
     public partial class VipLevelConfiguration : IEntityTypeConfiguration<VipLevel>
@@ -32,7 +34,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("card_game_rebate_percentage");
 
             entity.Property(e => e.CreatedByUsername)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("created_by_username");
 
@@ -83,7 +84,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("sports_rebate_percentage");
 
             entity.Property(e => e.UpdatedByUsername)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("updated_by_username");
 

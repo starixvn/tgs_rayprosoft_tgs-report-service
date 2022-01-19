@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
+#nullable disable
+
 namespace Tgs.Report.Repository.Entities.Configurations
 {
     public partial class AgentConfiguration : IEntityTypeConfiguration<Agent>
@@ -50,7 +52,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("email");
 
             entity.Property(e => e.InvitationCode)
-                .IsRequired()
                 .HasMaxLength(6)
                 .HasColumnName("invitation_code");
 
@@ -66,9 +67,7 @@ namespace Tgs.Report.Repository.Entities.Configurations
 
             entity.Property(e => e.ParentAgentId).HasColumnName("parent_agent_id");
 
-            entity.Property(e => e.Password)
-                .IsRequired()
-                .HasColumnName("password");
+            entity.Property(e => e.Password).HasColumnName("password");
 
             entity.Property(e => e.Phone)
                 .HasMaxLength(32)
@@ -86,9 +85,7 @@ namespace Tgs.Report.Repository.Entities.Configurations
 
             entity.Property(e => e.Remarks).HasColumnName("remarks");
 
-            entity.Property(e => e.Salt)
-                .IsRequired()
-                .HasColumnName("salt");
+            entity.Property(e => e.Salt).HasColumnName("salt");
 
             entity.Property(e => e.SlotRebatePercentage)
                 .HasPrecision(18, 6)
@@ -107,7 +104,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.UpdatedOn).HasColumnName("updated_on");
 
             entity.Property(e => e.Username)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("username");
 
@@ -119,13 +115,9 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasMaxLength(64)
                 .HasColumnName("wechat");
 
-            entity.Property(e => e.WithdrawPassword)
-                .IsRequired()
-                .HasColumnName("withdraw_password");
+            entity.Property(e => e.WithdrawPassword).HasColumnName("withdraw_password");
 
-            entity.Property(e => e.WithdrawSalt)
-                .IsRequired()
-                .HasColumnName("withdraw_salt");
+            entity.Property(e => e.WithdrawSalt).HasColumnName("withdraw_salt");
 
             entity.HasOne(d => d.Brand)
                 .WithMany(p => p.Agents)

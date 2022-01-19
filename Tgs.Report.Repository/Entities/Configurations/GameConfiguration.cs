@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
+#nullable disable
+
 namespace Tgs.Report.Repository.Entities.Configurations
 {
     public partial class GameConfiguration : IEntityTypeConfiguration<Game>
@@ -30,7 +32,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("id");
 
             entity.Property(e => e.AvailableCurrencies)
-                .IsRequired()
                 .HasMaxLength(1024)
                 .HasColumnName("available_currencies")
                 .HasDefaultValueSql("''::character varying");
@@ -38,12 +39,10 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.AvailableToBrand).HasColumnName("available_to_brand");
 
             entity.Property(e => e.Code)
-                .IsRequired()
                 .HasMaxLength(128)
                 .HasColumnName("code");
 
             entity.Property(e => e.CreatedByUsername)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("created_by_username");
 
@@ -58,7 +57,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("endpoint_path");
 
             entity.Property(e => e.ExternalId)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("external_id");
 
@@ -73,7 +71,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("localization");
 
             entity.Property(e => e.Name)
-                .IsRequired()
                 .HasMaxLength(255)
                 .HasColumnName("name");
 
@@ -94,7 +91,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.Type).HasColumnName("type");
 
             entity.Property(e => e.UpdatedByUsername)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("updated_by_username");
 

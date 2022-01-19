@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
+#nullable disable
+
 namespace Tgs.Report.Repository.Entities.Configurations
 {
     public partial class BrandConfiguration : IEntityTypeConfiguration<Brand>
@@ -30,7 +32,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.AgentDividendType).HasColumnName("agent_dividend_type");
 
             entity.Property(e => e.ApiKey)
-                .IsRequired()
                 .HasMaxLength(64)
                 .HasColumnName("api_key");
 
@@ -41,17 +42,14 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.CheckDividendActiveCount).HasColumnName("check_dividend_active_count");
 
             entity.Property(e => e.ClientId)
-                .IsRequired()
                 .HasMaxLength(128)
                 .HasColumnName("client_id");
 
             entity.Property(e => e.Code)
-                .IsRequired()
                 .HasMaxLength(16)
                 .HasColumnName("code");
 
             entity.Property(e => e.CreatedByUsername)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("created_by_username");
 
@@ -82,7 +80,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("logo_info");
 
             entity.Property(e => e.Name)
-                .IsRequired()
                 .HasMaxLength(255)
                 .HasColumnName("name");
 
@@ -111,7 +108,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasDefaultValueSql("'0001-01-01 08:06:00+08:06'::timestamp with time zone");
 
             entity.Property(e => e.SecretKey)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("secret_key");
 
@@ -132,7 +128,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("time_zone_id");
 
             entity.Property(e => e.UpdatedByUsername)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("updated_by_username");
 

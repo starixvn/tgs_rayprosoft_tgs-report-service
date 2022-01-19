@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
+#nullable disable
+
 namespace Tgs.Report.Repository.Entities.Configurations
 {
     public partial class SettingConfiguration : IEntityTypeConfiguration<Setting>
@@ -23,7 +25,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("key");
 
             entity.Property(e => e.CreatedByUsername)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("created_by_username");
 
@@ -34,15 +35,12 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("description");
 
             entity.Property(e => e.UpdatedByUsername)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("updated_by_username");
 
             entity.Property(e => e.UpdatedOn).HasColumnName("updated_on");
 
-            entity.Property(e => e.Value)
-                .IsRequired()
-                .HasColumnName("value");
+            entity.Property(e => e.Value).HasColumnName("value");
 
             OnConfigurePartial(entity);
         }

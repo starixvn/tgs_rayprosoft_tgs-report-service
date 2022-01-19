@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
+#nullable disable
+
 namespace Tgs.Report.Repository.Entities.Configurations
 {
     public partial class SubGameProviderConfiguration : IEntityTypeConfiguration<SubGameProvider>
@@ -25,7 +27,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("code");
 
             entity.Property(e => e.CreatedByUsername)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("created_by_username");
 
@@ -42,12 +43,10 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("localization");
 
             entity.Property(e => e.Name)
-                .IsRequired()
                 .HasMaxLength(255)
                 .HasColumnName("name");
 
             entity.Property(e => e.UpdatedByUsername)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("updated_by_username");
 

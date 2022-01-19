@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
+#nullable disable
+
 namespace Tgs.Report.Repository.Entities.Configurations
 {
     public partial class RoundDetailConfiguration : IEntityTypeConfiguration<RoundDetail>
@@ -22,9 +24,7 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .ValueGeneratedNever()
                 .HasColumnName("round_id");
 
-            entity.Property(e => e.AdditionalData)
-                .IsRequired()
-                .HasColumnName("additional_data");
+            entity.Property(e => e.AdditionalData).HasColumnName("additional_data");
 
             OnConfigurePartial(entity);
         }

@@ -10,10 +10,6 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddTransient(typeof(ITgsService<>), typeof(TgsService<>));
-            services.AddTransient<IPlayerAggregateFactory, PlayerAggregateFactory>();
-            services.AddTransient<IPlayerBucketFactory, PlayerBucketFactory>();
-            services.AddTransient<IPlayerGameAggregateFactory, PlayerGameAggregateFactory>();
-            services.AddTransient<IRoundAggregateFactory, RoundAggregateFactory>();
             services.AddTransient<IRoundFactory, RoundFactory>();
             services.AddTransient<IPlayerFactory, PlayerFactory>();
 

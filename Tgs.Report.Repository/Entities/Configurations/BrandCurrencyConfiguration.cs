@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
+#nullable disable
+
 namespace Tgs.Report.Repository.Entities.Configurations
 {
     public partial class BrandCurrencyConfiguration : IEntityTypeConfiguration<BrandCurrency>
@@ -27,7 +29,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("currency_code");
 
             entity.Property(e => e.BrandCurrencyCode)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("brand_currency_code");
 

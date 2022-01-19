@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
+#nullable disable
+
 namespace Tgs.Report.Repository.Entities.Configurations
 {
     public partial class RoundAggregateConfiguration : IEntityTypeConfiguration<RoundAggregate>
@@ -45,9 +47,7 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasPrecision(18, 6)
                 .HasColumnName("original_turnover");
 
-            entity.Property(e => e.PlayerCode)
-                .IsRequired()
-                .HasColumnName("player_code");
+            entity.Property(e => e.PlayerCode).HasColumnName("player_code");
 
             entity.Property(e => e.ReportDate).HasColumnName("report_date");
 

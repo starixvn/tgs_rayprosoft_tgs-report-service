@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
+#nullable disable
+
 namespace Tgs.Report.Repository.Entities.Configurations
 {
     public partial class GameActionConfiguration : IEntityTypeConfiguration<GameAction>
@@ -46,17 +48,14 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.ClosingRoundExplicitRequest).HasColumnName("closing_round_explicit_request");
 
             entity.Property(e => e.ExternalBetId)
-                .IsRequired()
                 .HasMaxLength(128)
                 .HasColumnName("external_bet_id");
 
             entity.Property(e => e.ExternalGameActionGroupId)
-                .IsRequired()
                 .HasMaxLength(128)
                 .HasColumnName("external_game_action_group_id");
 
             entity.Property(e => e.ExternalTransactionId)
-                .IsRequired()
                 .HasMaxLength(128)
                 .HasColumnName("external_transaction_id");
 
@@ -70,12 +69,9 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnType("jsonb")
                 .HasColumnName("jackpot_contribution");
 
-            entity.Property(e => e.PlayerCode)
-                .IsRequired()
-                .HasColumnName("player_code");
+            entity.Property(e => e.PlayerCode).HasColumnName("player_code");
 
             entity.Property(e => e.PlayerIp)
-                .IsRequired()
                 .HasMaxLength(128)
                 .HasColumnName("player_ip");
 

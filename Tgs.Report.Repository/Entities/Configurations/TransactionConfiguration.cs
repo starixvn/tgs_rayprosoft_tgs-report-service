@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
+#nullable disable
+
 namespace Tgs.Report.Repository.Entities.Configurations
 {
     public partial class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
@@ -41,9 +43,7 @@ namespace Tgs.Report.Repository.Entities.Configurations
 
             entity.Property(e => e.ExternalTransactionId).HasColumnName("external_transaction_id");
 
-            entity.Property(e => e.PlayerCode)
-                .IsRequired()
-                .HasColumnName("player_code");
+            entity.Property(e => e.PlayerCode).HasColumnName("player_code");
 
             entity.Property(e => e.RecordedOn).HasColumnName("recorded_on");
 

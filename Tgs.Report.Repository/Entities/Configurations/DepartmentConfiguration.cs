@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
+#nullable disable
+
 namespace Tgs.Report.Repository.Entities.Configurations
 {
     public partial class DepartmentConfiguration : IEntityTypeConfiguration<Department>
@@ -28,28 +30,24 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.BrandId).HasColumnName("brand_id");
 
             entity.Property(e => e.CreatedByUsername)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("created_by_username");
 
             entity.Property(e => e.CreatedOn).HasColumnName("created_on");
 
             entity.Property(e => e.Description)
-                .IsRequired()
                 .HasMaxLength(128)
                 .HasColumnName("description");
 
             entity.Property(e => e.LicenseeId).HasColumnName("licensee_id");
 
             entity.Property(e => e.Name)
-                .IsRequired()
                 .HasMaxLength(50)
                 .HasColumnName("name");
 
             entity.Property(e => e.ResellerId).HasColumnName("reseller_id");
 
             entity.Property(e => e.UpdatedByUsername)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("updated_by_username");
 

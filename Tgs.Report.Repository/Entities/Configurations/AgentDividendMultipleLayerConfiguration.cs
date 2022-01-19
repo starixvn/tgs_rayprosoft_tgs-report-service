@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
+#nullable disable
+
 namespace Tgs.Report.Repository.Entities.Configurations
 {
     public partial class AgentDividendMultipleLayerConfiguration : IEntityTypeConfiguration<AgentDividendMultipleLayer>
@@ -31,9 +33,7 @@ namespace Tgs.Report.Repository.Entities.Configurations
 
             entity.Property(e => e.DividendProviderAgentId).HasColumnName("dividend_provider_agent_id");
 
-            entity.Property(e => e.Layer)
-                .IsRequired()
-                .HasColumnName("layer");
+            entity.Property(e => e.Layer).HasColumnName("layer");
 
             entity.HasOne(d => d.AgentDividend)
                 .WithMany(p => p.AgentDividendMultipleLayers)

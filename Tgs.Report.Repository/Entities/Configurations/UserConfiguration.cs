@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
+#nullable disable
+
 namespace Tgs.Report.Repository.Entities.Configurations
 {
     public partial class UserConfiguration : IEntityTypeConfiguration<User>
@@ -30,7 +32,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("id");
 
             entity.Property(e => e.CreatedByUsername)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("created_by_username");
 
@@ -45,19 +46,14 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.LastLoginTime).HasColumnName("last_login_time");
 
             entity.Property(e => e.Name)
-                .IsRequired()
                 .HasMaxLength(30)
                 .HasColumnName("name");
 
-            entity.Property(e => e.Password)
-                .IsRequired()
-                .HasColumnName("password");
+            entity.Property(e => e.Password).HasColumnName("password");
 
             entity.Property(e => e.RoleId).HasColumnName("role_id");
 
-            entity.Property(e => e.Salt)
-                .IsRequired()
-                .HasColumnName("salt");
+            entity.Property(e => e.Salt).HasColumnName("salt");
 
             entity.Property(e => e.Status).HasColumnName("status");
 
@@ -66,14 +62,12 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("time_zone");
 
             entity.Property(e => e.UpdatedByUsername)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("updated_by_username");
 
             entity.Property(e => e.UpdatedOn).HasColumnName("updated_on");
 
             entity.Property(e => e.Username)
-                .IsRequired()
                 .HasMaxLength(50)
                 .HasColumnName("username");
 

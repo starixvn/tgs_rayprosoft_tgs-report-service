@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
+#nullable disable
+
 namespace Tgs.Report.Repository.Entities.Configurations
 {
     public partial class PlayerBucketConfiguration : IEntityTypeConfiguration<PlayerBucket>
@@ -36,7 +38,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.IsFull).HasColumnName("is_full");
 
             entity.Property(e => e.PlayerCode)
-                .IsRequired()
                 .HasMaxLength(16)
                 .HasColumnName("player_code")
                 .HasDefaultValueSql("''::character varying");

@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
+#nullable disable
+
 namespace Tgs.Report.Repository.Entities.Configurations
 {
     public partial class PlayerConfiguration : IEntityTypeConfiguration<Player>
@@ -52,7 +54,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.BrandId).HasColumnName("brand_id");
 
             entity.Property(e => e.DefaultWalletCurrencyCode)
-                .IsRequired()
                 .HasMaxLength(16)
                 .HasColumnName("default_wallet_currency_code");
 
@@ -76,9 +77,7 @@ namespace Tgs.Report.Repository.Entities.Configurations
 
             entity.Property(e => e.ParentPlayerCode).HasColumnName("parent_player_code");
 
-            entity.Property(e => e.Password)
-                .IsRequired()
-                .HasColumnName("password");
+            entity.Property(e => e.Password).HasColumnName("password");
 
             entity.Property(e => e.Phone)
                 .HasMaxLength(32)
@@ -96,9 +95,7 @@ namespace Tgs.Report.Repository.Entities.Configurations
 
             entity.Property(e => e.RegisteredOn).HasColumnName("registered_on");
 
-            entity.Property(e => e.Salt)
-                .IsRequired()
-                .HasColumnName("salt");
+            entity.Property(e => e.Salt).HasColumnName("salt");
 
             entity.Property(e => e.Status).HasColumnName("status");
 
@@ -109,7 +106,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.UpdatedOn).HasColumnName("updated_on");
 
             entity.Property(e => e.Username)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("username");
 
@@ -119,13 +115,9 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasMaxLength(64)
                 .HasColumnName("wechat");
 
-            entity.Property(e => e.WithdrawPassword)
-                .IsRequired()
-                .HasColumnName("withdraw_password");
+            entity.Property(e => e.WithdrawPassword).HasColumnName("withdraw_password");
 
-            entity.Property(e => e.WithdrawSalt)
-                .IsRequired()
-                .HasColumnName("withdraw_salt");
+            entity.Property(e => e.WithdrawSalt).HasColumnName("withdraw_salt");
 
             entity.HasOne(d => d.Agent)
                 .WithMany(p => p.Players)

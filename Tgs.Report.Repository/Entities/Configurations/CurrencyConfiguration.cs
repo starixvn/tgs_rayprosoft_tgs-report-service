@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
+#nullable disable
+
 namespace Tgs.Report.Repository.Entities.Configurations
 {
     public partial class CurrencyConfiguration : IEntityTypeConfiguration<Currency>
@@ -23,14 +25,12 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("code");
 
             entity.Property(e => e.CreatedByUsername)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("created_by_username");
 
             entity.Property(e => e.CreatedOn).HasColumnName("created_on");
 
             entity.Property(e => e.Name)
-                .IsRequired()
                 .HasMaxLength(64)
                 .HasColumnName("name");
 
@@ -43,7 +43,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("symbol");
 
             entity.Property(e => e.UpdatedByUsername)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("updated_by_username");
 

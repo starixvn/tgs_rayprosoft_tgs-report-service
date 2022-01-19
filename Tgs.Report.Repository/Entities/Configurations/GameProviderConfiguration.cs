@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
+#nullable disable
+
 namespace Tgs.Report.Repository.Entities.Configurations
 {
     public partial class GameProviderConfiguration : IEntityTypeConfiguration<GameProvider>
@@ -30,12 +32,10 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.AutoCloseRound).HasColumnName("auto_close_round");
 
             entity.Property(e => e.Code)
-                .IsRequired()
                 .HasMaxLength(16)
                 .HasColumnName("code");
 
             entity.Property(e => e.CreatedByUsername)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("created_by_username");
 
@@ -50,7 +50,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("localization");
 
             entity.Property(e => e.Name)
-                .IsRequired()
                 .HasMaxLength(255)
                 .HasColumnName("name");
 
@@ -67,7 +66,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.UniqueId).HasColumnName("unique_id");
 
             entity.Property(e => e.UpdatedByUsername)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("updated_by_username");
 

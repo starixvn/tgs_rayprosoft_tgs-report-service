@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
+#nullable disable
+
 namespace Tgs.Report.Repository.Entities.Configurations
 {
     public partial class WalletConfiguration : IEntityTypeConfiguration<Wallet>
@@ -30,17 +32,14 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.CreatedOn).HasColumnName("created_on");
 
             entity.Property(e => e.CurrencyCode)
-                .IsRequired()
                 .HasMaxLength(16)
                 .HasColumnName("currency_code");
 
             entity.Property(e => e.ExternalCurrencyCode)
-                .IsRequired()
                 .HasMaxLength(16)
                 .HasColumnName("external_currency_code");
 
             entity.Property(e => e.PlayerCode)
-                .IsRequired()
                 .HasMaxLength(16)
                 .HasColumnName("player_code");
 

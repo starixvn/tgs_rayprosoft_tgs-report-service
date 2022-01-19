@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
+#nullable disable
+
 namespace Tgs.Report.Repository.Entities.Configurations
 {
     public partial class LicenseeConfiguration : IEntityTypeConfiguration<Licensee>
@@ -28,12 +30,10 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("id");
 
             entity.Property(e => e.Code)
-                .IsRequired()
                 .HasMaxLength(16)
                 .HasColumnName("code");
 
             entity.Property(e => e.CreatedByUsername)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("created_by_username");
 
@@ -44,7 +44,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("description");
 
             entity.Property(e => e.Name)
-                .IsRequired()
                 .HasMaxLength(255)
                 .HasColumnName("name");
 
@@ -57,7 +56,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.Status).HasColumnName("status");
 
             entity.Property(e => e.UpdatedByUsername)
-                .IsRequired()
                 .HasMaxLength(32)
                 .HasColumnName("updated_by_username");
 

@@ -146,13 +146,13 @@
    "UseHandleBars": false,
    "UseInflector": true,
    "UseLegacyPluralizer": true,
-   "UseManyToManyEntity": false,
-   "UseNoConstructor": false,
+   "UseManyToManyEntity": true,
+   "UseNoConstructor": true,
    "UseNoDefaultConstructor": false,
    "UseNoNavigations": false,
    "UseNoObjectFilter": false,
    "UseNodaTime": false,
-   "UseNullableReferences": false,
+   "UseNullableReferences": true,
    "UseSchemaFolders": true,
-   "UseSpatial": false
+   "UseSpatial": true
 }

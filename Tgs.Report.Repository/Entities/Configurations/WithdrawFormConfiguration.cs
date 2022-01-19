@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
+#nullable disable
+
 namespace Tgs.Report.Repository.Entities.Configurations
 {
     public partial class WithdrawFormConfiguration : IEntityTypeConfiguration<WithdrawForm>
@@ -36,7 +38,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("apply_info");
 
             entity.Property(e => e.BankInfo)
-                .IsRequired()
                 .HasColumnType("jsonb")
                 .HasColumnName("bank_info");
 
