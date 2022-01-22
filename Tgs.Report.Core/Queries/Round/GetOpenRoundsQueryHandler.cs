@@ -126,7 +126,7 @@ namespace Tgs.Report.Core.Queries.Round
                     Id = combine.round.Id,
                     BrandCode = combine.player.Brand.Code,
                     BrandName = combine.player.Brand.Name,
-                    PlayerType = combine.player.Type,
+                    PlayerType = (PlayerType)combine.player.Type,
                     Status = combine.round.ClientStatus,
                     PlayerCode = combine.player.PlayerCode,
                     ExternalPlayerCode = combine.player.PlayerCode,

@@ -4,7 +4,7 @@ using Tgs.Report.Repository.Configurations;
 
 namespace Tgs.Report.Repository.Entities.Configurations
 {
-    internal class RoundMap : IEntityTypeConfiguration<Round>
+    public class RoundMap : IEntityTypeConfiguration<Round>
     {
         void IEntityTypeConfiguration<Round>.Configure(EntityTypeBuilder<Round> builder)
         {

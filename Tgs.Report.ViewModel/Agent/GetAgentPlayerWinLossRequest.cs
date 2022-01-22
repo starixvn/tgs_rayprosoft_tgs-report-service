@@ -3,10 +3,10 @@ using MediatR;
 
 namespace Tgs.Report.ViewModel.Agent
 {
-    public class GetAgentPlayerWinLossRequest : PageableRequest, IRequest<PagedResponse<AgentPlayerWinLossModel>>
+    public record GetAgentPlayerWinLossRequest : PageableRequest, IRequest<PagedResponse<AgentPlayerWinLossModel>>
     {
-        public Guid AgentId { get; set; }
-        public DateTimeOffset From { get; set; }
-        public DateTimeOffset To { get; set; }
+        public Guid AgentId { get; init; }
+        public DateTimeOffset From { get; init; }
+        public DateTimeOffset To { get; init; }
     }
 }

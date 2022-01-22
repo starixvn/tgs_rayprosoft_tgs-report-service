@@ -4,12 +4,12 @@ using Tgs.Report.Enum;
 
 namespace Tgs.Report.ViewModel.Player
 {
-    public class GetPlayerAccountChangesRequest : PageableRequest, IRequest<PagedResponse<PlayerAccountChangeModel>>
+    public record GetPlayerAccountChangesRequest : PageableRequest, IRequest<PagedResponse<PlayerAccountChangeModel>>
     {
-        public Guid BrandId { get; set; }
-        public string PlayerCode { get; set; }
-        public AccountChangeType? AccountChangeType { get; set; }
-        public DateTimeOffset From { get; set; }
-        public DateTimeOffset To { get; set; }
+        public Guid BrandId { get; init; }
+        public string PlayerCode { get; init; } = default!;
+        public AccountChangeType? AccountChangeType { get; init; }
+        public DateTimeOffset From { get; init; }
+        public DateTimeOffset To { get; init; }
     }
 }

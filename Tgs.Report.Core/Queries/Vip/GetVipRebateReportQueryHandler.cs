@@ -58,35 +58,38 @@ namespace Tgs.Report.Core.Queries.Vip
                             SportsRebatePercentage = x.SportsRebatePercentage,
                             VirtualSportsRebatePercentage = x.VirtualSportsRebatePercentage,
                             LiveDealerAmount =
-                                x.LiveDealerRebatePercentage * players.Where(l => l.GameType == GameType.LiveDealer)
+                                x.LiveDealerRebatePercentage * players
+                                    .Where(l => l.GameType == (short)GameType.LiveDealer)
                                     .Sum(a => a.Turnover) / 100M,
                             LiveDealerTurnover =
-                                players.Where(l => l.GameType == GameType.LiveDealer).Sum(a => a.Turnover),
+                                players.Where(l => l.GameType == (short)GameType.LiveDealer).Sum(a => a.Turnover),
                             SlotAmount = x.SlotRebatePercentage * players.Where(l =>
-                                        Consts.SlotGroup.Contains(l.GameType))
+                                        Consts.SlotGroup.Select(s => (short)s).Contains(l.GameType))
                                     .Sum(a => a.Turnover) /
                                 100M,
                             SlotTurnover = players.Where(l =>
-                                Consts.SlotGroup.Contains(l.GameType)).Sum(a => a.Turnover),
+                                Consts.SlotGroup.Select(s => (short)s).Contains(l.GameType)).Sum(a => a.Turnover),
                             LotteryAmount = x.LotteryRebatePercentage * players
-                                .Where(a => a.GameType == GameType.Lottery)
+                                .Where(a => a.GameType == (short)GameType.Lottery)
                                 .Sum(a => a.Turnover) / 100M,
-                            LotteryTurnover = players.Where(a => a.GameType == GameType.Lottery)
+                            LotteryTurnover = players.Where(a => a.GameType == (short)GameType.Lottery)
                                 .Sum(a => a.Turnover),
                             CardGameAmount =
                                 x.CardGameRebatePercentage *
-                                players.Where(l => l.GameType == GameType.CardGame).Sum(a => a.Turnover) / 100M,
-                            CardGameTurnover = players.Where(l => l.GameType == GameType.CardGame).Sum(a => a.Turnover),
+                                players.Where(l => l.GameType == (short)GameType.CardGame).Sum(a => a.Turnover) / 100M,
+                            CardGameTurnover = players.Where(l => l.GameType == (short)GameType.CardGame)
+                                .Sum(a => a.Turnover),
                             SportsAmount = x.SportsRebatePercentage * players.Where(l =>
-                                    Consts.SportsGroup.Contains(l.GameType))
+                                    Consts.SportsGroup.Select(s => (short)s).Contains(l.GameType))
                                 .Sum(x => x.Turnover) / 100M,
                             SportsTurnover = players.Where(l =>
-                                    Consts.SportsGroup.Contains(l.GameType))
+                                    Consts.SportsGroup.Select(s => (short)s).Contains(l.GameType))
                                 .Sum(x => x.Turnover),
                             VirtualSportsAmount =
                                 x.VirtualSportsRebatePercentage *
-                                players.Where(l => l.GameType == GameType.VirtualSports).Sum(a => a.Turnover) / 100M,
-                            VirtualSportsTurnover = players.Where(l => l.GameType == GameType.VirtualSports)
+                                players.Where(l => l.GameType == (short)GameType.VirtualSports).Sum(a => a.Turnover) /
+                                100M,
+                            VirtualSportsTurnover = players.Where(l => l.GameType == (short)GameType.VirtualSports)
                                 .Sum(a => a.Turnover)
                         })
                 .CreatePagedResponseAsync(request);

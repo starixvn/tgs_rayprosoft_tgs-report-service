@@ -1,0 +1,90 @@
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoFixture;
+using MockQueryable.Moq;
+using NSubstitute;
+using NUnit.Framework;
+using Tgs.Report.Core.Queries.LicenseeMarket;
+using Tgs.Report.Repository;
+using Tgs.Report.Repository.Configurations;
+using Tgs.Report.ViewModel.LicenseeMarket;
+
+namespace Tgs.Report.UnitTest.LicenseeMarket
+{
+    [TestFixture]
+    public sealed class GetLicenseeMarketsQueryTest : BaseTest
+    {
+        [Test]
+        public async Task Can_Get_Licensee_Markets()
+        {
+            var fakeRepository = Substitute.For<ITgsRepository>();
+
+            var sut = new GetLicenseeMarketsQueryHandler(fakeRepository);
+
+            var brandId = Guid.NewGuid();
+            var licenseeId = Guid.NewGuid();
+
+            var brands = CreateBrandFixture(brandId, licenseeId).CreateMany<Brand>(1)
+                .AsQueryable()
+                .BuildMock().Object;
+
+            var withdrawForms = CreateWithdrawFormFixture(brandId).CreateMany<WithdrawForm>(1).AsQueryable()
+                .BuildMock().Object;
+
+            var playerAggregates = CreatePlayerAggregateFixture(brandId).CreateMany<PlayerAggregate>(1)
+                .AsQueryable()
+                .BuildMock().Object;
+
+            var request = new GetLicenseeMarketsRequest
+            {
+                LicenseeId = licenseeId,
+                From = DateTimeOffset.UtcNow.AddDays(-1),
+                To = DateTimeOffset.UtcNow.AddDays(1),
+                SortBy = null
+            };
+
+            var mockBrands = GetDbSet(brands);
+            var mockPlayerAggregates = GetDbSet(playerAggregates);
+            var mockWithdrawForms = GetDbSet(withdrawForms);
+
+            fakeRepository.Brands.Returns(mockBrands.Object);
+            fakeRepository.PlayerAggregates.Returns(mockPlayerAggregates.Object);
+            fakeRepository.WithdrawForms.Returns(mockWithdrawForms.Object);
+
+            var response = await sut.Handle(request, default);
+
+            Assert.AreEqual(1, response.Datas.TotalCount);
+        }
+
+        private static Fixture CreateBrandFixture(Guid brandId, Guid licenseeId)
+        {
+            var fixture = new Fixture();
+            fixture.Customize<Brand>(u => u
+                .With(s => s.Id, brandId)
+                .With(s => s.LicenseeId, licenseeId));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            return fixture;
+        }
+
+        private static Fixture CreateWithdrawFormFixture(Guid brandId)
+        {
+            var fixture = new Fixture();
+            fixture.Customize<WithdrawForm>(u => u
+                .With(s => s.BrandId, brandId)
+                .With(s => s.Brand, new Brand()));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            return fixture;
+        }
+
+        private static Fixture CreatePlayerAggregateFixture(Guid brandId)
+        {
+            var fixture = new Fixture();
+            fixture.Customize<PlayerAggregate>(u => u
+                .With(s => s.BrandId, brandId)
+                .With(s => s.ReportDate, DateTime.UtcNow));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            return fixture;
+        }
+    }
+}

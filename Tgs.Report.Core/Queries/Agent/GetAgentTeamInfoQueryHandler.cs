@@ -5,7 +5,7 @@ using Tgs.Report.ViewModel.Agent;
 
 namespace Tgs.Report.Core.Queries.Agent
 {
-    internal class GetAgentTeamInfoQueryHandler : IRequestHandler<GetAgentTeamInfoRequest, PagedResponse<TeamInfoModel>>
+    public class GetAgentTeamInfoQueryHandler : IRequestHandler<GetAgentTeamInfoRequest, PagedResponse<TeamInfoModel>>
     {
         private readonly ITgsRepository _repository;
 

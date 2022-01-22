@@ -2,10 +2,10 @@
 
 namespace Tgs.Report.Client.Models.Agent
 {
-    public class TeamInfoModel
+    public record TeamInfoModel
     {
-        public string Username { get; set; }
-        public DateTimeOffset RegisteredOn { get; set; }
-        public decimal Contribution { get; set; }
+        public string Username { get; init; }
+        public DateTimeOffset RegisteredOn { get; init; }
+        public decimal Contribution { get; init; }
     }
 }

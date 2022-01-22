@@ -3,12 +3,12 @@ using Tgs.Report.ViewModel;
 
 namespace Tgs.Report.Client.Models.Vip
 {
-    public class GetVipReportRequest : PageableRequest
+    public record GetVipReportRequest : PageableRequest
     {
-        public Guid BrandId { get; set; }
-        public string Username { get; set; }
-        public int? Level { get; set; }
-        public DateTimeOffset From { get; set; }
-        public DateTimeOffset To { get; set; }
+        public Guid BrandId { get; init; }
+        public string Username { get; init; }
+        public int? Level { get; init; }
+        public DateTimeOffset From { get; init; }
+        public DateTimeOffset To { get; init; }
     }
 }

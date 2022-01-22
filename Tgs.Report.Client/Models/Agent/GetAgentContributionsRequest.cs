@@ -4,14 +4,14 @@ using Tgs.Report.ViewModel;
 
 namespace Tgs.Report.Client.Models.Agent
 {
-    public class GetAgentContributionsRequest : PageableRequest
+    public record GetAgentContributionsRequest : PageableRequest
     {
-        public Guid BrandId { get; set; }
-        public Guid? AgentId { get; set; }
-        public string Username { get; set; }
-        public AgentType? Type { get; set; }
-        public DateTimeOffset From { get; set; }
-        public DateTimeOffset To { get; set; }
-        public bool IncludeAgents { get; set; }
+        public Guid BrandId { get; init; }
+        public Guid? AgentId { get; init; }
+        public string Username { get; init; }
+        public AgentType? Type { get; init; }
+        public DateTimeOffset From { get; init; }
+        public DateTimeOffset To { get; init; }
+        public bool IncludeAgents { get; init; }
     }
 }

@@ -11,7 +11,7 @@ namespace Tgs.Report.ViewModel
 
     public record PlayerTurnoverModel
     {
-        public string PlayerCode { get; init; }
+        public string PlayerCode { get; init; } = default!;
         public decimal Turnover { get; init; }
     }
 }

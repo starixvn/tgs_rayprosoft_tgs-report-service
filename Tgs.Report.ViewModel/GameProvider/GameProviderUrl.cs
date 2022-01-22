@@ -4,6 +4,6 @@ namespace Tgs.Report.ViewModel.GameProvider
 {
     public record GameProviderUrl
     {
-        public Uri ServiceEndpointUrl { get; set; }
+        public Uri ServiceEndpointUrl { get; init; }
     }
 }

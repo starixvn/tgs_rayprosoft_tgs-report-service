@@ -2,36 +2,36 @@
 
 namespace Tgs.Report.ViewModel.Agent
 {
-    public class AgentDividendDetailModel
+    public record AgentDividendDetailModel
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; init; }
 
-        public string Username { get; set; }
+        public string Username { get; init; } = default!;
 
-        public DateTimeOffset SettlementDate { get; set; }
+        public DateTimeOffset SettlementDate { get; init; }
 
-        public DateTimeOffset SettlementDateFrom { get; set; }
+        public DateTimeOffset SettlementDateFrom { get; init; }
 
-        public DateTimeOffset SettlementDateTo { get; set; }
+        public DateTimeOffset SettlementDateTo { get; init; }
 
-        public decimal LiveDealerWinLoss { get; set; }
+        public decimal LiveDealerWinLoss { get; init; }
 
-        public decimal SlotWinLoss { get; set; }
+        public decimal SlotWinLoss { get; init; }
 
-        public decimal LotteryWinLoss { get; set; }
+        public decimal LotteryWinLoss { get; init; }
 
-        public decimal CardGameWinLoss { get; set; }
+        public decimal CardGameWinLoss { get; init; }
 
-        public decimal SportsWinLoss { get; set; }
+        public decimal SportsWinLoss { get; init; }
 
-        public decimal VirtualSportsWinLoss { get; set; }
+        public decimal VirtualSportsWinLoss { get; init; }
 
-        public decimal WinLossAmount { get; set; }
+        public decimal WinLossAmount { get; init; }
 
-        public decimal AgentDividendAmount { get; set; }
+        public decimal AgentDividendAmount { get; init; }
 
-        public decimal AgentDividendPercentage { get; set; }
+        public decimal AgentDividendPercentage { get; init; }
 
-        public decimal ExpenditureAmount { get; set; }
+        public decimal ExpenditureAmount { get; init; }
     }
 }

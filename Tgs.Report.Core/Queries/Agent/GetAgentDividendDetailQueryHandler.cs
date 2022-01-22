@@ -6,7 +6,7 @@ using Tgs.Report.ViewModel.Agent;
 
 namespace Tgs.Report.Core.Queries.Agent
 {
-    internal class
+    public class
         GetAgentDividendDetailQueryHandler : IRequestHandler<GetAgentDividendDetailsRequest,
             PagedResponse<AgentDividendDetailModel>>
     {

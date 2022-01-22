@@ -4,16 +4,16 @@ using Tgs.Report.ViewModel;
 
 namespace Tgs.Report.Client.Models.GameProvider
 {
-    public class GetGameProviderRoundsRequest : PageableRequest
+    public record GetGameProviderRoundsRequest : PageableRequest
     {
-        public DateTimeOffset From { get; set; }
+        public DateTimeOffset From { get; init; }
 
-        public DateTimeOffset To { get; set; }
+        public DateTimeOffset To { get; init; }
 
-        public Guid BrandId { get; set; }
+        public Guid BrandId { get; init; }
 
-        public string GameProviderCode { get; set; }
+        public string GameProviderCode { get; init; }
 
-        public GameType? GameType { get; set; }
+        public GameType? GameType { get; init; }
     }
 }

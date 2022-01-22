@@ -3,12 +3,12 @@ using MediatR;
 
 namespace Tgs.Report.ViewModel.Vip
 {
-    public class GetVipReportRequest : PageableRequest, IRequest<PagedResponse<VipModel>>
+    public record GetVipReportRequest : PageableRequest, IRequest<PagedResponse<VipModel>>
     {
-        public Guid BrandId { get; set; }
-        public string Username { get; set; }
-        public int? Level { get; set; }
-        public DateTimeOffset From { get; set; }
-        public DateTimeOffset To { get; set; }
+        public Guid BrandId { get; init; }
+        public string Username { get; init; }
+        public int? Level { get; init; }
+        public DateTimeOffset From { get; init; }
+        public DateTimeOffset To { get; init; }
     }
 }

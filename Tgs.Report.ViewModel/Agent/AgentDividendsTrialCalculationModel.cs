@@ -2,17 +2,17 @@
 
 namespace Tgs.Report.ViewModel.Agent
 {
-    public class AgentDividendsTrialCalculationModel
+    public record AgentDividendsTrialCalculationModel
     {
-        public string AgentUsername { get; set; }
-        public Guid AgentId { get; set; }
-        public string BrandCode { get; set; }
-        public Guid BrandId { get; set; }
-        public DateTimeOffset From { get; set; }
-        public DateTimeOffset To { get; set; }
-        public decimal AgentDividendPercentage { get; set; }
-        public decimal AgentDividendAmount { get; set; }
-        public decimal NegativeDividendAmount { get; set; }
-        public bool AutoSend { get; set; }
+        public string AgentUsername { get; init; } = default!;
+        public Guid AgentId { get; init; }
+        public string BrandCode { get; init; } = default!;
+        public Guid BrandId { get; init; }
+        public DateTimeOffset From { get; init; }
+        public DateTimeOffset To { get; init; }
+        public decimal AgentDividendPercentage { get; init; }
+        public decimal AgentDividendAmount { get; init; }
+        public decimal NegativeDividendAmount { get; init; }
+        public bool AutoSend { get; init; }
     }
 }

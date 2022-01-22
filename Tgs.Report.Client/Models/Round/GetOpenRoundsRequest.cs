@@ -3,14 +3,14 @@ using Tgs.Report.ViewModel;
 
 namespace Tgs.Report.Client.Models.Round
 {
-    public class GetOpenRoundsRequest : PageableRequest
+    public record GetOpenRoundsRequest : PageableRequest
     {
-        public string ExternalRoundId { get; set; }
+        public string ExternalRoundId { get; init; }
 
-        public Guid? GameProviderId { get; set; }
+        public Guid? GameProviderId { get; init; }
 
-        public DateTimeOffset From { get; set; }
+        public DateTimeOffset From { get; init; }
 
-        public DateTimeOffset To { get; set; }
+        public DateTimeOffset To { get; init; }
     }
 }

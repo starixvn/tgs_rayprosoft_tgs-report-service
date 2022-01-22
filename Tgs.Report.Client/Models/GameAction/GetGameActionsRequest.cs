@@ -3,8 +3,8 @@ using Tgs.Report.ViewModel;
 
 namespace Tgs.Report.Client.Models.GameAction
 {
-    public class GetGameActionsRequest : PageableRequest
+    public record GetGameActionsRequest : PageableRequest
     {
-        public Guid RoundId { get; set; }
+        public Guid RoundId { get; init; }
     }
 }

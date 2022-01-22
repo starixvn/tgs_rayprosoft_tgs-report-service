@@ -3,13 +3,13 @@ using MediatR;
 
 namespace Tgs.Report.ViewModel.Agent
 {
-    public class GetAgentDividendTeamDetailsRequest : PageableRequest,
+    public record GetAgentDividendTeamDetailsRequest : PageableRequest,
         IRequest<PagedResponse<AgentDividendTeamDetailModel>>
     {
-        public Guid AgentId { get; set; }
+        public Guid AgentId { get; init; }
 
-        public DateTimeOffset From { get; set; }
+        public DateTimeOffset From { get; init; }
 
-        public DateTimeOffset To { get; set; }
+        public DateTimeOffset To { get; init; }
     }
 }

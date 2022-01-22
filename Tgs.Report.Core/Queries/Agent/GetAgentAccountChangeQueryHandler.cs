@@ -1,11 +1,12 @@
 ﻿using MediatR;
+using Tgs.Report.Enum;
 using Tgs.Report.Repository;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Agent;
 
 namespace Tgs.Report.Core.Queries.Agent
 {
-    internal class
+    public class
         GetAgentAccountChangeQueryHandler : IRequestHandler<GetAgentAccountChangesRequest,
             PagedResponse<AgentAccountChangeModel>>
     {
@@ -22,7 +23,7 @@ namespace Tgs.Report.Core.Queries.Agent
             _repository.AgentTransactions
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.AgentId == request.AgentId)
-                .Where(request.TransactionType, x => x.Type == request.TransactionType)
+                .Where(request.TransactionType, x => x.Type == (short)request.TransactionType!)
                 .Where(x => x.RecordedOn >= request.From)
                 .Where(x => x.RecordedOn < request.To)
                 .Select(x => new AgentAccountChangeModel
@@ -30,7 +31,7 @@ namespace Tgs.Report.Core.Queries.Agent
                     TransactionId = x.Id,
                     Amount = x.Amount,
                     Balance = x.Balance,
-                    TransactionType = x.Type,
+                    TransactionType = (TransactionType)x.Type,
                     RecordedOn = x.RecordedOn
                 }).CreatePagedResponseAsync(request);
     }

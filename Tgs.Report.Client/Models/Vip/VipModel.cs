@@ -2,34 +2,34 @@
 
 namespace Tgs.Report.Client.Models.Vip
 {
-    public class VipModel
+    public record VipModel
     {
-        public Guid BrandId { get; set; }
+        public Guid BrandId { get; init; }
 
-        public string Username { get; set; }
+        public string Username { get; init; }
 
-        public string PlayerCode { get; set; }
+        public string PlayerCode { get; init; }
 
-        public int? Level { get; set; }
+        public int? Level { get; init; }
 
-        public decimal DepositAmount { get; set; }
+        public decimal DepositAmount { get; init; }
 
-        public decimal WithdrawalAmount { get; set; }
+        public decimal WithdrawalAmount { get; init; }
 
-        public decimal BonusAmount { get; set; }
+        public decimal BonusAmount { get; init; }
 
-        public decimal AdjustmentAmount { get; set; }
+        public decimal AdjustmentAmount { get; init; }
 
-        public decimal RebateAmount { get; set; }
+        public decimal RebateAmount { get; init; }
 
-        public decimal BetAmount { get; set; }
+        public decimal BetAmount { get; init; }
 
-        public decimal ValidBetAmount { get; set; }
+        public decimal ValidBetAmount { get; init; }
 
-        public decimal Turnover { get; set; }
+        public decimal Turnover { get; init; }
 
-        public decimal WinLossAmount { get; set; }
+        public decimal WinLossAmount { get; init; }
 
-        public decimal NetProfit { get; set; }
+        public decimal NetProfit { get; init; }
     }
 }

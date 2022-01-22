@@ -51,19 +51,23 @@ namespace Tgs.Report.Core.Queries.Agent
                     {
                         playerCode,
                         LiveDealerWinLossAmount =
-                            aggregate.Where(x => x.GameType == GameType.LiveDealer).Sum(x => x.WinLoss),
+                            aggregate.Where(x => x.GameType == (short)GameType.LiveDealer).Sum(x => x.WinLoss),
                         SlotWinLossAmount =
                             aggregate.Where(x =>
-                                x.GameType == GameType.Fishing || x.GameType == GameType.Arcade ||
-                                x.GameType == GameType.Slot || x.GameType == GameType.TableGame).Sum(x => x.WinLoss),
-                        LotteryWinLossAmount = aggregate.Where(x => x.GameType == GameType.Lottery).Sum(x => x.WinLoss),
+                                    x.GameType == (short)GameType.Fishing || x.GameType == (short)GameType.Arcade ||
+                                    x.GameType == (short)GameType.Slot || x.GameType == (short)GameType.TableGame)
+                                .Sum(x => x.WinLoss),
+                        LotteryWinLossAmount = aggregate.Where(x => x.GameType == (short)GameType.Lottery)
+                            .Sum(x => x.WinLoss),
                         CardGameWinLossAmount =
-                            aggregate.Where(x => x.GameType == GameType.CardGame).Sum(x => x.WinLoss),
+                            aggregate.Where(x => x.GameType == (short)GameType.CardGame).Sum(x => x.WinLoss),
                         SportsWinLossAmount =
-                            aggregate.Where(x => x.GameType == GameType.Sportsbook || x.GameType == GameType.ESports)
+                            aggregate.Where(x
+                                    => x.GameType == (short)GameType.Sportsbook ||
+                                    x.GameType == (short)GameType.ESports)
                                 .Sum(x => x.WinLoss),
                         VirtualSportsWinLossAmount =
-                            aggregate.Where(x => x.GameType == GameType.VirtualSports).Sum(x => x.WinLoss)
+                            aggregate.Where(x => x.GameType == (short)GameType.VirtualSports).Sum(x => x.WinLoss)
                     }).ToArrayAsync(cancellationToken);
 
             var players = await _repository.Players

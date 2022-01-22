@@ -2,7 +2,6 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
-using Tgs.Report.Enum;
 
 namespace Tgs.Report.Repository.Configurations
 {
@@ -16,9 +15,9 @@ namespace Tgs.Report.Repository.Configurations
         public decimal Amount { get; set; }
         public decimal Balance { get; set; }
         public string? Description { get; set; }
-        public TransactionType Type { get; set; }
-        public DateTimeOffset RecordedOn { get; set; }
-        public DateTimeOffset? SentOn { get; set; }
+        public short Type { get; set; }
+        public DateTime RecordedOn { get; set; }
+        public DateTime? SentOn { get; set; }
 
         public virtual Brand Brand { get; set; } = null!;
     }

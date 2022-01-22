@@ -2,10 +2,10 @@
 
 namespace Tgs.Report.ViewModel.Market
 {
-    public class AdditionalExpensesModel
+    public record AdditionalExpensesModel
     {
-        public AdditionalExpensesType AdditionalExpensesType { get; set; }
+        public AdditionalExpensesType AdditionalExpensesType { get; init; }
 
-        public decimal Amount { get; set; }
+        public decimal Amount { get; init; }
     }
 }

@@ -2,11 +2,11 @@
 
 namespace Tgs.Report.ViewModel.Agent
 {
-    public class AgentConditionModel
+    public record AgentConditionModel
     {
-        public Guid AgentId { get; set; }
-        public decimal ActiveCount { get; set; }
-        public decimal NetProfit { get; set; }
-        public decimal DividendPercentage { get; set; }
+        public Guid AgentId { get; init; }
+        public decimal ActiveCount { get; init; }
+        public decimal NetProfit { get; init; }
+        public decimal DividendPercentage { get; init; }
     }
 }

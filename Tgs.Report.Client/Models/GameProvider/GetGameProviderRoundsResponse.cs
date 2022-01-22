@@ -2,10 +2,10 @@
 
 namespace Tgs.Report.Client.Models.GameProvider
 {
-    public class GetGameProviderRoundsResponse
+    public record GetGameProviderRoundsResponse
     {
-        public PagedResponse<GameProviderRoundsModel> Datas { get; set; }
+        public PagedResponse<GameProviderRoundsModel> Datas { get; init; }
 
-        public GameProviderRoundTotalModel[] Totals { get; set; }
+        public GameProviderRoundTotalModel[] Totals { get; init; }
     }
 }

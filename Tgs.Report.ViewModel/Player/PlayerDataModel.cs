@@ -2,14 +2,14 @@
 
 namespace Tgs.Report.ViewModel.Player
 {
-    public class PlayerDataModel
+    public record PlayerDataModel
     {
-        public Guid BrandId { get; set; }
-        public Guid? AgentId { get; set; }
-        public string PlayerCode { get; set; }
-        public int Hour { get; set; }
-        public DateTimeOffset CreatedOn { get; set; }
-        public DateTimeOffset ReportDate { get; set; }
-        public decimal Contribution { get; set; }
+        public Guid BrandId { get; init; }
+        public Guid? AgentId { get; init; }
+        public string PlayerCode { get; init; } = default!;
+        public int Hour { get; init; }
+        public DateTimeOffset CreatedOn { get; init; }
+        public DateTimeOffset ReportDate { get; init; }
+        public decimal Contribution { get; init; }
     }
 }

@@ -3,18 +3,18 @@ using Tgs.Report.Enum;
 
 namespace Tgs.Report.Client.Models.GameAction
 {
-    public class GameActionModel
+    public record GameActionModel
     {
-        public DateTimeOffset RecordedOn { get; set; }
+        public DateTimeOffset RecordedOn { get; init; }
 
-        public string ExternalTransactionId { get; set; }
+        public string ExternalTransactionId { get; init; }
 
-        public GameActionType GameActionType { get; set; }
+        public GameActionType GameActionType { get; init; }
 
-        public decimal Amount { get; set; }
+        public decimal Amount { get; init; }
 
-        public decimal BeforeBalance { get; set; }
+        public decimal BeforeBalance { get; init; }
 
-        public decimal AfterBalance { get; set; }
+        public decimal AfterBalance { get; init; }
     }
 }

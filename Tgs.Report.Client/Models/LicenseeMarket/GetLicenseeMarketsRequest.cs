@@ -3,12 +3,12 @@ using Tgs.Report.ViewModel;
 
 namespace Tgs.Report.Client.Models.LicenseeMarket
 {
-    public class GetLicenseeMarketsRequest : PageableRequest
+    public record GetLicenseeMarketsRequest : PageableRequest
     {
-        public Guid LicenseeId { get; set; }
-        public string[] CurrencyCodes { get; set; }
-        public string CurrencyCode { get; set; }
-        public DateTimeOffset From { get; set; }
-        public DateTimeOffset To { get; set; }
+        public Guid LicenseeId { get; init; }
+        public string[] CurrencyCodes { get; init; }
+        public string CurrencyCode { get; init; }
+        public DateTimeOffset From { get; init; }
+        public DateTimeOffset To { get; init; }
     }
 }

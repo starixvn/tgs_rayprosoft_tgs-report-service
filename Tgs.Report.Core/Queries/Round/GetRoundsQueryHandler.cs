@@ -19,11 +19,11 @@ namespace Tgs.Report.Core.Queries.Round
             CancellationToken cancellationToken) =>
             _repository.Rounds.Where(x => x.BrandId == request.BrandId)
                 .Where(request.From.HasValue && request.To.HasValue,
-                    x => x.CreatedOn >= request.From.Value.ToUniversalTime() &&
-                        x.CreatedOn <= request.To.Value.ToUniversalTime())
+                    x => x.CreatedOn >= request.From!.Value.ToUniversalTime() &&
+                        x.CreatedOn <= request.To!.Value.ToUniversalTime())
                 .Where(request.ClosedFrom.HasValue && request.ClosedTo.HasValue,
-                    x => x.ClosedOn >= request.ClosedFrom.Value.ToUniversalTime() &&
-                        x.ClosedOn <= request.ClosedTo.Value.ToUniversalTime())
+                    x => x.ClosedOn >= request.ClosedFrom!.Value.ToUniversalTime() &&
+                        x.ClosedOn <= request.ClosedTo!.Value.ToUniversalTime())
                 .Where(request.GameProviderId, x => request.GameProviderId == x.GameProviderId)
                 .Where(request.Status, x => request.Status == x.ClientStatus)
                 .Where(request.RoundId, x => x.Id == request.RoundId)
@@ -71,8 +71,8 @@ namespace Tgs.Report.Core.Queries.Round
                     x.game,
                     detail
                 })
-                .Where(request.Username, x => request.Username == x.player.Username)
-                .Where(request.GameType, x => x.game.Type == request.GameType)
+                .Where(request.Username, x => request.Username == x.player!.Username)
+                .Where(request.GameType, x => x.game.Type == (short)request.GameType!)
                 .GroupJoin(_repository.GameProviders, combine => combine.round.GameProviderId,
                     gameProvider => gameProvider.Id,
                     (combine, gameProvider) => new

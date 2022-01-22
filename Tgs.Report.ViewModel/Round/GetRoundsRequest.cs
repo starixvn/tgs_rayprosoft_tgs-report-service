@@ -4,19 +4,19 @@ using Tgs.Report.Enum;
 
 namespace Tgs.Report.ViewModel.Round
 {
-    public class GetRoundsRequest : PageableRequest, IRequest<PagedResponse<RoundModel>>
+    public record GetRoundsRequest : PageableRequest, IRequest<PagedResponse<RoundModel>>
     {
-        public Guid BrandId { get; set; }
-        public string? Username { get; set; }
-        public string? PlayerCode { get; set; }
-        public Guid? RoundId { get; set; }
-        public string? ExternalRoundId { get; set; }
-        public Guid? GameProviderId { get; set; }
-        public ClientRoundStatus? Status { get; set; }
-        public GameType? GameType { get; set; }
-        public DateTimeOffset? From { get; set; }
-        public DateTimeOffset? To { get; set; }
-        public DateTimeOffset? ClosedFrom { get; set; }
-        public DateTimeOffset? ClosedTo { get; set; }
+        public Guid BrandId { get; init; }
+        public string? Username { get; init; }
+        public string? PlayerCode { get; init; }
+        public Guid? RoundId { get; init; }
+        public string? ExternalRoundId { get; init; }
+        public Guid? GameProviderId { get; init; }
+        public ClientRoundStatus? Status { get; init; }
+        public GameType? GameType { get; init; }
+        public DateTimeOffset? From { get; init; }
+        public DateTimeOffset? To { get; init; }
+        public DateTimeOffset? ClosedFrom { get; init; }
+        public DateTimeOffset? ClosedTo { get; init; }
     }
 }

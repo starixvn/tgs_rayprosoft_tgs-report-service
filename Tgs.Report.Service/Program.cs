@@ -12,6 +12,8 @@ builder.Services
     .AddTgsRepository(builder.Configuration.GetConnectionString("Tgs"))
     .AddReportCore();
 
+builder.Services.AddHealthChecks();
+
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -1,9 +1,9 @@
 ﻿namespace Tgs.Report.ViewModel
 {
-    public class PagedResponse<T> : MessageResponse
+    public record PagedResponse<T> : MessageResponse
     {
-        public int TotalCount { get; set; }
-        public T[] Items { get; set; }
+        public int TotalCount { get; init; }
+        public T[] Items { get; init; }
 
         public PagedResponse()
         {

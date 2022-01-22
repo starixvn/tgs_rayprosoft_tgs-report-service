@@ -14,59 +14,66 @@ namespace Tgs.Report.Client
 {
     public interface IReportClient
     {
-        Task<PagedResponse<VipModel>> GetVipReportAsync(GetVipReportRequest request);
+        ValueTask<PagedResponse<VipModel>> GetVipReportAsync(GetVipReportRequest request);
 
-        Task<PagedResponse<VipRebateModel>> GetVipRebateReportAsync(GetVipRebateReportRequest request);
+        ValueTask<PagedResponse<VipRebateModel>> GetVipRebateReportAsync(GetVipRebateReportRequest request);
 
-        Task<PagedResponse<RoundModel>> GetRoundsAsync(GetRoundsRequest request);
-        Task<PagedResponse<OpenRoundModel>> GetOpenRoundsAsync(GetOpenRoundsRequest request);
-        Task<PagedResponse<ClosedRoundModel>> GetClosedRoundsAsync(GetClosedRoundsRequest request);
+        ValueTask<PagedResponse<RoundModel>> GetRoundsAsync(GetRoundsRequest request);
+        ValueTask<PagedResponse<OpenRoundModel>> GetOpenRoundsAsync(GetOpenRoundsRequest request);
+        ValueTask<PagedResponse<ClosedRoundModel>> GetClosedRoundsAsync(GetClosedRoundsRequest request);
 
-        Task<GetRoundHistoryResponse> GetRoundHistoriesAsync(GetRoundHistoryRequest request);
+        ValueTask<GetRoundHistoryResponse> GetRoundHistoriesAsync(GetRoundHistoryRequest request);
 
-        Task<PagedResponse<MarketModel>> GetMarketsAsync(GetMarketsRequest request);
+        ValueTask<PagedResponse<MarketModel>> GetMarketsAsync(GetMarketsRequest request);
 
-        Task<GetAdditionalExpensesResponse> GetAdditionalExpensesAsync(GetAdditionalExpensesRequest request);
-        Task<PagedResponse<AgentContributionModel>> GetAgentContributionsAsync(GetAgentContributionsRequest request);
+        ValueTask<GetAdditionalExpensesResponse> GetAdditionalExpensesAsync(GetAdditionalExpensesRequest request);
 
-        Task<PagedResponse<PlayerContributionModel>> GetPlayerContributionsAsync(GetPlayerContributionsRequest request);
+        ValueTask<PagedResponse<AgentContributionModel>> GetAgentContributionsAsync(
+            GetAgentContributionsRequest request);
 
-        Task<PagedResponse<TeamInfoModel>> GetAgentTeamInfoAsync(GetAgentTeamInfoRequest request);
+        ValueTask<PagedResponse<PlayerContributionModel>> GetPlayerContributionsAsync(
+            GetPlayerContributionsRequest request);
 
-        Task<PagedResponse<AgentDividendModel>> GetAgentDividendsAsync(GetAgentDividendsRequest request);
+        ValueTask<PagedResponse<TeamInfoModel>> GetAgentTeamInfoAsync(GetAgentTeamInfoRequest request);
 
-        Task<PagedResponse<AgentPlayerWinLossModel>> GetAgentPlayerWinLossAsync(GetAgentPlayerWinLossRequest request);
+        ValueTask<PagedResponse<AgentDividendModel>> GetAgentDividendsAsync(GetAgentDividendsRequest request);
 
-        Task<PagedResponse<AgentDividendDetailModel>> GetAgentDividendDetailsAsync(
+        ValueTask<PagedResponse<AgentPlayerWinLossModel>> GetAgentPlayerWinLossAsync(
+            GetAgentPlayerWinLossRequest request);
+
+        ValueTask<PagedResponse<AgentDividendDetailModel>> GetAgentDividendDetailsAsync(
             GetAgentDividendDetailsRequest request);
 
-        Task<PagedResponse<AgentDividendTeamDetailModel>> GetAgentDividendTeamDetailsAsync(
+        ValueTask<PagedResponse<AgentDividendTeamDetailModel>> GetAgentDividendTeamDetailsAsync(
             GetAgentDividendTeamDetailsRequest request);
 
-        Task<PagedResponse<PlayerAccountChangeModel>> GetPlayerAccountChangesAsync(
+        ValueTask<PagedResponse<PlayerAccountChangeModel>> GetPlayerAccountChangesAsync(
             GetPlayerAccountChangesRequest request);
 
-        Task<PagedResponse<PlayersAccountChangeModel>> GetPlayersAccountChangesAsync(
+        ValueTask<PagedResponse<PlayersAccountChangeModel>> GetPlayersAccountChangesAsync(
             GetPlayersAccountChangesRequest request);
 
-        Task<PagedResponse<AgentAccountChangeModel>> GetAgentAccountChangesAsync(GetAgentAccountChangesRequest request);
-        Task<GetGameProviderRoundsResponse> GetGameProviderRoundsAsync(GetGameProviderRoundsRequest request);
-        Task<PagedResponse<GameActionModel>> GetGameActionsAsync(GetGameActionsRequest request);
+        ValueTask<PagedResponse<AgentAccountChangeModel>> GetAgentAccountChangesAsync(
+            GetAgentAccountChangesRequest request);
 
-        Task<LicenseeMarketsResponse> GetLicenseeMarketsAsync(GetLicenseeMarketsRequest request);
+        ValueTask<GetGameProviderRoundsResponse> GetGameProviderRoundsAsync(GetGameProviderRoundsRequest request);
+        ValueTask<PagedResponse<GameActionModel>> GetGameActionsAsync(GetGameActionsRequest request);
 
-        Task<Stream> ExportMarketsAsync(ExportMarketsRequest request);
+        ValueTask<LicenseeMarketsResponse> GetLicenseeMarketsAsync(GetLicenseeMarketsRequest request);
 
-        Task<Stream> ExportPlayerContributionsAsync(ExportPlayerContributionsRequest request);
+        ValueTask<Stream> ExportMarketsAsync(ExportMarketsRequest request);
 
-        Task<Stream> ExportAgentContributionsAsync(ExportAgentContributionsRequest request);
+        ValueTask<Stream> ExportPlayerContributionsAsync(ExportPlayerContributionsRequest request);
 
-        Task<Stream> ExportAgentDividendsAsync(ExportAgentDividendsRequest request);
+        ValueTask<Stream> ExportAgentContributionsAsync(ExportAgentContributionsRequest request);
 
-        Task<Stream> ExportVipsAsync(ExportVipReportRequest request);
+        ValueTask<Stream> ExportAgentDividendsAsync(ExportAgentDividendsRequest request);
 
-        Task<Stream> ExportAgentDividendsTrialCalculationAsync(ExportAgentDividendsTrialCalculationRequest request);
+        ValueTask<Stream> ExportVipsAsync(ExportVipReportRequest request);
 
-        Task<Stream> ExportLicenseeMarketsAsync(ExportLicenseeMarketsRequest request);
+        ValueTask<Stream>
+            ExportAgentDividendsTrialCalculationAsync(ExportAgentDividendsTrialCalculationRequest request);
+
+        ValueTask<Stream> ExportLicenseeMarketsAsync(ExportLicenseeMarketsRequest request);
     }
 }

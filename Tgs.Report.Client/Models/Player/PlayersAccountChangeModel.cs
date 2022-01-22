@@ -3,15 +3,15 @@ using Tgs.Report.Enum;
 
 namespace Tgs.Report.Client.Models.Player
 {
-    public class PlayersAccountChangeModel
+    public record PlayersAccountChangeModel
     {
-        public string Username { get; set; } = string.Empty;
-        public decimal Amount { get; set; }
-        public decimal BeforeBalance { get; set; }
-        public decimal AfterBalance { get; set; }
-        public TransactionType TransactionType { get; set; }
-        public DateTimeOffset RecordedOn { get; set; }
-        public string Operator { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
+        public string Username { get; init; } = string.Empty;
+        public decimal Amount { get; init; }
+        public decimal BeforeBalance { get; init; }
+        public decimal AfterBalance { get; init; }
+        public TransactionType TransactionType { get; init; }
+        public DateTimeOffset RecordedOn { get; init; }
+        public string Operator { get; init; } = string.Empty;
+        public string Description { get; init; } = string.Empty;
     }
 }

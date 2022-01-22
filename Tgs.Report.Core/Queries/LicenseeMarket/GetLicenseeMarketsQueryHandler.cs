@@ -5,7 +5,7 @@ using Tgs.Report.ViewModel.LicenseeMarket;
 
 namespace Tgs.Report.Core.Queries.LicenseeMarket
 {
-    internal class GetLicenseeMarketsQueryHandler : IRequestHandler<GetLicenseeMarketsRequest, LicenseeMarketsResponse>
+    public class GetLicenseeMarketsQueryHandler : IRequestHandler<GetLicenseeMarketsRequest, LicenseeMarketsResponse>
     {
         private readonly ITgsRepository _repository;
 

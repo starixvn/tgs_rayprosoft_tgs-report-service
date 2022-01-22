@@ -2,7 +2,6 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
-using Tgs.Report.Enum;
 
 namespace Tgs.Report.Repository.Configurations
 {
@@ -13,15 +12,15 @@ namespace Tgs.Report.Repository.Configurations
         public Guid? AgentId { get; set; }
         public string PlayerCode { get; set; } = null!;
         public Guid GameProviderId { get; set; }
-        public GameType GameType { get; set; }
+        public short GameType { get; set; }
         public int Hour { get; set; }
         public int Minute { get; set; }
         public decimal BetAmount { get; set; }
         public decimal ValidBetAmount { get; set; }
         public decimal Turnover { get; set; }
         public decimal WinLoss { get; set; }
-        public DateTimeOffset ReportDate { get; set; }
-        public DateTimeOffset CreatedOn { get; set; }
+        public DateTime ReportDate { get; set; }
+        public DateTime CreatedOn { get; set; }
         public int GameId { get; set; }
         public decimal OriginalTurnover { get; set; }
     }

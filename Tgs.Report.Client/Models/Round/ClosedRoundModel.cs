@@ -3,64 +3,64 @@ using Tgs.Report.Enum;
 
 namespace Tgs.Report.Client.Models.Round
 {
-    public class ClosedRoundModel
+    public record ClosedRoundModel
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; init; }
 
-        public string ExternalRoundId { get; set; }
+        public string ExternalRoundId { get; init; }
 
-        public string BrandName { get; set; }
+        public string BrandName { get; init; }
 
-        public string BrandCode { get; set; }
+        public string BrandCode { get; init; }
 
-        public int GameId { get; set; }
+        public int GameId { get; init; }
 
-        public string GameName { get; set; }
+        public string GameName { get; init; }
 
-        public Guid GameProviderId { get; set; }
+        public Guid GameProviderId { get; init; }
 
-        public string GameProviderCode { get; set; }
+        public string GameProviderCode { get; init; }
 
-        public string GameProviderName { get; set; }
+        public string GameProviderName { get; init; }
 
-        public string SubGameProviderName { get; set; }
+        public string SubGameProviderName { get; init; }
 
-        public string PlayerName { get; set; }
+        public string PlayerName { get; init; }
 
-        public string PlayerCode { get; set; }
+        public string PlayerCode { get; init; }
 
-        public string ExternalPlayerCode { get; set; }
+        public string ExternalPlayerCode { get; init; }
 
-        public string CurrencyCode { get; set; }
+        public string CurrencyCode { get; init; }
 
-        public PlatformType PlatformType { get; set; }
+        public PlatformType PlatformType { get; init; }
 
-        public ClientRoundStatus Status { get; set; }
+        public ClientRoundStatus Status { get; init; }
 
-        public PlayerType PlayerType { get; set; }
+        public PlayerType PlayerType { get; init; }
 
-        public DateTimeOffset CreatedOn { get; set; }
+        public DateTimeOffset CreatedOn { get; init; }
 
-        public DateTimeOffset? ClosedOn { get; set; }
+        public DateTimeOffset? ClosedOn { get; init; }
 
-        public DateTimeOffset UpdatedOn { get; set; }
+        public DateTimeOffset UpdatedOn { get; init; }
 
-        public DateTimeOffset? ExternalCreatedOn { get; set; }
+        public DateTimeOffset? ExternalCreatedOn { get; init; }
 
-        public DateTimeOffset? ExternalClosedOn { get; set; }
+        public DateTimeOffset? ExternalClosedOn { get; init; }
 
-        public decimal? BetAmount { get; set; }
+        public decimal? BetAmount { get; init; }
 
-        public decimal? ValidBetAmount { get; set; }
+        public decimal? ValidBetAmount { get; init; }
 
-        public decimal? SettleAmount { get; set; }
+        public decimal? SettleAmount { get; init; }
 
-        public decimal? Commission { get; set; }
+        public decimal? Commission { get; init; }
 
-        public decimal? WinLoss { get; set; }
+        public decimal? WinLoss { get; init; }
 
-        public decimal? TieBetAdjustment { get; set; }
+        public decimal? TieBetAdjustment { get; init; }
 
-        public string AdditionalData { get; set; }
+        public string AdditionalData { get; init; }
     }
 }

@@ -6,7 +6,7 @@ using Tgs.Report.ViewModel.Market;
 
 namespace Tgs.Report.Core.Queries.Market
 {
-    internal class
+    public class
         GetAdditionalExpensesQueryHandler : IRequestHandler<GetAdditionalExpensesRequest, GetAdditionalExpensesResponse>
     {
         private readonly ITgsRepository _repository;

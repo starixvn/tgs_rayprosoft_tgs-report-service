@@ -2,22 +2,22 @@
 
 namespace Tgs.Report.ViewModel.GameProvider
 {
-    public class GameProviderRoundsModel
+    public record GameProviderRoundsModel
     {
-        public Guid GameProviderId { get; set; }
+        public Guid GameProviderId { get; init; }
 
-        public string GameProviderName { get; set; }
+        public string GameProviderName { get; init; } = default!;
 
-        public string CurrencyCode { get; set; }
+        public string CurrencyCode { get; init; } = default!;
 
-        public int TransactionCount { get; set; }
+        public int TransactionCount { get; init; }
 
-        public decimal BetAmount { get; set; }
+        public decimal BetAmount { get; init; }
 
-        public decimal ValidBetAmount { get; set; }
+        public decimal ValidBetAmount { get; init; }
 
-        public decimal OriginalTurnover { get; set; }
+        public decimal OriginalTurnover { get; init; }
 
-        public decimal CompanyWinLoss { get; set; }
+        public decimal CompanyWinLoss { get; init; }
     }
 }

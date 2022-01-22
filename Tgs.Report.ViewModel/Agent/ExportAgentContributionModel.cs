@@ -2,17 +2,17 @@
 
 namespace Tgs.Report.ViewModel.Agent
 {
-    public class ExportAgentContributionModel
+    public record ExportAgentContributionModel
     {
-        public string Username { get; set; }
-        public AccountType Type { get; set; }
-        public decimal DepositAmount { get; set; }
-        public decimal WithdrawalAmount { get; set; }
-        public decimal AdjustmentAmount { get; set; }
-        public decimal BonusAmount { get; set; }
-        public decimal BetAmount { get; set; }
-        public decimal ValidBetAmount { get; set; }
-        public decimal WinLossAmount { get; set; }
-        public decimal NetProfit { get; set; }
+        public string Username { get; init; } = default!;
+        public AccountType Type { get; init; }
+        public decimal DepositAmount { get; init; }
+        public decimal WithdrawalAmount { get; init; }
+        public decimal AdjustmentAmount { get; init; }
+        public decimal BonusAmount { get; init; }
+        public decimal BetAmount { get; init; }
+        public decimal ValidBetAmount { get; init; }
+        public decimal WinLossAmount { get; init; }
+        public decimal NetProfit { get; init; }
     }
 }

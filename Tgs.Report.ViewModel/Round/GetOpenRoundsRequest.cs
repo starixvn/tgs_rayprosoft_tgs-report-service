@@ -3,14 +3,14 @@ using MediatR;
 
 namespace Tgs.Report.ViewModel.Round
 {
-    public class GetOpenRoundsRequest : PageableRequest, IRequest<PagedResponse<OpenRoundModel>>
+    public record GetOpenRoundsRequest : PageableRequest, IRequest<PagedResponse<OpenRoundModel>>
     {
-        public string ExternalRoundId { get; set; }
+        public string ExternalRoundId { get; init; }
 
-        public Guid? GameProviderId { get; set; }
+        public Guid? GameProviderId { get; init; }
 
-        public DateTimeOffset From { get; set; }
+        public DateTimeOffset From { get; init; }
 
-        public DateTimeOffset To { get; set; }
+        public DateTimeOffset To { get; init; }
     }
 }

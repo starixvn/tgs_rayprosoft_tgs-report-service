@@ -2,11 +2,11 @@
 
 namespace Tgs.Report.ViewModel.Agent
 {
-    public class AgentDividendMultipleLayerModel
+    public record AgentDividendMultipleLayerModel
     {
-        public Guid AgentId { get; set; }
-        public Guid DividendProviderAgentId { get; set; }
-        public string Layer { get; set; }
-        public decimal Dividend { get; set; }
+        public Guid AgentId { get; init; }
+        public Guid DividendProviderAgentId { get; init; }
+        public string Layer { get; init; } = default!;
+        public decimal Dividend { get; init; }
     }
 }

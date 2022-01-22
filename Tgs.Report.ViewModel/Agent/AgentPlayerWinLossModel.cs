@@ -1,13 +1,13 @@
 ﻿namespace Tgs.Report.ViewModel.Agent
 {
-    public class AgentPlayerWinLossModel
+    public record AgentPlayerWinLossModel
     {
-        public string Username { get; set; }
-        public decimal LiveDealerWinLossAmount { get; set; }
-        public decimal SlotWinLossAmount { get; set; }
-        public decimal LotteryWinLossAmount { get; set; }
-        public decimal CardGameWinLossAmount { get; set; }
-        public decimal SportsWinLossAmount { get; set; }
-        public decimal VirtualSportsWinLossAmount { get; set; }
+        public string Username { get; init; } = default!;
+        public decimal LiveDealerWinLossAmount { get; init; }
+        public decimal SlotWinLossAmount { get; init; }
+        public decimal LotteryWinLossAmount { get; init; }
+        public decimal CardGameWinLossAmount { get; init; }
+        public decimal SportsWinLossAmount { get; init; }
+        public decimal VirtualSportsWinLossAmount { get; init; }
     }
 }

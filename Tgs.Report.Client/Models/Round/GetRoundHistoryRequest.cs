@@ -6,7 +6,7 @@ namespace Tgs.Report.Client.Models.Round
     {
         public string GameProviderCode { get; init; }
         public string PlayerCode { get; init; }
-        public Guid RoundId { get; set; }
+        public Guid RoundId { get; init; }
         public string Language { get; init; }
     }
 }

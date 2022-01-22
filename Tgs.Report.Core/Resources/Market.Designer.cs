@@ -39,7 +39,7 @@ namespace Tgs.Report.Core.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TGS.Services.Report.Application.Resources.Market", typeof(Market).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Tgs.Report.Core.Resources.Market", typeof(Market).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

@@ -1,7 +1,7 @@
 ﻿namespace Tgs.Report.ViewModel.Market
 {
-    public class GetAdditionalExpensesResponse
+    public record GetAdditionalExpensesResponse
     {
-        public AdditionalExpensesModel[] AdditionalExpenses { get; set; }
+        public AdditionalExpensesModel[] AdditionalExpenses { get; init; }
     }
 }

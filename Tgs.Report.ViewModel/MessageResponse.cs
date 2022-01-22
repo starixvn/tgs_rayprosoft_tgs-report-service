@@ -1,12 +1,12 @@
 ﻿namespace Tgs.Report.ViewModel
 {
-    public class MessageResponse
+    public record MessageResponse
     {
-        public bool Valid { get; set; }
+        public bool Valid { get; init; }
 
-        public string Message { get; set; }
+        public string Message { get; init; } = default!;
 
-        public string[] Errors { get; set; }
+        public string[] Errors { get; init; }
 
         public MessageResponse()
         {

@@ -3,16 +3,16 @@ using MediatR;
 
 namespace Tgs.Report.ViewModel.LicenseeMarket
 {
-    public class GetLicenseeMarketsRequest : PageableRequest, IRequest<LicenseeMarketsResponse>
+    public record GetLicenseeMarketsRequest : PageableRequest, IRequest<LicenseeMarketsResponse>
     {
-        public string CurrencyCode { get; set; }
+        public string CurrencyCode { get; init; } = default!;
 
-        public string[]? CurrencyCodes { get; set; }
+        public string[]? CurrencyCodes { get; init; }
 
-        public DateTimeOffset From { get; set; }
+        public DateTimeOffset From { get; init; }
 
-        public Guid LicenseeId { get; set; }
+        public Guid LicenseeId { get; init; }
 
-        public DateTimeOffset To { get; set; }
+        public DateTimeOffset To { get; init; }
     }
 }

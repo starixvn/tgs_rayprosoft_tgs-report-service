@@ -2,48 +2,48 @@
 
 namespace Tgs.Report.ViewModel.Player
 {
-    public class PlayerAggregateModel
+    public record PlayerAggregateModel
     {
-        public Guid BrandId { get; set; }
+        public Guid BrandId { get; init; }
 
-        public Guid? AgentId { get; set; }
+        public Guid? AgentId { get; init; }
 
-        public string PlayerCode { get; set; }
+        public string PlayerCode { get; init; } = default!;
 
-        public int Hour { get; set; }
+        public int Hour { get; init; }
 
-        public DateTimeOffset CreatedOn { get; set; }
+        public DateTimeOffset CreatedOn { get; init; }
 
-        public DateTimeOffset ReportDate { get; set; }
+        public DateTimeOffset ReportDate { get; init; }
 
-        public int RegisteredCount { get; set; }
+        public int RegisteredCount { get; init; }
 
-        public int FirstFundInCount { get; set; }
+        public int FirstFundInCount { get; init; }
 
-        public decimal DepositAmount { get; set; }
+        public decimal DepositAmount { get; init; }
 
-        public decimal WithdrawalAmount { get; set; }
+        public decimal WithdrawalAmount { get; init; }
 
-        public decimal AdjustmentAmount { get; set; }
+        public decimal AdjustmentAmount { get; init; }
 
-        public decimal BonusAmount { get; set; }
+        public decimal BonusAmount { get; init; }
 
-        public decimal RebateAmount { get; set; }
+        public decimal RebateAmount { get; init; }
 
-        public decimal DividendAmount { get; set; }
+        public decimal DividendAmount { get; init; }
 
-        public decimal PromotionAmount { get; set; }
+        public decimal PromotionAmount { get; init; }
 
-        public decimal BetAmount { get; set; }
+        public decimal BetAmount { get; init; }
 
-        public decimal ValidBetAmount { get; set; }
+        public decimal ValidBetAmount { get; init; }
 
-        public decimal OriginalTurnover { get; set; }
+        public decimal OriginalTurnover { get; init; }
 
-        public decimal Turnover { get; set; }
+        public decimal Turnover { get; init; }
 
-        public decimal WinLossAmount { get; set; }
+        public decimal WinLossAmount { get; init; }
 
-        public decimal AllAgentRebateAmount { get; set; }
+        public decimal AllAgentRebateAmount { get; init; }
     }
 }

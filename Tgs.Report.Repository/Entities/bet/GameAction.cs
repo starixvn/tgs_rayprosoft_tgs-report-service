@@ -2,7 +2,6 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
-using Tgs.Report.Enum;
 
 namespace Tgs.Report.Repository.Configurations
 {
@@ -17,7 +16,7 @@ namespace Tgs.Report.Repository.Configurations
         public Guid RoundId { get; set; }
         public string PlayerCode { get; set; } = null!;
         public string ExternalTransactionId { get; set; } = null!;
-        public GameActionType Type { get; set; }
+        public short Type { get; set; }
         public decimal Amount { get; set; }
         public decimal Turnover { get; set; }
         public decimal WinLoss { get; set; }
@@ -28,14 +27,14 @@ namespace Tgs.Report.Repository.Configurations
         public string ExternalGameActionGroupId { get; set; } = null!;
         public Guid? ReferencedGameActionId { get; set; }
         public Guid? GameActionBatchId { get; set; }
-        public DateTimeOffset RecordedOn { get; set; }
-        public DateTimeOffset? SentOn { get; set; }
+        public DateTime RecordedOn { get; set; }
+        public DateTime? SentOn { get; set; }
         public bool IsClosingRound { get; set; }
         public bool? ClosingRoundExplicitRequest { get; set; }
         public string PlayerIp { get; set; } = null!;
         public string? ExtraData { get; set; }
         public string? JackpotContribution { get; set; }
-        public DateTimeOffset StoredOn { get; set; }
+        public DateTime StoredOn { get; set; }
 
         public virtual GameAction? ReferencedGameAction { get; set; }
         public virtual ICollection<GameAction> InverseReferencedGameAction { get; set; }

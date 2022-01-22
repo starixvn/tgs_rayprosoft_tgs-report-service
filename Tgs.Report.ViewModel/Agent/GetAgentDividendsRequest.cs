@@ -4,13 +4,13 @@ using Tgs.Report.Enum;
 
 namespace Tgs.Report.ViewModel.Agent
 {
-    public class GetAgentDividendsRequest : PageableRequest, IRequest<PagedResponse<AgentDividendModel>>
+    public record GetAgentDividendsRequest : PageableRequest, IRequest<PagedResponse<AgentDividendModel>>
     {
-        public Guid BrandId { get; set; }
-        public Guid? AgentId { get; set; }
-        public string Username { get; set; }
-        public AgentType? Type { get; set; }
-        public DateTimeOffset From { get; set; }
-        public DateTimeOffset To { get; set; }
+        public Guid BrandId { get; init; }
+        public Guid? AgentId { get; init; }
+        public string Username { get; init; } = default!;
+        public AgentType? Type { get; init; }
+        public DateTimeOffset From { get; init; }
+        public DateTimeOffset To { get; init; }
     }
 }

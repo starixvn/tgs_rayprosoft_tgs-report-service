@@ -5,7 +5,7 @@ using Tgs.Report.ViewModel.GameProvider;
 
 namespace Tgs.Report.Core.Queries.GameProvider
 {
-    internal class
+    public class
         GetGameProviderRoundsQueryHandler : IRequestHandler<GetGameProviderRoundsRequest,
             GetGameProviderRoundsResponse>
     {
@@ -31,7 +31,7 @@ namespace Tgs.Report.Core.Queries.GameProvider
                         round,
                         game.Type
                     })
-                .Where(request.GameType is not null, x => x.Type == request.GameType)
+                .Where(request.GameType is not null, x => x.Type == (short)request.GameType!)
                 .Join(_repository.GameProviders,
                     group => group.round.GameProviderId,
                     gp => gp.Id,

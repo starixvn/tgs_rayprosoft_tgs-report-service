@@ -28,7 +28,7 @@ namespace Tgs.Report.Client
             _client = client;
         }
 
-        public async Task<PagedResponse<VipModel>> GetVipReportAsync(GetVipReportRequest request)
+        public async ValueTask<PagedResponse<VipModel>> GetVipReportAsync(GetVipReportRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/vipReport?", request);
 
@@ -41,7 +41,7 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<PagedResponse<VipRebateModel>> GetVipRebateReportAsync(
+        public async ValueTask<PagedResponse<VipRebateModel>> GetVipRebateReportAsync(
             GetVipRebateReportRequest request)
         {
             var path = ClientPath.AppendWithProperties($"/api/vipReport/{request.Username}?", request);
@@ -55,7 +55,7 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<PagedResponse<RoundModel>> GetRoundsAsync(GetRoundsRequest request)
+        public async ValueTask<PagedResponse<RoundModel>> GetRoundsAsync(GetRoundsRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/roundReport?", request);
 
@@ -68,7 +68,7 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<PagedResponse<OpenRoundModel>> GetOpenRoundsAsync(GetOpenRoundsRequest request)
+        public async ValueTask<PagedResponse<OpenRoundModel>> GetOpenRoundsAsync(GetOpenRoundsRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/roundReport/openRounds?", request);
 
@@ -81,7 +81,7 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<PagedResponse<ClosedRoundModel>> GetClosedRoundsAsync(GetClosedRoundsRequest request)
+        public async ValueTask<PagedResponse<ClosedRoundModel>> GetClosedRoundsAsync(GetClosedRoundsRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/roundReport/closedRounds?", request);
 
@@ -95,7 +95,7 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<GetRoundHistoryResponse> GetRoundHistoriesAsync(GetRoundHistoryRequest request)
+        public async ValueTask<GetRoundHistoryResponse> GetRoundHistoriesAsync(GetRoundHistoryRequest request)
         {
             var path = ClientPath.AppendWithProperties($"/api/roundReport/{request.RoundId}?", request);
 
@@ -108,7 +108,7 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<PagedResponse<MarketModel>> GetMarketsAsync(GetMarketsRequest request)
+        public async ValueTask<PagedResponse<MarketModel>> GetMarketsAsync(GetMarketsRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/marketReport?", request);
 
@@ -121,7 +121,7 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<PagedResponse<AgentContributionModel>> GetAgentContributionsAsync(
+        public async ValueTask<PagedResponse<AgentContributionModel>> GetAgentContributionsAsync(
             GetAgentContributionsRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/agentReport/contribution?", request);
@@ -136,7 +136,7 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<PagedResponse<PlayerContributionModel>> GetPlayerContributionsAsync(
+        public async ValueTask<PagedResponse<PlayerContributionModel>> GetPlayerContributionsAsync(
             GetPlayerContributionsRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/playerReport/contribution?", request);
@@ -151,7 +151,7 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<PagedResponse<TeamInfoModel>> GetAgentTeamInfoAsync(
+        public async ValueTask<PagedResponse<TeamInfoModel>> GetAgentTeamInfoAsync(
             GetAgentTeamInfoRequest request)
         {
             var path = ClientPath.AppendWithProperties($"/api/agentReport/{request.AgentId}/teamInfo?", request);
@@ -165,7 +165,7 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<PagedResponse<AgentDividendModel>> GetAgentDividendsAsync(
+        public async ValueTask<PagedResponse<AgentDividendModel>> GetAgentDividendsAsync(
             GetAgentDividendsRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/agentReport/dividends?", request);
@@ -180,7 +180,7 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<PagedResponse<AgentPlayerWinLossModel>> GetAgentPlayerWinLossAsync(
+        public async ValueTask<PagedResponse<AgentPlayerWinLossModel>> GetAgentPlayerWinLossAsync(
             GetAgentPlayerWinLossRequest request)
         {
             var path = ClientPath.AppendWithProperties($"/api/agentReport/{request.AgentId}/winLoss?", request);
@@ -195,7 +195,7 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<PagedResponse<AgentDividendDetailModel>> GetAgentDividendDetailsAsync(
+        public async ValueTask<PagedResponse<AgentDividendDetailModel>> GetAgentDividendDetailsAsync(
             GetAgentDividendDetailsRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/agentReport/dividendDetails?", request);
@@ -210,7 +210,7 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<PagedResponse<PlayerAccountChangeModel>> GetPlayerAccountChangesAsync(
+        public async ValueTask<PagedResponse<PlayerAccountChangeModel>> GetPlayerAccountChangesAsync(
             GetPlayerAccountChangesRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/playerReport/accountChanges?", request);
@@ -225,7 +225,7 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<PagedResponse<PlayersAccountChangeModel>> GetPlayersAccountChangesAsync(
+        public async ValueTask<PagedResponse<PlayersAccountChangeModel>> GetPlayersAccountChangesAsync(
             GetPlayersAccountChangesRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/playerReport/playersAccountChanges?", request);
@@ -240,7 +240,7 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<PagedResponse<AgentAccountChangeModel>> GetAgentAccountChangesAsync(
+        public async ValueTask<PagedResponse<AgentAccountChangeModel>> GetAgentAccountChangesAsync(
             GetAgentAccountChangesRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/agentReport/accountChanges?", request);
@@ -255,7 +255,7 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<LicenseeMarketsResponse> GetLicenseeMarketsAsync(GetLicenseeMarketsRequest request)
+        public async ValueTask<LicenseeMarketsResponse> GetLicenseeMarketsAsync(GetLicenseeMarketsRequest request)
         {
             var prefix = $"Report.LicenseeId.{request.LicenseeId}.GetLicenseeMarkets";
 
@@ -303,7 +303,7 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<Stream> ExportMarketsAsync(ExportMarketsRequest request)
+        public async ValueTask<Stream> ExportMarketsAsync(ExportMarketsRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/marketReport/exportMarkets?", request);
 
@@ -320,7 +320,7 @@ namespace Tgs.Report.Client
             return stream;
         }
 
-        public async Task<Stream> ExportPlayerContributionsAsync(ExportPlayerContributionsRequest request)
+        public async ValueTask<Stream> ExportPlayerContributionsAsync(ExportPlayerContributionsRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/playerReport/exportPlayerContributions?", request);
 
@@ -337,7 +337,7 @@ namespace Tgs.Report.Client
             return stream;
         }
 
-        public async Task<Stream> ExportAgentContributionsAsync(ExportAgentContributionsRequest request)
+        public async ValueTask<Stream> ExportAgentContributionsAsync(ExportAgentContributionsRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/agentReport/exportAgentContributions?", request);
 
@@ -354,7 +354,7 @@ namespace Tgs.Report.Client
             return stream;
         }
 
-        public async Task<Stream> ExportAgentDividendsAsync(ExportAgentDividendsRequest request)
+        public async ValueTask<Stream> ExportAgentDividendsAsync(ExportAgentDividendsRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/agentReport/exportAgentDividends?", request);
 
@@ -371,7 +371,7 @@ namespace Tgs.Report.Client
             return stream;
         }
 
-        public async Task<Stream> ExportVipsAsync(ExportVipReportRequest request)
+        public async ValueTask<Stream> ExportVipsAsync(ExportVipReportRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/vipReport/exportVips?", request);
 
@@ -388,7 +388,7 @@ namespace Tgs.Report.Client
             return stream;
         }
 
-        public async Task<Stream> ExportAgentDividendsTrialCalculationAsync(
+        public async ValueTask<Stream> ExportAgentDividendsTrialCalculationAsync(
             ExportAgentDividendsTrialCalculationRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/agentReport/exportAgentDividendsTrialCalculation?",
@@ -407,7 +407,7 @@ namespace Tgs.Report.Client
             return stream;
         }
 
-        public async Task<Stream> ExportLicenseeMarketsAsync(ExportLicenseeMarketsRequest request)
+        public async ValueTask<Stream> ExportLicenseeMarketsAsync(ExportLicenseeMarketsRequest request)
         {
             var keyValues = new Dictionary<string, string>();
             foreach (var propertyInfo in request
@@ -457,7 +457,7 @@ namespace Tgs.Report.Client
             return stream;
         }
 
-        public async Task<GetGameProviderRoundsResponse> GetGameProviderRoundsAsync(
+        public async ValueTask<GetGameProviderRoundsResponse> GetGameProviderRoundsAsync(
             GetGameProviderRoundsRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/gameProviderReport?", request);
@@ -471,7 +471,7 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<PagedResponse<AgentDividendTeamDetailModel>> GetAgentDividendTeamDetailsAsync(
+        public async ValueTask<PagedResponse<AgentDividendTeamDetailModel>> GetAgentDividendTeamDetailsAsync(
             GetAgentDividendTeamDetailsRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/agentReport/dividendTeamDetails?", request);
@@ -486,7 +486,7 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<GetAdditionalExpensesResponse> GetAdditionalExpensesAsync(
+        public async ValueTask<GetAdditionalExpensesResponse> GetAdditionalExpensesAsync(
             GetAdditionalExpensesRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/marketReport/additionalExpenses?", request);
@@ -501,7 +501,7 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<PagedResponse<GameActionModel>> GetGameActionsAsync(GetGameActionsRequest request)
+        public async ValueTask<PagedResponse<GameActionModel>> GetGameActionsAsync(GetGameActionsRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/gameActionReport?", request);
 

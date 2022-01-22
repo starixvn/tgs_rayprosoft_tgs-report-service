@@ -3,36 +3,36 @@ using Tgs.Report.Enum;
 
 namespace Tgs.Report.ViewModel.Round
 {
-    public class RoundAggregateModel
+    public record RoundAggregateModel
     {
-        public Guid BrandId { get; set; }
+        public Guid BrandId { get; init; }
 
-        public Guid? AgentId { get; set; }
+        public Guid? AgentId { get; init; }
 
-        public Guid GameProviderId { get; set; }
+        public Guid GameProviderId { get; init; }
 
-        public string PlayerCode { get; set; }
+        public string PlayerCode { get; init; }
 
-        public int GameId { get; set; }
+        public int GameId { get; init; }
 
-        public GameType GameType { get; set; }
+        public GameType GameType { get; init; }
 
-        public string Username { get; set; }
+        public string Username { get; init; }
 
-        public int Hour { get; set; }
+        public int Hour { get; init; }
 
-        public int Minute { get; set; }
+        public int Minute { get; init; }
 
-        public decimal BetAmount { get; set; }
+        public decimal BetAmount { get; init; }
 
-        public decimal ValidBetAmount { get; set; }
+        public decimal ValidBetAmount { get; init; }
 
-        public decimal OriginalTurnover { get; set; }
+        public decimal OriginalTurnover { get; init; }
 
-        public decimal Turnover { get; set; }
+        public decimal Turnover { get; init; }
 
-        public decimal WinLoss { get; set; }
+        public decimal WinLoss { get; init; }
 
-        public DateTimeOffset ReportDate { get; set; }
+        public DateTimeOffset ReportDate { get; init; }
     }
 }

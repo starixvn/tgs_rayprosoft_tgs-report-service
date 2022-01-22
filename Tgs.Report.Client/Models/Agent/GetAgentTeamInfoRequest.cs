@@ -3,8 +3,8 @@ using Tgs.Report.ViewModel;
 
 namespace Tgs.Report.Client.Models.Agent
 {
-    public class GetAgentTeamInfoRequest : PageableRequest
+    public record GetAgentTeamInfoRequest : PageableRequest
     {
-        public Guid AgentId { get; set; }
+        public Guid AgentId { get; init; }
     }
 }

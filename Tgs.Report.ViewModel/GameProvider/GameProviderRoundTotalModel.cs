@@ -1,17 +1,17 @@
 ﻿namespace Tgs.Report.ViewModel.GameProvider
 {
-    public class GameProviderRoundTotalModel
+    public record GameProviderRoundTotalModel
     {
-        public string CurrencyCode { get; set; }
+        public string CurrencyCode { get; init; } = default!;
 
-        public int TransactionCount { get; set; }
+        public int TransactionCount { get; init; }
 
-        public decimal BetAmount { get; set; }
+        public decimal BetAmount { get; init; }
 
-        public decimal ValidBetAmount { get; set; }
+        public decimal ValidBetAmount { get; init; }
 
-        public decimal OriginalTurnover { get; set; }
+        public decimal OriginalTurnover { get; init; }
 
-        public decimal CompanyWinLoss { get; set; }
+        public decimal CompanyWinLoss { get; init; }
     }
 }

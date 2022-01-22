@@ -2,7 +2,6 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
-using Tgs.Report.Enum;
 
 namespace Tgs.Report.Repository.Configurations
 {
@@ -20,7 +19,7 @@ namespace Tgs.Report.Repository.Configurations
         public string? EndpointPath { get; set; }
         public string? RuleUrl { get; set; }
         public Guid GameProviderId { get; set; }
-        public GameType Type { get; set; }
+        public short Type { get; set; }
         public short PlatformType { get; set; }
         public bool SubGame { get; set; }
         public bool AvailableToBrand { get; set; }
@@ -29,8 +28,8 @@ namespace Tgs.Report.Repository.Configurations
         public string AvailableCurrencies { get; set; } = null!;
         public string Code { get; set; } = null!;
         public string Name { get; set; } = null!;
-        public DateTimeOffset CreatedOn { get; set; }
-        public DateTimeOffset UpdatedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime UpdatedOn { get; set; }
         public string CreatedByUsername { get; set; } = null!;
         public string UpdatedByUsername { get; set; } = null!;
         public string? Localization { get; set; }

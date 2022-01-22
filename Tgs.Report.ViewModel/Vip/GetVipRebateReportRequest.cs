@@ -3,11 +3,11 @@ using MediatR;
 
 namespace Tgs.Report.ViewModel.Vip
 {
-    public class GetVipRebateReportRequest : PageableRequest, IRequest<PagedResponse<VipRebateModel>>
+    public record GetVipRebateReportRequest : PageableRequest, IRequest<PagedResponse<VipRebateModel>>
     {
-        public Guid BrandId { get; set; }
+        public Guid BrandId { get; init; }
         public string Username { get; set; }
-        public DateTimeOffset From { get; set; }
-        public DateTimeOffset To { get; set; }
+        public DateTimeOffset From { get; init; }
+        public DateTimeOffset To { get; init; }
     }
 }

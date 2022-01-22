@@ -2,9 +2,9 @@
 
 namespace Tgs.Report.Client.Models.LicenseeMarket
 {
-    public class LicenseeMarketsResponse
+    public record LicenseeMarketsResponse
     {
-        public PagedResponse<LicenseeMarketDataModel> Datas { get; set; }
-        public LicenseeMarketTotalModel[] Totals { get; set; }
+        public PagedResponse<LicenseeMarketDataModel> Datas { get; init; }
+        public LicenseeMarketTotalModel[] Totals { get; init; }
     }
 }

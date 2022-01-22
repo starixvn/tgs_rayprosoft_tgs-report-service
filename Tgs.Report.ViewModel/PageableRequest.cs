@@ -1,6 +1,6 @@
 ﻿namespace Tgs.Report.ViewModel
 {
-    public class PageableRequest
+    public record PageableRequest
     {
         public int Page { get; set; }
 

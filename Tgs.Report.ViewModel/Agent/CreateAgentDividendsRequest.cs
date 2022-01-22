@@ -2,8 +2,8 @@
 
 namespace Tgs.Report.ViewModel.Agent
 {
-    public class CreateAgentDividendsRequest : IRequest<MessageResponse>
+    public record CreateAgentDividendsRequest : IRequest<MessageResponse>
     {
-        public string BrandCode { get; set; }
+        public string BrandCode { get; init; } = default!;
     }
 }

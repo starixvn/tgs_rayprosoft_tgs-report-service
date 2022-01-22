@@ -4,16 +4,16 @@ using Tgs.Report.Enum;
 
 namespace Tgs.Report.ViewModel.GameProvider
 {
-    public class GetGameProviderRoundsRequest : PageableRequest, IRequest<GetGameProviderRoundsResponse>
+    public record GetGameProviderRoundsRequest : PageableRequest, IRequest<GetGameProviderRoundsResponse>
     {
-        public DateTimeOffset From { get; set; }
+        public DateTimeOffset From { get; init; }
 
-        public DateTimeOffset To { get; set; }
+        public DateTimeOffset To { get; init; }
 
-        public Guid BrandId { get; set; }
+        public Guid BrandId { get; init; }
 
-        public string GameProviderCode { get; set; }
+        public string GameProviderCode { get; init; } = default!;
 
-        public GameType? GameType { get; set; }
+        public GameType? GameType { get; init; }
     }
 }

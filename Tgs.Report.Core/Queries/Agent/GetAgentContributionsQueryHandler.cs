@@ -7,7 +7,7 @@ using Tgs.Report.ViewModel.Agent;
 
 namespace Tgs.Report.Core.Queries.Agent
 {
-    internal class
+    public class
         GetAgentContributionsQueryHandler : IRequestHandler<GetAgentContributionsRequest,
             PagedResponse<AgentContributionModel>>
     {

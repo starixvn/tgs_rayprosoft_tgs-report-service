@@ -6,7 +6,7 @@ using Tgs.Report.ViewModel.Market;
 
 namespace Tgs.Report.Core.Queries.Market
 {
-    internal class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedResponse<MarketModel>>
+    public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedResponse<MarketModel>>
     {
         private readonly ITgsRepository _repository;
 
@@ -29,7 +29,7 @@ namespace Tgs.Report.Core.Queries.Market
                 0,
                 0,
                 0,
-                requestFrom.Offset).ToUniversalTime();
+                requestFrom.Offset);
 
             var to = new DateTimeOffset(requestTo.Year,
                 requestTo.Month,
@@ -37,7 +37,7 @@ namespace Tgs.Report.Core.Queries.Market
                 0,
                 0,
                 0,
-                requestTo.Offset).ToUniversalTime();
+                requestTo.Offset);
 
             var dates = Enumerable.Range(0, to.Subtract(from).Days)
                 .Select(x => from.AddDays(x))

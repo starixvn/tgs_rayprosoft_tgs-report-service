@@ -1,11 +1,12 @@
 ﻿using MediatR;
+using Tgs.Report.Enum;
 using Tgs.Report.Repository;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.GameAction;
 
 namespace Tgs.Report.Core.Queries.GameAction
 {
-    internal class GetGameActionsQueryHandler : IRequestHandler<GetGameActionsRequest, PagedResponse<GameActionModel>>
+    public class GetGameActionsQueryHandler : IRequestHandler<GetGameActionsRequest, PagedResponse<GameActionModel>>
     {
         private readonly ITgsRepository _repository;
 
@@ -22,7 +23,7 @@ namespace Tgs.Report.Core.Queries.GameAction
                 {
                     RecordedOn = x.RecordedOn,
                     ExternalTransactionId = x.ExternalTransactionId,
-                    GameActionType = x.Type,
+                    GameActionType = (GameActionType)x.Type,
                     Amount = x.Amount,
                     BeforeBalance = x.Balance - x.Amount,
                     AfterBalance = x.Balance

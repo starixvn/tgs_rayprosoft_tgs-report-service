@@ -2,8 +2,8 @@
 
 namespace Tgs.Report.ViewModel.PlayerRebate
 {
-    public class CreatePlayerRebateRequest : IRequest<MessageResponse>
+    public record CreatePlayerRebateRequest : IRequest<MessageResponse>
     {
-        public string Date { get; set; }
+        public string Date { get; init; } = default!;
     }
 }

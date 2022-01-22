@@ -25,10 +25,11 @@ namespace Tgs.Report.Core.Queries.Player
             var playersAccountChanges = await _repository.Transactions
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.RecordedOn >= request.From && x.RecordedOn < request.To)
-                .Where(request.TransactionType is not null, x => x.Type == request.TransactionType)
+                .Where(request.TransactionType is not null, x => x.Type == (short)request.TransactionType!)
                 .Where(request.TransactionType is null,
-                    x => x.Type == TransactionType.Adjust || x.Type == TransactionType.Rebate ||
-                        x.Type == TransactionType.Promotion || x.Type == TransactionType.UnsettledBetManual)
+                    x => x.Type == (short)TransactionType.Adjust || x.Type == (short)TransactionType.Rebate ||
+                        x.Type == (short)TransactionType.Promotion ||
+                        x.Type == (short)TransactionType.UnsettledBetManual)
                 .Join(_repository.Players,
                     transaction => transaction.PlayerCode,
                     player => player.PlayerCode,
@@ -59,7 +60,7 @@ namespace Tgs.Report.Core.Queries.Player
                     Amount = x.Transaction.Amount,
                     BeforeBalance = x.Transaction.Balance - x.Transaction.Amount,
                     AfterBalance = x.Transaction.Balance,
-                    TransactionType = x.Transaction.Type,
+                    TransactionType = (TransactionType)x.Transaction.Type,
                     RecordedOn = x.Transaction.RecordedOn,
                     Operator = x.User.Username ?? "System",
                     Description = x.Transaction.Description

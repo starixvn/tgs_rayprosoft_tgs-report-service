@@ -24,10 +24,10 @@ namespace Tgs.Report.Repository.Configurations
         public string? UserName { get; set; }
         public int UserType { get; set; }
         public string? ThirdPartyOrderNo { get; set; }
-        public DateTimeOffset? ReviewedOn { get; set; }
+        public DateTime? ReviewedOn { get; set; }
         public string? ReviewedUserId { get; set; }
         public string? ReviewedUserName { get; set; }
-        public DateTimeOffset? PaidOn { get; set; }
+        public DateTime? PaidOn { get; set; }
         public string? PaidUserId { get; set; }
         public string? PaidUserName { get; set; }
         public string? OrderNo { get; set; }

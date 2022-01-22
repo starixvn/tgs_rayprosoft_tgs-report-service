@@ -36,7 +36,7 @@ namespace Tgs.Report.Core
                 AccountChangeType.GameProviderDeposit    => TransactionType.GameProviderDeposit,
                 AccountChangeType.GameProviderWithdrawal => TransactionType.GameProviderWithdrawal,
                 AccountChangeType.UnsettledBetManual     => TransactionType.UnsettledBetManual,
-                AccountChangeType.AllAgentRebate         => TransactionType.AllAgentRebate,
+                AccountChangeType.DividendAllAgentRebate => TransactionType.DividendAllAgentRebate,
                 _                                        => null
             };
 

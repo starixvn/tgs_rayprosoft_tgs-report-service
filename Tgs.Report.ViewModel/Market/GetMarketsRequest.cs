@@ -3,10 +3,10 @@ using MediatR;
 
 namespace Tgs.Report.ViewModel.Market
 {
-    public class GetMarketsRequest : PageableRequest, IRequest<PagedResponse<MarketModel>>
+    public record GetMarketsRequest : PageableRequest, IRequest<PagedResponse<MarketModel>>
     {
-        public Guid BrandId { get; set; }
-        public DateTimeOffset From { get; set; }
-        public DateTimeOffset To { get; set; }
+        public Guid BrandId { get; init; }
+        public DateTimeOffset From { get; init; }
+        public DateTimeOffset To { get; init; }
     }
 }

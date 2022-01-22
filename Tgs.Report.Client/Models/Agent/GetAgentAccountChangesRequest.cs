@@ -4,12 +4,12 @@ using Tgs.Report.ViewModel;
 
 namespace Tgs.Report.Client.Models.Agent
 {
-    public class GetAgentAccountChangesRequest : PageableRequest
+    public record GetAgentAccountChangesRequest : PageableRequest
     {
-        public Guid BrandId { get; set; }
-        public Guid AgentId { get; set; }
-        public TransactionType? TransactionType { get; set; }
-        public DateTimeOffset From { get; set; }
-        public DateTimeOffset To { get; set; }
+        public Guid BrandId { get; init; }
+        public Guid AgentId { get; init; }
+        public TransactionType? TransactionType { get; init; }
+        public DateTimeOffset From { get; init; }
+        public DateTimeOffset To { get; init; }
     }
 }

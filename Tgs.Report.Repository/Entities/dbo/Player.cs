@@ -2,7 +2,6 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
-using Tgs.Report.Enum;
 
 namespace Tgs.Report.Repository.Configurations
 {
@@ -25,11 +24,11 @@ namespace Tgs.Report.Repository.Configurations
         public Guid DefaultWalletId { get; set; }
         public string DefaultWalletCurrencyCode { get; set; } = null!;
         public Guid BrandId { get; set; }
-        public DateTimeOffset? RegisteredOn { get; set; }
-        public DateTimeOffset LastActiveOn { get; set; }
+        public DateTime? RegisteredOn { get; set; }
+        public DateTime LastActiveOn { get; set; }
         public short Status { get; set; }
         public int BetLimitId { get; set; }
-        public PlayerType Type { get; set; }
+        public short Type { get; set; }
         public string? Email { get; set; }
         public string? Phone { get; set; }
         public string? Qq { get; set; }
@@ -40,10 +39,10 @@ namespace Tgs.Report.Repository.Configurations
         public decimal AccumulatedDeposit { get; set; }
         public Guid? VipId { get; set; }
         public string? UpdatedByUsername { get; set; }
-        public DateTimeOffset UpdatedOn { get; set; }
-        public DateTimeOffset? FirstDepositOn { get; set; }
+        public DateTime UpdatedOn { get; set; }
+        public DateTime? FirstDepositOn { get; set; }
         public string? AreaCode { get; set; }
-        public DateTimeOffset? FirstPromotionOn { get; set; }
+        public DateTime? FirstPromotionOn { get; set; }
         public string? ParentPlayerCode { get; set; }
 
         public virtual Agent? Agent { get; set; }
