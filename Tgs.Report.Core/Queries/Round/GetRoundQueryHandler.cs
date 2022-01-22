@@ -8,7 +8,7 @@ using Tgs.Report.ViewModel.Round;
 
 namespace Tgs.Report.Core.Queries.Round
 {
-    internal class GetRoundQueryHandler : IRequestHandler<GetRoundHistoryRequest, GetRoundHistoryResponse>
+    public class GetRoundQueryHandler : IRequestHandler<GetRoundHistoryRequest, GetRoundHistoryResponse>
     {
         private readonly HttpClient _httpClient;
         private readonly ITgsRepository _repository;

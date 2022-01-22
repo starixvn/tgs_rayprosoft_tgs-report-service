@@ -22,9 +22,9 @@ namespace Tgs.Report.UnitTest.GameProvider
 
             var sut = new GetGameProviderRoundsQueryHandler(fakeRepository);
 
-            var brandId = Guid.NewGuid();
+            var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
             var gameId = 1;
-            var gameProviderId = Guid.NewGuid();
+            var gameProviderId = new Guid("aac11120-20f6-4f0d-6982-08d9dbdc0473");
 
             var gameProviders = CreateGameProviderFixture(gameProviderId)
                 .CreateMany<Repository.Configurations.GameProvider>(1)
@@ -40,7 +40,8 @@ namespace Tgs.Report.UnitTest.GameProvider
                 .AsQueryable()
                 .BuildMock().Object;
 
-            var rounds = CreateRoundFixture(brandId, gameId, gameProviderId).CreateMany<Round>(1)
+            var rounds = CreateRoundFixture(brandId, gameId, gameProviderId)
+                .CreateMany<Repository.Configurations.Round>(1)
                 .AsQueryable()
                 .BuildMock().Object;
 
@@ -90,7 +91,7 @@ namespace Tgs.Report.UnitTest.GameProvider
         private static Fixture CreateRoundFixture(Guid brandId, int gameId, Guid gameProviderId)
         {
             var fixture = new Fixture();
-            fixture.Customize<Round>(u => u
+            fixture.Customize<Repository.Configurations.Round>(u => u
                 .With(s => s.BrandId, brandId)
                 .With(s => s.GameId, gameId)
                 .With(s => s.CreatedOn, DateTime.UtcNow)

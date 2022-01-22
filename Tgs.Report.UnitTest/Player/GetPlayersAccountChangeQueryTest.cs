@@ -18,14 +18,14 @@ namespace Tgs.Report.UnitTest.Player
     public sealed class GetPlayersAccountChangeQueryTest : BaseTest
     {
         [Test]
-        public async Task Can_Get_Player_Contributions()
+        public async Task Can_Get_Players_Account_Change()
         {
             var fakeRepository = Substitute.For<ITgsRepository>();
 
             var sut = new GetPlayersAccountChangeQueryHandler(fakeRepository);
 
-            var brandId = Guid.NewGuid();
-            var userId = Guid.NewGuid();
+            var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
+            var userId = new Guid("aac11120-20f6-4f0d-6982-08d9dbdc0473");
             var reportDate = new DateTimeOffset(2022, 1, 21, 0, 0, 0, new TimeSpan(8, 0, 0));
 
             var transactions = CreateTransactionFixture(brandId, userId).CreateMany<Transaction>(1).AsQueryable()

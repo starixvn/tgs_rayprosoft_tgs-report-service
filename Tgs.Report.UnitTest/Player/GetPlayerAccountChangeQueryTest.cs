@@ -20,7 +20,7 @@ namespace Tgs.Report.UnitTest.Player
 
             var sut = new GetPlayerAccountChangeQueryHandler(fakeRepository);
 
-            var brandId = Guid.NewGuid();
+            var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
             var reportDate = new DateTimeOffset(2022, 1, 21, 0, 0, 0, new TimeSpan(8, 0, 0));
 
             var request = new GetPlayerAccountChangesRequest

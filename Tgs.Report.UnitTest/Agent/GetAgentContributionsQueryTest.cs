@@ -22,7 +22,7 @@ namespace Tgs.Report.UnitTest.Agent
 
             var sut = new GetAgentContributionsQueryHandler(fakeRepository);
 
-            var brandId = Guid.NewGuid();
+            var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
             var agentUsername = "agentUsername";
             var agents = CreateAgentFixture(brandId, agentUsername).CreateMany<Repository.Configurations.Agent>(1)
                 .AsQueryable()

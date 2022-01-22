@@ -22,9 +22,9 @@ namespace Tgs.Report.UnitTest.Agent
 
             var sut = new GetAgentDividendTeamDetailQueryHandler(fakeRepository);
 
-            var brandId = Guid.NewGuid();
-            var agentId = Guid.NewGuid();
-            var childAgentId = Guid.NewGuid();
+            var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
+            var agentId = new Guid("aac11120-20f6-4f0d-6982-08d9dbdc0473");
+            var childAgentId = new Guid("aac22220-20f6-4f0d-6982-08d9dbdc0473");
             var from = DateTimeOffset.UtcNow;
             var to = DateTimeOffset.UtcNow;
 

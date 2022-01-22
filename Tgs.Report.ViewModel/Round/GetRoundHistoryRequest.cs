@@ -7,10 +7,10 @@ namespace Tgs.Report.ViewModel.Round
     public record GetRoundHistoryRequest : IRequest<GetRoundHistoryResponse>
     {
         [JsonPropertyName("gpcode")]
-        public string GameProviderCode { get; init; }
+        public string GameProviderCode { get; set; }
 
         [JsonPropertyName("playercode")]
-        public string PlayerCode { get; init; }
+        public string PlayerCode { get; set; }
 
         [JsonPropertyName("roundid")]
         public Guid RoundId { get; set; }
@@ -19,6 +19,6 @@ namespace Tgs.Report.ViewModel.Round
         ///     player's culture code
         /// </summary>
         [JsonPropertyName("language")]
-        public string Language { get; init; }
+        public string Language { get; set; }
     }
 }

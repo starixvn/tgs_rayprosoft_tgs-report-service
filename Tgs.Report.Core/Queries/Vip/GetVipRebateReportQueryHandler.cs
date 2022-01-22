@@ -7,7 +7,7 @@ using Tgs.Report.ViewModel.Vip;
 
 namespace Tgs.Report.Core.Queries.Vip
 {
-    internal class
+    public class
         GetVipRebateReportQueryHandler : IRequestHandler<GetVipRebateReportRequest, PagedResponse<VipRebateModel>>
     {
         private readonly ITgsRepository _repository;

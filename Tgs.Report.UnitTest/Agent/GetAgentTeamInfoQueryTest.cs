@@ -22,8 +22,8 @@ namespace Tgs.Report.UnitTest.Agent
 
             var sut = new GetAgentTeamInfoQueryHandler(fakeRepository);
 
-            var brandId = Guid.NewGuid();
-            var agentId = Guid.NewGuid();
+            var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
+            var agentId = new Guid("aac22220-20f6-4f0d-6982-08d9dbdc0473");
 
 
             var players = CreatePlayerFixture(brandId, agentId).CreateMany<Repository.Configurations.Player>(1)

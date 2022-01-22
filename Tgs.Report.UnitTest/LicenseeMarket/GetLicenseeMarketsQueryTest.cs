@@ -22,8 +22,8 @@ namespace Tgs.Report.UnitTest.LicenseeMarket
 
             var sut = new GetLicenseeMarketsQueryHandler(fakeRepository);
 
-            var brandId = Guid.NewGuid();
-            var licenseeId = Guid.NewGuid();
+            var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
+            var licenseeId = new Guid("aac11120-20f6-4f0d-6982-08d9dbdc0473");
 
             var brands = CreateBrandFixture(brandId, licenseeId).CreateMany<Brand>(1)
                 .AsQueryable()

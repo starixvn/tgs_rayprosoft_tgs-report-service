@@ -6,7 +6,7 @@ using Tgs.Report.ViewModel.Vip;
 
 namespace Tgs.Report.Core.Queries.Vip
 {
-    internal class GetVipReportQueryHandler : IRequestHandler<GetVipReportRequest, PagedResponse<VipModel>>
+    public class GetVipReportQueryHandler : IRequestHandler<GetVipReportRequest, PagedResponse<VipModel>>
     {
         private readonly ITgsRepository _repository;
 
