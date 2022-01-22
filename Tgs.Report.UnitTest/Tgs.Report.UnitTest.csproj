@@ -25,4 +25,8 @@
     <ProjectReference Include="..\Tgs.Report.Repository\Tgs.Report.Repository.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Round\" />
+  </ItemGroup>
+
 </Project>
