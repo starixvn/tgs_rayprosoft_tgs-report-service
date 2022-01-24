@@ -17,8 +17,8 @@ namespace Tgs.Report.Repository.Configurations
         public string CurrencyCode { get; set; } = null!;
         public string ExternalCurrencyCode { get; set; } = null!;
         public decimal Balance { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public DateTime UpdatedOn { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
+        public DateTimeOffset UpdatedOn { get; set; }
 
         public virtual Currency CurrencyCodeNavigation { get; set; } = null!;
         public virtual Player PlayerCodeNavigation { get; set; } = null!;

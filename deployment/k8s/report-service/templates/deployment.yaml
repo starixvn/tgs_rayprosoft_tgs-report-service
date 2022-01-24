@@ -36,6 +36,13 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
+          env:
+            - name: OTEL_SERVICE_NAME
+              value: report-service({{ .Values.namespace }})
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
           volumeMounts:
             - mountPath: /config/appsettings.json
               name: appsettings

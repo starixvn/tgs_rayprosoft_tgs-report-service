@@ -16,8 +16,8 @@ namespace Tgs.Report.Repository.Configurations
         public decimal Balance { get; set; }
         public string? Description { get; set; }
         public short Type { get; set; }
-        public DateTime RecordedOn { get; set; }
-        public DateTime? SentOn { get; set; }
+        public DateTimeOffset RecordedOn { get; set; }
+        public DateTimeOffset? SentOn { get; set; }
 
         public virtual Brand Brand { get; set; } = null!;
     }

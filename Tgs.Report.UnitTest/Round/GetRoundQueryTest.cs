@@ -21,7 +21,7 @@ namespace Tgs.Report.UnitTest.Round
     public sealed class GetRoundQueryTest : BaseTest
     {
         [Test]
-        public async Task Can_Get_Open_Rounds()
+        public async Task Can_Get_Round()
         {
             var fakeRepository = Substitute.For<ITgsRepository>();
 

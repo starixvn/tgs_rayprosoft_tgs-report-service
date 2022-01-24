@@ -28,7 +28,7 @@ namespace Tgs.Report.Repository.Configurations
         public string InvitationCode { get; set; } = null!;
         public Guid BrandId { get; set; }
         public Guid? ParentAgentId { get; set; }
-        public DateTime RegisteredOn { get; set; }
+        public DateTimeOffset RegisteredOn { get; set; }
         public Guid DefaultWalletId { get; set; }
         public decimal CommissionPercentage { get; set; }
         public decimal DividendPercentage { get; set; }
@@ -45,8 +45,8 @@ namespace Tgs.Report.Repository.Configurations
         public string? Wechat { get; set; }
         public string? CreatedByUsername { get; set; }
         public string? UpdatedByUsername { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public DateTime UpdatedOn { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
+        public DateTimeOffset UpdatedOn { get; set; }
 
         public virtual Brand Brand { get; set; } = null!;
         public virtual Agent? ParentAgent { get; set; }
