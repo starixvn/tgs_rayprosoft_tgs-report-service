@@ -1,5 +1,4 @@
 ﻿using System;
-using Tgs.Report.Enum;
 
 namespace Tgs.Report.Client.Models.Agent
 {
@@ -8,7 +7,7 @@ namespace Tgs.Report.Client.Models.Agent
         public Guid TransactionId { get; init; }
         public decimal Amount { get; init; }
         public decimal Balance { get; init; }
-        public TransactionType TransactionType { get; init; }
+        public short TransactionType { get; init; }
         public DateTimeOffset RecordedOn { get; init; }
     }
 }

@@ -1,6 +1,4 @@
-﻿using Tgs.Report.ViewModel;
-
-namespace Tgs.Report.Client.Models.GameProvider
+﻿namespace Tgs.Report.Client.Models.GameProvider
 {
     public record GetGameProviderRoundsResponse
     {

@@ -1,6 +1,4 @@
-﻿using Tgs.Report.Enum;
-
-namespace Tgs.Report.Client.Models.Player
+﻿namespace Tgs.Report.Client.Models.Player
 {
     public record PlayerContributionModel
     {
@@ -8,7 +6,7 @@ namespace Tgs.Report.Client.Models.Player
 
         public string PlayerCode { get; init; }
 
-        public AccountType Type { get; init; }
+        public short Type { get; init; }
 
         public int? Level { get; init; }
 

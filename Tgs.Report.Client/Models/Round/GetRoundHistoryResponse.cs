@@ -1,4 +1,4 @@
-﻿using Tgs.Report.ViewModel.Round.BetHistories;
+﻿using Tgs.Report.Client.Models.Round.BetHistories;
 
 namespace Tgs.Report.Client.Models.Round
 {

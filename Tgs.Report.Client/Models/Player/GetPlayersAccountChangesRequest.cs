@@ -1,6 +1,4 @@
 ﻿using System;
-using Tgs.Report.Enum;
-using Tgs.Report.ViewModel;
 
 namespace Tgs.Report.Client.Models.Player
 {
@@ -8,7 +6,7 @@ namespace Tgs.Report.Client.Models.Player
     {
         public Guid BrandId { get; init; }
         public string Username { get; init; }
-        public TransactionType? TransactionType { get; init; }
+        public short? TransactionType { get; init; }
         public DateTimeOffset From { get; init; }
         public DateTimeOffset To { get; init; }
     }

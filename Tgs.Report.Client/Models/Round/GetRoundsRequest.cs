@@ -1,6 +1,4 @@
 ﻿using System;
-using Tgs.Report.Enum;
-using Tgs.Report.ViewModel;
 
 namespace Tgs.Report.Client.Models.Round
 {
@@ -12,8 +10,8 @@ namespace Tgs.Report.Client.Models.Round
         public Guid? RoundId { get; init; }
         public string ExternalRoundId { get; init; }
         public Guid? GameProviderId { get; init; }
-        public ClientRoundStatus? Status { get; init; }
-        public GameType? GameType { get; init; }
+        public short? Status { get; init; }
+        public short? GameType { get; init; }
         public DateTimeOffset? From { get; init; }
         public DateTimeOffset? To { get; init; }
 

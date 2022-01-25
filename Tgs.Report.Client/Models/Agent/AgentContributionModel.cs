@@ -1,12 +1,10 @@
-﻿using Tgs.Report.Enum;
-
-namespace Tgs.Report.Client.Models.Agent
+﻿namespace Tgs.Report.Client.Models.Agent
 {
     public record AgentContributionModel
     {
         public string Username { get; init; }
 
-        public AccountType Type { get; init; }
+        public short Type { get; init; }
 
         public decimal DepositAmount { get; init; }
 

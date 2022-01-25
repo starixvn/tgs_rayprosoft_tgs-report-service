@@ -1,5 +1,4 @@
 ﻿using System;
-using Tgs.Report.Enum;
 
 namespace Tgs.Report.Client.Models.Round
 {
@@ -33,11 +32,11 @@ namespace Tgs.Report.Client.Models.Round
 
         public string CurrencyCode { get; init; }
 
-        public PlatformType PlatformType { get; init; }
+        public short PlatformType { get; init; }
 
-        public ClientRoundStatus Status { get; init; }
+        public short Status { get; init; }
 
-        public PlayerType PlayerType { get; init; }
+        public short PlayerType { get; init; }
 
         public DateTimeOffset CreatedOn { get; init; }
 

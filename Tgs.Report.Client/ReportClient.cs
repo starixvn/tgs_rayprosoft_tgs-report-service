@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Tgs.Report.Client.Models;
 using Tgs.Report.Client.Models.Agent;
 using Tgs.Report.Client.Models.GameAction;
 using Tgs.Report.Client.Models.GameProvider;
@@ -14,7 +15,6 @@ using Tgs.Report.Client.Models.Market;
 using Tgs.Report.Client.Models.Player;
 using Tgs.Report.Client.Models.Round;
 using Tgs.Report.Client.Models.Vip;
-using Tgs.Report.ViewModel;
 
 namespace Tgs.Report.Client
 {

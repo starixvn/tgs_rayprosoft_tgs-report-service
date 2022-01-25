@@ -1,5 +1,4 @@
 ﻿using System;
-using Tgs.Report.Enum;
 
 namespace Tgs.Report.Client.Models.GameAction
 {
@@ -9,7 +8,7 @@ namespace Tgs.Report.Client.Models.GameAction
 
         public string ExternalTransactionId { get; init; }
 
-        public GameActionType GameActionType { get; init; }
+        public short GameActionType { get; init; }
 
         public decimal Amount { get; init; }
 

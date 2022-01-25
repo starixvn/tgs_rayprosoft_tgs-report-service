@@ -1,5 +1,4 @@
 ﻿using System;
-using Tgs.Report.Enum;
 
 namespace Tgs.Report.Client.Models.Player
 {
@@ -9,7 +8,7 @@ namespace Tgs.Report.Client.Models.Player
         public decimal Amount { get; init; }
         public decimal BeforeBalance { get; init; }
         public decimal AfterBalance { get; init; }
-        public TransactionType TransactionType { get; init; }
+        public short TransactionType { get; init; }
         public DateTimeOffset RecordedOn { get; init; }
         public string Operator { get; init; } = string.Empty;
         public string Description { get; init; } = string.Empty;

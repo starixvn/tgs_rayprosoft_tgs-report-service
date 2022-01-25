@@ -1,6 +1,4 @@
 ﻿using System;
-using Tgs.Report.Enum;
-using Tgs.Report.ViewModel;
 
 namespace Tgs.Report.Client.Models.GameProvider
 {
@@ -14,6 +12,6 @@ namespace Tgs.Report.Client.Models.GameProvider
 
         public string GameProviderCode { get; init; }
 
-        public GameType? GameType { get; init; }
+        public short? GameType { get; init; }
     }
 }

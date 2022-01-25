@@ -1,6 +1,4 @@
 ﻿using System;
-using Tgs.Report.Enum;
-using Tgs.Report.ViewModel;
 
 namespace Tgs.Report.Client.Models.Player
 {
@@ -8,7 +6,7 @@ namespace Tgs.Report.Client.Models.Player
     {
         public Guid BrandId { get; init; }
         public string PlayerCode { get; init; }
-        public AccountChangeType? AccountChangeType { get; init; }
+        public short? AccountChangeType { get; init; }
         public DateTimeOffset From { get; init; }
         public DateTimeOffset To { get; init; }
     }
