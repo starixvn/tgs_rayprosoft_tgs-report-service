@@ -125,7 +125,7 @@ namespace Tgs.Report.Core.Queries.Round
                 .Select(combine => new OpenRoundModel
                 {
                     Id = combine.round.Id,
-                    BrandCode = combine.player.Brand.Code,
+                    BrandCode = combine.player!.Brand.Code,
                     BrandName = combine.player.Brand.Name,
                     PlayerType = (PlayerType)combine.player.Type,
                     Status = combine.round.ClientStatus,
@@ -133,9 +133,9 @@ namespace Tgs.Report.Core.Queries.Round
                     ExternalPlayerCode = combine.player.PlayerCode,
                     PlayerName = combine.player.Username,
                     GameProviderId = combine.round.GameProviderId,
-                    GameProviderCode = combine.game.GameProvider.Code,
-                    GameProviderName = combine.gameProvider.Name,
-                    SubGameProviderName = combine.game.SubGameProviderCodeNavigation.Name,
+                    GameProviderCode = combine.game!.GameProvider.Code,
+                    GameProviderName = combine.gameProvider!.Name,
+                    SubGameProviderName = combine.game.SubGameProviderCodeNavigation!.Name,
                     GameId = combine.game.Id,
                     GameName = combine.game.Name,
                     ExternalRoundId = combine.round.ExternalRoundId,
@@ -150,7 +150,7 @@ namespace Tgs.Report.Core.Queries.Round
                             (combine.brandGame == null ? 100M : combine.brandGame.EffectiveBettingPercentage)) / 100M,
                     SettleAmount = combine.round.SettleAmount,
                     WinLoss = -combine.round.WinLoss,
-                    AdditionalData = combine.detail.AdditionalData
+                    AdditionalData = combine.detail!.AdditionalData
                 })
                 .OrderByDescending(x => x.CreatedOn)
                 .CreatePagedResponseAsync(request);

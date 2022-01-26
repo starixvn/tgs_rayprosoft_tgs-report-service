@@ -2,7 +2,7 @@
 {
     public record ExportVipModel
     {
-        public string Username { get; init; }
+        public string? Username { get; init; }
         public int? Level { get; init; }
         public decimal DepositAmount { get; init; }
         public decimal WithdrawalAmount { get; init; }

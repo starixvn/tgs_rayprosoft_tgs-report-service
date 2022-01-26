@@ -11,13 +11,13 @@ namespace Tgs.Report.ViewModel.Round
 
         public Guid GameProviderId { get; init; }
 
-        public string PlayerCode { get; init; }
+        public string? PlayerCode { get; init; }
 
         public int GameId { get; init; }
 
         public GameType GameType { get; init; }
 
-        public string Username { get; init; }
+        public string? Username { get; init; }
 
         public int Hour { get; init; }
 

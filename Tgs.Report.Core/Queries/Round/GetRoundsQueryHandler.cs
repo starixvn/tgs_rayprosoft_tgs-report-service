@@ -72,7 +72,7 @@ namespace Tgs.Report.Core.Queries.Round
                     detail
                 })
                 .Where(request.Username, x => request.Username == x.player!.Username)
-                .Where(request.GameType, x => x.game.Type == (short?)request.GameType)
+                .Where(request.GameType, x => x.game!.Type == (short?)request.GameType)
                 .GroupJoin(_repository.GameProviders, combine => combine.round.GameProviderId,
                     gameProvider => gameProvider.Id,
                     (combine, gameProvider) => new
@@ -126,7 +126,7 @@ namespace Tgs.Report.Core.Queries.Round
                 {
                     Id = combine.round.Id,
                     Status = combine.round.ClientStatus,
-                    PlayerCode = combine.player.PlayerCode,
+                    PlayerCode = combine.player!.PlayerCode,
                     ExternalPlayerCode = combine.player.PlayerCode,
                     PlayerName = combine.player.Username,
                     GameProviderId = combine.round.GameProviderId,

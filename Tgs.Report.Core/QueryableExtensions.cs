@@ -107,7 +107,7 @@ namespace Tgs.Report.Core
         }
 
         // Where extension for string filters
-        public static IQueryable<TSource> Where<TSource>(this IQueryable<TSource> source, string filter,
+        public static IQueryable<TSource> Where<TSource>(this IQueryable<TSource> source, string? filter,
             Expression<Func<TSource, bool>> predicate)
         {
             if (!string.IsNullOrWhiteSpace(filter))
