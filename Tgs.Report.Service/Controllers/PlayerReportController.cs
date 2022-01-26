@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Player;
-using Tgs.Report.ViewModel.PlayerRebate;
 
 namespace Tgs.Report.Service.Controllers
 {
@@ -22,11 +21,6 @@ namespace Tgs.Report.Service.Controllers
         [Description("Get player contributions")]
         public Task<PagedResponse<PlayerContributionModel>> GetPlayerContributionsAsync(
             [FromQuery] GetPlayerContributionsRequest request) =>
-            _mediator.Send(request);
-
-        [HttpPost("rebates")]
-        [Description("Create player rebates")]
-        public Task<MessageResponse> CreatePlayerRebatesAsync(CreatePlayerRebateRequest request) =>
             _mediator.Send(request);
 
         [HttpGet("accountChanges")]
