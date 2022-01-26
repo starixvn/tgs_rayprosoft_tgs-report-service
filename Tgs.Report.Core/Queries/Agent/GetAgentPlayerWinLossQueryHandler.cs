@@ -31,8 +31,8 @@ namespace Tgs.Report.Core.Queries.Agent
 
             var agentDividends = await _repository.AgentDividends
                 .Where(x => x.AgentId == request.AgentId)
-                .Where(x => x.CreatedOn >= request.From)
-                .Where(x => x.CreatedOn < request.To).ToArrayAsync(cancellationToken);
+                .Where(x => x.CreatedOn >= request.From.ToUniversalTime())
+                .Where(x => x.CreatedOn < request.To.ToUniversalTime()).ToArrayAsync(cancellationToken);
 
             if (!agentDividends.Any())
             {

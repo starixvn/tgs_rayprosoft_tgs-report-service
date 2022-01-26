@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using MockQueryable.Moq;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.Agent;
@@ -24,17 +23,42 @@ namespace Tgs.Report.UnitTest.Agent
 
             var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
             var agentUsername = "agentUsername";
-            var agents = CreateAgentFixture(brandId, agentUsername).CreateMany<Repository.Configurations.Agent>(1)
-                .AsQueryable()
-                .BuildMock().Object;
 
-            var withdrawForms = CreateWithdrawFormFixture(brandId).CreateMany<WithdrawForm>(1).AsQueryable()
-                .BuildMock().Object;
+            var agents = new[]
+            {
+                new Repository.Configurations.Agent
+                {
+                    Id = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0472"),
+                    BrandId = brandId,
+                    Username = agentUsername
+                }
+            }.AsQueryable();
 
-            var players = agents.SelectMany(x => x.Players);
+            var withdrawForms = new[]
+            {
+                new WithdrawForm
+                {
+                    BrandId = brandId
+                }
+            }.AsQueryable();
 
-            var playerAggregates = CreatePlayerAggregateFixture(brandId).CreateMany<PlayerAggregate>(1).AsQueryable()
-                .BuildMock().Object;
+            var players = new[]
+            {
+                new Repository.Configurations.Player
+                {
+                    BrandId = brandId,
+                    AgentId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0472")
+                }
+            }.AsQueryable();
+
+            var playerAggregates = new[]
+            {
+                new PlayerAggregate
+                {
+                    BrandId = brandId,
+                    AgentId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0472")
+                }
+            }.AsQueryable();
 
             var request = new GetAgentContributionsRequest
             {

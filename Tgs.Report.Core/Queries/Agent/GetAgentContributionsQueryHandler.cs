@@ -34,7 +34,7 @@ namespace Tgs.Report.Core.Queries.Agent
             var playerWithdrawals = await _repository.WithdrawForms
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.UserType == 1 && x.Status == 9000)
-                .Where(x => x.CreatedOn >= request.From && x.CreatedOn < request.To)
+                .Where(x => x.CreatedOn >= request.From.ToUniversalTime() && x.CreatedOn < request.To.ToUniversalTime())
                 .Join(_repository.Players,
                     withdrawForm => withdrawForm.UserId,
                     player => player.PlayerCode,
@@ -67,7 +67,8 @@ namespace Tgs.Report.Core.Queries.Agent
             var players = agent.Players.GroupJoin(_repository.PlayerAggregates
                         .Where(x => x.BrandId == request.BrandId)
                         .Where(x => x.AgentId == agent.Id)
-                        .Where(x => x.ReportDate >= request.From && x.ReportDate < request.To),
+                        .Where(x => x.ReportDate >= request.From.ToUniversalTime() &&
+                            x.ReportDate < request.To.ToUniversalTime()),
                     p => p.PlayerCode,
                     playerAggregate => playerAggregate.PlayerCode,
                     (player, players) => new
@@ -122,7 +123,8 @@ namespace Tgs.Report.Core.Queries.Agent
                         .Where(x => playerCodes
                             .Contains(x.PlayerCode))
                         .Where(x => x.AgentId != null)
-                        .Where(x => x.ReportDate >= request.From && x.ReportDate < request.To),
+                        .Where(x => x.ReportDate >= request.From.ToUniversalTime() &&
+                            x.ReportDate < request.To.ToUniversalTime()),
                     a => a.Id,
                     playerAggregate => playerAggregate.AgentId,
                     (agent, players) => new

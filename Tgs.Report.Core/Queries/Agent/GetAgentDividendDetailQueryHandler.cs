@@ -22,8 +22,8 @@ namespace Tgs.Report.Core.Queries.Agent
             CancellationToken cancellationToken)
         {
             var agentDividends = await _repository.AgentDividends.Where(x => x.AgentId == request.AgentId)
-                .Where(x => x.CreatedOn >= request.From)
-                .Where(x => x.CreatedOn < request.To)
+                .Where(x => x.CreatedOn >= request.From.ToUniversalTime())
+                .Where(x => x.CreatedOn < request.To.ToUniversalTime())
                 .GroupBy(x => new
                     {
                         x.AgentId,

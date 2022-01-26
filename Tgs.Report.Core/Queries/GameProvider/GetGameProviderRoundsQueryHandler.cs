@@ -21,7 +21,7 @@ namespace Tgs.Report.Core.Queries.GameProvider
             CancellationToken cancellationToken)
         {
             var rounds = await _repository.Rounds
-                .Where(x => x.CreatedOn >= request.From && x.CreatedOn < request.To)
+                .Where(x => x.CreatedOn >= request.From.ToUniversalTime() && x.CreatedOn < request.To.ToUniversalTime())
                 .Where(x => x.BrandId == request.BrandId)
                 .Join(_repository.Games,
                     round => round.GameId,

@@ -12,7 +12,7 @@ namespace Tgs.Report.ViewModel.GameProvider
 
         public Guid BrandId { get; init; }
 
-        public string GameProviderCode { get; init; } = default!;
+        public string? GameProviderCode { get; init; }
 
         public GameType? GameType { get; init; }
     }

@@ -26,6 +26,9 @@
     <PackageReference Include="ProfileViewer.OpenTelemetry.Exporter" Version="0.0.11-beta" />
     <PackageReference Include="prometheus-net.AspNetCore" Version="5.0.2" />
     <PackageReference Include="prometheus-net.AspNetCore.HealthChecks" Version="5.0.2" />
+    <PackageReference Include="TGS.Core.Infrastructures.Extensions" Version="0.0.1" />
+    <PackageReference Include="Tgs.Logging" Version="0.0.13" />
+    <PackageReference Include="Tgs.MessageQueue.RabbitMQ" Version="1.5.0" />
   </ItemGroup>
 
   <ItemGroup>

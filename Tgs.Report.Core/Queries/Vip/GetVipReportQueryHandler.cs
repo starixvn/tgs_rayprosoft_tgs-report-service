@@ -56,7 +56,7 @@ namespace Tgs.Report.Core.Queries.Vip
             var withdrawalByUserIds = await _repository.WithdrawForms
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.UserType == 1 && x.Status == 9000)
-                .Where(x => x.CreatedOn >= from && x.CreatedOn < to)
+                .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
                 .GroupBy(x => x.UserId,
                     (userId, withdrawals) => new
                     {
@@ -67,7 +67,7 @@ namespace Tgs.Report.Core.Queries.Vip
 
             var vips = await _repository.PlayerAggregates
                 .Where(x => x.BrandId == request.BrandId)
-                .Where(x => x.ReportDate >= from && x.ReportDate < to)
+                .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
                 .Where(tgsPlayer != null, x => x.PlayerCode == tgsPlayer.PlayerCode)
                 .GroupBy(x => new
                     {
@@ -91,7 +91,7 @@ namespace Tgs.Report.Core.Queries.Vip
                     })
                 .GroupJoin(_repository.PlayerGameRebateAggregates
                         .Where(x => x.BrandId == request.BrandId)
-                        .Where(x => x.ReportDate >= from && x.ReportDate < to)
+                        .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
                         .Where(tgsPlayer != null, x => x.PlayerCode == tgsPlayer.PlayerCode),
                     p => new
                     {

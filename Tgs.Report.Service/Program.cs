@@ -5,6 +5,7 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Prometheus;
 using Tgs.Report.Core;
+using Tgs.Report.Service.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,7 +76,24 @@ builder.Services.AddOpenTelemetryTracing(
     });
 builder.Services.AddProfileViewer();
 
+builder.Services
+    .AddMessageQueue()
+    .AddRabbitMessageQueue(config =>
+    {
+        config
+            .ConfigQueueOptions((options, sp) =>
+            {
+                var configuration = sp.GetRequiredService<IConfiguration>();
+
+                configuration.GetSection("RabbitMQ").Bind(options);
+            });
+    })
+    .ClearAllExchanges()
+    .AddRabbitGlobPatternExchange("report.error", "amq.direct");
+
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

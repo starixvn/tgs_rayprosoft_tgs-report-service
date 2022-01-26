@@ -32,7 +32,7 @@ namespace Tgs.Report.Core.Queries.Agent
             var playerWithdrawals = await _repository.WithdrawForms
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.UserType == 1 && x.Status == 9000)
-                .Where(x => x.CreatedOn >= request.From && x.CreatedOn < request.To)
+                .Where(x => x.CreatedOn >= request.From.ToUniversalTime() && x.CreatedOn < request.To.ToUniversalTime())
                 .Join(_repository.Players,
                     withdrawForm => withdrawForm.UserId,
                     player => player.PlayerCode,
@@ -66,8 +66,8 @@ namespace Tgs.Report.Core.Queries.Agent
 
             var agentDividends = await _repository.AgentDividends
                 .Where(x => x.BrandId == request.BrandId)
-                .Where(x => x.CreatedOn >= request.From)
-                .Where(x => x.CreatedOn < request.To)
+                .Where(x => x.CreatedOn >= request.From.ToUniversalTime())
+                .Where(x => x.CreatedOn < request.To.ToUniversalTime())
                 .Where(x => agentIds.Contains(x.AgentId))
                 .GroupBy(x => x.AgentId,
                     (agentId, list) => new
@@ -106,14 +106,14 @@ namespace Tgs.Report.Core.Queries.Agent
                     AgentDividendAmount = ad.AgentDividendAmount,
                     FromPlayerAgentDividendAmount = _repository.AgentDividendMultipleLayers
                         .Where(x => x.AgentId == ad.AgentId)
-                        .Where(x => x.AgentDividend.CreatedOn >= request.From)
-                        .Where(x => x.AgentDividend.CreatedOn < request.To)
+                        .Where(x => x.AgentDividend.CreatedOn >= request.From.ToUniversalTime())
+                        .Where(x => x.AgentDividend.CreatedOn < request.To.ToUniversalTime())
                         .Where(x => x.AgentId == x.DividendProviderAgentId)
                         .Sum(a => a.Dividend),
                     FromTeamAgentDividendAmount = _repository.AgentDividendMultipleLayers
                         .Where(x => x.AgentId == ad.AgentId)
-                        .Where(x => x.AgentDividend.CreatedOn >= request.From)
-                        .Where(x => x.AgentDividend.CreatedOn < request.To)
+                        .Where(x => x.AgentDividend.CreatedOn >= request.From.ToUniversalTime())
+                        .Where(x => x.AgentDividend.CreatedOn < request.To.ToUniversalTime())
                         .Where(x => x.AgentId != x.DividendProviderAgentId).Sum(a => a.Dividend)
                 }).ToArray();
 

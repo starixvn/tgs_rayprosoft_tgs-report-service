@@ -4,7 +4,7 @@ namespace Tgs.Report.Client.Models.Round
 {
     public record GetOpenRoundsRequest : PageableRequest
     {
-        public string ExternalRoundId { get; init; }
+        public string? ExternalRoundId { get; init; }
 
         public Guid? GameProviderId { get; init; }
 

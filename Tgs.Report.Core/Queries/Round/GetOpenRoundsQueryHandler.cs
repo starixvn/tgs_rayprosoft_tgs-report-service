@@ -19,7 +19,8 @@ namespace Tgs.Report.Core.Queries.Round
             GetOpenRoundsRequest request,
             CancellationToken cancellationToken) =>
             _repository.Rounds.Where(x => x.Status == RoundStatus.Open)
-                .Where(x => x.CreatedOn >= request.From && x.CreatedOn <= request.To)
+                .Where(x
+                    => x.CreatedOn >= request.From.ToUniversalTime() && x.CreatedOn <= request.To.ToUniversalTime())
                 .Where(request.GameProviderId, x => request.GameProviderId == x.GameProviderId)
                 .Where(request.ExternalRoundId, x => x.ExternalRoundId == request.ExternalRoundId)
                 .GroupJoin(

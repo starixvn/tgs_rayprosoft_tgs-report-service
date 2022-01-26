@@ -59,7 +59,7 @@ namespace Tgs.Report.Core.Queries.LicenseeMarket
             var withdrawals = await _repository.WithdrawForms
                 .Where(x => brands.Select(x => x.BrandId).Contains(x.BrandId))
                 .Where(x => x.UserType == 1 && x.Status == 9000)
-                .Where(x => x.CreatedOn >= from && x.CreatedOn < to)
+                .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
                 .GroupBy(x => x.BrandId)
                 .Select(withdrawal => new
                 {
@@ -71,7 +71,7 @@ namespace Tgs.Report.Core.Queries.LicenseeMarket
 
             var playerAggregates = await _repository.PlayerAggregates
                 .Where(x => brands.Select(x => x.BrandId).Contains(x.BrandId))
-                .Where(x => x.ReportDate >= from && x.ReportDate < to)
+                .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
                 .GroupBy(x => x.BrandId)
                 .Select(playerAggregate => new
                 {

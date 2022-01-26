@@ -10,7 +10,7 @@ namespace Tgs.Report.Client.Models.GameProvider
 
         public Guid BrandId { get; init; }
 
-        public string GameProviderCode { get; init; }
+        public string? GameProviderCode { get; init; }
 
         public short? GameType { get; init; }
     }

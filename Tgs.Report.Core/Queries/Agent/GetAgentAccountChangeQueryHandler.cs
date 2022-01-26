@@ -24,8 +24,8 @@ namespace Tgs.Report.Core.Queries.Agent
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.AgentId == request.AgentId)
                 .Where(request.TransactionType, x => x.Type == (short?)request.TransactionType)
-                .Where(x => x.RecordedOn >= request.From)
-                .Where(x => x.RecordedOn < request.To)
+                .Where(x => x.RecordedOn >= request.From.ToUniversalTime())
+                .Where(x => x.RecordedOn < request.To.ToUniversalTime())
                 .Select(x => new AgentAccountChangeModel
                 {
                     TransactionId = x.Id,

@@ -5,7 +5,7 @@ namespace Tgs.Report.ViewModel.LicenseeMarket
 {
     public record GetLicenseeMarketsRequest : PageableRequest, IRequest<LicenseeMarketsResponse>
     {
-        public string CurrencyCode { get; init; } = default!;
+        public string? CurrencyCode { get; init; }
 
         public string[]? CurrencyCodes { get; init; }
 

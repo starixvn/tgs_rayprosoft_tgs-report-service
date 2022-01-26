@@ -64,7 +64,7 @@ namespace Tgs.Report.Core.Queries.Player
             var withdrawalByUserIds = await _repository.WithdrawForms
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.UserType == 1 && x.Status == 9000)
-                .Where(x => x.CreatedOn >= from && x.CreatedOn < to)
+                .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
                 .Where(!string.IsNullOrEmpty(request.Username), x => x.UserId == tgsPlayer.PlayerCode)
                 .Where(request.Level, x => tgsPlayers.Contains(x.UserId))
                 .GroupBy(x => x.UserId,
@@ -77,7 +77,7 @@ namespace Tgs.Report.Core.Queries.Player
 
             var reportPlayers = await _repository.PlayerAggregates
                 .Where(x => x.BrandId == request.BrandId)
-                .Where(x => x.ReportDate >= from && x.ReportDate < to)
+                .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
                 .Where(!string.IsNullOrEmpty(request.Username), x => x.PlayerCode == tgsPlayer.PlayerCode)
                 .Where(request.Level, x => tgsPlayers.Contains(x.PlayerCode))
                 .GroupBy(x => x.PlayerCode,
