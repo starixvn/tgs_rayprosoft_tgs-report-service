@@ -4,7 +4,7 @@
     {
         public int TotalCount { get; }
 
-        public T[] Items { get; }
+        public T[]? Items { get; }
 
         public PagedArray(int totalCount, T[] items)
         {

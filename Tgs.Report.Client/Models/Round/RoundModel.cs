@@ -6,27 +6,27 @@ namespace Tgs.Report.Client.Models.Round
     {
         public Guid Id { get; init; }
 
-        public string ExternalRoundId { get; init; }
+        public string? ExternalRoundId { get; init; }
 
         public int GameId { get; init; }
 
-        public string GameName { get; init; }
+        public string? GameName { get; init; }
 
         public Guid GameProviderId { get; init; }
 
-        public string GameProviderCode { get; init; }
+        public string? GameProviderCode { get; init; }
 
-        public string GameProviderName { get; init; }
+        public string? GameProviderName { get; init; }
 
-        public string SubGameProviderName { get; init; }
+        public string? SubGameProviderName { get; init; }
 
-        public string PlayerName { get; init; }
+        public string? PlayerName { get; init; }
 
-        public string PlayerCode { get; init; }
+        public string? PlayerCode { get; init; }
 
-        public string ExternalPlayerCode { get; init; }
+        public string? ExternalPlayerCode { get; init; }
 
-        public string CurrencyCode { get; init; }
+        public string? CurrencyCode { get; init; }
 
         public short PlatformType { get; init; }
 
@@ -56,6 +56,6 @@ namespace Tgs.Report.Client.Models.Round
 
         public decimal? TieBetAdjustment { get; init; }
 
-        public string AdditionalData { get; init; }
+        public string? AdditionalData { get; init; }
     }
 }
