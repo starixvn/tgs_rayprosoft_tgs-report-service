@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Round;
 
-namespace Tgs.Report.Controllers
+namespace Tgs.Report.Service.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

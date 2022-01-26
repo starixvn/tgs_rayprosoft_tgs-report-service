@@ -6,9 +6,9 @@ namespace Tgs.Report.ViewModel.Vip
     {
         public Guid BrandId { get; init; }
 
-        public string Username { get; init; }
+        public string? Username { get; init; }
 
-        public string PlayerCode { get; init; }
+        public string PlayerCode { get; init; } = default!;
 
         public int? Level { get; init; }
 

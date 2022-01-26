@@ -3,7 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Tgs.Report.ViewModel.GameProvider;
 
-namespace Tgs.Report.Controllers
+namespace Tgs.Report.Service.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

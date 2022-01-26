@@ -5,7 +5,7 @@ using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Player;
 using Tgs.Report.ViewModel.PlayerRebate;
 
-namespace Tgs.Report.Controllers
+namespace Tgs.Report.Service.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
