@@ -43,7 +43,6 @@ namespace Tgs.Report.Repository.Configurations
         public DateTimeOffset? FirstDepositOn { get; set; }
         public string? AreaCode { get; set; }
         public DateTimeOffset? FirstPromotionOn { get; set; }
-        public string? ParentPlayerCode { get; set; }
 
         public virtual Agent? Agent { get; set; }
         public virtual Brand Brand { get; set; } = null!;

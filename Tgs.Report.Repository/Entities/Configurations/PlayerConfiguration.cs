@@ -75,8 +75,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
 
             entity.Property(e => e.LastActiveOn).HasColumnName("last_active_on");
 
-            entity.Property(e => e.ParentPlayerCode).HasColumnName("parent_player_code");
-
             entity.Property(e => e.Password).HasColumnName("password");
 
             entity.Property(e => e.Phone)

@@ -36,11 +36,12 @@ namespace Tgs.Report.Core.Queries.Round
             }
 
             var url = JsonSerializer.Deserialize<GameProviderUrl>(jsonConfig);
-            var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{url}/api/pluggable/history/round")
-            {
-                Content =
-                    new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json")
-            };
+            var httpRequest =
+                new HttpRequestMessage(HttpMethod.Post, $"{url.ServiceEndpointUrl}/api/pluggable/history/round")
+                {
+                    Content =
+                        new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json")
+                };
             var response = await _httpClient.SendAsync(httpRequest, cancellationToken);
 
             response.EnsureSuccessStatusCode();

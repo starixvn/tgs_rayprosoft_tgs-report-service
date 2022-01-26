@@ -105,7 +105,8 @@ pipeline {
                                 --set namespace=${kube_ns} \
                                 --set autoscaling.enabled=${tgs_autoscaling} \
 								--set connectionStrings.tgs="$tgs_tgs" \
-								--set connectionStrings.redis="$tgs_redis"
+								--set connectionStrings.redis="$tgs_redis" \
+                                --set nats.urls="$tgs_nats"
                         '''
                         sh '''
                             helm template deployment/k8s/report-service \
@@ -114,6 +115,7 @@ pipeline {
                                 --set autoscaling.enabled=${tgs_autoscaling} \
 								--set connectionStrings.tgs="$tgs_tgs" \
 								--set connectionStrings.redis="$tgs_redis" \
+                                --set nats.urls="$tgs_nats" \
                                 | kubectl -n ${kube_ns} apply -f -
                         '''
                     }

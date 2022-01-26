@@ -17,7 +17,8 @@ builder.Host.ConfigureAppConfiguration((_, builder) =>
 builder.Services
     .AddHttpClient()
     .AddTgsRepository(builder.Configuration.GetConnectionString("Tgs"))
-    .AddReportCore();
+    .AddReportCore()
+    .AddTgsLog();
 
 builder.Services.AddHealthChecks()
     .ForwardToPrometheus();
@@ -78,18 +79,18 @@ builder.Services.AddProfileViewer();
 
 builder.Services
     .AddMessageQueue()
-    .AddRabbitMessageQueue(config =>
+    .AddNatsMessageQueue(natsConfig =>
     {
-        config
+        natsConfig
             .ConfigQueueOptions((options, sp) =>
             {
-                var configuration = sp.GetRequiredService<IConfiguration>();
+                var config = sp.GetRequiredService<IConfiguration>();
 
-                configuration.GetSection("RabbitMQ").Bind(options);
+                options.Url = config.GetValue<string>("NatsSetting:Urls");
             });
     })
     .ClearAllExchanges()
-    .AddRabbitGlobPatternExchange("report.error", "amq.direct");
+    .AddNatsGlobPatternExchange("*");
 
 var app = builder.Build();
 

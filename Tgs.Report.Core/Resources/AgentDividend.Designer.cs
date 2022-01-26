@@ -19,10 +19,10 @@ namespace Tgs.Report.Core.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class AgentDividend {
+    public class AgentDividend {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Tgs.Report.Core.Resources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Tgs.Report.Core.Resources.AgentDividend", typeof(AgentDividend).Assembly);
@@ -51,7 +51,7 @@ namespace Tgs.Report.Core.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Tgs.Report.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to ADJUSTMENT AMOUNT.
         /// </summary>
-        internal static string AdjustmentAmount {
+        public static string AdjustmentAmount {
             get {
                 return ResourceManager.GetString("AdjustmentAmount", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Tgs.Report.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to PROFIT SHARING AMOUNT.
         /// </summary>
-        internal static string AgentDividendAmount {
+        public static string AgentDividendAmount {
             get {
                 return ResourceManager.GetString("AgentDividendAmount", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Tgs.Report.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to BET AMOUNT.
         /// </summary>
-        internal static string BetAmount {
+        public static string BetAmount {
             get {
                 return ResourceManager.GetString("BetAmount", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Tgs.Report.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to BONUS AMOUNT.
         /// </summary>
-        internal static string BonusAmount {
+        public static string BonusAmount {
             get {
                 return ResourceManager.GetString("BonusAmount", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace Tgs.Report.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to DEPOSIT AMOUNT.
         /// </summary>
-        internal static string DepositAmount {
+        public static string DepositAmount {
             get {
                 return ResourceManager.GetString("DepositAmount", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace Tgs.Report.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to NET PROFIT.
         /// </summary>
-        internal static string NetProfit {
+        public static string NetProfit {
             get {
                 return ResourceManager.GetString("NetProfit", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace Tgs.Report.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to USERNAME.
         /// </summary>
-        internal static string Username {
+        public static string Username {
             get {
                 return ResourceManager.GetString("Username", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace Tgs.Report.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to VALID BET AMOUNT.
         /// </summary>
-        internal static string ValidBetAmount {
+        public static string ValidBetAmount {
             get {
                 return ResourceManager.GetString("ValidBetAmount", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace Tgs.Report.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to WIN LOSS AMOUNT.
         /// </summary>
-        internal static string WinLossAmount {
+        public static string WinLossAmount {
             get {
                 return ResourceManager.GetString("WinLossAmount", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace Tgs.Report.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to WITHDRAWAL AMOUNT.
         /// </summary>
-        internal static string WithdrawalAmount {
+        public static string WithdrawalAmount {
             get {
                 return ResourceManager.GetString("WithdrawalAmount", resourceCulture);
             }

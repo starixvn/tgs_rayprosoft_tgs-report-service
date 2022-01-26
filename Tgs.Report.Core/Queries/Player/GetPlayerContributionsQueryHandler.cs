@@ -53,7 +53,8 @@ namespace Tgs.Report.Core.Queries.Player
 
             if (!string.IsNullOrEmpty(request.Username) && tgsPlayer is null)
             {
-                return new PagedResponse<PlayerContributionModel>();
+                return new PagedResponse<PlayerContributionModel>
+                    { Valid = false, Message = Resources.Player.NotFound };
             }
 
             var tgsPlayers = request.Level == null
