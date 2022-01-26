@@ -4,7 +4,7 @@ namespace Tgs.Report.Client.Models.Agent
 {
     public record AgentDividendModel
     {
-        public Guid? id { get; init; }
+        public Guid Id { get; init; }
 
         public string Username { get; init; }
 

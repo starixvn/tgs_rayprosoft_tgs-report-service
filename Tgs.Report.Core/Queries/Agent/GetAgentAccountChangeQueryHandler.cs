@@ -23,7 +23,7 @@ namespace Tgs.Report.Core.Queries.Agent
             _repository.AgentTransactions
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.AgentId == request.AgentId)
-                .Where(request.TransactionType, x => x.Type == (short)request.TransactionType!)
+                .Where(request.TransactionType, x => x.Type == (short?)request.TransactionType)
                 .Where(x => x.RecordedOn >= request.From)
                 .Where(x => x.RecordedOn < request.To)
                 .Select(x => new AgentAccountChangeModel

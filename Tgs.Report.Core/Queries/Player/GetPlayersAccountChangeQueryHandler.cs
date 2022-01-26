@@ -25,7 +25,7 @@ namespace Tgs.Report.Core.Queries.Player
             var playersAccountChanges = await _repository.Transactions
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.RecordedOn >= request.From && x.RecordedOn < request.To)
-                .Where(request.TransactionType is not null, x => x.Type == (short)request.TransactionType!)
+                .Where(request.TransactionType is not null, x => x.Type == (short?)request.TransactionType)
                 .Where(request.TransactionType is null,
                     x => x.Type == (short)TransactionType.Adjust || x.Type == (short)TransactionType.Rebate ||
                         x.Type == (short)TransactionType.Promotion ||
