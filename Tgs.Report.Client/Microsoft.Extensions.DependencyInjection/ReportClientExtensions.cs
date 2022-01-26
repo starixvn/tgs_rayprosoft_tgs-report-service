@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -20,6 +21,21 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 var settings = sp.GetRequiredService<ClientSettings>();
                 c.BaseAddress = new(settings.Url);
+            });
+
+            return services;
+        }
+
+        public static IServiceCollection AddReportClient(this IServiceCollection services,
+            Action<ReportOptions, IServiceProvider> configure)
+        {
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly(), ServiceLifetime.Singleton);
+            services.AddOptions<ReportOptions>().Configure(configure);
+
+            services.AddHttpClient<IReportClient, ReportClient>((sp, c) =>
+            {
+                var options = sp.GetRequiredService<IOptions<ReportOptions>>().Value;
+                c.BaseAddress = options.BaseUrl;
             });
 
             return services;
