@@ -168,8 +168,8 @@ namespace Tgs.Report.Core.Queries.Agent
                         }).ToArray();
 
 
-            return await childAgentPlayers.Union(players)
-                .CreatePagedResponseAsync(childAgentPlayers.Length + players.Length);
+            return childAgentPlayers.Union(players).AsQueryable()
+                .CreatePagedResponse(request);
         }
     }
 }

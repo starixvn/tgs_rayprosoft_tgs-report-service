@@ -117,7 +117,7 @@ namespace Tgs.Report.Core.Queries.Agent
                         .Where(x => x.AgentId != x.DividendProviderAgentId).Sum(a => a.Dividend)
                 }).ToArray();
 
-            return await models.CreatePagedResponseAsync(models.Length);
+            return models.AsQueryable().CreatePagedResponse(request);
         }
     }
 }

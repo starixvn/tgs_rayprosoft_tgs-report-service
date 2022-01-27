@@ -95,7 +95,7 @@ namespace Tgs.Report.Core.Queries.Agent
                     BonusAmount = ad.BonusAmount
                 }).ToArray();
 
-            return await models.CreatePagedResponseAsync(models.Length);
+            return models.AsQueryable().CreatePagedResponse(request);
         }
     }
 }

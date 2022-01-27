@@ -75,7 +75,7 @@ namespace Tgs.Report.Core.Queries.Agent
                     ExpenditureAmount = ad.ExpenditureAmount
                 }).ToArray();
 
-            return await models.CreatePagedResponseAsync(models.Length);
+            return models.AsQueryable().CreatePagedResponse(request);
         }
     }
 }

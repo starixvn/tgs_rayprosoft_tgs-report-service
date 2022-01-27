@@ -38,7 +38,7 @@ spec:
               protocol: TCP
           env:
             - name: OTEL_SERVICE_NAME
-              value: report-service({{ .Values.namespace }})
+              value: Report-Service({{ .Values.namespace }})
             - name: NODE_IP
               valueFrom:
                 fieldRef:
