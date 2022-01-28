@@ -7,7 +7,7 @@
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "OTEL_SERVICE_NAME": "Report-Service(local)",
+        "OTEL_SERVICE_NAME": "Report-Api(local)",
         "NODE_IP": "192.168.50.112"
       },
       "applicationUrl": "https://localhost:7163;http://localhost:5163",
@@ -20,7 +20,7 @@
       "publishAllPorts": true,
       "useSSL": true,
       "environmentVariables": {
-        "OTEL_SERVICE_NAME": "Report-Service(local)",
+        "OTEL_SERVICE_NAME": "Report-Api(local)",
         "NODE_IP": "192.168.50.112"
       }
     }

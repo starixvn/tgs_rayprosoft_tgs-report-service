@@ -68,7 +68,7 @@ spec:
       volumes:
         - name: appsettings
           configMap:
-            name: configmap-{{ include "report-service.fullname" . }}
+            name: configmap-{{ include "report-api.fullname" . }}
         {{- if eq .Release.Namespace "prod" }}
         - name: rds-combined-ca-bundle
           configMap:
