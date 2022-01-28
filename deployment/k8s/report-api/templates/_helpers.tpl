@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "report-service.name" -}}
+{{- define "report-api.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "report-service.fullname" -}}
+{{- define "report-api.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,30 +26,30 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "report-service.chart" -}}
+{{- define "report-api.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "report-service.labels" -}}
-{{ include "report-service.selectorLabels" . }}
+{{- define "report-api.labels" -}}
+{{ include "report-api.selectorLabels" . }}
 {{- end }}
 
 {{/*
 Selector labels
 */}}
-{{- define "report-service.selectorLabels" -}}
-app: {{ include "report-service.name" . }}
+{{- define "report-api.selectorLabels" -}}
+app: {{ include "report-api.name" . }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "report-service.serviceAccountName" -}}
+{{- define "report-api.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "report-service.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "report-api.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
