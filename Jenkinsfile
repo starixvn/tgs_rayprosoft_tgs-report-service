@@ -5,7 +5,7 @@ pipeline {
 	
 	environment {
 		BuildConfiguration="Debug"
-		ImageName ="harbor.rpgp.cc/tgs/report-service"
+		ImageName ="harbor.rpgp.cc/tgs/report-api"
 	}
 
 	stages {
@@ -100,18 +100,18 @@ pipeline {
 				withKubeConfig([credentialsId: env.k8s_config]) {
                     withCredentials([string(credentialsId: "tgs-${kube_ns}-connectionstring", variable: "tgs_tgs")]) {
                         sh '''
-                            helm template deployment/k8s/report-service \
+                            helm template deployment/k8s/report-api \
+                                -n ${kube_ns} \
                                 --set image.tag=${TAG} \
-                                --set namespace=${kube_ns} \
                                 --set autoscaling.enabled=${tgs_autoscaling} \
 								--set connectionStrings.tgs="$tgs_tgs" \
 								--set connectionStrings.redis="$tgs_redis" \
                                 --set nats.urls="$tgs_nats"
                         '''
                         sh '''
-                            helm template deployment/k8s/report-service \
+                            helm template deployment/k8s/report-api \
+                                -n ${kube_ns} \
                                 --set image.tag=${TAG} \
-                                --set namespace=${kube_ns} \
                                 --set autoscaling.enabled=${tgs_autoscaling} \
 								--set connectionStrings.tgs="$tgs_tgs" \
 								--set connectionStrings.redis="$tgs_redis" \
