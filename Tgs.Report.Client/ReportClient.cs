@@ -514,5 +514,18 @@ namespace Tgs.Report.Client
                 await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
+
+        public async ValueTask<PagedResponse<RoundModel>> GetAgentPlayerRoundsAsync(GetAgentPlayerRoundsRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/roundReport/agentPlayerRounds?", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+            _ = response.EnsureSuccessStatusCode();
+
+            return JsonSerializer.Deserialize<PagedResponse<RoundModel>>(await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
     }
 }
