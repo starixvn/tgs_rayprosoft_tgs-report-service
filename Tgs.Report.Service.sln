@@ -15,7 +15,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.Report.Enum", "Tgs.Repo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.Report.Client", "Tgs.Report.Client\Tgs.Report.Client.csproj", "{E813DDF4-1D4F-455C-8B99-732494C602F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgs.Report.UnitTest", "Tgs.Report.UnitTest\Tgs.Report.UnitTest.csproj", "{E71D42DB-0D32-4102-B2E7-0AF51D0BD49E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.Report.UnitTest", "Tgs.Report.UnitTest\Tgs.Report.UnitTest.csproj", "{E71D42DB-0D32-4102-B2E7-0AF51D0BD49E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5D5EE845-8C72-41B5-B078-7CDD9CD02ADB}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
