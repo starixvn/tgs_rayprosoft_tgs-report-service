@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.ConfigureAppConfiguration((_, builder) =>
 {
-    builder.AddJsonFile("/config/appsettings.json", true);
+    builder.AddJsonFile("/config/appsettings.json", true).AddEnvironmentVariables();
 });
 
 builder.Services
@@ -70,7 +70,13 @@ builder.Services
                 || !httpContext.Request.Path.StartsWithSegments("/swagger")
                 && !httpContext.Request.Path.StartsWithSegments("/health")
                 && !httpContext.Request.Path.StartsWithSegments("/profiler/")
-                && !new[] { "html", "ico", "png", "jpg" }.Any(
+                && !new[]
+                {
+                    "html",
+                    "ico",
+                    "png",
+                    "jpg"
+                }.Any(
                     ext => httpContext.Request.Path.Value.EndsWith($".{ext}"));
         };
     });
