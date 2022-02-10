@@ -17,7 +17,13 @@ builder.Services
     .AddHttpClient()
     .AddTgsRepository(builder.Configuration.GetConnectionString("Tgs"))
     .AddReportCore()
-    .AddTgsLog();
+    .AddTgsLog()
+    .AddGameProvidersPluggableServerClient((options, sp) =>
+    {
+        var config = sp.GetRequiredService<IConfiguration>();
+
+        options.BaseUrl = config.GetValue<Uri>("Report:GameProvidersPluggableBaseUrl");
+    });
 
 builder.Services.AddHealthChecks()
     .ForwardToPrometheus();
