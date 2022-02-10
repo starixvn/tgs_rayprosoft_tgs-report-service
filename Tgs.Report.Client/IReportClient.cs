@@ -19,7 +19,11 @@ namespace Tgs.Report.Client
         ValueTask<PagedResponse<VipRebateModel>> GetVipRebateReportAsync(GetVipRebateReportRequest request);
 
         ValueTask<PagedResponse<RoundModel>> GetRoundsAsync(GetRoundsRequest request);
+
+        ValueTask<PagedResponse<RoundModel>> GetAgentPlayerRoundsAsync(GetAgentPlayerRoundsRequest request);
+
         ValueTask<PagedResponse<OpenRoundModel>> GetOpenRoundsAsync(GetOpenRoundsRequest request);
+
         ValueTask<PagedResponse<ClosedRoundModel>> GetClosedRoundsAsync(GetClosedRoundsRequest request);
 
         ValueTask<GetRoundHistoryResponse> GetRoundHistoriesAsync(GetRoundHistoryRequest request);
@@ -57,6 +61,7 @@ namespace Tgs.Report.Client
             GetAgentAccountChangesRequest request);
 
         ValueTask<GetGameProviderRoundsResponse> GetGameProviderRoundsAsync(GetGameProviderRoundsRequest request);
+
         ValueTask<PagedResponse<GameActionModel>> GetGameActionsAsync(GetGameActionsRequest request);
 
         ValueTask<LicenseeMarketsResponse> GetLicenseeMarketsAsync(GetLicenseeMarketsRequest request);
