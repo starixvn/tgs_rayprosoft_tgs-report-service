@@ -11,10 +11,7 @@ namespace Tgs.Report.Core.Queries.GameProvider
     {
         private readonly ITgsRepository _repository;
 
-        public GetGameProviderRoundsQueryHandler(ITgsRepository repository)
-        {
-            _repository = repository;
-        }
+        public GetGameProviderRoundsQueryHandler(ITgsRepository repository) => _repository = repository;
 
         public async Task<GetGameProviderRoundsResponse> Handle(
             GetGameProviderRoundsRequest request,
