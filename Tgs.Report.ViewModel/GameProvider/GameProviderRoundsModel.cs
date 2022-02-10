@@ -10,7 +10,7 @@ namespace Tgs.Report.ViewModel.GameProvider
 
         public string CurrencyCode { get; init; } = default!;
 
-        public int TransactionCount { get; init; }
+        public int TransactionCount { get; set; }
 
         public decimal BetAmount { get; init; }
 
