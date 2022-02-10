@@ -45,6 +45,11 @@ namespace Tgs.Report.UnitTest.GameProvider
                 .AsQueryable()
                 .BuildMock().Object;
 
+            var playerGameAggregates = CreatePlayerGameAggregateFixture(brandId, gameId, gameProviderId)
+                .CreateMany<PlayerGameRebateAggregate>(1)
+                .AsQueryable()
+                .BuildMock().Object;
+
             var request = new GetGameProviderRoundsRequest
             {
                 BrandId = brandId,
@@ -58,11 +63,13 @@ namespace Tgs.Report.UnitTest.GameProvider
             var mockBrands = GetDbSet(brands);
             var mockGames = GetDbSet(games);
             var mockRounds = GetDbSet(rounds);
+            var mockPlayerGameAggregates = GetDbSet(playerGameAggregates);
 
             fakeRepository.GameProviders.Returns(mockGameProviders.Object);
             fakeRepository.Brands.Returns(mockBrands.Object);
             fakeRepository.Games.Returns(mockGames.Object);
             fakeRepository.Rounds.Returns(mockRounds.Object);
+            fakeRepository.PlayerGameRebateAggregates.Returns(mockPlayerGameAggregates.Object);
 
             var response = await sut.Handle(request, default);
 
@@ -105,6 +112,18 @@ namespace Tgs.Report.UnitTest.GameProvider
             var fixture = new Fixture();
             fixture.Customize<Game>(u => u
                 .With(s => s.Id, id));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            return fixture;
+        }
+
+        private static Fixture CreatePlayerGameAggregateFixture(Guid brandId, int gameId, Guid gameProviderId)
+        {
+            var fixture = new Fixture();
+            fixture.Customize<PlayerGameRebateAggregate>(u => u
+                .With(s => s.ReportDate, DateTimeOffset.UtcNow)
+                .With(s => s.GameId, gameId)
+                .With(s => s.GameProviderId, gameProviderId)
+                .With(s => s.BrandId, brandId));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

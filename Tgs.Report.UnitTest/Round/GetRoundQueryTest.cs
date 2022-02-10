@@ -1,18 +1,11 @@
 ﻿using System;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading;
+using System.Text.Json;
 using System.Threading.Tasks;
-using AutoFixture;
-using MockQueryable.Moq;
-using Moq;
-using Moq.Protected;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameProviders.Pluggable.Client;
 using Tgs.Report.Core.Queries.Round;
 using Tgs.Report.Repository;
-using Tgs.Report.Repository.Configurations;
 using Tgs.Report.ViewModel.Round;
 
 namespace Tgs.Report.UnitTest.Round
@@ -24,35 +17,13 @@ namespace Tgs.Report.UnitTest.Round
         public async Task Can_Get_Round()
         {
             var fakeRepository = Substitute.For<ITgsRepository>();
+            var fakeClient = Substitute.For<IGameProvidersBackofficePluggableClient>();
 
-            var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-
-            var httpClient = new HttpClient(mockHttpMessageHandler.Object);
-
-            httpClient.BaseAddress = new Uri("http://test");
-
-            var sut = new GetRoundQueryHandler(fakeRepository, httpClient);
+            var sut = new GetRoundQueryHandler(fakeClient);
 
             var roundId = new Guid("aac02111-20f6-4f0d-6982-08d9dbdc0473");
 
             const string gameProviderCode = "key";
-
-            var settings = CreateSettingFixture(gameProviderCode).CreateMany<Setting>(1).AsQueryable()
-                .BuildMock().Object;
-
-            var httpResponse = new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.OK,
-                Content = new StringContent("{\"gpname\":\"GameProviderName\"}")
-            };
-
-            mockHttpMessageHandler
-                .Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.IsAny<HttpRequestMessage>(),
-                    ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync(httpResponse);
 
             var request = new GetRoundHistoryRequest
             {
@@ -60,23 +31,13 @@ namespace Tgs.Report.UnitTest.Round
                 GameProviderCode = gameProviderCode
             };
 
-            var mockSettings = GetDbSet(settings);
+            var json = JsonDocument.Parse("[{\"type\":3,\"value\":\"test\"}]");
 
-            fakeRepository.Settings.Returns(mockSettings.Object);
+            fakeClient.GameRoundDetailGetAsync(Arg.Any<Guid>(), Arg.Any<string>()).Returns(json);
 
             var response = await sut.Handle(request, default);
 
-            Assert.AreEqual("GameProviderName", response.GameProviderName);
-        }
-
-        private static Fixture CreateSettingFixture(string gameProviderCode)
-        {
-            var fixture = new Fixture();
-            fixture.Customize<Setting>(u => u
-                .With(s => s.Key, $"{gameProviderCode}Configuration")
-                .With(s => s.Value, "{\"ServiceEndpointUrl\":\"http://url\"}"));
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            return fixture;
+            Assert.IsNotNull(response.Data);
         }
     }
 }
