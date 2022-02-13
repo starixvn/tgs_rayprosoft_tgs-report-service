@@ -48,7 +48,7 @@ namespace Tgs.Report.Core.Queries.GameProvider
                         Count = items.Count()
                     }).ToArrayAsync(cancellationToken).ConfigureAwait(false);
 
-            var response = await _repository.PlayerGameRebateAggregates
+            var playerGameRebateAggregate = await _repository.PlayerGameRebateAggregates
                 .Where(x => x.ReportDate >= request.From && x.ReportDate < request.To)
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(request.GameType is not null, x => x.GameType == (short)request.GameType)
@@ -63,40 +63,41 @@ namespace Tgs.Report.Core.Queries.GameProvider
                 .Select(x => new
                 {
                     x.aggregate,
-                    x.gp
+                    x.gp,
+                    x.aggregate.BrandId
                 })
                 .Where(request.GameProviderCode, x => x.gp.Code == request.GameProviderCode)
-                .Join(_repository.Brands,
-                    group => group.aggregate.BrandId,
-                    brand => brand.Id,
-                    (group, brand) => new
-                    {
-                        group.aggregate,
-                        group.gp,
-                        brand
-                    })
-                .Select(x => new
-                {
-                    x.aggregate,
-                    x.gp,
-                    x.brand.BrandCurrencies.FirstOrDefault().CurrencyCode
-                })
                 .GroupBy(x => new
                     {
                         x.aggregate.GameProviderId,
                         x.gp.Name,
-                        x.CurrencyCode
+                        x.BrandId
                     },
-                    (group, items) => new GameProviderRoundsModel
+                    (group, items) => new
                     {
-                        GameProviderId = group.GameProviderId,
+                        group.GameProviderId,
                         GameProviderName = group.Name,
-                        CurrencyCode = group.CurrencyCode,
+                        group.BrandId,
                         BetAmount = items.Sum(i => i.aggregate.BetAmount),
                         ValidBetAmount = items.Sum(i => i.aggregate.ValidBetAmount),
                         OriginalTurnover = items.Sum(i => i.aggregate.OriginalTurnover),
                         CompanyWinLoss = items.Sum(i => i.aggregate.WinLoss)
                     }).ToArrayAsync(cancellationToken);
+
+            var response = playerGameRebateAggregate
+                .Join(_repository.Brands,
+                    group => group.BrandId,
+                    brand => brand.Id,
+                    (group, brand) => new GameProviderRoundsModel
+                    {
+                        GameProviderId = group.GameProviderId,
+                        GameProviderName = group.GameProviderName,
+                        CurrencyCode = brand.BrandCurrencies.FirstOrDefault()!.CurrencyCode,
+                        BetAmount = group.BetAmount,
+                        ValidBetAmount = group.ValidBetAmount,
+                        OriginalTurnover = group.OriginalTurnover,
+                        CompanyWinLoss = group.CompanyWinLoss
+                    }).ToArray();
 
             foreach (var item in response)
             {

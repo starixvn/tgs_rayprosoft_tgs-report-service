@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.ConfigureAppConfiguration((_, builder) =>
 {
-    builder.AddJsonFile("/config/appsettings.json", true).AddEnvironmentVariables();
+    builder.AddJsonFile("/config/appsettings.json", true);
 });
 
 builder.Services
