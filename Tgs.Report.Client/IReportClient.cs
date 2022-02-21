@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Tgs.Report.Client.Models;
 using Tgs.Report.Client.Models.Agent;
@@ -26,7 +27,7 @@ namespace Tgs.Report.Client
 
         ValueTask<PagedResponse<ClosedRoundModel>> GetClosedRoundsAsync(GetClosedRoundsRequest request);
 
-        ValueTask<GetRoundHistoryResponse> GetRoundHistoriesAsync(GetRoundHistoryRequest request);
+        ValueTask<JsonDocument?> GetRoundHistoriesAsync(GetRoundHistoryRequest request);
 
         ValueTask<PagedResponse<MarketModel>> GetMarketsAsync(GetMarketsRequest request);
 
