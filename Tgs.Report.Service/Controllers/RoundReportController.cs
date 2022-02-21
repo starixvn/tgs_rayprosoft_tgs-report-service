@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Text.Json;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Tgs.Report.ViewModel;
@@ -12,10 +13,7 @@ namespace Tgs.Report.Service.Controllers
     {
         private readonly IMediator _mediator;
 
-        public RoundReportController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+        public RoundReportController(IMediator mediator) => _mediator = mediator;
 
         [HttpGet(Name = "GetRounds")]
         [Description("Get rounds")]
@@ -24,12 +22,13 @@ namespace Tgs.Report.Service.Controllers
 
         [HttpGet("agentPlayerRounds", Name = "GetAgentPlayerRounds")]
         [Description("Get agent player rounds")]
-        public Task<PagedResponse<RoundModel>> GetAgentPlayerRoundsAsync([FromQuery] GetAgentPlayerRoundsRequest request) =>
+        public Task<PagedResponse<RoundModel>> GetAgentPlayerRoundsAsync(
+            [FromQuery] GetAgentPlayerRoundsRequest request) =>
             _mediator.Send(request);
 
         [HttpGet("{roundId}", Name = "GetRound")]
         [Description("Get a round")]
-        public Task<GetRoundHistoryResponse> GetRoundAsync(Guid roundId, [FromQuery] GetRoundHistoryRequest request)
+        public Task<JsonDocument?> GetRoundAsync(Guid roundId, [FromQuery] GetRoundHistoryRequest request)
         {
             request.RoundId = roundId;
             return _mediator.Send(request);

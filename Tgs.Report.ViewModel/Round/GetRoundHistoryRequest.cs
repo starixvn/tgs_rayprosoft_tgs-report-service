@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using MediatR;
 
 namespace Tgs.Report.ViewModel.Round
 {
-    public record GetRoundHistoryRequest : IRequest<GetRoundHistoryResponse>
+    public record GetRoundHistoryRequest : IRequest<JsonDocument?>
     {
         [JsonPropertyName("gpcode")]
         public string? GameProviderCode { get; set; }

@@ -24,9 +24,7 @@ namespace Tgs.Report.Client
 
         public ReportClient(
             HttpClient client)
-        {
-            _client = client;
-        }
+            => _client = client;
 
         public async ValueTask<PagedResponse<VipModel>> GetVipReportAsync(GetVipReportRequest request)
         {
@@ -95,7 +93,7 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async ValueTask<GetRoundHistoryResponse> GetRoundHistoriesAsync(GetRoundHistoryRequest request)
+        public async ValueTask<JsonDocument?> GetRoundHistoriesAsync(GetRoundHistoryRequest request)
         {
             var path = ClientPath.AppendWithProperties($"/api/roundReport/{request.RoundId}?", request);
 
@@ -104,7 +102,7 @@ namespace Tgs.Report.Client
 
             response.EnsureSuccessStatusCode();
 
-            return JsonSerializer.Deserialize<GetRoundHistoryResponse>(await response.Content.ReadAsStringAsync(),
+            return JsonSerializer.Deserialize<JsonDocument?>(await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
