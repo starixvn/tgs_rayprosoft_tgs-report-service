@@ -37,7 +37,7 @@ namespace Tgs.Report.UnitTest.Round
 
             var response = await sut.Handle(request, default);
 
-            Assert.IsNotNull(response.Data);
+            Assert.IsNotNull(response);
         }
     }
 }
