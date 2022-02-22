@@ -6,9 +6,9 @@ namespace Tgs.Report.ViewModel.LicenseeMarket
 {
     public record ExportLicenseeMarketsRequest : PageableRequest, IRequest<MemoryStream>
     {
-        public string CurrencyCode { get; init; } = default!;
+        public string? CurrencyCode { get; init; }
 
-        public string[] CurrencyCodes { get; init; } = default!;
+        public string[]? CurrencyCodes { get; init; }
 
         public DateTimeOffset From { get; init; }
 
