@@ -25,7 +25,7 @@ pipeline {
                             env.kube_ns = "staging";
                             env.k8s_config = 'stag-k8s-config';
                             env.node_selector = '{ "dedicated": "nonprod" }';
-                            env.dedicated = '{"effect":"NoSchedule","key": "dedicated", "operator": "Equal", "value": "noprod"}';
+                            env.dedicated = '{"effect":"NoSchedule","key": "dedicated", "operator": "Equal", "value": "nonprod"}';
                             break;
                         default:
                             env.kube_ns = "dev";
@@ -109,7 +109,7 @@ pipeline {
                         println resources
 
                         withCredentials([string(credentialsId: "tgs-${kube_ns}-connectionstring", variable: "tgs_tgs")]) {
-                            sh '''
+                            sh """
                                 cat << EOF | yq e -P | helm template deployment/k8s/report-api \
                                     -n ${kube_ns} \
                                     --set image.tag=${TAG} \
@@ -122,8 +122,8 @@ pipeline {
                                     "tolerations": [$dedicated],
                                     "resources": $resources
                                 }
-                            '''
-                            sh '''
+                            """
+                            sh """
                                 cat << EOF | yq e -P | helm template deployment/k8s/report-api \
                                     -n ${kube_ns} \
                                     --set image.tag=${TAG} \
@@ -136,7 +136,7 @@ pipeline {
                                     "tolerations": [$dedicated],
                                     "resources": $resources
                                 }
-                            '''
+                            """
                         }
                     }
                 }
