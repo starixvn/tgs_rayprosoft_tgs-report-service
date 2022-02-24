@@ -1,0 +1,108 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Aggregate.cs" />
+    <Compile Remove="AggregateBase.cs" />
+    <Compile Remove="AggregateFactory.cs" />
+    <Compile Remove="DateFilterPlayerAggregate.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.95.4" />
+    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="Tgs.GameProviders.Pluggable.Client" Version="0.0.19" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Tgs.Report.Repository\Tgs.Report.Repository.csproj" />
+    <ProjectReference Include="..\Tgs.Report.ViewModel\Tgs.Report.ViewModel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\Agent.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Agent.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\AgentContribution.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AgentContribution.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\AgentDividend.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AgentDividend.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\LicenseeMarket.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>LicenseeMarket.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Market.Designer.cs">
+      <Generator></Generator>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Market.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Player.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Player.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\PlayerContribution.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PlayerContribution.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\VipReport.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>VipReport.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Agent.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Agent.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\AgentContribution.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AgentContribution.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\AgentDividend.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AgentDividend.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\LicenseeMarket.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>LicenseeMarket.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Market.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Market.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Player.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Player.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PlayerContribution.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>PlayerContribution.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\VipReport.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>VipReport.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
