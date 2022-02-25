@@ -8,7 +8,7 @@ namespace Tgs.Report.ViewModel.Agent
     {
         public Guid BrandId { get; set; }
         public Guid? AgentId { get; set; }
-        public string Username { get; set; } = default!;
+        public string? Username { get; set; }
         public AgentType? Type { get; set; }
         public DateTimeOffset From { get; set; }
         public DateTimeOffset To { get; set; }
