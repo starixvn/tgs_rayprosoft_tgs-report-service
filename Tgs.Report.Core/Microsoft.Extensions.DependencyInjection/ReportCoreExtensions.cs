@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using MediatR;
 using Tgs.Report.Core;
+using Tgs.Report.Repository;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

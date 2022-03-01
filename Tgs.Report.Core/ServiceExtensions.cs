@@ -1,6 +1,8 @@
 ﻿using System.Reflection;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Tgs.Report.Repository;
+
 namespace Tgs.Report.Core
 {
     public static class ServiceExtensions

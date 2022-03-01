@@ -35,6 +35,8 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasMaxLength(64)
                 .HasColumnName("api_key");
 
+            entity.Property(e => e.AutoClearWageringRequirement).HasColumnName("auto_clear_wagering_requirement");
+
             entity.Property(e => e.AutoSentAgentBonus).HasColumnName("auto_sent_agent_bonus");
 
             entity.Property(e => e.AutoSentPlayerBonus).HasColumnName("auto_sent_player_bonus");
@@ -68,6 +70,8 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("description");
 
             entity.Property(e => e.EnableAgentSms).HasColumnName("enable_agent_sms");
+
+            entity.Property(e => e.EnablePlayerIdentity).HasColumnName("enable_player_identity");
 
             entity.Property(e => e.EnableSms).HasColumnName("enable_sms");
 

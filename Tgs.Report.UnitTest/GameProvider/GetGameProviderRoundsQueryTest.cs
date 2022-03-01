@@ -12,18 +12,16 @@ using Tgs.Report.ViewModel.GameProvider;
 
 namespace Tgs.Report.UnitTest.GameProvider
 {
-    [TestFixture]
-    public sealed class GetGameProviderRoundsQueryTest : BaseTest
+    public sealed class GetGameProviderRoundsQueryTest
     {
         [Test]
         public async Task Can_Get_Game_Provider_Rounds()
         {
-            var fakeRepository = Substitute.For<ITgsRepository>();
+            var fakeGameProviderAggregate = Substitute.For<ITgsService<GameProviderAggregate>>();
+            var fakeGameProvider = Substitute.For<ITgsService<Repository.Configurations.GameProvider>>();
 
-            var sut = new GetGameProviderRoundsQueryHandler(fakeRepository);
+            var sut = new GetGameProviderRoundsQueryHandler(fakeGameProviderAggregate, fakeGameProvider);
 
-            var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
-            var gameId = 1;
             var gameProviderId = new Guid("aac11120-20f6-4f0d-6982-08d9dbdc0473");
 
             var gameProviders = CreateGameProviderFixture(gameProviderId)
@@ -31,49 +29,25 @@ namespace Tgs.Report.UnitTest.GameProvider
                 .AsQueryable()
                 .BuildMock().Object;
 
-            var brands = CreateBrandFixture(brandId).CreateMany<Brand>(1)
+            var gameProviderAggregate = CreateGameProviderAggregateFixture(gameProviderId)
+                .CreateMany<GameProviderAggregate>(1)
                 .AsQueryable()
                 .BuildMock().Object;
 
-
-            var games = CreateGameFixture(gameId).CreateMany<Game>(1)
-                .AsQueryable()
-                .BuildMock().Object;
-
-            var rounds = CreateRoundFixture(brandId, gameId, gameProviderId)
-                .CreateMany<Repository.Configurations.Round>(1)
-                .AsQueryable()
-                .BuildMock().Object;
-
-            var playerGameAggregates = CreatePlayerGameAggregateFixture(brandId, gameId, gameProviderId)
-                .CreateMany<PlayerGameRebateAggregate>(1)
-                .AsQueryable()
-                .BuildMock().Object;
+            fakeGameProvider.GetQueries().Returns(gameProviders);
+            fakeGameProviderAggregate.GetQueries().Returns(gameProviderAggregate);
 
             var request = new GetGameProviderRoundsRequest
             {
-                BrandId = brandId,
-                GameProviderCode = "GameProviderCode",
+                GameProviderId = gameProviderId,
                 From = DateTimeOffset.UtcNow.AddDays(-1),
                 To = DateTimeOffset.UtcNow.AddDays(1),
                 SortBy = null
             };
 
-            var mockGameProviders = GetDbSet(gameProviders);
-            var mockBrands = GetDbSet(brands);
-            var mockGames = GetDbSet(games);
-            var mockRounds = GetDbSet(rounds);
-            var mockPlayerGameAggregates = GetDbSet(playerGameAggregates);
-
-            fakeRepository.GameProviders.Returns(mockGameProviders.Object);
-            fakeRepository.Brands.Returns(mockBrands.Object);
-            fakeRepository.Games.Returns(mockGames.Object);
-            fakeRepository.Rounds.Returns(mockRounds.Object);
-            fakeRepository.PlayerGameRebateAggregates.Returns(mockPlayerGameAggregates.Object);
-
             var response = await sut.Handle(request, default);
 
-            Assert.AreEqual(1, response.Datas.TotalCount);
+            Assert.AreEqual(1, response.TotalCount);
         }
 
         private static Fixture CreateGameProviderFixture(Guid id)
@@ -86,44 +60,12 @@ namespace Tgs.Report.UnitTest.GameProvider
             return fixture;
         }
 
-        private static Fixture CreateBrandFixture(Guid brandId)
+        private static Fixture CreateGameProviderAggregateFixture(Guid id)
         {
             var fixture = new Fixture();
-            fixture.Customize<Brand>(u => u
-                .With(s => s.Id, brandId));
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            return fixture;
-        }
-
-        private static Fixture CreateRoundFixture(Guid brandId, int gameId, Guid gameProviderId)
-        {
-            var fixture = new Fixture();
-            fixture.Customize<Repository.Configurations.Round>(u => u
-                .With(s => s.BrandId, brandId)
-                .With(s => s.GameId, gameId)
-                .With(s => s.CreatedOn, DateTime.UtcNow)
-                .With(s => s.GameProviderId, gameProviderId));
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            return fixture;
-        }
-
-        private static Fixture CreateGameFixture(int id)
-        {
-            var fixture = new Fixture();
-            fixture.Customize<Game>(u => u
-                .With(s => s.Id, id));
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            return fixture;
-        }
-
-        private static Fixture CreatePlayerGameAggregateFixture(Guid brandId, int gameId, Guid gameProviderId)
-        {
-            var fixture = new Fixture();
-            fixture.Customize<PlayerGameRebateAggregate>(u => u
-                .With(s => s.ReportDate, DateTimeOffset.UtcNow)
-                .With(s => s.GameId, gameId)
-                .With(s => s.GameProviderId, gameProviderId)
-                .With(s => s.BrandId, brandId));
+            fixture.Customize<GameProviderAggregate>(u => u
+                .With(s => s.GameProviderId, id)
+                .With(s => s.ReportDate, DateTimeOffset.UtcNow));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
