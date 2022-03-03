@@ -1,8 +1,8 @@
-﻿namespace Tgs.Report.Client.Models.GameProvider
+﻿namespace Tgs.Report.ViewModel.BrandGameProvider
 {
-    public record GameProviderRoundTotalModel
+    public record BrandGameProviderRoundTotalModel
     {
-        public string CurrencyCode { get; init; }
+        public string CurrencyCode { get; init; } = default!;
 
         public int TransactionCount { get; init; }
 
