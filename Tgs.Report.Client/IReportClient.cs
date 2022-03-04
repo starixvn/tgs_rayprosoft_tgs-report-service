@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Tgs.Report.Client.Models;
 using Tgs.Report.Client.Models.Agent;
+using Tgs.Report.Client.Models.BrandGameProvider;
 using Tgs.Report.Client.Models.GameAction;
 using Tgs.Report.Client.Models.GameProvider;
 using Tgs.Report.Client.Models.LicenseeMarket;
@@ -61,7 +62,11 @@ namespace Tgs.Report.Client
         ValueTask<PagedResponse<AgentAccountChangeModel>> GetAgentAccountChangesAsync(
             GetAgentAccountChangesRequest request);
 
-        ValueTask<GetGameProviderRoundsResponse> GetGameProviderRoundsAsync(GetGameProviderRoundsRequest request);
+        ValueTask<GetBrandGameProviderRoundsResponse> GetBrandGameProviderRoundsAsync(
+            GetBrandGameProviderRoundsRequest request);
+
+        ValueTask<PagedResponse<GameProviderRoundsModel>> GetGameProviderRoundsAsync(
+            GetGameProviderRoundsRequest request);
 
         ValueTask<PagedResponse<GameActionModel>> GetGameActionsAsync(GetGameActionsRequest request);
 

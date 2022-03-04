@@ -54,6 +54,8 @@ namespace Tgs.Report.Repository.Configurations
         public bool EnableSmsRegisterFlow { get; set; }
         public short AgentDividendType { get; set; }
         public bool EnableAgentSms { get; set; }
+        public bool EnablePlayerIdentity { get; set; }
+        public bool AutoClearWageringRequirement { get; set; }
 
         public virtual Licensee Licensee { get; set; } = null!;
         public virtual ICollection<AgentTransaction> AgentTransactions { get; set; }

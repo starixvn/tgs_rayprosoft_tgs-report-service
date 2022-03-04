@@ -12,36 +12,43 @@ namespace Tgs.Report.Repository
         {
         }
 
-        public DbSet<AgentDividendCondition> AgentDividendConditions { get; init; }
+        public DbSet<BrandGameProviderAggregate> BrandGameProviderAggregates { get; set; }
+        public DbSet<BrandGameProviderAggregateAuditLog> BrandGameProviderAggregateAuditLogs { get; set; }
+        public DbSet<BrandGameProviderAggregateRecord> BrandGameProviderAggregateRecords { get; set; }
+        public DbSet<GameProviderAggregate> GameProviderAggregates { get; set; }
+        public DbSet<GameProviderAggregateAuditLog> GameProviderAggregateAuditLogs { get; set; }
+        public DbSet<GameProviderAggregateRecord> GameProviderAggregateRecords { get; set; }
+
+        public DbSet<AgentDividendCondition> AgentDividendConditions { get; set; }
 
         public IDbContextTransaction CurrentTransaction =>
             Database.CurrentTransaction;
 
-        public DbSet<AgentDividendMultipleLayer> AgentDividendMultipleLayers { get; init; }
-        public DbSet<AgentDividend> AgentDividends { get; init; }
-        public DbSet<AgentTransaction> AgentTransactions { get; init; }
-        public DbSet<Agent> Agents { get; init; }
-        public DbSet<BrandCurrency> BrandCurrencies { get; init; }
-        public DbSet<BrandGame> BrandGames { get; init; }
-        public DbSet<Brand> Brands { get; init; }
-        public DbSet<Currency> Currencies { get; init; }
-        public DbSet<Department> Departments { get; init; }
-        public DbSet<GameAction> GameActions { get; init; }
-        public DbSet<GameProvider> GameProviders { get; init; }
-        public DbSet<Game> Games { get; init; }
-        public DbSet<Licensee> Licensees { get; init; }
-        public DbSet<PlayerAggregate> PlayerAggregates { get; init; }
-        public DbSet<PlayerBucketHistory> PlayerBucketHistories { get; init; }
-        public DbSet<PlayerBucket> PlayerBuckets { get; init; }
-        public DbSet<PlayerGameRebateAggregate> PlayerGameRebateAggregates { get; init; }
-        public DbSet<Player> Players { get; init; }
-        public DbSet<RoundAggregate> RoundAggregates { get; init; }
-        public DbSet<WithdrawForm> WithdrawForms { get; init; }
-        public DbSet<User> Users { get; init; }
-        public DbSet<Transaction> Transactions { get; init; }
-        public DbSet<Round> Rounds { get; init; }
-        public DbSet<Setting> Settings { get; init; }
-        public DbSet<RoundDetail> RoundDetails { get; init; }
+        public DbSet<AgentDividendMultipleLayer> AgentDividendMultipleLayers { get; set; }
+        public DbSet<AgentDividend> AgentDividends { get; set; }
+        public DbSet<AgentTransaction> AgentTransactions { get; set; }
+        public DbSet<Agent> Agents { get; set; }
+        public DbSet<BrandCurrency> BrandCurrencies { get; set; }
+        public DbSet<BrandGame> BrandGames { get; set; }
+        public DbSet<Brand> Brands { get; set; }
+        public DbSet<Currency> Currencies { get; set; }
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<GameAction> GameActions { get; set; }
+        public DbSet<GameProvider> GameProviders { get; set; }
+        public DbSet<Game> Games { get; set; }
+        public DbSet<Licensee> Licensees { get; set; }
+        public DbSet<PlayerAggregate> PlayerAggregates { get; set; }
+        public DbSet<PlayerBucketHistory> PlayerBucketHistories { get; set; }
+        public DbSet<PlayerBucket> PlayerBuckets { get; set; }
+        public DbSet<PlayerGameRebateAggregate> PlayerGameRebateAggregates { get; set; }
+        public DbSet<Player> Players { get; set; }
+        public DbSet<RoundAggregate> RoundAggregates { get; set; }
+        public DbSet<WithdrawForm> WithdrawForms { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Round> Rounds { get; set; }
+        public DbSet<Setting> Settings { get; set; }
+        public DbSet<RoundDetail> RoundDetails { get; set; }
 
         public IDbConnection GetDbConnection() =>
             Database.GetDbConnection();
