@@ -158,7 +158,8 @@ namespace Tgs.Report.Core.Queries.Agent
                                         ? 0
                                         : p.playerAggregate.RebateAmount + p.playerAggregate.PromotionAmount),
                             BetAmount = playerAggregate.Sum(p => p.playerAggregate?.BetAmount ?? 0),
-                            ValidBetAmount = playerAggregate.Sum(p => p.playerAggregate?.Turnover ?? 0),
+                            ValidBetAmount = playerAggregate.Sum(p => p.playerAggregate?.OriginalTurnover ?? 0),
+                            Turnover = playerAggregate.Sum(p => p.playerAggregate?.Turnover ?? 0),
                             WinLossAmount = playerAggregate.Sum(p => p.playerAggregate?.WinLossAmount ?? 0),
                             NetProfit = playerAggregate.Sum(p => p.playerAggregate == null
                                 ? 0
