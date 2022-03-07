@@ -69,7 +69,8 @@ namespace Tgs.Report.UnitTest.Agent
             fixture.Customize<AgentDividend>(u => u
                 .With(s => s.BrandId, brandId)
                 .With(s => s.AgentId, agentId)
-                .With(s => s.CreatedOn, DateTime.UtcNow));
+                .With(s => s.From, DateTime.UtcNow)
+                .With(s => s.To, DateTime.UtcNow));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
