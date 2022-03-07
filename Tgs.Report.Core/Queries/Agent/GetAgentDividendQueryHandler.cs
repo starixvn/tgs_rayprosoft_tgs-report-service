@@ -11,10 +11,7 @@ namespace Tgs.Report.Core.Queries.Agent
     {
         private readonly ITgsRepository _repository;
 
-        public GetAgentDividendQueryHandler(ITgsRepository repository)
-        {
-            _repository = repository;
-        }
+        public GetAgentDividendQueryHandler(ITgsRepository repository) => _repository = repository;
 
         public async Task<PagedResponse<AgentDividendModel>> Handle(
             GetAgentDividendsRequest request,
@@ -26,7 +23,11 @@ namespace Tgs.Report.Core.Queries.Agent
 
             if (mainAgent is null)
             {
-                return new PagedResponse<AgentDividendModel> { Valid = false, Message = Resources.Agent.NotFound };
+                return new PagedResponse<AgentDividendModel>
+                {
+                    Valid = false,
+                    Message = Resources.Agent.NotFound
+                };
             }
 
             var playerWithdrawals = await _repository.WithdrawForms
@@ -66,8 +67,8 @@ namespace Tgs.Report.Core.Queries.Agent
 
             var agentDividends = await _repository.AgentDividends
                 .Where(x => x.BrandId == request.BrandId)
-                .Where(x => x.CreatedOn >= request.From.ToUniversalTime())
-                .Where(x => x.CreatedOn < request.To.ToUniversalTime())
+                .Where(x => x.From >= request.From.ToUniversalTime())
+                .Where(x => x.To < request.To.ToUniversalTime())
                 .Where(x => agentIds.Contains(x.AgentId))
                 .GroupBy(x => x.AgentId,
                     (agentId, list) => new

@@ -12,18 +12,15 @@ namespace Tgs.Report.Core.Queries.Agent
     {
         private readonly ITgsRepository _repository;
 
-        public GetAgentDividendDetailQueryHandler(ITgsRepository repository)
-        {
-            _repository = repository;
-        }
+        public GetAgentDividendDetailQueryHandler(ITgsRepository repository) => _repository = repository;
 
         public async Task<PagedResponse<AgentDividendDetailModel>> Handle(
             GetAgentDividendDetailsRequest request,
             CancellationToken cancellationToken)
         {
             var agentDividends = await _repository.AgentDividends.Where(x => x.AgentId == request.AgentId)
-                .Where(x => x.CreatedOn >= request.From.ToUniversalTime())
-                .Where(x => x.CreatedOn < request.To.ToUniversalTime())
+                .Where(x => x.From >= request.From.ToUniversalTime())
+                .Where(x => x.To < request.To.ToUniversalTime())
                 .GroupBy(x => new
                     {
                         x.AgentId,
