@@ -42,9 +42,13 @@ namespace Tgs.Report.Core.Queries.Player
                 0,
                 requestTo.Offset);
 
-            var players = await _repository.Players.Where(x => x.BrandId == request.BrandId)
-                .Include(x => x.Vip)
-                .ToArrayAsync(cancellationToken);
+            var players = request.HasUpperAgent is null
+                ? await _repository.Players.Where(x => x.BrandId == request.BrandId)
+                    .Include(x => x.Vip)
+                    .ToArrayAsync(cancellationToken)
+                : await _repository.Players.Where(x => x.BrandId == request.BrandId && x.AgentId.HasValue == request.HasUpperAgent)
+                    .Include(x => x.Vip)
+                    .ToArrayAsync(cancellationToken);
 
             var tgsPlayer = !string.IsNullOrEmpty(request.Username)
                 ? players.FirstOrDefault(x =>
