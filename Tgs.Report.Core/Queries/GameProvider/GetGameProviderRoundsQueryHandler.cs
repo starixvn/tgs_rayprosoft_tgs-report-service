@@ -26,6 +26,7 @@ namespace Tgs.Report.Core.Queries.GameProvider
             CancellationToken cancellationToken)
             => _gameProviderAggregateService.GetQueries()
                 .Where(request.GameProviderId, x => x.GameProviderId == request.GameProviderId)
+                .Where(request.CurrencyCode, x => x.CurrencyCode == request.CurrencyCode)
                 .Where(x => x.ReportDate >= request.From && x.ReportDate < request.To)
                 .Join(_gameProviderService.GetQueries(),
                     a => a.GameProviderId,
