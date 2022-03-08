@@ -42,9 +42,16 @@ namespace Tgs.Report.Core.Queries.Player
                 0,
                 requestTo.Offset);
 
-            var players = await _repository.Players.Where(x => x.BrandId == request.BrandId)
-                .Include(x => x.Vip)
-                .ToArrayAsync(cancellationToken);
+            var players = request.HasUpperAgent is null
+                ? await _repository.Players.Where(x => x.BrandId == request.BrandId)
+                    .Include(x => x.Vip)
+                    .ToArrayAsync(cancellationToken)
+                : await _repository.Players
+                    .Where(x => x.BrandId == request.BrandId)
+                    .Where(request.HasUpperAgent, x => x.AgentId != null)
+                    .Where(!request.HasUpperAgent, x => x.AgentId == null)
+                    .Include(x => x.Vip)
+                    .ToArrayAsync(cancellationToken);
 
             var tgsPlayer = !string.IsNullOrEmpty(request.Username)
                 ? players.FirstOrDefault(x =>
@@ -54,7 +61,7 @@ namespace Tgs.Report.Core.Queries.Player
             if (!string.IsNullOrEmpty(request.Username) && tgsPlayer is null)
             {
                 return new PagedResponse<PlayerContributionModel>
-                    { Valid = false, Message = Resources.Player.NotFound };
+                { Valid = false, Message = Resources.Player.NotFound };
             }
 
             var tgsPlayers = request.Level == null
