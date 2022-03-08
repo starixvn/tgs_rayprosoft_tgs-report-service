@@ -9,32 +9,38 @@ namespace Tgs.Report.Repository
 {
     public interface ITgsRepository
     {
-        DbSet<AgentDividendCondition> AgentDividendConditions { get; init; }
-        DbSet<AgentDividendMultipleLayer> AgentDividendMultipleLayers { get; init; }
-        DbSet<AgentDividend> AgentDividends { get; init; }
-        DbSet<AgentTransaction> AgentTransactions { get; init; }
-        DbSet<Agent> Agents { get; init; }
-        DbSet<BrandCurrency> BrandCurrencies { get; init; }
-        DbSet<BrandGame> BrandGames { get; init; }
-        DbSet<Brand> Brands { get; init; }
-        DbSet<Currency> Currencies { get; init; }
-        DbSet<Department> Departments { get; init; }
-        DbSet<GameAction> GameActions { get; init; }
-        DbSet<GameProvider> GameProviders { get; init; }
-        DbSet<Game> Games { get; init; }
-        DbSet<Licensee> Licensees { get; init; }
-        DbSet<PlayerAggregate> PlayerAggregates { get; init; }
-        DbSet<PlayerBucketHistory> PlayerBucketHistories { get; init; }
-        DbSet<PlayerBucket> PlayerBuckets { get; init; }
-        DbSet<PlayerGameRebateAggregate> PlayerGameRebateAggregates { get; init; }
-        DbSet<Player> Players { get; init; }
-        DbSet<RoundAggregate> RoundAggregates { get; init; }
-        DbSet<WithdrawForm> WithdrawForms { get; init; }
-        DbSet<User> Users { get; init; }
-        DbSet<Transaction> Transactions { get; init; }
-        DbSet<Round> Rounds { get; init; }
-        DbSet<Setting> Settings { get; init; }
-        DbSet<RoundDetail> RoundDetails { get; init; }
+        DbSet<AgentDividendCondition> AgentDividendConditions { get; set; }
+        DbSet<AgentDividendMultipleLayer> AgentDividendMultipleLayers { get; set; }
+        DbSet<AgentDividend> AgentDividends { get; set; }
+        DbSet<AgentTransaction> AgentTransactions { get; set; }
+        DbSet<Agent> Agents { get; set; }
+        DbSet<BrandCurrency> BrandCurrencies { get; set; }
+        DbSet<BrandGame> BrandGames { get; set; }
+        DbSet<Brand> Brands { get; set; }
+        DbSet<Currency> Currencies { get; set; }
+        DbSet<Department> Departments { get; set; }
+        DbSet<GameAction> GameActions { get; set; }
+        DbSet<GameProvider> GameProviders { get; set; }
+        DbSet<Game> Games { get; set; }
+        DbSet<Licensee> Licensees { get; set; }
+        DbSet<PlayerAggregate> PlayerAggregates { get; set; }
+        DbSet<PlayerBucketHistory> PlayerBucketHistories { get; set; }
+        DbSet<PlayerBucket> PlayerBuckets { get; set; }
+        DbSet<PlayerGameRebateAggregate> PlayerGameRebateAggregates { get; set; }
+        DbSet<Player> Players { get; set; }
+        DbSet<RoundAggregate> RoundAggregates { get; set; }
+        DbSet<WithdrawForm> WithdrawForms { get; set; }
+        DbSet<User> Users { get; set; }
+        DbSet<Transaction> Transactions { get; set; }
+        DbSet<Round> Rounds { get; set; }
+        DbSet<Setting> Settings { get; set; }
+        DbSet<RoundDetail> RoundDetails { get; set; }
+        DbSet<BrandGameProviderAggregate> BrandGameProviderAggregates { get; set; }
+        DbSet<BrandGameProviderAggregateAuditLog> BrandGameProviderAggregateAuditLogs { get; set; }
+        DbSet<BrandGameProviderAggregateRecord> BrandGameProviderAggregateRecords { get; set; }
+        DbSet<GameProviderAggregate> GameProviderAggregates { get; set; }
+        DbSet<GameProviderAggregateAuditLog> GameProviderAggregateAuditLogs { get; set; }
+        DbSet<GameProviderAggregateRecord> GameProviderAggregateRecords { get; set; }
 
         IDbContextTransaction CurrentTransaction { get; }
         DbSet<T> Set<T>() where T : class;

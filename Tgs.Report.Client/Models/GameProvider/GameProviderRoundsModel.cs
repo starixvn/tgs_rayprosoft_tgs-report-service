@@ -6,11 +6,11 @@ namespace Tgs.Report.Client.Models.GameProvider
     {
         public Guid GameProviderId { get; init; }
 
-        public string GameProviderName { get; init; }
+        public string GameProviderName { get; init; } = default!;
 
-        public string CurrencyCode { get; init; }
+        public string CurrencyCode { get; init; } = default!;
 
-        public int TransactionCount { get; init; }
+        public int TransactionCount { get; set; }
 
         public decimal BetAmount { get; init; }
 
