@@ -10,5 +10,7 @@ namespace Tgs.Report.ViewModel.GameProvider
         public DateTimeOffset To { get; init; }
 
         public Guid? GameProviderId { get; init; }
+
+        public string? CurrencyCode { get; init; }
     }
 }
