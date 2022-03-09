@@ -67,6 +67,19 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
+        public async ValueTask<GetBetRecordsResponse> GetBetRecordsAsync(GetBetRecordsRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/roundReport/betRecords?", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            return JsonSerializer.Deserialize<GetBetRecordsResponse>(await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+
         public async ValueTask<PagedResponse<OpenRoundModel>> GetOpenRoundsAsync(GetOpenRoundsRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/roundReport/openRounds?", request);
