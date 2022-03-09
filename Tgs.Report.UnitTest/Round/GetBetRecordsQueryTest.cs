@@ -57,6 +57,7 @@ namespace Tgs.Report.UnitTest.Round
             var request = new GetBetRecordsRequest
             {
                 BrandId = brandId,
+                PlayerCode = "PlayerCode",
                 From = DateTimeOffset.UtcNow.AddDays(-1),
                 To = DateTimeOffset.UtcNow.AddDays(1)
             };
@@ -70,7 +71,7 @@ namespace Tgs.Report.UnitTest.Round
 
             var response = await sut.Handle(request, default);
 
-            Assert.AreEqual(1, response.Items.Length);
+            Assert.AreEqual(1, response.TotalCount);
         }
 
         private static Fixture CreatePlayerFixture(Guid brandId)
