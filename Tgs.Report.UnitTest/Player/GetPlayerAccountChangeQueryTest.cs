@@ -41,6 +41,30 @@ namespace Tgs.Report.UnitTest.Player
             Assert.AreEqual(1, response.TotalCount);
         }
 
+        [Test]
+        public async Task Can_Get_Player_Account_Change_Total_Amount()
+        {
+            var fakeRepository = Substitute.For<IPlayerFactory>();
+
+            var sut = new GetPlayerAccountChangeTotalAmountQueryHandler(fakeRepository);
+
+            var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");            
+
+            var request = new GetPlayerAccountChangesTotalAmountRequest
+            {
+                BrandId = brandId,
+                PlayerCode = "PlayerCode",
+                From = DateTimeOffset.UtcNow.AddDays(-1),
+                To = DateTimeOffset.UtcNow.AddDays(1)
+            };            
+            
+            await sut.Handle(request, default);
+
+            _ = fakeRepository
+                .Received(1)
+                .GetPlayerAccountChangeTotalAmountAsync(request);
+        }
+
         private static Fixture CreatePlayerAccountChangeModelFixture(DateTimeOffset date)
         {
             var fixture = new Fixture();

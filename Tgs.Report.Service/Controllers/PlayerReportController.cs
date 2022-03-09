@@ -17,29 +17,35 @@ namespace Tgs.Report.Service.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("contribution")]
+        [HttpGet("contribution", Name = "GetPlayerContributions")]
         [Description("Get player contributions")]
         public Task<PagedResponse<PlayerContributionModel>> GetPlayerContributionsAsync(
-            [FromQuery] GetPlayerContributionsRequest request) =>
-            _mediator.Send(request);
+            [FromQuery] GetPlayerContributionsRequest request)
+            => _mediator.Send(request);
 
-        [HttpGet("accountChanges")]
+        [HttpGet("accountChanges", Name = "GetPlayerAccountChanges")]
         [Description("Get player account changes")]
         public Task<PagedResponse<PlayerAccountChangeModel>> GetPlayerAccountChangesAsync(
-            [FromQuery] GetPlayerAccountChangesRequest request) =>
-            _mediator.Send(request);
+            [FromQuery] GetPlayerAccountChangesRequest request)
+            => _mediator.Send(request);
 
-        [HttpGet("exportPlayerContributions")]
+        [HttpGet("accountChangesTotal", Name = "GetPlayerAccountChangesTotalAmount")]
+        [Description("Get player account changes total amount")]
+        public Task<decimal> GetPlayerAccountChangesTotalAmountAsync(
+            [FromQuery] GetPlayerAccountChangesTotalAmountRequest request)
+            => _mediator.Send(request);
+
+        [HttpGet("exportPlayerContributions", Name = "ExportPlayerContributions")]
         [Description("export player contributions")]
         public async Task<IActionResult> ExportPlayerContributionsAsync(
-            [FromQuery] ExportPlayerContributionsRequest request) => File(
-            await _mediator.Send(request).ConfigureAwait(false),
+            [FromQuery] ExportPlayerContributionsRequest request)
+            => File(await _mediator.Send(request).ConfigureAwait(false),
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 
-        [HttpGet("playersAccountChanges")]
+        [HttpGet("playersAccountChanges", Name = "GetPlayersAccountChanges")]
         [Description("Get account changes of multiple players")]
         public Task<PagedResponse<PlayersAccountChangeModel>> GetPlayersAccountChangesAsync(
-            [FromQuery] GetPlayersAccountChangesRequest request) =>
-            _mediator.Send(request);
+            [FromQuery] GetPlayersAccountChangesRequest request)
+            => _mediator.Send(request);
     }
 }

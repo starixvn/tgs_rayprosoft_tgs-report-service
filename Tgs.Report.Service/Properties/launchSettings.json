@@ -20,6 +20,7 @@
       "publishAllPorts": true,
       "useSSL": true,
       "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
         "OTEL_SERVICE_NAME": "Report-Api(local)",
         "NODE_IP": "192.168.50.112"
       }

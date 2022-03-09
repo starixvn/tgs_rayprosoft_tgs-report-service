@@ -56,6 +56,9 @@ namespace Tgs.Report.Client
         ValueTask<PagedResponse<PlayerAccountChangeModel>> GetPlayerAccountChangesAsync(
             GetPlayerAccountChangesRequest request);
 
+        ValueTask<decimal> GetPlayerAccountChangesTotalAmountAsync(
+            GetPlayerAccountChangesTotalRequest request);
+
         ValueTask<PagedResponse<PlayersAccountChangeModel>> GetPlayersAccountChangesAsync(
             GetPlayersAccountChangesRequest request);
 
