@@ -10,7 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.ConfigureAppConfiguration((_, builder) =>
 {
-    builder.AddJsonFile("/config/appsettings.json", true);
+    builder.AddJsonFile("/config/appsettings.json", true)
+        .AddEnvironmentVariables();
 });
 
 builder.Services
@@ -35,6 +36,20 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddBackOfficeApplicationServices();
+
+builder.Logging
+    .AddOpenTelemetry(options =>
+    {
+        options.IncludeFormattedMessage = true;
+        options.ParseStateValues = true;
+        _ = options.AddFluentdForwardExporter(fluentOptions =>
+        {
+            var nodeIp = builder.Configuration.GetValue<string>("NODE_IP");
+            fluentOptions.Host = nodeIp;
+            fluentOptions.Tag = builder.Configuration.GetValue<string>("OTEL_SERVICE_NAME");
+            fluentOptions.UseMessagePack();
+        });
+    });
 
 builder.Services
     .AddOptions<OtlpExporterOptions>()
