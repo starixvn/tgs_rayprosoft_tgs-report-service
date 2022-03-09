@@ -22,6 +22,8 @@ namespace Tgs.Report.Client
 
         ValueTask<PagedResponse<RoundModel>> GetRoundsAsync(GetRoundsRequest request);
 
+        ValueTask<GetBetRecordsResponse> GetBetRecordsAsync(GetBetRecordsRequest request);
+
         ValueTask<PagedResponse<RoundModel>> GetAgentPlayerRoundsAsync(GetAgentPlayerRoundsRequest request);
 
         ValueTask<PagedResponse<OpenRoundModel>> GetOpenRoundsAsync(GetOpenRoundsRequest request);
