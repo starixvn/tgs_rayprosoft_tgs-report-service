@@ -1,10 +1,16 @@
-﻿namespace Tgs.Report.ViewModel.GameProvider
+﻿using System;
+
+namespace Tgs.Report.ViewModel.BrandGameProvider
 {
-    public record GameProviderRoundTotalModel
+    public record BrandGameProviderRoundsModel
     {
+        public Guid GameProviderId { get; init; }
+
+        public string GameProviderName { get; init; } = default!;
+
         public string CurrencyCode { get; init; } = default!;
 
-        public int TransactionCount { get; init; }
+        public int TransactionCount { get; set; }
 
         public decimal BetAmount { get; init; }
 

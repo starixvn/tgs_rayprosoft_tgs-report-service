@@ -9,7 +9,6 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddReportCore(this IServiceCollection services)
         {
             services.AddMediatR(Assembly.GetExecutingAssembly());
-            services.AddTransient(typeof(ITgsService<>), typeof(TgsService<>));
             services.AddTransient<IRoundFactory, RoundFactory>();
             services.AddTransient<IPlayerFactory, PlayerFactory>();
 

@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Tgs.Report.Client.Models;
 using Tgs.Report.Client.Models.Agent;
+using Tgs.Report.Client.Models.BrandGameProvider;
 using Tgs.Report.Client.Models.GameAction;
 using Tgs.Report.Client.Models.GameProvider;
 using Tgs.Report.Client.Models.LicenseeMarket;
@@ -455,17 +456,18 @@ namespace Tgs.Report.Client
             return stream;
         }
 
-        public async ValueTask<GetGameProviderRoundsResponse> GetGameProviderRoundsAsync(
-            GetGameProviderRoundsRequest request)
+        public async ValueTask<GetBrandGameProviderRoundsResponse> GetBrandGameProviderRoundsAsync(
+            GetBrandGameProviderRoundsRequest request)
         {
-            var path = ClientPath.AppendWithProperties("/api/gameProviderReport?", request);
+            var path = ClientPath.AppendWithProperties("/api/brandGameProviderReport?", request);
 
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
 
-            return JsonSerializer.Deserialize<GetGameProviderRoundsResponse>(await response.Content.ReadAsStringAsync(),
+            return JsonSerializer.Deserialize<GetBrandGameProviderRoundsResponse>(
+                await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
@@ -523,6 +525,21 @@ namespace Tgs.Report.Client
             _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<PagedResponse<RoundModel>>(await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+
+        public async ValueTask<PagedResponse<GameProviderRoundsModel>> GetGameProviderRoundsAsync(
+            GetGameProviderRoundsRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/gameProviderReport?", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            return JsonSerializer.Deserialize<PagedResponse<GameProviderRoundsModel>>(
+                await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
     }

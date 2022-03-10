@@ -15,6 +15,7 @@ namespace Microsoft.Extensions.DependencyInjection
             });
 
             services.AddScoped<ITgsRepository>(c => c.GetRequiredService<TgsRepository>());
+            services.AddTransient(typeof(ITgsService<>), typeof(TgsService<>));
 
             return services;
         }

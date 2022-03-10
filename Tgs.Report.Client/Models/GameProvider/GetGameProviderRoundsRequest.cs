@@ -8,10 +8,8 @@ namespace Tgs.Report.Client.Models.GameProvider
 
         public DateTimeOffset To { get; init; }
 
-        public Guid BrandId { get; init; }
+        public Guid? GameProviderId { get; init; }
 
-        public string? GameProviderCode { get; init; }
-
-        public short? GameType { get; init; }
+        public string? CurrencyCode { get; init; }
     }
 }
