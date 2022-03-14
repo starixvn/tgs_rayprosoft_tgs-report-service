@@ -34,7 +34,7 @@ namespace Tgs.Report.Client
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<PagedResponse<VipModel>>(await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
@@ -48,7 +48,7 @@ namespace Tgs.Report.Client
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<PagedResponse<VipRebateModel>>(await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
@@ -61,9 +61,22 @@ namespace Tgs.Report.Client
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<PagedResponse<RoundModel>>(await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+
+        public async ValueTask<GetBetRecordsResponse> GetBetRecordsAsync(GetBetRecordsRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/roundReport/betRecords?", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            return JsonSerializer.Deserialize<GetBetRecordsResponse>(await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
@@ -74,7 +87,7 @@ namespace Tgs.Report.Client
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<PagedResponse<OpenRoundModel>>(await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
@@ -87,7 +100,7 @@ namespace Tgs.Report.Client
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<PagedResponse<ClosedRoundModel>>(
                 await response.Content.ReadAsStringAsync(),
@@ -101,7 +114,7 @@ namespace Tgs.Report.Client
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<JsonDocument?>(await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
@@ -114,7 +127,7 @@ namespace Tgs.Report.Client
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<PagedResponse<MarketModel>>(await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
@@ -128,7 +141,7 @@ namespace Tgs.Report.Client
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<PagedResponse<AgentContributionModel>>(
                 await response.Content.ReadAsStringAsync(),
@@ -143,7 +156,7 @@ namespace Tgs.Report.Client
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<PagedResponse<PlayerContributionModel>>(
                 await response.Content.ReadAsStringAsync(),
@@ -158,7 +171,7 @@ namespace Tgs.Report.Client
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<PagedResponse<TeamInfoModel>>(await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
@@ -172,7 +185,7 @@ namespace Tgs.Report.Client
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<PagedResponse<AgentDividendModel>>(
                 await response.Content.ReadAsStringAsync(),
@@ -187,7 +200,7 @@ namespace Tgs.Report.Client
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<PagedResponse<AgentPlayerWinLossModel>>(
                 await response.Content.ReadAsStringAsync(),
@@ -202,7 +215,7 @@ namespace Tgs.Report.Client
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<PagedResponse<AgentDividendDetailModel>>(
                 await response.Content.ReadAsStringAsync(),
@@ -217,7 +230,7 @@ namespace Tgs.Report.Client
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<PagedResponse<PlayerAccountChangeModel>>(
                 await response.Content.ReadAsStringAsync(),
@@ -232,7 +245,7 @@ namespace Tgs.Report.Client
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<PagedResponse<PlayersAccountChangeModel>>(
                 await response.Content.ReadAsStringAsync(),
@@ -247,7 +260,7 @@ namespace Tgs.Report.Client
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<PagedResponse<AgentAccountChangeModel>>(
                 await response.Content.ReadAsStringAsync(),
@@ -296,7 +309,7 @@ namespace Tgs.Report.Client
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<LicenseeMarketsResponse>(await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
@@ -312,7 +325,7 @@ namespace Tgs.Report.Client
 
             var response = await _client.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             var stream = await response.Content.ReadAsStreamAsync();
 
@@ -329,7 +342,7 @@ namespace Tgs.Report.Client
 
             var response = await _client.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             var stream = await response.Content.ReadAsStreamAsync();
 
@@ -346,7 +359,7 @@ namespace Tgs.Report.Client
 
             var response = await _client.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             var stream = await response.Content.ReadAsStreamAsync();
 
@@ -363,7 +376,7 @@ namespace Tgs.Report.Client
 
             var response = await _client.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             var stream = await response.Content.ReadAsStreamAsync();
 
@@ -380,7 +393,7 @@ namespace Tgs.Report.Client
 
             var response = await _client.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             var stream = await response.Content.ReadAsStreamAsync();
 
@@ -399,7 +412,7 @@ namespace Tgs.Report.Client
 
             var response = await _client.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             var stream = await response.Content.ReadAsStreamAsync();
 
@@ -449,7 +462,7 @@ namespace Tgs.Report.Client
 
             var response = await _client.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             var stream = await response.Content.ReadAsStreamAsync();
 
@@ -464,7 +477,7 @@ namespace Tgs.Report.Client
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<GetBrandGameProviderRoundsResponse>(
                 await response.Content.ReadAsStringAsync(),
@@ -479,7 +492,7 @@ namespace Tgs.Report.Client
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<PagedResponse<AgentDividendTeamDetailModel>>(
                 await response.Content.ReadAsStringAsync(),
@@ -494,7 +507,7 @@ namespace Tgs.Report.Client
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<GetAdditionalExpensesResponse>(
                 await response.Content.ReadAsStringAsync(),
@@ -508,7 +521,7 @@ namespace Tgs.Report.Client
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<PagedResponse<GameActionModel>>(
                 await response.Content.ReadAsStringAsync(),
@@ -536,9 +549,24 @@ namespace Tgs.Report.Client
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<PagedResponse<GameProviderRoundsModel>>(
+                await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+
+        public async ValueTask<decimal> GetPlayerAccountChangesTotalAmountAsync(
+            GetPlayerAccountChangesTotalRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/playerReport/accountChangesTotal?", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+            _ = response.EnsureSuccessStatusCode();
+
+            return JsonSerializer.Deserialize<decimal>(
                 await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }

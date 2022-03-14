@@ -8,11 +8,9 @@ using Tgs.Report.Service.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.ConfigureAppConfiguration((_, builder) =>
-{
-    builder.AddJsonFile("/config/appsettings.json", true)
-        .AddEnvironmentVariables();
-});
+builder.Configuration
+    .AddJsonFile("/config/appsettings.json", true)
+    .AddEnvironmentVariables();
 
 builder.Services
     .AddHttpClient()
