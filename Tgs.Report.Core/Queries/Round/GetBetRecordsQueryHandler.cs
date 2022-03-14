@@ -40,15 +40,28 @@ namespace Tgs.Report.Core.Queries.Round
                     x.CreatedOn <= request.To.ToUniversalTime())
                 .Where(request.GameProviderId, x => request.GameProviderId == x.GameProviderId)
                 .Where(request.Status, x => request.Status == x.ClientStatus)
-                .Where(x => x.PlayerCode == request.PlayerCode);
+                .Where(x => x.PlayerCode == request.PlayerCode)
+                .GroupJoin(_gameService.GetQueries(),
+                    round => round.GameId, game => game.Id,
+                    (round, game) => new
+                    {
+                        round,
+                        game
+                    })
+                .SelectMany(x => x.game.DefaultIfEmpty(), (x, game) => new
+                {
+                    x.round,
+                    game
+                })
+                .Where(request.GameType, x => x.game!.Type == (short?)request.GameType);
 
-            var total = await query.GroupBy(q => q.PlayerCode,
+            var total = await query.GroupBy(q => q.round.PlayerCode,
                 (playerCode, rounds) => new
                 {
-                    BetAmount = rounds.Sum(r => r.BetAmount) ?? 0M,
-                    ValidBetAmount = rounds.Sum(r => r.ValidBetAmount) ?? 0M,
-                    SettleAmount = rounds.Sum(r => r.SettleAmount) ?? 0M,
-                    WinLoss = rounds.Sum(r => r.WinLoss) ?? 0M
+                    BetAmount = rounds.Sum(r => r.round.BetAmount) ?? 0M,
+                    ValidBetAmount = rounds.Sum(r => r.round.ValidBetAmount) ?? 0M,
+                    SettleAmount = rounds.Sum(r => r.round.SettleAmount) ?? 0M,
+                    WinLoss = rounds.Sum(r => r.round.WinLoss) ?? 0M
                 }).FirstOrDefaultAsync(cancellationToken) ?? new
             {
                 BetAmount = 0M,
@@ -60,30 +73,18 @@ namespace Tgs.Report.Core.Queries.Round
             var betRecords = await query
                 .GroupJoin(
                     _playerService.GetQueries(),
-                    round => round.PlayerCode, player => player.PlayerCode,
-                    (round, player) => new
+                    combine => combine.round.PlayerCode, player => player.PlayerCode,
+                    (combine, player) => new
                     {
-                        round,
+                        combine.round,
+                        combine.game,
                         player
                     })
                 .SelectMany(x => x.player.DefaultIfEmpty(), (x, player) => new
                 {
                     x.round,
+                    x.game,
                     player
-                })
-                .GroupJoin(_gameService.GetQueries(),
-                    combine => combine.round.GameId, game => game.Id,
-                    (combine, game) => new
-                    {
-                        combine.round,
-                        combine.player,
-                        game
-                    })
-                .SelectMany(x => x.game.DefaultIfEmpty(), (x, game) => new
-                {
-                    x.round,
-                    x.player,
-                    game
                 })
                 .GroupJoin(_roundDetailService.GetQueries(), c => c.round.Id, detail => detail.RoundId,
                     (combine, detail) => new
@@ -100,7 +101,6 @@ namespace Tgs.Report.Core.Queries.Round
                     x.game,
                     detail
                 })
-                .Where(request.GameType, x => x.game!.Type == (short?)request.GameType)
                 .GroupJoin(_gameProviderService.GetQueries(), combine => combine.round.GameProviderId,
                     gameProvider => gameProvider.Id,
                     (combine, gameProvider) => new
