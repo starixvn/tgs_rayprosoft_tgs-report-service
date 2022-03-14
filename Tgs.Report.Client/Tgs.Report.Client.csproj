@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Nullable>enable</Nullable>
-	  <Version>0.0.11</Version>
+    <Nullable>enable</Nullable>	  
+	<Version>0.0.14</Version>
   </PropertyGroup>
 
   <ItemGroup>
