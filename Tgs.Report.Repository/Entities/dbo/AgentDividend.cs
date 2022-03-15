@@ -19,7 +19,7 @@ namespace Tgs.Report.Repository.Configurations
         public DateTimeOffset To { get; set; }
         public decimal DepositAmount { get; set; }
         public decimal WithdrawalAmount { get; set; }
-        public decimal AdjustmentAmount { get; set; }
+        public decimal CompanyAdjustAmount { get; set; }
         public decimal BonusAmount { get; set; }
         public decimal BetAmount { get; set; }
         public decimal Turnover { get; set; }
@@ -45,6 +45,7 @@ namespace Tgs.Report.Repository.Configurations
         public decimal RebateAmount { get; set; }
         public decimal OriginalTurnover { get; set; }
         public decimal ValidBetAmount { get; set; }
+        public decimal AgentAdjustAmount { get; set; }
 
         public virtual ICollection<AgentDividendMultipleLayer> AgentDividendMultipleLayers { get; set; }
     }

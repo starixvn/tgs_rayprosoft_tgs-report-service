@@ -11,7 +11,7 @@ namespace Tgs.Report.Client.Models.LicenseeMarket
         public int FirstFundInCount { get; init; }
         public decimal DepositAmount { get; init; }
         public decimal WithdrawalAmount { get; init; }
-        public decimal AdjustmentAmount { get; init; }
+        public decimal CompanyAdjustAmount { get; init; }
         public decimal BonusAmount { get; init; }
         public decimal BetAmount { get; init; }
         public decimal Turnover { get; init; }

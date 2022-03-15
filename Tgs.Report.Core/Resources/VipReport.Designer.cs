@@ -61,20 +61,20 @@ namespace Tgs.Report.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ADJUSTMENT AMOUNT.
-        /// </summary>
-        public static string AdjustmentAmount {
-            get {
-                return ResourceManager.GetString("AdjustmentAmount", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to BONUS AMOUNT.
         /// </summary>
         public static string BonusAmount {
             get {
                 return ResourceManager.GetString("BonusAmount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to COMPANY ADJUST AMOUNT.
+        /// </summary>
+        public static string CompanyAdjustAmount {
+            get {
+                return ResourceManager.GetString("CompanyAdjustAmount", resourceCulture);
             }
         }
         

@@ -8,10 +8,7 @@ namespace Tgs.Report.Core.Queries.LicenseeMarket
     {
         private readonly IMediator _mediator;
 
-        public ExportLicenseeMarketsQueryHandler(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+        public ExportLicenseeMarketsQueryHandler(IMediator mediator) => _mediator = mediator;
 
         public async Task<MemoryStream> Handle(
             ExportLicenseeMarketsRequest request,
@@ -36,7 +33,7 @@ namespace Tgs.Report.Core.Queries.LicenseeMarket
                 CurrencyCode = x.CurrencyCode,
                 DepositAmount = x.DepositAmount,
                 WithdrawalAmount = x.WithdrawalAmount,
-                AdjustmentAmount = x.AdjustmentAmount,
+                CompanyAdjustAmount = x.CompanyAdjustAmount,
                 BonusAmount = x.BonusAmount,
                 BetAmount = x.BetAmount,
                 Turnover = x.Turnover,

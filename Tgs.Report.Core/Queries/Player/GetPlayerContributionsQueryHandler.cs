@@ -13,10 +13,7 @@ namespace Tgs.Report.Core.Queries.Player
     {
         private readonly ITgsRepository _repository;
 
-        public GetPlayerContributionsQueryHandler(ITgsRepository repository)
-        {
-            _repository = repository;
-        }
+        public GetPlayerContributionsQueryHandler(ITgsRepository repository) => _repository = repository;
 
         public async Task<PagedResponse<PlayerContributionModel>> Handle(
             GetPlayerContributionsRequest request,
@@ -61,7 +58,10 @@ namespace Tgs.Report.Core.Queries.Player
             if (!string.IsNullOrEmpty(request.Username) && tgsPlayer is null)
             {
                 return new PagedResponse<PlayerContributionModel>
-                { Valid = false, Message = Resources.Player.NotFound };
+                {
+                    Valid = false,
+                    Message = Resources.Player.NotFound
+                };
             }
 
             var tgsPlayers = request.Level == null
@@ -73,7 +73,7 @@ namespace Tgs.Report.Core.Queries.Player
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.UserType == 1 && x.Status == 9000)
                 .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
-                .Where(!string.IsNullOrEmpty(request.Username), x => x.UserId == tgsPlayer.PlayerCode)
+                .Where(tgsPlayer != null, x => x.UserId == tgsPlayer.PlayerCode)
                 .Where(request.Level, x => tgsPlayers.Contains(x.UserId))
                 .GroupBy(x => x.UserId,
                     (userId, withdrawals) => new
@@ -93,14 +93,15 @@ namespace Tgs.Report.Core.Queries.Player
                     {
                         PlayerCode = playerCode,
                         DepositAmount = players.Sum(p => p.DepositAmount),
-                        AdjustmentAmount = players.Sum(p => p.AdjustmentAmount),
+                        CompanyAdjustAmount = players.Sum(p => p.CompanyAdjustAmount),
+                        AgentAdjustAmount = players.Sum(p => p.AgentAdjustAmount),
                         BonusAmount = players.Sum(p => p.RebateAmount + p.PromotionAmount),
                         BetAmount = players.Sum(p => p.BetAmount),
                         ValidBetAmount = players.Sum(p => p.OriginalTurnover),
                         Turnover = players.Sum(p => p.Turnover),
                         WinLossAmount = players.Sum(p => p.WinLossAmount),
                         NetProfit = players.Sum(p
-                            => p.WinLossAmount - p.AdjustmentAmount - p.RebateAmount - p.PromotionAmount)
+                            => p.WinLossAmount - p.AgentAdjustAmount - p.RebateAmount - p.PromotionAmount)
                     })
                 .ToArrayAsync(cancellationToken);
 
@@ -120,7 +121,8 @@ namespace Tgs.Report.Core.Queries.Player
                         DepositAmount = x.DepositAmount,
                         WithdrawalAmount =
                             withdrawalByUserIds.FirstOrDefault(w => w.UserId == x.PlayerCode)?.WithdrawalAmount ?? 0,
-                        AdjustmentAmount = x.AdjustmentAmount,
+                        CompanyAdjustAmount = x.CompanyAdjustAmount,
+                        AgentAdjustAmount = x.AgentAdjustAmount,
                         BonusAmount = x.BonusAmount,
                         BetAmount = x.BetAmount,
                         ValidBetAmount = x.ValidBetAmount,
@@ -141,7 +143,8 @@ namespace Tgs.Report.Core.Queries.Player
                         DepositAmount = 0,
                         WithdrawalAmount =
                             withdrawalByUserIds.FirstOrDefault(w => w.UserId == playerCode)?.WithdrawalAmount ?? 0,
-                        AdjustmentAmount = 0,
+                        CompanyAdjustAmount = 0,
+                        AgentAdjustAmount = 0,
                         BonusAmount = 0,
                         BetAmount = 0,
                         ValidBetAmount = 0,

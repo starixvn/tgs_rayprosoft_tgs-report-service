@@ -12,10 +12,7 @@ namespace Tgs.Report.Core.Queries.Agent
     {
         private readonly ITgsRepository _repository;
 
-        public GetAgentDividendTeamDetailQueryHandler(ITgsRepository repository)
-        {
-            _repository = repository;
-        }
+        public GetAgentDividendTeamDetailQueryHandler(ITgsRepository repository) => _repository = repository;
 
         public async Task<PagedResponse<AgentDividendTeamDetailModel>> Handle(
             GetAgentDividendTeamDetailsRequest request,
@@ -60,7 +57,7 @@ namespace Tgs.Report.Core.Queries.Agent
                         VirtualSportsWinLoss = list.Sum(l => l.VirtualSportsWinLoss),
                         WinLossAmount = list.Sum(l => l.WinLossAmount),
                         AgentDividendAmount = list.Sum(l => l.AgentDividendAmount),
-                        ExpenditureAmount = list.Sum(l => l.PromotionAmount + l.RebateAmount + l.AdjustmentAmount),
+                        ExpenditureAmount = list.Sum(l => l.PromotionAmount + l.RebateAmount + l.AgentAdjustAmount),
                         BonusAmount = list.Sum(l => l.RebateAmount + l.PromotionAmount)
                     }).ToArrayAsync(cancellationToken);
 
