@@ -42,16 +42,10 @@ namespace Tgs.Report.Core.Queries.Player
                 0,
                 requestTo.Offset);
 
-            var players = request.HasUpperAgent is null
-                ? await _repository.Players.Where(x => x.BrandId == request.BrandId)
-                    .Include(x => x.Vip)
-                    .ToArrayAsync(cancellationToken)
-                : await _repository.Players
-                    .Where(x => x.BrandId == request.BrandId)
-                    .Where(request.HasUpperAgent, x => x.AgentId != null)
-                    .Where(!request.HasUpperAgent, x => x.AgentId == null)
-                    .Include(x => x.Vip)
-                    .ToArrayAsync(cancellationToken);
+            var players = await _repository.Players
+                .Where(x => x.BrandId == request.BrandId)
+                .Include(x => x.Vip)
+                .ToArrayAsync(cancellationToken);
 
             var tgsPlayer = !string.IsNullOrEmpty(request.Username)
                 ? players.FirstOrDefault(x =>
@@ -87,6 +81,8 @@ namespace Tgs.Report.Core.Queries.Player
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
                 .Where(!string.IsNullOrEmpty(request.Username), x => x.PlayerCode == tgsPlayer.PlayerCode)
+                .Where(request.HasUpperAgent == true, x => x.AgentId != null)
+                .Where(request.HasUpperAgent == false, x => x.AgentId == null)
                 .Where(request.Level, x => tgsPlayers.Contains(x.PlayerCode))
                 .GroupBy(x => x.PlayerCode,
                     (playerCode, players) => new
