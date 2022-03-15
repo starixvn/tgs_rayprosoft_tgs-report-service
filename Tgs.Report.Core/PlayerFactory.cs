@@ -114,20 +114,16 @@ namespace Tgs.Report.Core
                 where t.RecordedOn >= request.From
                     && t.RecordedOn < request.To
                     && t.PlayerCode == request.PlayerCode
+                    && ((transType == null || t.Type == transType) && gameType == null)
                 select new { t.Amount, t.Type };
-
-            if (gameType is null && transType is not null)
-                queryTransaction = queryTransaction.Where(t => t.Type == transType);
 
             var queryGameAction =
                 from ga in _repository.GameActions
                 where ga.RecordedOn >= request.From
                     && ga.RecordedOn < request.To
                     && ga.PlayerCode == request.PlayerCode
+                    && ((gameType == null || ga.Type == gameType) && transType == null)
                 select new { ga.Amount, ga.Type };
-
-            if (transType is null && gameType is not null)
-                queryGameAction = queryGameAction.Where(t => t.Type == gameType);
 
             var transactionGameActionUnionAll = queryTransaction.Concat(queryGameAction);
 
