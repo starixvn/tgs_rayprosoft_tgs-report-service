@@ -113,8 +113,8 @@
     <value>Withdrawal Amount</value>
     
   </data>
-  <data name="AdjustmentAmount" xml:space="preserve">
-    <value>Adjustment Amount</value>
+  <data name="CompanyAdjustAmount" xml:space="preserve">
+    <value>COMPANY ADJUST AMOUNT</value>
     
   </data>
   <data name="BonusAmount" xml:space="preserve">

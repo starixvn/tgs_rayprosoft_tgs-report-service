@@ -135,7 +135,7 @@
   <data name="BonusAmount" xml:space="preserve">
     <value>红利金额</value>
   </data>
-  <data name="AdjustmentAmount" xml:space="preserve">
+  <data name="AgentAdjustAmount" xml:space="preserve">
     <value>调账</value>
   </data>
   <data name="BetAmount" xml:space="preserve">
@@ -149,5 +149,8 @@
   </data>
   <data name="NetProfit" xml:space="preserve">
     <value>净盈利</value>
+  </data>
+  <data name="CompanyAdjustAmount" xml:space="preserve">
+    <value>公司调账</value>
   </data>
 </root>

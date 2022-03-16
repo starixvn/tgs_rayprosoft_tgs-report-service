@@ -9,10 +9,7 @@ namespace Tgs.Report.Core.Queries.Agent
     {
         private readonly IMediator _mediator;
 
-        public ExportAgentContributionsQueryHandler(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+        public ExportAgentContributionsQueryHandler(IMediator mediator) => _mediator = mediator;
 
         public async Task<MemoryStream> Handle(
             ExportAgentContributionsRequest request,
@@ -40,7 +37,8 @@ namespace Tgs.Report.Core.Queries.Agent
                 DepositAmount = x.DepositAmount,
                 WithdrawalAmount = x.WithdrawalAmount,
                 BonusAmount = x.BonusAmount,
-                AdjustmentAmount = x.AdjustmentAmount,
+                CompanyAdjustAmount = x.CompanyAdjustAmount,
+                AgentAdjustAmount = x.AgentAdjustAmount,
                 BetAmount = x.BetAmount,
                 ValidBetAmount = x.ValidBetAmount,
                 WinLossAmount = x.WinLossAmount,

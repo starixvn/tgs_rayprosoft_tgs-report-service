@@ -9,7 +9,8 @@ namespace Tgs.Report.ViewModel.Player
         public int? Level { get; init; }
         public decimal DepositAmount { get; init; }
         public decimal WithdrawalAmount { get; init; }
-        public decimal AdjustmentAmount { get; init; }
+        public decimal CompanyAdjustAmount { get; init; }
+        public decimal AgentAdjustAmount { get; init; }
         public decimal BonusAmount { get; init; }
         public decimal BetAmount { get; init; }
         public decimal ValidBetAmount { get; init; }

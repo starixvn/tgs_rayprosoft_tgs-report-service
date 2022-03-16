@@ -13,10 +13,7 @@ namespace Tgs.Report.Core.Queries.Player
     {
         private readonly ITgsRepository _repository;
 
-        public GetPlayersAccountChangeQueryHandler(ITgsRepository repository)
-        {
-            _repository = repository;
-        }
+        public GetPlayersAccountChangeQueryHandler(ITgsRepository repository) => _repository = repository;
 
         public async Task<PagedResponse<PlayersAccountChangeModel>> Handle(
             GetPlayersAccountChangesRequest request,

@@ -141,10 +141,13 @@
   <data name="BetAmount" xml:space="preserve">
     <value>投注金额</value>
   </data>
-  <data name="AdjustmentAmount" xml:space="preserve">
+  <data name="AgentAdjustAmount" xml:space="preserve">
     <value>调账</value>
   </data>
   <data name="AgentDividendAmount" xml:space="preserve">
     <value>分红金额</value>
+  </data>
+  <data name="CompanyAdjustAmount" xml:space="preserve">
+    <value>公司调账</value>
   </data>
 </root>
