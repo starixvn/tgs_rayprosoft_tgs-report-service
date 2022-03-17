@@ -96,7 +96,8 @@ namespace Tgs.Report.Core.Queries.Agent
                             WithdrawalAmount =
                                 playerWithdrawals.FirstOrDefault(w => w.PlayerCode == player.PlayerCode)
                                     ?.WithdrawalAmount ?? 0,
-                            AdjustmentAmount = playerAggregate.Sum(p => p.playerAggregate?.AdjustmentAmount ?? 0),
+                            CompanyAdjustAmount = playerAggregate.Sum(p => p.playerAggregate?.CompanyAdjustAmount ?? 0),
+                            AgentAdjustAmount = playerAggregate.Sum(p => p.playerAggregate?.AgentAdjustAmount ?? 0),
                             BonusAmount =
                                 playerAggregate.Sum(p
                                     => p.playerAggregate == null
@@ -108,7 +109,7 @@ namespace Tgs.Report.Core.Queries.Agent
                             WinLossAmount = playerAggregate.Sum(p => p.playerAggregate?.WinLossAmount ?? 0),
                             NetProfit = playerAggregate.Sum(p => p.playerAggregate == null
                                 ? 0
-                                : p.playerAggregate.WinLossAmount - p.playerAggregate.AdjustmentAmount -
+                                : p.playerAggregate.WinLossAmount - p.playerAggregate.AgentAdjustAmount -
                                 p.playerAggregate.RebateAmount -
                                 p.playerAggregate.PromotionAmount)
                         }).ToArray();
@@ -152,7 +153,8 @@ namespace Tgs.Report.Core.Queries.Agent
                             DepositAmount = playerAggregate.Sum(p => p.playerAggregate?.DepositAmount ?? 0),
                             WithdrawalAmount =
                                 playerWithdrawals.Where(w => w.AgentId == agent.Id).Sum(w => w.WithdrawalAmount),
-                            AdjustmentAmount = playerAggregate.Sum(p => p.playerAggregate?.AdjustmentAmount ?? 0),
+                            CompanyAdjustAmount = playerAggregate.Sum(p => p.playerAggregate?.CompanyAdjustAmount ?? 0),
+                            AgentAdjustAmount = playerAggregate.Sum(p => p.playerAggregate?.AgentAdjustAmount ?? 0),
                             BonusAmount =
                                 playerAggregate.Sum(p
                                     => p.playerAggregate == null
@@ -164,7 +166,7 @@ namespace Tgs.Report.Core.Queries.Agent
                             WinLossAmount = playerAggregate.Sum(p => p.playerAggregate?.WinLossAmount ?? 0),
                             NetProfit = playerAggregate.Sum(p => p.playerAggregate == null
                                 ? 0
-                                : p.playerAggregate.WinLossAmount - p.playerAggregate.AdjustmentAmount -
+                                : p.playerAggregate.WinLossAmount - p.playerAggregate.AgentAdjustAmount -
                                 p.playerAggregate.RebateAmount -
                                 p.playerAggregate.PromotionAmount)
                         }).ToArray();

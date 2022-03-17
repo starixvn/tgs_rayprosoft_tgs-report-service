@@ -8,10 +8,7 @@ namespace Tgs.Report.Core.Queries.Market
     {
         private readonly IMediator _mediator;
 
-        public ExportMarketsQueryHandler(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+        public ExportMarketsQueryHandler(IMediator mediator) => _mediator = mediator;
 
         public async Task<MemoryStream> Handle(
             ExportMarketsRequest request,
@@ -34,7 +31,7 @@ namespace Tgs.Report.Core.Queries.Market
                 FirstFundInCount = x.FirstFundInCount,
                 DepositAmount = x.DepositAmount,
                 WithdrawalAmount = x.WithdrawalAmount,
-                AdjustmentAmount = x.AdjustmentAmount,
+                CompanyAdjustAmount = x.CompanyAdjustAmount,
                 BonusAmount = x.BonusAmount,
                 BetAmount = x.BetAmount,
                 ValidBetAmount = x.ValidBetAmount,

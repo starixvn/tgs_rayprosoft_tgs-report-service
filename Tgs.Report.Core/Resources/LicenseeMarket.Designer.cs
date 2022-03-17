@@ -61,15 +61,6 @@ namespace Tgs.Report.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Adjustment Amount.
-        /// </summary>
-        public static string AdjustmentAmount {
-            get {
-                return ResourceManager.GetString("AdjustmentAmount", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Bet Amount.
         /// </summary>
         public static string BetAmount {
@@ -93,6 +84,15 @@ namespace Tgs.Report.Core.Resources {
         public static string BrandCode {
             get {
                 return ResourceManager.GetString("BrandCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to COMPANY ADJUST AMOUNT.
+        /// </summary>
+        public static string CompanyAdjustAmount {
+            get {
+                return ResourceManager.GetString("CompanyAdjustAmount", resourceCulture);
             }
         }
         

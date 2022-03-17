@@ -10,10 +10,7 @@ namespace Tgs.Report.Core.Queries.Market
     {
         private readonly ITgsRepository _repository;
 
-        public GetMarketsQueryHandler(ITgsRepository repository)
-        {
-            _repository = repository;
-        }
+        public GetMarketsQueryHandler(ITgsRepository repository) => _repository = repository;
 
         public async Task<PagedResponse<MarketModel>> Handle(
             GetMarketsRequest request,
@@ -85,7 +82,7 @@ namespace Tgs.Report.Core.Queries.Market
                                 -withdrawalByDates.FirstOrDefault(w => w.Date == market.ReportDate.Date)
                                     ?.WithdrawalAmount ??
                                 0M,
-                            AdjustmentAmount = markets.Sum(m => m.market?.AdjustmentAmount ?? 0M),
+                            CompanyAdjustAmount = markets.Sum(m => m.market?.CompanyAdjustAmount ?? 0M),
                             BonusAmount =
                                 markets.Sum(
                                     m => m.market == null ? 0 : m.market.RebateAmount + m.market.PromotionAmount),
@@ -96,7 +93,7 @@ namespace Tgs.Report.Core.Queries.Market
                             NetProfit = markets.Sum(m
                                 => m.market == null
                                     ? 0M
-                                    : m.market.WinLossAmount - m.market.AdjustmentAmount - m.market.RebateAmount -
+                                    : m.market.WinLossAmount - m.market.CompanyAdjustAmount - m.market.RebateAmount -
                                     m.market.PromotionAmount),
                             AdditionalExpenses = markets.Sum(m => m.market?.AllAgentRebateAmount ?? 0M)
                         })

@@ -10,10 +10,7 @@ namespace Tgs.Report.Core.Queries.Vip
     {
         private readonly ITgsRepository _repository;
 
-        public GetVipReportQueryHandler(ITgsRepository repository)
-        {
-            _repository = repository;
-        }
+        public GetVipReportQueryHandler(ITgsRepository repository) => _repository = repository;
 
         public async Task<PagedResponse<VipModel>> Handle(
             GetVipReportRequest request,
@@ -80,14 +77,14 @@ namespace Tgs.Report.Core.Queries.Vip
                         x.PlayerCode,
                         DepositAmount = players.Sum(m => m.DepositAmount),
                         WithdrawalAmount = players.Sum(m => m.WithdrawalAmount),
-                        AdjustmentAmount = players.Sum(m => m.AdjustmentAmount),
+                        CompanyAdjustAmount = players.Sum(m => m.CompanyAdjustAmount),
                         BonusAmount = players.Sum(m => m.RebateAmount + m.PromotionAmount),
                         BetAmount = players.Sum(m => m.BetAmount),
                         ValidBetAmount = players.Sum(m => m.OriginalTurnover),
                         Turnover = players.Sum(m => m.Turnover),
                         WinLossAmount = players.Sum(m => m.WinLossAmount),
                         NetProfit = players.Sum(m
-                            => m.WinLossAmount - m.AdjustmentAmount - m.RebateAmount - m.PromotionAmount)
+                            => m.WinLossAmount - m.CompanyAdjustAmount - m.RebateAmount - m.PromotionAmount)
                     })
                 .GroupJoin(_repository.PlayerGameRebateAggregates
                         .Where(x => x.BrandId == request.BrandId)
@@ -115,7 +112,7 @@ namespace Tgs.Report.Core.Queries.Vip
                         x.p.PlayerCode,
                         x.p.DepositAmount,
                         x.p.WithdrawalAmount,
-                        x.p.AdjustmentAmount,
+                        x.p.CompanyAdjustAmount,
                         x.p.BonusAmount,
                         x.p.BetAmount,
                         x.p.ValidBetAmount,
@@ -131,7 +128,7 @@ namespace Tgs.Report.Core.Queries.Vip
                         x.PlayerCode,
                         x.DepositAmount,
                         x.WithdrawalAmount,
-                        x.AdjustmentAmount,
+                        x.CompanyAdjustAmount,
                         x.BonusAmount,
                         x.BetAmount,
                         x.ValidBetAmount,
@@ -145,7 +142,7 @@ namespace Tgs.Report.Core.Queries.Vip
                         PlayerCode = x.PlayerCode,
                         DepositAmount = x.DepositAmount,
                         WithdrawalAmount = x.WithdrawalAmount,
-                        AdjustmentAmount = x.AdjustmentAmount,
+                        CompanyAdjustAmount = x.CompanyAdjustAmount,
                         RebateAmount =
                             players.Sum(m =>
                                 m.pg.VipRebateAmount),
@@ -170,7 +167,7 @@ namespace Tgs.Report.Core.Queries.Vip
                     DepositAmount = x.DepositAmount,
                     WithdrawalAmount =
                         withdrawalByUserIds.FirstOrDefault(w => w.UserId == player.PlayerCode)?.WithdrawalAmount ?? 0,
-                    AdjustmentAmount = x.AdjustmentAmount,
+                    CompanyAdjustAmount = x.CompanyAdjustAmount,
                     RebateAmount = x.RebateAmount,
                     BonusAmount = x.BonusAmount,
                     BetAmount = x.BetAmount,

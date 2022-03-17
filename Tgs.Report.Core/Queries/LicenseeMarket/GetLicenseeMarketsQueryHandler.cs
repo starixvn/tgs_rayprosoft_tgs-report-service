@@ -9,10 +9,7 @@ namespace Tgs.Report.Core.Queries.LicenseeMarket
     {
         private readonly ITgsRepository _repository;
 
-        public GetLicenseeMarketsQueryHandler(ITgsRepository repository)
-        {
-            _repository = repository;
-        }
+        public GetLicenseeMarketsQueryHandler(ITgsRepository repository) => _repository = repository;
 
         public async Task<LicenseeMarketsResponse> Handle(
             GetLicenseeMarketsRequest request,
@@ -80,13 +77,13 @@ namespace Tgs.Report.Core.Queries.LicenseeMarket
                     FirstFundInCount = playerAggregate.Sum(m => m.FirstFundInCount),
                     DepositAmount = playerAggregate.Sum(m => m.DepositAmount),
                     WithdrawalAmount = playerAggregate.Sum(m => m.WithdrawalAmount),
-                    AdjustmentAmount = playerAggregate.Sum(m => m.AdjustmentAmount),
+                    CompanyAdjustAmount = playerAggregate.Sum(m => m.CompanyAdjustAmount),
                     BonusAmount = playerAggregate.Sum(m => m.RebateAmount + m.PromotionAmount),
                     BetAmount = playerAggregate.Sum(m => m.BetAmount),
                     Turnover = playerAggregate.Sum(m => m.Turnover),
                     WinLossAmount = playerAggregate.Sum(m => m.WinLossAmount),
                     NetProfit = playerAggregate.Sum(m
-                        => m.WinLossAmount - m.AdjustmentAmount - m.RebateAmount - m.PromotionAmount)
+                        => m.WinLossAmount - m.CompanyAdjustAmount - m.RebateAmount - m.PromotionAmount)
                 })
                 .ToArrayAsync(cancellationToken)
                 .ConfigureAwait(false);
@@ -130,7 +127,7 @@ namespace Tgs.Report.Core.Queries.LicenseeMarket
                             DepositAmount = playerAggregates.Sum(m => m.market?.DepositAmount ?? 0),
                             WithdrawalAmount =
                                 withdrawals.FirstOrDefault(x => x.BrandId == market.BrandId)?.WithdrawalAmount ?? 0,
-                            AdjustmentAmount = playerAggregates.Sum(m => m.market?.AdjustmentAmount ?? 0),
+                            CompanyAdjustAmount = playerAggregates.Sum(m => m.market?.CompanyAdjustAmount ?? 0),
                             BonusAmount = playerAggregates.Sum(m => m.market?.BonusAmount ?? 0),
                             BetAmount = playerAggregates.Sum(m => m.market?.BetAmount ?? 0),
                             Turnover = playerAggregates.Sum(m => m.market?.Turnover ?? 0),
@@ -147,7 +144,7 @@ namespace Tgs.Report.Core.Queries.LicenseeMarket
                     FirstFundInCount = Currency.Sum(x => x.FirstFundInCount),
                     DepositAmount = Currency.Sum(x => x.DepositAmount),
                     WithdrawalAmount = Currency.Sum(x => x.WithdrawalAmount),
-                    AdjustmentAmount = Currency.Sum(x => x.AdjustmentAmount),
+                    CompanyAdjustAmount = Currency.Sum(x => x.CompanyAdjustAmount),
                     BonusAmount = Currency.Sum(x => x.BonusAmount),
                     BetAmount = Currency.Sum(x => x.BetAmount),
                     Turnover = Currency.Sum(x => x.Turnover),

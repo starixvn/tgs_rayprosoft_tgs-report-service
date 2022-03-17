@@ -25,9 +25,9 @@ namespace Tgs.Report.Repository.Entities.Configurations
 
             entity.Property(e => e.Id).HasColumnName("id");
 
-            entity.Property(e => e.AdjustmentAmount)
+            entity.Property(e => e.AgentAdjustAmount)
                 .HasPrecision(18, 6)
-                .HasColumnName("adjustment_amount");
+                .HasColumnName("agent_adjust_amount");
 
             entity.Property(e => e.AgentDividendAmount)
                 .HasPrecision(18, 6)
@@ -60,6 +60,10 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.CardGameWinLoss)
                 .HasPrecision(18, 6)
                 .HasColumnName("card_game_win_loss");
+
+            entity.Property(e => e.CompanyAdjustAmount)
+                .HasPrecision(18, 6)
+                .HasColumnName("company_adjust_amount");
 
             entity.Property(e => e.CreatedOn).HasColumnName("created_on");
 
