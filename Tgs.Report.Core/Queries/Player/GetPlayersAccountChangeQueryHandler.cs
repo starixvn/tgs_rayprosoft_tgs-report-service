@@ -25,7 +25,10 @@ namespace Tgs.Report.Core.Queries.Player
                     x.RecordedOn < request.To.ToUniversalTime())
                 .Where(request.TransactionType is not null, x => x.Type == (short?)request.TransactionType)
                 .Where(request.TransactionType is null,
-                    x => x.Type == (short)TransactionType.Adjust || x.Type == (short)TransactionType.Rebate ||
+                    x => x.Type == (short)TransactionType.CompanyAdjust ||
+                        x.Type == (short)TransactionType.AgentAdjust ||
+                        x.Type == (short)TransactionType.SystemAdjust ||
+                        x.Type == (short)TransactionType.Rebate ||
                         x.Type == (short)TransactionType.Promotion ||
                         x.Type == (short)TransactionType.UnsettledBetManual)
                 .Join(_repository.Players,
@@ -64,16 +67,22 @@ namespace Tgs.Report.Core.Queries.Player
                     Description = x.Transaction.Description
                 }).CreatePagedResponseAsync(request);
 
+            if (playersAccountChanges.Items == null)
+            {
+                return playersAccountChanges;
+            }
+
             foreach (var item in playersAccountChanges.Items)
             {
-                if (item.TransactionType != TransactionType.Adjust)
+                if (item.TransactionType is not (TransactionType.CompanyAdjust or TransactionType.AgentAdjust
+                    or TransactionType.SystemAdjust or TransactionType.TransferAdjust))
                 {
                     continue;
                 }
 
-                var adjustRemark =
-                    JsonSerializer.Deserialize<AdjustRemarkModel>(item.Description);
-                item.Description = adjustRemark.Remark;
+                item.Description = item.Description is null
+                    ? ""
+                    : JsonSerializer.Deserialize<AdjustRemarkModel>(item.Description)?.Remark;
             }
 
             return playersAccountChanges;
