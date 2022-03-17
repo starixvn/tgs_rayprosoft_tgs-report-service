@@ -64,10 +64,16 @@ namespace Tgs.Report.Core.Queries.Player
                     .Select(x => x.PlayerCode).ToArray();
 
             var withdrawalByUserIds = await _repository.WithdrawForms
+                .Join(_repository.Players,
+                    wf => wf.UserId,
+                    p => p.PlayerCode,
+                    (wf, p) => new { wf.BrandId, wf.UserType, wf.Status, wf.CreatedOn, wf.UserId, wf.ActualAmount, wf.Amount, p.AgentId })
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.UserType == 1 && x.Status == 9000)
                 .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
-                .Where(tgsPlayer != null, x => x.UserId == tgsPlayer.PlayerCode)
+                .Where(!string.IsNullOrEmpty(request.Username), x => x.UserId == tgsPlayer.PlayerCode)
+                .Where(request.HasUpperAgent == true, x => x.AgentId != null)
+                .Where(request.HasUpperAgent == false, x => x.AgentId == null)
                 .Where(request.Level, x => tgsPlayers.Contains(x.UserId))
                 .GroupBy(x => x.UserId,
                     (userId, withdrawals) => new
