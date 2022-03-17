@@ -4,7 +4,10 @@
     {
         Deposit = 0,
         Withdrawal = 1,
-        Adjust = 2,
+        CompanyAdjust = 2,
+        AgentAdjust = 5100,
+        SystemAdjust = 5200,
+        TransferAdjust = 5300,
         Bonus = 3,
         Rebate = 4,
         Dividend = 5,
