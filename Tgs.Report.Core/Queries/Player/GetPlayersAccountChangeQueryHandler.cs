@@ -26,7 +26,7 @@ namespace Tgs.Report.Core.Queries.Player
                 .Where(request.TransactionType is not null, x => x.Type == (short?)request.TransactionType)
                 .Where(request.TransactionType is null,
                     x => x.Type == (short)TransactionType.CompanyAdjust ||
-                        x.Type >= 5000 &&
+                        x.Type > 5000 &&
                         x.Type < 6000 ||
                         x.Type == (short)TransactionType.Rebate ||
                         x.Type == (short)TransactionType.Promotion ||
