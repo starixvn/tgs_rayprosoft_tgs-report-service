@@ -12,10 +12,7 @@ namespace Tgs.Report.Core.Queries.Agent
     {
         private readonly ITgsRepository _repository;
 
-        public GetAgentPlayerWinLossQueryHandler(ITgsRepository repository)
-        {
-            _repository = repository;
-        }
+        public GetAgentPlayerWinLossQueryHandler(ITgsRepository repository) => _repository = repository;
 
         public async Task<PagedResponse<AgentPlayerWinLossModel>> Handle(
             GetAgentPlayerWinLossRequest request,
@@ -26,18 +23,26 @@ namespace Tgs.Report.Core.Queries.Agent
 
             if (agent == null)
             {
-                return new PagedResponse<AgentPlayerWinLossModel> { Valid = false, Message = Resources.Agent.NotFound };
+                return new PagedResponse<AgentPlayerWinLossModel>
+                {
+                    Valid = false,
+                    Message = Resources.Agent.NotFound
+                };
             }
 
             var agentDividends = await _repository.AgentDividends
                 .Where(x => x.AgentId == request.AgentId)
-                .Where(x => x.CreatedOn >= request.From.ToUniversalTime())
-                .Where(x => x.CreatedOn < request.To.ToUniversalTime()).ToArrayAsync(cancellationToken);
+                .Where(x => x.From >= request.From.ToUniversalTime())
+                .Where(x => x.To < request.To.ToUniversalTime())
+                .ToArrayAsync(cancellationToken);
 
             if (!agentDividends.Any())
             {
                 return new PagedResponse<AgentPlayerWinLossModel>
-                    { Valid = true, Items = Array.Empty<AgentPlayerWinLossModel>() };
+                {
+                    Valid = true,
+                    Items = Array.Empty<AgentPlayerWinLossModel>()
+                };
             }
 
             var from = agentDividends.Min(x => x.From);
