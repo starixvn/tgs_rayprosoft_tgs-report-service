@@ -9,10 +9,7 @@ namespace Tgs.Report.Core.Queries.Vip
     {
         private readonly IMediator _mediator;
 
-        public ExportVipReportQueryHandler(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+        public ExportVipReportQueryHandler(IMediator mediator) => _mediator = mediator;
 
         public async Task<MemoryStream> Handle(
             ExportVipReportRequest request,
@@ -38,7 +35,7 @@ namespace Tgs.Report.Core.Queries.Vip
                 DepositAmount = x.DepositAmount,
                 WithdrawalAmount = x.WithdrawalAmount,
                 BonusAmount = x.BonusAmount,
-                AdjustmentAmount = x.AdjustmentAmount,
+                CompanyAdjustAmount = x.CompanyAdjustAmount,
                 RebateAmount = x.RebateAmount,
                 ValidBetAmount = x.Turnover,
                 WinLossAmount = x.WinLossAmount,

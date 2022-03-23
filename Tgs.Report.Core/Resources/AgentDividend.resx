@@ -121,10 +121,13 @@
   <data name="BetAmount" xml:space="preserve">
     <value>BET AMOUNT</value>
   </data>
-  <data name="AdjustmentAmount" xml:space="preserve">
+  <data name="AgentAdjustAmount" xml:space="preserve">
     <value>ADJUSTMENT AMOUNT</value>
   </data>
   <data name="AgentDividendAmount" xml:space="preserve">
     <value>PROFIT SHARING AMOUNT</value>
+  </data>
+  <data name="CompanyAdjustAmount" xml:space="preserve">
+    <value>COMPANY ADJUST AMOUNT</value>
   </data>
 </root>

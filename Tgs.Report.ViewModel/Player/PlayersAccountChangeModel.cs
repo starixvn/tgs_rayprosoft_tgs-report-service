@@ -12,6 +12,6 @@ namespace Tgs.Report.ViewModel.Player
         public TransactionType TransactionType { get; init; }
         public DateTimeOffset RecordedOn { get; init; }
         public string Operator { get; init; } = default!;
-        public string Description { get; set; } = default!;
+        public string? Description { get; set; }
     }
 }

@@ -12,10 +12,7 @@ namespace Tgs.Report.Core.Queries.Agent
     {
         private readonly ITgsRepository _repository;
 
-        public GetAgentDividendTeamDetailQueryHandler(ITgsRepository repository)
-        {
-            _repository = repository;
-        }
+        public GetAgentDividendTeamDetailQueryHandler(ITgsRepository repository) => _repository = repository;
 
         public async Task<PagedResponse<AgentDividendTeamDetailModel>> Handle(
             GetAgentDividendTeamDetailsRequest request,
@@ -23,8 +20,8 @@ namespace Tgs.Report.Core.Queries.Agent
         {
             var mainAgentDividends = await _repository.AgentDividends
                 .Where(x => x.AgentId == request.AgentId)
-                .Where(x => x.CreatedOn >= request.From.ToUniversalTime())
-                .Where(x => x.CreatedOn < request.To.ToUniversalTime())
+                .Where(x => x.From >= request.From.ToUniversalTime())
+                .Where(x => x.To < request.To.ToUniversalTime())
                 .Include(x => x.AgentDividendMultipleLayers)
                 .ToArrayAsync(cancellationToken);
 
@@ -34,8 +31,8 @@ namespace Tgs.Report.Core.Queries.Agent
 
             var agentDividends = await _repository.AgentDividends
                 .Where(x => fistLayerChildAgentIds.Contains(x.AgentId))
-                .Where(x => x.CreatedOn >= request.From.ToUniversalTime())
-                .Where(x => x.CreatedOn < request.To.ToUniversalTime())
+                .Where(x => x.From >= request.From.ToUniversalTime())
+                .Where(x => x.To < request.To.ToUniversalTime())
                 .GroupBy(x => new
                     {
                         x.AgentId,
@@ -60,7 +57,7 @@ namespace Tgs.Report.Core.Queries.Agent
                         VirtualSportsWinLoss = list.Sum(l => l.VirtualSportsWinLoss),
                         WinLossAmount = list.Sum(l => l.WinLossAmount),
                         AgentDividendAmount = list.Sum(l => l.AgentDividendAmount),
-                        ExpenditureAmount = list.Sum(l => l.PromotionAmount + l.RebateAmount + l.AdjustmentAmount),
+                        ExpenditureAmount = list.Sum(l => l.PromotionAmount + l.RebateAmount + l.AgentAdjustAmount),
                         BonusAmount = list.Sum(l => l.RebateAmount + l.PromotionAmount)
                     }).ToArrayAsync(cancellationToken);
 

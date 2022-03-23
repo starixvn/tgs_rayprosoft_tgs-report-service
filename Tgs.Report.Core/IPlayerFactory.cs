@@ -6,5 +6,8 @@ namespace Tgs.Report.Core
     {
         ValueTask<(PlayerAccountChangeModel[], int)>
             GetPlayerAccountChangeAsync(GetPlayerAccountChangesRequest request);
+
+        ValueTask<decimal>
+            GetPlayerAccountChangeTotalAmountAsync(GetPlayerAccountChangesTotalAmountRequest request);
     }
 }

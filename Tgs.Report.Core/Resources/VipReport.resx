@@ -100,8 +100,8 @@
   <data name="Username" xml:space="preserve">
     <value>USERNAME</value>
   </data>
-  <data name="AdjustmentAmount" xml:space="preserve">
-    <value>ADJUSTMENT AMOUNT</value>
+  <data name="CompanyAdjustAmount" xml:space="preserve">
+    <value>COMPANY ADJUST AMOUNT</value>
   </data>
   <data name="RebateAmount" xml:space="preserve">
     <value>COMMISSION REBATE AMOUNT</value>

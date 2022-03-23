@@ -120,7 +120,7 @@
   <data name="Username" xml:space="preserve">
     <value>用户名</value>
   </data>
-  <data name="AdjustmentAmount" xml:space="preserve">
+  <data name="CompanyAdjustAmount" xml:space="preserve">
     <value>调账</value>
   </data>
   <data name="RebateAmount" xml:space="preserve">

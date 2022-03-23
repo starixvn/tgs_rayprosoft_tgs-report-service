@@ -64,7 +64,7 @@ namespace Tgs.Report.UnitTest.Player
                 .With(s => s.BrandId, brandId)
                 .With(s => s.Brand, new Brand())
                 .With(s => s.PlayerCode, "PlayerCode")
-                .With(s => s.Type, (short)TransactionType.Adjust)
+                .With(s => s.Type, (short)TransactionType.CompanyAdjust)
                 .With(s => s.CreatedByUserId, userId)
                 .With(s => s.Description, JsonSerializer.Serialize(new AdjustRemarkModel()))
                 .With(s => s.RecordedOn, DateTimeOffset.UtcNow));
