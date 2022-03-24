@@ -14,6 +14,7 @@ using Tgs.Report.Client.Models.GameProvider;
 using Tgs.Report.Client.Models.LicenseeMarket;
 using Tgs.Report.Client.Models.Market;
 using Tgs.Report.Client.Models.Player;
+using Tgs.Report.Client.Models.ResellerMarket;
 using Tgs.Report.Client.Models.Round;
 using Tgs.Report.Client.Models.Vip;
 
@@ -455,6 +456,38 @@ namespace Tgs.Report.Client
             parameters += string.IsNullOrEmpty(parameters) ? currencyCodeParameters : $"&{currencyCodeParameters}";
 
             var path = $"/api/LicenseeMarketReport/exportLicenseeMarkets?{parameters}";
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+
+            httpRequest.Headers.Add("Accept-Language", CultureInfo.CurrentCulture.Name);
+
+            var response = await _client.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead);
+
+            _ = response.EnsureSuccessStatusCode();
+
+            var stream = await response.Content.ReadAsStreamAsync();
+
+            return stream;
+        }
+
+        public async ValueTask<ResellerMarketsResponse> GetResellerMarketsAsync(GetResellerMarketsRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/resellerMarketReport?", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+            _ = response.EnsureSuccessStatusCode();
+
+            return JsonSerializer.Deserialize<ResellerMarketsResponse>(
+                await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+
+        public async ValueTask<Stream> ExportResellerMarketsAsync(ExportResellerMarketsRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/resellerMarketReport/exportResellerMarkets?",
+                request);
 
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
 
