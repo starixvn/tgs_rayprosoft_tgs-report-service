@@ -45,6 +45,15 @@ namespace Tgs.Report.Core.Queries.Vip
                     x.BrandId == request.BrandId && x.Username == request.Username)
                 : null;
 
+            if (!string.IsNullOrEmpty(request.Username) && tgsPlayer is null)
+            {
+                return new PagedResponse<VipModel>
+                {
+                    Valid = false,
+                    Message = Resources.Player.NotFound
+                };
+            }
+
             var tgsPlayers = request.Level == null
                 ? null
                 : brandPlayers.Where(x => x.Vip?.Level == request.Level)

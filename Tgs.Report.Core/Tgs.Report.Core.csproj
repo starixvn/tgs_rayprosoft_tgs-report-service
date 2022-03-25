@@ -63,6 +63,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>PlayerContribution.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\ResellerMarket.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ResellerMarket.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\VipReport.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -98,6 +103,10 @@
     <EmbeddedResource Update="Resources\PlayerContribution.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>PlayerContribution.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ResellerMarket.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ResellerMarket.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\VipReport.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
