@@ -26,7 +26,7 @@ namespace Tgs.Report.Client
                             .ToString("u");
                     }
 
-                    if (propertyInfo.PropertyType.IsArray)
+                    if (propertyInfo.PropertyType.IsArray && value is not null)
                     {
                         var query = string.Empty;
                         var enumerable = (IEnumerable)value;
