@@ -30,7 +30,9 @@ namespace Tgs.Report.Client
                     {
                         if (value is null)
                         {
-                            return $"{current}{propertyInfo.Name}";
+                            return last.Equals(propertyInfo)
+                                ? $"{current}{propertyInfo.Name}="
+                                : $"{current}{propertyInfo.Name}=&";
                         }
 
                         var query = string.Empty;
