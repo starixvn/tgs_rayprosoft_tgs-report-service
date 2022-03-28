@@ -26,8 +26,13 @@ namespace Tgs.Report.Client
                             .ToString("u");
                     }
 
-                    if (propertyInfo.PropertyType.IsArray && value is not null)
+                    if (propertyInfo.PropertyType.IsArray)
                     {
+                        if (value is null)
+                        {
+                            return $"{current}{propertyInfo.Name}";
+                        }
+
                         var query = string.Empty;
                         var enumerable = (IEnumerable)value;
 
@@ -36,8 +41,6 @@ namespace Tgs.Report.Client
 
                         return $"{current}{query}";
                     }
-
-                    value ??= "";
 
                     return last.Equals(propertyInfo)
                         ? $"{current}{propertyInfo.Name}={value}"
