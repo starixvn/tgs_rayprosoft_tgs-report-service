@@ -17,7 +17,7 @@ namespace Tgs.Report.Client
             return obj.GetType().GetProperties().Aggregate(path,
                 (current, propertyInfo) =>
                 {
-                    var value = propertyInfo.GetValue(obj);
+                    var value = propertyInfo.GetValue(obj) ?? "";
 
                     if (propertyInfo.PropertyType == typeof(DateTimeOffset)
                         || propertyInfo.PropertyType == typeof(DateTimeOffset?))
