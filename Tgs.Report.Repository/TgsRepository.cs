@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using Tgs.Report.Repository.Configurations;
+using Tgs.Report.Repository.Entities;
 
 namespace Tgs.Report.Repository
 {
@@ -12,43 +12,43 @@ namespace Tgs.Report.Repository
         {
         }
 
-        public DbSet<BrandGameProviderAggregate> BrandGameProviderAggregates { get; set; }
-        public DbSet<BrandGameProviderAggregateAuditLog> BrandGameProviderAggregateAuditLogs { get; set; }
-        public DbSet<BrandGameProviderAggregateRecord> BrandGameProviderAggregateRecords { get; set; }
-        public DbSet<GameProviderAggregate> GameProviderAggregates { get; set; }
-        public DbSet<GameProviderAggregateAuditLog> GameProviderAggregateAuditLogs { get; set; }
-        public DbSet<GameProviderAggregateRecord> GameProviderAggregateRecords { get; set; }
+        public DbSet<BrandGameProviderAggregate> BrandGameProviderAggregates { get; set; } = default!;
+        public DbSet<BrandGameProviderAggregateAuditLog> BrandGameProviderAggregateAuditLogs { get; set; } = default!;
+        public DbSet<BrandGameProviderAggregateRecord> BrandGameProviderAggregateRecords { get; set; } = default!;
+        public DbSet<GameProviderAggregate> GameProviderAggregates { get; set; } = default!;
+        public DbSet<GameProviderAggregateAuditLog> GameProviderAggregateAuditLogs { get; set; } = default!;
+        public DbSet<GameProviderAggregateRecord> GameProviderAggregateRecords { get; set; } = default!;
 
-        public DbSet<AgentDividendCondition> AgentDividendConditions { get; set; }
+        public DbSet<AgentDividendCondition> AgentDividendConditions { get; set; } = default!;
 
-        public IDbContextTransaction CurrentTransaction =>
+        public IDbContextTransaction? CurrentTransaction =>
             Database.CurrentTransaction;
 
-        public DbSet<AgentDividendMultipleLayer> AgentDividendMultipleLayers { get; set; }
-        public DbSet<AgentDividend> AgentDividends { get; set; }
-        public DbSet<AgentTransaction> AgentTransactions { get; set; }
-        public DbSet<Agent> Agents { get; set; }
-        public DbSet<BrandCurrency> BrandCurrencies { get; set; }
-        public DbSet<BrandGame> BrandGames { get; set; }
-        public DbSet<Brand> Brands { get; set; }
-        public DbSet<Currency> Currencies { get; set; }
-        public DbSet<Department> Departments { get; set; }
-        public DbSet<GameAction> GameActions { get; set; }
-        public DbSet<GameProvider> GameProviders { get; set; }
-        public DbSet<Game> Games { get; set; }
-        public DbSet<Licensee> Licensees { get; set; }
-        public DbSet<PlayerAggregate> PlayerAggregates { get; set; }
-        public DbSet<PlayerBucketHistory> PlayerBucketHistories { get; set; }
-        public DbSet<PlayerBucket> PlayerBuckets { get; set; }
-        public DbSet<PlayerGameRebateAggregate> PlayerGameRebateAggregates { get; set; }
-        public DbSet<Player> Players { get; set; }
-        public DbSet<RoundAggregate> RoundAggregates { get; set; }
-        public DbSet<WithdrawForm> WithdrawForms { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<Transaction> Transactions { get; set; }
-        public DbSet<Round> Rounds { get; set; }
-        public DbSet<Setting> Settings { get; set; }
-        public DbSet<RoundDetail> RoundDetails { get; set; }
+        public DbSet<AgentDividendMultipleLayer> AgentDividendMultipleLayers { get; set; } = default!;
+        public DbSet<AgentDividend> AgentDividends { get; set; } = default!;
+        public DbSet<AgentTransaction> AgentTransactions { get; set; } = default!;
+        public DbSet<Agent> Agents { get; set; } = default!;
+        public DbSet<BrandCurrency> BrandCurrencies { get; set; } = default!;
+        public DbSet<BrandGame> BrandGames { get; set; } = default!;
+        public DbSet<Brand> Brands { get; set; } = default!;
+        public DbSet<Currency> Currencies { get; set; } = default!;
+        public DbSet<Department> Departments { get; set; } = default!;
+        public DbSet<GameAction> GameActions { get; set; } = default!;
+        public DbSet<GameProvider> GameProviders { get; set; } = default!;
+        public DbSet<Game> Games { get; set; } = default!;
+        public DbSet<Licensee> Licensees { get; set; } = default!;
+        public DbSet<PlayerAggregate> PlayerAggregates { get; set; } = default!;
+        public DbSet<PlayerBucketHistory> PlayerBucketHistories { get; set; } = default!;
+        public DbSet<PlayerBucket> PlayerBuckets { get; set; } = default!;
+        public DbSet<PlayerGameRebateAggregate> PlayerGameRebateAggregates { get; set; } = default!;
+        public DbSet<Player> Players { get; set; } = default!;
+        public DbSet<RoundAggregate> RoundAggregates { get; set; } = default!;
+        public DbSet<WithdrawForm> WithdrawForms { get; set; } = default!;
+        public DbSet<User> Users { get; set; } = default!;
+        public DbSet<Transaction> Transactions { get; set; } = default!;
+        public DbSet<Round> Rounds { get; set; } = default!;
+        public DbSet<Setting> Settings { get; set; } = default!;
+        public DbSet<RoundDetail> RoundDetails { get; set; } = default!;
 
         public IDbConnection GetDbConnection() =>
             Database.GetDbConnection();

@@ -7,7 +7,7 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.Market;
 using Tgs.Report.Repository;
-using Tgs.Report.Repository.Configurations;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.Market;
 
 namespace Tgs.Report.UnitTest.Market
@@ -47,7 +47,8 @@ namespace Tgs.Report.UnitTest.Market
 
             var response = await sut.Handle(request, default);
 
-            Assert.AreEqual(playerAggregates.First().RegisteredCount, response.Items.First().RegisteredCount);
+            Assert.AreEqual(playerAggregates.First().RegisteredCount,
+                response.Items?.First().RegisteredCount);
         }
 
         private static Fixture CreatePlayerAggregateFixture(Guid brandId, DateTimeOffset reportDate)
