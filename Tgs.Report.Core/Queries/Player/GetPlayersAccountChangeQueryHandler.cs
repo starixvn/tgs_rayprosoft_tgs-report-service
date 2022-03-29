@@ -63,7 +63,7 @@ namespace Tgs.Report.Core.Queries.Player
                     AfterBalance = x.Transaction.Balance,
                     TransactionType = (TransactionType)x.Transaction.Type,
                     RecordedOn = x.Transaction.RecordedOn,
-                    Operator = x.User == null ? "System" : x.User.Username,
+                    Operator = x.User.Username ?? "System",
                     Description = x.Transaction.Description
                 }).CreatePagedResponseAsync(request);
 

@@ -1,10 +1,12 @@
-﻿namespace Tgs.Report.Client.Models.Agent
+﻿using System;
+
+namespace Tgs.Report.Client.Models.Agent
 {
     public record AgentDividendModel
     {
         public Guid Id { get; init; }
 
-        public string Username { get; init; } = default!;
+        public string Username { get; init; }
 
         public decimal DepositAmount { get; init; }
 

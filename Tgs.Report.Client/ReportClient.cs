@@ -1,5 +1,11 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
 using System.Text.Json;
+using System.Threading.Tasks;
 using Tgs.Report.Client.Models;
 using Tgs.Report.Client.Models.Agent;
 using Tgs.Report.Client.Models.BrandGameProvider;
@@ -266,7 +272,7 @@ namespace Tgs.Report.Client
         {
             var prefix = $"Report.LicenseeId.{request.LicenseeId}.GetLicenseeMarkets";
 
-            var keyValues = new Dictionary<string, string?>();
+            var keyValues = new Dictionary<string, string>();
             foreach (var propertyInfo in request
                          .GetType()
                          .GetProperties()
@@ -287,7 +293,7 @@ namespace Tgs.Report.Client
                     value = ((DateTimeOffset?)value)?.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.sssZ");
                 }
 
-                keyValues.Add(propertyInfo.Name, value!.ToString());
+                keyValues.Add(propertyInfo.Name, value.ToString());
             }
 
             var parameters = string.Join("&", keyValues.Select(kvp => string.Format("{0}={1}", kvp.Key, kvp.Value)));
@@ -416,7 +422,7 @@ namespace Tgs.Report.Client
 
         public async ValueTask<Stream> ExportLicenseeMarketsAsync(ExportLicenseeMarketsRequest request)
         {
-            var keyValues = new Dictionary<string, string?>();
+            var keyValues = new Dictionary<string, string>();
             foreach (var propertyInfo in request
                          .GetType()
                          .GetProperties()
@@ -437,7 +443,7 @@ namespace Tgs.Report.Client
                     value = ((DateTimeOffset?)value)?.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.sssZ");
                 }
 
-                keyValues.Add(propertyInfo.Name, value!.ToString());
+                keyValues.Add(propertyInfo.Name, value.ToString());
             }
 
             var parameters = string.Join("&", keyValues.Select(kvp => string.Format("{0}={1}", kvp.Key, kvp.Value)));

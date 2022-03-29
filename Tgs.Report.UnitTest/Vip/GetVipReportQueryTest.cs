@@ -7,7 +7,7 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.Vip;
 using Tgs.Report.Repository;
-using Tgs.Report.Repository.Entities;
+using Tgs.Report.Repository.Configurations;
 using Tgs.Report.ViewModel.Vip;
 
 namespace Tgs.Report.UnitTest.Vip
@@ -25,7 +25,7 @@ namespace Tgs.Report.UnitTest.Vip
             var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
 
             var players = CreatePlayerFixture(brandId)
-                .CreateMany<Repository.Entities.Player>(1).AsQueryable()
+                .CreateMany<Repository.Configurations.Player>(1).AsQueryable()
                 .BuildMock().Object;
 
             var withdrawForms = CreateWithdrawFormFixture(brandId).CreateMany<WithdrawForm>(1).AsQueryable()
@@ -58,13 +58,13 @@ namespace Tgs.Report.UnitTest.Vip
 
             var response = await sut.Handle(request, default);
 
-            Assert.AreEqual(1, response.Items?.Length);
+            Assert.AreEqual(1, response.Items.Length);
         }
 
         private static Fixture CreatePlayerFixture(Guid brandId)
         {
             var fixture = new Fixture();
-            fixture.Customize<Repository.Entities.Player>(u => u
+            fixture.Customize<Repository.Configurations.Player>(u => u
                 .With(s => s.BrandId, brandId)
                 .With(s => s.PlayerCode, "PlayerCode")
                 .With(s => s.Brand, new Brand()));

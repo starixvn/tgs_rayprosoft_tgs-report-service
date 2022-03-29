@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Collections.Generic;
+using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities.Configurations;
 #nullable enable
 
@@ -46,7 +47,6 @@ namespace Tgs.Report.Repository.Entities
         public virtual DbSet<PlayerGameRebateAggregate> PlayerGameRebateAggregates { get; set; } = null!;
         public virtual DbSet<Reseller> Resellers { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
-        public virtual DbSet<Round> Rounds { get; set; } = null!;
         public virtual DbSet<RoundAggregate> RoundAggregates { get; set; } = null!;
         public virtual DbSet<RoundDetail> RoundDetails { get; set; } = null!;
         public virtual DbSet<Setting> Settings { get; set; } = null!;
@@ -92,7 +92,6 @@ namespace Tgs.Report.Repository.Entities
             modelBuilder.ApplyConfiguration(new Configurations.PlayerGameRebateAggregateConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.ResellerConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.RoleConfiguration());
-            modelBuilder.ApplyConfiguration(new Configurations.RoundConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.RoundAggregateConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.RoundDetailConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.SettingConfiguration());

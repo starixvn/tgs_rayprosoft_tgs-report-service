@@ -44,8 +44,7 @@ namespace Tgs.Report.Core.Queries.Agent
                         {
                             Username = player.Username,
                             RegisteredOn = player.RegisteredOn,
-                            Contribution = playerAggregate.Sum(x
-                                => x.playerAggregate == null ? 0M : x.playerAggregate.WinLossAmount)
+                            Contribution = playerAggregate.Sum(x => x.playerAggregate.WinLossAmount)
                         }).CreatePagedResponseAsync(request);
     }
 }

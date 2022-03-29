@@ -2,7 +2,7 @@
 {
     public record AgentPlayerWinLossModel
     {
-        public string Username { get; init; } = default!;
+        public string Username { get; init; }
         public decimal LiveDealerWinLossAmount { get; init; }
         public decimal SlotWinLossAmount { get; init; }
         public decimal LotteryWinLossAmount { get; init; }

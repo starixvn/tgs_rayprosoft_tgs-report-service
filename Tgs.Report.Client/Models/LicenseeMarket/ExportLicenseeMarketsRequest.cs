@@ -1,10 +1,12 @@
-﻿namespace Tgs.Report.Client.Models.LicenseeMarket
+﻿using System;
+
+namespace Tgs.Report.Client.Models.LicenseeMarket
 {
     public record ExportLicenseeMarketsRequest : PageableRequest
     {
         public Guid LicenseeId { get; init; }
-        public string[]? CurrencyCodes { get; init; } = null!;
-        public string? CurrencyCode { get; init; }
+        public string[] CurrencyCodes { get; init; }
+        public string CurrencyCode { get; init; }
         public DateTimeOffset From { get; init; }
         public DateTimeOffset To { get; init; }
     }

@@ -2,7 +2,7 @@
 {
     public record LicenseeMarketsResponse
     {
-        public PagedResponse<LicenseeMarketDataModel> Datas { get; init; } = default!;
-        public LicenseeMarketTotalModel[] Totals { get; init; } = default!;
+        public PagedResponse<LicenseeMarketDataModel> Datas { get; init; }
+        public LicenseeMarketTotalModel[] Totals { get; init; }
     }
 }

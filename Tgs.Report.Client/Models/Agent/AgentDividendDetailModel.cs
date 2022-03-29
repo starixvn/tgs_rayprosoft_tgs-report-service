@@ -1,9 +1,11 @@
-﻿namespace Tgs.Report.Client.Models.Agent
+﻿using System;
+
+namespace Tgs.Report.Client.Models.Agent
 {
     public record AgentDividendDetailModel
     {
         public Guid Id { get; init; }
-        public string Username { get; init; } = default!;
+        public string Username { get; init; }
         public DateTimeOffset SettlementDate { get; init; }
         public DateTimeOffset SettlementDateFrom { get; init; }
         public DateTimeOffset SettlementDateTo { get; init; }

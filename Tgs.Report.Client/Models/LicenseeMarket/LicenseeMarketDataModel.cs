@@ -1,10 +1,12 @@
-﻿namespace Tgs.Report.Client.Models.LicenseeMarket
+﻿using System;
+
+namespace Tgs.Report.Client.Models.LicenseeMarket
 {
     public record LicenseeMarketDataModel
     {
-        public Guid BrandId { get; init; }
-        public string BrandCode { get; init; } = default!;
-        public string CurrencyCode { get; init; } = default!;
+        public Guid BarndId { get; init; }
+        public string BrandCode { get; init; }
+        public string CurrencyCode { get; init; }
         public int RegisteredCount { get; init; }
         public int FirstFundInCount { get; init; }
         public decimal DepositAmount { get; init; }

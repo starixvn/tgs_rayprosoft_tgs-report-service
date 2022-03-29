@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
+using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
 #nullable disable
@@ -24,11 +25,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("round_id");
 
             entity.Property(e => e.AdditionalData).HasColumnName("additional_data");
-
-            entity.HasOne(d => d.Round)
-                .WithOne(p => p.RoundDetail)
-                .HasForeignKey<RoundDetail>(d => d.RoundId)
-                .HasConstraintName("fk_round_details_rounds_round_id");
 
             OnConfigurePartial(entity);
         }

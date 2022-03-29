@@ -60,7 +60,7 @@ namespace Tgs.Report.Core.Queries.Agent
             var subAgents = await _repository.Agents.Where(x => x.ParentAgentId == mainAgent.Id)
                 .ToListAsync(cancellationToken);
 
-            var agents = new List<Repository.Entities.Agent> { mainAgent };
+            var agents = new List<Repository.Configurations.Agent> { mainAgent };
             agents.AddRange(subAgents);
 
             var agentIds = agents.Select(x => x.Id).ToArray();

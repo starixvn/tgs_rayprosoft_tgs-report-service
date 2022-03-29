@@ -19,63 +19,33 @@ namespace Tgs.Report.Core.Queries.Round
             GetClosedRoundsRequest request,
             CancellationToken cancellationToken)
             => _repository.Rounds
-                .Where(x => x.Status == (short)RoundStatus.Closed)
+                .Where(x => x.Status == RoundStatus.Closed)
                 .Where(request.GameProviderId, x => request.GameProviderId == x.GameProviderId)
                 .Where(request.ExternalRoundId, x => x.ExternalRoundId == request.ExternalRoundId)
                 .GroupJoin(
                     _repository.Players,
                     round => round.PlayerCode,
                     player => player.PlayerCode,
-                    (round, player) => new
-                    {
-                        round,
-                        player
-                    })
+                    (round, player) => new { round, player })
                 .SelectMany(
                     x => x.player.DefaultIfEmpty(),
-                    (x, player) => new
-                    {
-                        x.round,
-                        player
-                    })
+                    (x, player) => new { x.round, player })
                 .GroupJoin(
                     _repository.Games,
                     combine => combine.round.GameId,
                     game => game.Id,
-                    (combine, game) => new
-                    {
-                        combine.round,
-                        combine.player,
-                        game
-                    })
+                    (combine, game) => new { combine.round, combine.player, game })
                 .SelectMany(
                     x => x.game.DefaultIfEmpty(),
-                    (x, game) => new
-                    {
-                        x.round,
-                        x.player,
-                        game
-                    })
+                    (x, game) => new { x.round, x.player, game })
                 .GroupJoin(
                     _repository.RoundDetails,
                     c => c.round.Id,
                     detail => detail.RoundId,
-                    (combine, detail) => new
-                    {
-                        combine.round,
-                        combine.player,
-                        combine.game,
-                        detail
-                    })
+                    (combine, detail) => new { combine.round, combine.player, combine.game, detail })
                 .SelectMany(
                     x => x.detail.DefaultIfEmpty(),
-                    (x, detail) => new
-                    {
-                        x.round,
-                        x.player,
-                        x.game,
-                        detail
-                    })
+                    (x, detail) => new { x.round, x.player, x.game, detail })
                 .GroupJoin(
                     _repository.GameProviders,
                     combine => combine.round.GameProviderId,
@@ -136,7 +106,7 @@ namespace Tgs.Report.Core.Queries.Round
                     BrandCode = combine.player!.Brand.Code,
                     BrandName = combine.player.Brand.Name,
                     PlayerType = (PlayerType)combine.player.Type,
-                    Status = (ClientRoundStatus)combine.round.ClientStatus,
+                    Status = combine.round.ClientStatus,
                     PlayerCode = combine.player.PlayerCode,
                     ExternalPlayerCode = combine.player.PlayerCode,
                     PlayerName = combine.player.Username,

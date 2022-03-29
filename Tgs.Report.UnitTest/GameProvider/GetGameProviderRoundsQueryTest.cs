@@ -7,7 +7,7 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.GameProvider;
 using Tgs.Report.Repository;
-using Tgs.Report.Repository.Entities;
+using Tgs.Report.Repository.Configurations;
 using Tgs.Report.ViewModel.GameProvider;
 
 namespace Tgs.Report.UnitTest.GameProvider
@@ -18,14 +18,14 @@ namespace Tgs.Report.UnitTest.GameProvider
         public async Task Can_Get_Game_Provider_Rounds()
         {
             var fakeGameProviderAggregate = Substitute.For<ITgsService<GameProviderAggregate>>();
-            var fakeGameProvider = Substitute.For<ITgsService<Repository.Entities.GameProvider>>();
+            var fakeGameProvider = Substitute.For<ITgsService<Repository.Configurations.GameProvider>>();
 
             var sut = new GetGameProviderRoundsQueryHandler(fakeGameProviderAggregate, fakeGameProvider);
 
             var gameProviderId = new Guid("aac11120-20f6-4f0d-6982-08d9dbdc0473");
 
             var gameProviders = CreateGameProviderFixture(gameProviderId)
-                .CreateMany<Repository.Entities.GameProvider>(1)
+                .CreateMany<Repository.Configurations.GameProvider>(1)
                 .AsQueryable()
                 .BuildMock().Object;
 
@@ -53,7 +53,7 @@ namespace Tgs.Report.UnitTest.GameProvider
         private static Fixture CreateGameProviderFixture(Guid id)
         {
             var fixture = new Fixture();
-            fixture.Customize<Repository.Entities.GameProvider>(u => u
+            fixture.Customize<Repository.Configurations.GameProvider>(u => u
                 .With(s => s.Id, id)
                 .With(s => s.Code, "GameProviderCode"));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());

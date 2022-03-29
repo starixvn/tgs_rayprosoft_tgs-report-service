@@ -2,6 +2,6 @@
 {
     public record GetAdditionalExpensesResponse
     {
-        public AdditionalExpensesModel[] AdditionalExpenses { get; init; } = default!;
+        public AdditionalExpensesModel[] AdditionalExpenses { get; init; }
     }
 }

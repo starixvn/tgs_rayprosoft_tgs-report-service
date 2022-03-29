@@ -7,7 +7,7 @@ using NUnit.Framework;
 using Tgs.Report.Core.Queries.Agent;
 using Tgs.Report.Enum;
 using Tgs.Report.Repository;
-using Tgs.Report.Repository.Entities;
+using Tgs.Report.Repository.Configurations;
 using Tgs.Report.ViewModel.Agent;
 
 namespace Tgs.Report.UnitTest.Agent
@@ -42,7 +42,7 @@ namespace Tgs.Report.UnitTest.Agent
             var response = await sut.Handle(request, default);
 
             Assert.IsTrue(response.Valid);
-            Assert.AreEqual(1, response.Items?.Length);
+            Assert.AreEqual(1, response.Items.Length);
         }
 
         private static Fixture CreateAgentTransactionFixture()

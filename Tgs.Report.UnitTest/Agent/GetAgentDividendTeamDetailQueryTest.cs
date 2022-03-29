@@ -7,7 +7,7 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.Agent;
 using Tgs.Report.Repository;
-using Tgs.Report.Repository.Entities;
+using Tgs.Report.Repository.Configurations;
 using Tgs.Report.ViewModel.Agent;
 
 namespace Tgs.Report.UnitTest.Agent
@@ -28,11 +28,11 @@ namespace Tgs.Report.UnitTest.Agent
             var from = DateTimeOffset.UtcNow;
             var to = DateTimeOffset.UtcNow;
 
-            var agents = CreateAgentFixture(brandId, agentId).CreateMany<Repository.Entities.Agent>(1)
+            var agents = CreateAgentFixture(brandId, agentId).CreateMany<Repository.Configurations.Agent>(1)
                 .AsQueryable()
                 .BuildMock().Object;
 
-            var childAgents = CreateAgentFixture(brandId, childAgentId).CreateMany<Repository.Entities.Agent>(1)
+            var childAgents = CreateAgentFixture(brandId, childAgentId).CreateMany<Repository.Configurations.Agent>(1)
                 .AsQueryable()
                 .BuildMock().Object;
 
@@ -62,7 +62,7 @@ namespace Tgs.Report.UnitTest.Agent
 
             var mockAgents = GetDbSet(agents.Union(childAgents));
             var mockWithdrawForms = GetDbSet(withdrawForms);
-            var mockAgentDividends = GetDbSet(Queryable.Union<AgentDividend>(agentDividends, childAgentDividends));
+            var mockAgentDividends = GetDbSet(agentDividends.Union(childAgentDividends));
             var mockPlayers = GetDbSet(players);
             var mockAgentDividendMultipleLayers = GetDbSet(agentDividendMultipleLayers);
 
@@ -75,13 +75,13 @@ namespace Tgs.Report.UnitTest.Agent
             var response = await sut.Handle(request, default);
 
             Assert.IsTrue(response.Valid);
-            Assert.AreEqual(1, response.Items?.Length);
+            Assert.AreEqual(1, response.Items.Length);
         }
 
         private static Fixture CreateAgentFixture(Guid brandId, Guid agentId)
         {
             var fixture = new Fixture();
-            fixture.Customize<Repository.Entities.Agent>(u => u
+            fixture.Customize<Repository.Configurations.Agent>(u => u
                 .With(s => s.BrandId, brandId)
                 .With(s => s.Id, agentId)
                 .With(s => s.Brand, new Brand()));

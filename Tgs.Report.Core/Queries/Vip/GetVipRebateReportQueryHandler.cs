@@ -36,7 +36,7 @@ namespace Tgs.Report.Core.Queries.Vip
             return await _repository.PlayerGameRebateAggregates
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
-                .Where(tgsPlayer != null, x => x.PlayerCode == tgsPlayer!.PlayerCode)
+                .Where(tgsPlayer != null, x => x.PlayerCode == tgsPlayer.PlayerCode)
                 .GroupBy(
                     x => new
                     {

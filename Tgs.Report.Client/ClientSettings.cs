@@ -2,6 +2,6 @@
 {
     public record ClientSettings
     {
-        public string Url { get; init; } = default!;
+        public string Url { get; init; }
     }
 }

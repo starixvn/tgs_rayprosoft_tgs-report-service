@@ -7,7 +7,7 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.BrandGameProvider;
 using Tgs.Report.Repository;
-using Tgs.Report.Repository.Entities;
+using Tgs.Report.Repository.Configurations;
 using Tgs.Report.ViewModel.BrandGameProvider;
 
 namespace Tgs.Report.UnitTest.BrandGameProvider
@@ -19,7 +19,7 @@ namespace Tgs.Report.UnitTest.BrandGameProvider
         {
             var fakeBrandGameProviderAggregate = Substitute.For<ITgsService<BrandGameProviderAggregate>>();
             var fakeBrand = Substitute.For<ITgsService<Brand>>();
-            var fakeGameProvider = Substitute.For<ITgsService<Repository.Entities.GameProvider>>();
+            var fakeGameProvider = Substitute.For<ITgsService<Repository.Configurations.GameProvider>>();
 
             var sut = new GetBrandGameProviderRoundsQueryHandler(fakeBrandGameProviderAggregate, fakeBrand,
                 fakeGameProvider);
@@ -33,7 +33,7 @@ namespace Tgs.Report.UnitTest.BrandGameProvider
                 .BuildMock().Object;
 
             var gameProviders = CreateGameProviderFixture(gameProviderId)
-                .CreateMany<Repository.Entities.GameProvider>(1)
+                .CreateMany<Repository.Configurations.GameProvider>(1)
                 .AsQueryable()
                 .BuildMock().Object;
 
@@ -72,7 +72,7 @@ namespace Tgs.Report.UnitTest.BrandGameProvider
         private static Fixture CreateGameProviderFixture(Guid id)
         {
             var fixture = new Fixture();
-            fixture.Customize<Repository.Entities.GameProvider>(u => u
+            fixture.Customize<Repository.Configurations.GameProvider>(u => u
                 .With(s => s.Id, id)
                 .With(s => s.Code, "GameProviderCode"));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());

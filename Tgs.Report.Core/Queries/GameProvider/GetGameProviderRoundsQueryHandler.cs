@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Tgs.Report.Repository;
-using Tgs.Report.Repository.Entities;
+using Tgs.Report.Repository.Configurations;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.GameProvider;
 
@@ -11,11 +11,11 @@ namespace Tgs.Report.Core.Queries.GameProvider
             PagedResponse<GameProviderRoundsModel>>
     {
         private readonly ITgsService<GameProviderAggregate> _gameProviderAggregateService;
-        private readonly ITgsService<Repository.Entities.GameProvider> _gameProviderService;
+        private readonly ITgsService<Repository.Configurations.GameProvider> _gameProviderService;
 
         public GetGameProviderRoundsQueryHandler(
             ITgsService<GameProviderAggregate> gameProviderAggregateService,
-            ITgsService<Repository.Entities.GameProvider> gameProviderService)
+            ITgsService<Repository.Configurations.GameProvider> gameProviderService)
         {
             _gameProviderAggregateService = gameProviderAggregateService;
             _gameProviderService = gameProviderService;

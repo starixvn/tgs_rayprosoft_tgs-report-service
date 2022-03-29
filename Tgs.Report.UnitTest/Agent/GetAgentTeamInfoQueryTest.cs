@@ -7,7 +7,7 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.Agent;
 using Tgs.Report.Repository;
-using Tgs.Report.Repository.Entities;
+using Tgs.Report.Repository.Configurations;
 using Tgs.Report.ViewModel.Agent;
 
 namespace Tgs.Report.UnitTest.Agent
@@ -26,7 +26,7 @@ namespace Tgs.Report.UnitTest.Agent
             var agentId = new Guid("aac22220-20f6-4f0d-6982-08d9dbdc0473");
 
 
-            var players = CreatePlayerFixture(brandId, agentId).CreateMany<Repository.Entities.Player>(1)
+            var players = CreatePlayerFixture(brandId, agentId).CreateMany<Repository.Configurations.Player>(1)
                 .AsQueryable()
                 .BuildMock().Object;
 
@@ -49,7 +49,7 @@ namespace Tgs.Report.UnitTest.Agent
             var response = await sut.Handle(request, default);
 
             Assert.IsTrue(response.Valid);
-            Assert.AreEqual(1, response.Items?.Length);
+            Assert.AreEqual(1, response.Items.Length);
         }
 
         private static Fixture CreatePlayerAggregateFixture(Guid brandId, Guid agentId)
@@ -66,7 +66,7 @@ namespace Tgs.Report.UnitTest.Agent
         private static Fixture CreatePlayerFixture(Guid brandId, Guid agentId)
         {
             var fixture = new Fixture();
-            fixture.Customize<Repository.Entities.Player>(u => u
+            fixture.Customize<Repository.Configurations.Player>(u => u
                 .With(s => s.BrandId, brandId)
                 .With(s => s.AgentId, agentId)
                 .With(s => s.PlayerCode, "playerCode")

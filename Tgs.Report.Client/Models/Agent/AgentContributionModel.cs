@@ -2,7 +2,7 @@
 {
     public record AgentContributionModel
     {
-        public string Username { get; init; } = default!;
+        public string Username { get; init; }
 
         public short Type { get; init; }
 

@@ -5,7 +5,7 @@
    "DefaultDacpacSchema": null,
    "FilterSchemas": false,
    "IncludeConnectionString": false,
-   "ModelNamespace": "Entities",
+   "ModelNamespace": "Configurations",
    "OutputContextPath": null,
    "OutputPath": "Entities",
    "ProjectRootNamespace": "Tgs.Report.Repository",
@@ -127,10 +127,6 @@
       },
       {
          "Name": "bet.game_actions",
-         "ObjectType": 0
-      },
-      {
-         "Name": "bet.rounds",
          "ObjectType": 0
       },
       {

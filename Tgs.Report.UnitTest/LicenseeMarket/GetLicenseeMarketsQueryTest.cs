@@ -7,7 +7,7 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.LicenseeMarket;
 using Tgs.Report.Repository;
-using Tgs.Report.Repository.Entities;
+using Tgs.Report.Repository.Configurations;
 using Tgs.Report.ViewModel.LicenseeMarket;
 
 namespace Tgs.Report.UnitTest.LicenseeMarket
@@ -54,7 +54,7 @@ namespace Tgs.Report.UnitTest.LicenseeMarket
 
             var response = await sut.Handle(request, default);
 
-            Assert.AreEqual(1, response.Datas?.TotalCount);
+            Assert.AreEqual(1, response.Datas.TotalCount);
         }
 
         private static Fixture CreateBrandFixture(Guid brandId, Guid licenseeId)

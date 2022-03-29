@@ -4,7 +4,7 @@ namespace Tgs.Report.ViewModel.ResellerMarket
 {
     public record ResellerMarketDataModel
     {
-        public Guid BrandId { get; init; }
+        public Guid BarndId { get; init; }
         public string BrandCode { get; init; } = default!;
         public string CurrencyCode { get; init; } = default!;
         public int RegisteredCount { get; init; }

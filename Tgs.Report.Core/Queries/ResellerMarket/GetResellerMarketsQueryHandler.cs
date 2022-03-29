@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Tgs.Report.Repository;
-using Tgs.Report.Repository.Entities;
+using Tgs.Report.Repository.Configurations;
 using Tgs.Report.ViewModel.ResellerMarket;
 
 namespace Tgs.Report.Core.Queries.ResellerMarket
@@ -51,7 +51,7 @@ namespace Tgs.Report.Core.Queries.ResellerMarket
                 .Where(!string.IsNullOrEmpty(request.CurrencyCode),
                     x => x.BrandCurrencies.Any(c => c.CurrencyCode == request.CurrencyCode))
                 .Where(request.CurrencyCodes != null,
-                    x => request.CurrencyCodes!.Contains(x.BrandCurrencies.FirstOrDefault()!.CurrencyCode))
+                    x => request.CurrencyCodes!.Contains(x.BrandCurrencies.FirstOrDefault().CurrencyCode))
                 .Select(x => new
                 {
                     x.LicenseeId,
@@ -128,7 +128,7 @@ namespace Tgs.Report.Core.Queries.ResellerMarket
                     (market, playerAggregates) =>
                         new ResellerMarketDataModel
                         {
-                            BrandId = market.BrandId,
+                            BarndId = market.BrandId,
                             BrandCode = market.BrandCode,
                             CurrencyCode = market.CurrencyCode,
                             RegisteredCount = playerAggregates.Sum(m => m.market?.RegisteredCount ?? 0),

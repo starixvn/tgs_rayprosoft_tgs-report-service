@@ -41,11 +41,11 @@ namespace Tgs.Report.Core.Queries.Market
 
             var resource = new ResourceManager(typeof(Resources.Market));
 
-            var xlsx = exportData?.ExportWithLocalization("markets", resource);
+            var xlsx = exportData.ExportWithLocalization("markets", resource);
 
             await using var stream = new MemoryStream();
 
-            xlsx?.SaveAs(stream);
+            xlsx.SaveAs(stream);
 
             return new MemoryStream(stream.ToArray());
         }

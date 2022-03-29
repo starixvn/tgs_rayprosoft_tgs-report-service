@@ -1,12 +1,14 @@
-﻿namespace Tgs.Report.Client.Models.BrandGameProvider
+﻿using System;
+
+namespace Tgs.Report.Client.Models.BrandGameProvider
 {
     public record BrandGameProviderRoundsModel
     {
         public Guid GameProviderId { get; init; }
 
-        public string GameProviderName { get; init; } = default!;
+        public string GameProviderName { get; init; }
 
-        public string CurrencyCode { get; init; } = default!;
+        public string CurrencyCode { get; init; }
 
         public int TransactionCount { get; init; }
 

@@ -20,7 +20,7 @@ namespace Tgs.Report.UnitTest.GameAction
 
             var sut = new GetGameActionsQueryHandler(fakeRepository);
 
-            var gameActions = CreateGameActionFixture().CreateMany<Repository.Entities.GameAction>(1)
+            var gameActions = CreateGameActionFixture().CreateMany<Repository.Configurations.GameAction>(1)
                 .AsQueryable()
                 .BuildMock().Object;
 
@@ -37,13 +37,13 @@ namespace Tgs.Report.UnitTest.GameAction
             var response = await sut.Handle(request, default);
 
             Assert.IsTrue(response.Valid);
-            Assert.AreEqual(1, response.Items?.Length);
+            Assert.AreEqual(1, response.Items.Length);
         }
 
         private static Fixture CreateGameActionFixture()
         {
             var fixture = new Fixture();
-            fixture.Customize<Repository.Entities.GameAction>(u => u);
+            fixture.Customize<Repository.Configurations.GameAction>(u => u);
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

@@ -8,7 +8,7 @@ using NUnit.Framework;
 using Tgs.Report.Core.Queries.Round;
 using Tgs.Report.Enum;
 using Tgs.Report.Repository;
-using Tgs.Report.Repository.Entities;
+using Tgs.Report.Repository.Configurations;
 using Tgs.Report.ViewModel.Round;
 
 namespace Tgs.Report.UnitTest.Round
@@ -20,11 +20,11 @@ namespace Tgs.Report.UnitTest.Round
         public async Task Can_Get_Bet_Records()
         {
             var fakeBrandGameService = Substitute.For<ITgsService<BrandGame>>();
-            var fakeGameProviderService = Substitute.For<ITgsService<Repository.Entities.GameProvider>>();
+            var fakeGameProviderService = Substitute.For<ITgsService<Repository.Configurations.GameProvider>>();
             var fakeGameService = Substitute.For<ITgsService<Game>>();
-            var fakePlayerService = Substitute.For<ITgsService<Repository.Entities.Player>>();
+            var fakePlayerService = Substitute.For<ITgsService<Repository.Configurations.Player>>();
             var fakeRoundDetailService = Substitute.For<ITgsService<RoundDetail>>();
-            var fakeRoundService = Substitute.For<ITgsService<Repository.Entities.Round>>();
+            var fakeRoundService = Substitute.For<ITgsService<Repository.Configurations.Round>>();
 
             var sut = new GetBetRecordsQueryHandler(fakeRoundService, fakePlayerService, fakeGameService,
                 fakeRoundDetailService, fakeGameProviderService, fakeBrandGameService);
@@ -34,11 +34,11 @@ namespace Tgs.Report.UnitTest.Round
             var gameProviderId = new Guid("aac02112-20f6-4f0d-6982-08d9dbdc0473");
             var gameId = 1;
 
-            var players = CreatePlayerFixture(brandId).CreateMany<Repository.Entities.Player>(1).AsQueryable()
+            var players = CreatePlayerFixture(brandId).CreateMany<Repository.Configurations.Player>(1).AsQueryable()
                 .BuildMock().Object;
 
             var rounds = CreateRoundFixture(brandId, roundId, gameProviderId, gameId)
-                .CreateMany<Repository.Entities.Round>(1).AsQueryable()
+                .CreateMany<Repository.Configurations.Round>(1).AsQueryable()
                 .BuildMock().Object;
 
             var games = CreateGameFixture(gameId).CreateMany<Game>(1).AsQueryable()
@@ -48,7 +48,7 @@ namespace Tgs.Report.UnitTest.Round
                 .BuildMock().Object;
 
             var gameProviders = CreateGameProviderFixture(gameProviderId)
-                .CreateMany<Repository.Entities.GameProvider>(1).AsQueryable()
+                .CreateMany<Repository.Configurations.GameProvider>(1).AsQueryable()
                 .BuildMock().Object;
 
             var brandGames = CreateBrandGameFixture(brandId, gameId).CreateMany<BrandGame>(1).AsQueryable()
@@ -77,7 +77,7 @@ namespace Tgs.Report.UnitTest.Round
         private static Fixture CreatePlayerFixture(Guid brandId)
         {
             var fixture = new Fixture();
-            fixture.Customize<Repository.Entities.Player>(u => u
+            fixture.Customize<Repository.Configurations.Player>(u => u
                 .With(s => s.BrandId, brandId)
                 .With(s => s.PlayerCode, "PlayerCode")
                 .With(s => s.Brand, new Brand()));
@@ -88,12 +88,12 @@ namespace Tgs.Report.UnitTest.Round
         private static Fixture CreateRoundFixture(Guid brandId, Guid roundId, Guid gameProviderId, int gameId)
         {
             var fixture = new Fixture();
-            fixture.Customize<Repository.Entities.Round>(u => u
+            fixture.Customize<Repository.Configurations.Round>(u => u
                 .With(s => s.BrandId, brandId)
                 .With(s => s.Id, roundId)
                 .With(s => s.GameProviderId, gameProviderId)
                 .With(s => s.PlayerCode, "PlayerCode")
-                .With(s => s.Status, (short)RoundStatus.Open)
+                .With(s => s.Status, RoundStatus.Open)
                 .With(s => s.CreatedOn, DateTimeOffset.UtcNow)
                 .With(s => s.GameId, gameId));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
@@ -121,7 +121,7 @@ namespace Tgs.Report.UnitTest.Round
         private static Fixture CreateGameProviderFixture(Guid gameProviderId)
         {
             var fixture = new Fixture();
-            fixture.Customize<Repository.Entities.GameProvider>(u => u
+            fixture.Customize<Repository.Configurations.GameProvider>(u => u
                 .With(s => s.Id, gameProviderId));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;

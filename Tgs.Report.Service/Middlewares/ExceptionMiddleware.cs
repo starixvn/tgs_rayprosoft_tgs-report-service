@@ -26,7 +26,7 @@ namespace Tgs.Report.Service.Middlewares
                 var name = endpoint?.Metadata.GetMetadata<ControllerActionDescriptor>()?.MethodInfo.Name;
 
                 var message = exception.GetMessageChain();
-                log.SetLogger(name ?? "");
+                log.SetLogger(name);
                 log.LogError($"Report api error on :{context.Request.Host} with message: {message}", exception);
 
                 await context.Response.WriteAsJsonAsync(new MessageResponse

@@ -47,9 +47,9 @@ namespace Tgs.Report.Core.Queries.Player
                 NetProfit = x.NetProfit
             });
 
-            var xlsx = exportData?.ExportWithLocalization("playerContributions", resource);
+            var xlsx = exportData.ExportWithLocalization("playerContributions", resource);
             await using var stream = new MemoryStream();
-            xlsx?.SaveAs(stream);
+            xlsx.SaveAs(stream);
 
             return new MemoryStream(stream.ToArray());
         }

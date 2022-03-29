@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Linq;
 
 namespace Tgs.Report.Client
 {
@@ -28,7 +30,9 @@ namespace Tgs.Report.Client
                     {
                         if (value is null)
                         {
-                            return $"{current}";
+                            return last.Equals(propertyInfo)
+                                ? $"{current}{propertyInfo.Name}="
+                                : $"{current}{propertyInfo.Name}=&";
                         }
 
                         var query = string.Empty;

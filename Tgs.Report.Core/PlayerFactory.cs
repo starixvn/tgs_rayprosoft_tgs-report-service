@@ -57,7 +57,7 @@ namespace Tgs.Report.Core
             var conn = _repository.GetDbConnection();
             var transaction = _repository.CurrentTransaction?.GetDbTransaction();
             var results = await conn.QueryAsync<PlayerAccountChangeModel>(spName,
-                new Dictionary<string, object?>
+                new Dictionary<string, object>
                 {
                     { "_from", request.From },
                     { "_to", request.To },

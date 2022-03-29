@@ -42,7 +42,7 @@ namespace Tgs.Report.Core.Queries.LicenseeMarket
                 .Where(!string.IsNullOrEmpty(request.CurrencyCode),
                     x => x.BrandCurrencies.Any(c => c.CurrencyCode == request.CurrencyCode))
                 .Where(request.CurrencyCodes != null,
-                    x => request.CurrencyCodes!.Contains(x.BrandCurrencies.FirstOrDefault()!.CurrencyCode))
+                    x => request.CurrencyCodes.Contains(x.BrandCurrencies.FirstOrDefault().CurrencyCode))
                 .Select(x => new
                 {
                     x.LicenseeId,

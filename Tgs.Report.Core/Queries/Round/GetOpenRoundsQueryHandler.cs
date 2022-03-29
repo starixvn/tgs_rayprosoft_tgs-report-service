@@ -18,7 +18,7 @@ namespace Tgs.Report.Core.Queries.Round
         public Task<PagedResponse<OpenRoundModel>> Handle(
             GetOpenRoundsRequest request,
             CancellationToken cancellationToken) =>
-            _repository.Rounds.Where(x => x.Status == (short)RoundStatus.Open)
+            _repository.Rounds.Where(x => x.Status == RoundStatus.Open)
                 .Where(x
                     => x.CreatedOn >= request.From.ToUniversalTime() && x.CreatedOn <= request.To.ToUniversalTime())
                 .Where(request.GameProviderId, x => request.GameProviderId == x.GameProviderId)
@@ -128,7 +128,7 @@ namespace Tgs.Report.Core.Queries.Round
                     BrandCode = combine.player!.Brand.Code,
                     BrandName = combine.player.Brand.Name,
                     PlayerType = (PlayerType)combine.player.Type,
-                    Status = (ClientRoundStatus)combine.round.ClientStatus,
+                    Status = combine.round.ClientStatus,
                     PlayerCode = combine.player.PlayerCode,
                     ExternalPlayerCode = combine.player.PlayerCode,
                     PlayerName = combine.player.Username,

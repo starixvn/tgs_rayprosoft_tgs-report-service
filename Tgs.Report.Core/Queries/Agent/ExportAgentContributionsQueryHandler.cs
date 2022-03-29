@@ -47,11 +47,11 @@ namespace Tgs.Report.Core.Queries.Agent
 
             var resource = new ResourceManager(typeof(AgentContribution));
 
-            var xlsx = exportData?.ExportWithLocalization("agentContributions", resource);
+            var xlsx = exportData.ExportWithLocalization("agentContributions", resource);
 
             await using var stream = new MemoryStream();
 
-            xlsx?.SaveAs(stream);
+            xlsx.SaveAs(stream);
 
             return new MemoryStream(stream.ToArray());
         }

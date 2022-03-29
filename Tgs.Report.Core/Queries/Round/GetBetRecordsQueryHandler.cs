@@ -1,8 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Tgs.Report.Enum;
 using Tgs.Report.Repository;
-using Tgs.Report.Repository.Entities;
+using Tgs.Report.Repository.Configurations;
 using Tgs.Report.ViewModel.Round;
 
 namespace Tgs.Report.Core.Queries.Round
@@ -10,18 +9,18 @@ namespace Tgs.Report.Core.Queries.Round
     public class GetBetRecordsQueryHandler : IRequestHandler<GetBetRecordsRequest, GetBetRecordsResponse>
     {
         private readonly ITgsService<BrandGame> _brandGameService;
-        private readonly ITgsService<Repository.Entities.GameProvider> _gameProviderService;
+        private readonly ITgsService<Repository.Configurations.GameProvider> _gameProviderService;
         private readonly ITgsService<Game> _gameService;
-        private readonly ITgsService<Repository.Entities.Player> _playerService;
+        private readonly ITgsService<Repository.Configurations.Player> _playerService;
         private readonly ITgsService<RoundDetail> _roundDetailService;
-        private readonly ITgsService<Repository.Entities.Round> _roundService;
+        private readonly ITgsService<Repository.Configurations.Round> _roundService;
 
         public GetBetRecordsQueryHandler(
-            ITgsService<Repository.Entities.Round> roundService,
-            ITgsService<Repository.Entities.Player> playerService,
+            ITgsService<Repository.Configurations.Round> roundService,
+            ITgsService<Repository.Configurations.Player> playerService,
             ITgsService<Game> gameService,
             ITgsService<RoundDetail> roundDetailService,
-            ITgsService<Repository.Entities.GameProvider> gameProviderService,
+            ITgsService<Repository.Configurations.GameProvider> gameProviderService,
             ITgsService<BrandGame> brandGameService)
         {
             _roundService = roundService;
@@ -40,7 +39,7 @@ namespace Tgs.Report.Core.Queries.Round
                 .Where(x => x.CreatedOn >= request.From.ToUniversalTime() &&
                     x.CreatedOn <= request.To.ToUniversalTime())
                 .Where(request.GameProviderId, x => request.GameProviderId == x.GameProviderId)
-                .Where(request.Status, x => (short?)request.Status == x.ClientStatus)
+                .Where(request.Status, x => request.Status == x.ClientStatus)
                 .Where(x => x.PlayerCode == request.PlayerCode)
                 .GroupJoin(_gameService.GetQueries(),
                     round => round.GameId, game => game.Id,
@@ -154,18 +153,16 @@ namespace Tgs.Report.Core.Queries.Round
                 .Select(combine => new BetRecordModel
                 {
                     Id = combine.round.Id,
-                    Status = (ClientRoundStatus)combine.round.ClientStatus,
+                    Status = combine.round.ClientStatus,
                     PlayerCode = combine.player!.PlayerCode,
                     ExternalPlayerCode = combine.player.PlayerCode,
                     PlayerName = combine.player.Username,
                     GameProviderId = combine.round.GameProviderId,
-                    GameProviderCode = combine.game == null ? "" : combine.game.GameProvider.Code,
-                    GameProviderName = combine.gameProvider == null ? "" : combine.gameProvider.Name,
-                    SubGameProviderName = combine.game == null || combine.game.SubGameProviderCodeNavigation == null
-                        ? ""
-                        : combine.game.SubGameProviderCodeNavigation.Name,
-                    GameId = combine.game == null ? 0 : combine.game.Id,
-                    GameName = combine.game == null ? "" : combine.game.Name,
+                    GameProviderCode = combine.game.GameProvider.Code,
+                    GameProviderName = combine.gameProvider.Name,
+                    SubGameProviderName = combine.game.SubGameProviderCodeNavigation.Name,
+                    GameId = combine.game.Id,
+                    GameName = combine.game.Name,
                     ExternalRoundId = combine.round.ExternalRoundId,
                     ExternalCreatedOn = combine.round.ExternalCreatedOn,
                     ExternalClosedOn = combine.round.ExternalClosedOn,
@@ -178,7 +175,7 @@ namespace Tgs.Report.Core.Queries.Round
                         (combine.brandGame == null ? 100M : combine.brandGame.EffectiveBettingPercentage)) / 100M,
                     SettleAmount = combine.round.SettleAmount,
                     WinLoss = -combine.round.WinLoss,
-                    AdditionalData = combine.detail == null ? "" : combine.detail.AdditionalData
+                    AdditionalData = combine.detail.AdditionalData
                 })
                 .OrderByDescending(x => x.CreatedOn)
                 .CreatePagedResponseAsync(request);

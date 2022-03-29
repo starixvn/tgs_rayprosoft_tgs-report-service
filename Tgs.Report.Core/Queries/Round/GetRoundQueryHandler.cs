@@ -14,6 +14,6 @@ namespace Tgs.Report.Core.Queries.Round
         public async Task<JsonDocument?> Handle(
             GetRoundHistoryRequest request,
             CancellationToken cancellationToken)
-            => await _client.GameRoundDetailGetAsync(request.RoundId, request.Language ?? "");
+            => await _client.GameRoundDetailGetAsync(request.RoundId, request.Language);
     }
 }
