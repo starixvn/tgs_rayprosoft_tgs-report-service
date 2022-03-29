@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
-using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
 #nullable disable
@@ -106,6 +105,11 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasForeignKey(d => d.ReferencedGameActionId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("fk_game_actions_referenced_game_action_id");
+
+            entity.HasOne(d => d.Round)
+                .WithMany(p => p.GameActions)
+                .HasForeignKey(d => d.RoundId)
+                .HasConstraintName("fk_game_actions_rounds_round_id");
 
             OnConfigurePartial(entity);
         }

@@ -1,12 +1,10 @@
-﻿using System;
-
-namespace Tgs.Report.Client.Models.GameAction
+﻿namespace Tgs.Report.Client.Models.GameAction
 {
     public record GameActionModel
     {
         public DateTimeOffset RecordedOn { get; init; }
 
-        public string ExternalTransactionId { get; init; }
+        public string? ExternalTransactionId { get; init; }
 
         public short GameActionType { get; init; }
 

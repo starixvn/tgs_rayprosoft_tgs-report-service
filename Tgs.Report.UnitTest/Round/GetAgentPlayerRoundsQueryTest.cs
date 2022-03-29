@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.Round;
+using Tgs.Report.Enum;
 using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.Round;
 
 namespace Tgs.Report.UnitTest.Round
@@ -29,60 +31,54 @@ namespace Tgs.Report.UnitTest.Round
             var playerCode1 = "playerCode";
             var playerCode2 = "playerCode2";
 
-            await repository.Rounds.AddRangeAsync(new Repository.Configurations.Round[] {
-                new Repository.Configurations.Round
+            await repository.Rounds.AddRangeAsync(
+                new Repository.Entities.Round
                 {
                     Id = Guid.Parse("7284B324-7065-CDD8-87A4-69A17C5DF20D"),
                     CurrencyCode = "CNY",
                     PlayerCode = playerCode1,
                     ExternalRoundId = "externalRoundId1",
-                    Status = Enum.RoundStatus.Closed,
-                    GameProviderId = Guid.Parse("3924FF4E-8ECA-A25F-ABDC-9B8606A46316"),
-                },
-                new Repository.Configurations.Round
+                    Status = (short)RoundStatus.Closed,
+                    GameProviderId = Guid.Parse("3924FF4E-8ECA-A25F-ABDC-9B8606A46316")
+                }, new Repository.Entities.Round
                 {
                     Id = Guid.Parse("DBE0C089-A956-4F14-B325-125F7935CB30"),
                     CurrencyCode = "CNY",
                     PlayerCode = playerCode2,
                     ExternalRoundId = "externalRoundId2",
-                    Status = Enum.RoundStatus.Open,
-                    GameProviderId = Guid.Parse("3924FF4E-8ECA-A25F-ABDC-9B8606A46316"),
-                }
-            });
+                    Status = (short)RoundStatus.Open,
+                    GameProviderId = Guid.Parse("3924FF4E-8ECA-A25F-ABDC-9B8606A46316")
+                });
 
-            _ = await repository.RoundDetails.AddAsync(new Repository.Configurations.RoundDetail
+            _ = await repository.RoundDetails.AddAsync(new RoundDetail
             {
                 RoundId = Guid.Parse("7284B324-7065-CDD8-87A4-69A17C5DF20D"),
                 AdditionalData = "additionalData"
             });
 
-            await repository.Players.AddRangeAsync(new Repository.Configurations.Player[]
+            await repository.Players.AddRangeAsync(new Repository.Entities.Player
             {
-                new Repository.Configurations.Player
-                {
-                    PlayerCode = playerCode1,
-                    DefaultWalletCurrencyCode = "CNY",
-                    Password = Array.Empty<byte>(),
-                    Salt = Array.Empty<byte>(),
-                    Username = "username1",
-                    WithdrawPassword = Array.Empty<byte>(),
-                    WithdrawSalt = Array.Empty<byte>(),
-                    AgentId = agentId
-                },
-                new Repository.Configurations.Player
-                {
-                    PlayerCode = playerCode2,
-                    DefaultWalletCurrencyCode = "CNY",
-                    Password = Array.Empty<byte>(),
-                    Salt = Array.Empty<byte>(),
-                    Username = "username2",
-                    WithdrawPassword = Array.Empty<byte>(),
-                    WithdrawSalt = Array.Empty<byte>(),
-                    AgentId = agentId
-                }
+                PlayerCode = playerCode1,
+                DefaultWalletCurrencyCode = "CNY",
+                Password = Array.Empty<byte>(),
+                Salt = Array.Empty<byte>(),
+                Username = "username1",
+                WithdrawPassword = Array.Empty<byte>(),
+                WithdrawSalt = Array.Empty<byte>(),
+                AgentId = agentId
+            }, new Repository.Entities.Player
+            {
+                PlayerCode = playerCode2,
+                DefaultWalletCurrencyCode = "CNY",
+                Password = Array.Empty<byte>(),
+                Salt = Array.Empty<byte>(),
+                Username = "username2",
+                WithdrawPassword = Array.Empty<byte>(),
+                WithdrawSalt = Array.Empty<byte>(),
+                AgentId = agentId
             });
 
-            _ = await repository.Games.AddAsync(new Repository.Configurations.Game
+            _ = await repository.Games.AddAsync(new Game
             {
                 AvailableCurrencies = "CNY",
                 Code = "TF",
@@ -123,60 +119,54 @@ namespace Tgs.Report.UnitTest.Round
             var playerCode1 = "playerCode";
             var playerCode2 = "playerCode2";
 
-            await repository.Rounds.AddRangeAsync(new Repository.Configurations.Round[] {
-                new Repository.Configurations.Round
+            await repository.Rounds.AddRangeAsync(
+                new Repository.Entities.Round
                 {
                     Id = Guid.Parse("7284B324-7065-CDD8-87A4-69A17C5DF20D"),
                     CurrencyCode = "CNY",
                     PlayerCode = playerCode1,
                     ExternalRoundId = "externalRoundId1",
-                    Status = Enum.RoundStatus.Closed,
-                    GameProviderId = Guid.Parse("3924FF4E-8ECA-A25F-ABDC-9B8606A46316"),
-                },
-                new Repository.Configurations.Round
+                    Status = (short)RoundStatus.Closed,
+                    GameProviderId = Guid.Parse("3924FF4E-8ECA-A25F-ABDC-9B8606A46316")
+                }, new Repository.Entities.Round
                 {
                     Id = Guid.Parse("DBE0C089-A956-4F14-B325-125F7935CB30"),
                     CurrencyCode = "CNY",
                     PlayerCode = playerCode2,
                     ExternalRoundId = "externalRoundId2",
-                    Status = Enum.RoundStatus.Open,
-                    GameProviderId = Guid.Parse("3924FF4E-8ECA-A25F-ABDC-9B8606A46316"),
-                }
-            });
+                    Status = (short)RoundStatus.Open,
+                    GameProviderId = Guid.Parse("3924FF4E-8ECA-A25F-ABDC-9B8606A46316")
+                });
 
-            _ = await repository.RoundDetails.AddAsync(new Repository.Configurations.RoundDetail
+            _ = await repository.RoundDetails.AddAsync(new RoundDetail
             {
                 RoundId = Guid.Parse("7284B324-7065-CDD8-87A4-69A17C5DF20D"),
                 AdditionalData = "additionalData"
             });
 
-            await repository.Players.AddRangeAsync(new Repository.Configurations.Player[]
+            await repository.Players.AddRangeAsync(new Repository.Entities.Player
             {
-                new Repository.Configurations.Player
-                {
-                    PlayerCode = playerCode1,
-                    DefaultWalletCurrencyCode = "CNY",
-                    Password = Array.Empty<byte>(),
-                    Salt = Array.Empty<byte>(),
-                    Username = "username1",
-                    WithdrawPassword = Array.Empty<byte>(),
-                    WithdrawSalt = Array.Empty<byte>(),
-                    AgentId = Guid.Parse("50DD70BE-38F8-6724-E446-BF1380E00B64")
-                },
-                new Repository.Configurations.Player
-                {
-                    PlayerCode = playerCode2,
-                    DefaultWalletCurrencyCode = "CNY",
-                    Password = Array.Empty<byte>(),
-                    Salt = Array.Empty<byte>(),
-                    Username = "username2",
-                    WithdrawPassword = Array.Empty<byte>(),
-                    WithdrawSalt = Array.Empty<byte>(),
-                    AgentId = Guid.Parse("50DD70BE-38F8-6724-E446-BF1380E00B64")
-                }
+                PlayerCode = playerCode1,
+                DefaultWalletCurrencyCode = "CNY",
+                Password = Array.Empty<byte>(),
+                Salt = Array.Empty<byte>(),
+                Username = "username1",
+                WithdrawPassword = Array.Empty<byte>(),
+                WithdrawSalt = Array.Empty<byte>(),
+                AgentId = Guid.Parse("50DD70BE-38F8-6724-E446-BF1380E00B64")
+            }, new Repository.Entities.Player
+            {
+                PlayerCode = playerCode2,
+                DefaultWalletCurrencyCode = "CNY",
+                Password = Array.Empty<byte>(),
+                Salt = Array.Empty<byte>(),
+                Username = "username2",
+                WithdrawPassword = Array.Empty<byte>(),
+                WithdrawSalt = Array.Empty<byte>(),
+                AgentId = Guid.Parse("50DD70BE-38F8-6724-E446-BF1380E00B64")
             });
 
-            _ = await repository.Games.AddAsync(new Repository.Configurations.Game
+            _ = await repository.Games.AddAsync(new Game
             {
                 AvailableCurrencies = "CNY",
                 Code = "TF",

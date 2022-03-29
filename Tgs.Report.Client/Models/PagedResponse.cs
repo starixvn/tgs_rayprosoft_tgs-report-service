@@ -5,9 +5,7 @@
         public int TotalCount { get; init; }
         public T[] Items { get; init; }
 
-        public PagedResponse()
-        {
-        }
+        public PagedResponse() => Items = Array.Empty<T>();
 
         public PagedResponse(int count, T[] items)
         {
