@@ -7,7 +7,7 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.Agent;
 using Tgs.Report.Repository;
-using Tgs.Report.Repository.Configurations;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.Agent;
 
 namespace Tgs.Report.UnitTest.Agent
@@ -25,7 +25,7 @@ namespace Tgs.Report.UnitTest.Agent
             var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
             var agentId = new Guid("aac11120-20f6-4f0d-6982-08d9dbdc0473");
 
-            var agents = CreateAgentFixture(brandId, agentId).CreateMany<Repository.Configurations.Agent>(1)
+            var agents = CreateAgentFixture(brandId, agentId).CreateMany<Repository.Entities.Agent>(1)
                 .AsQueryable()
                 .BuildMock().Object;
 
@@ -49,13 +49,13 @@ namespace Tgs.Report.UnitTest.Agent
             var response = await sut.Handle(request, default);
 
             Assert.IsTrue(response.Valid);
-            Assert.AreEqual(1, response.Items.Length);
+            Assert.AreEqual(1, response.Items?.Length);
         }
 
         private static Fixture CreateAgentFixture(Guid brandId, Guid agentId)
         {
             var fixture = new Fixture();
-            fixture.Customize<Repository.Configurations.Agent>(u => u
+            fixture.Customize<Repository.Entities.Agent>(u => u
                 .With(s => s.BrandId, brandId)
                 .With(s => s.Id, agentId)
                 .With(s => s.Brand, new Brand()));

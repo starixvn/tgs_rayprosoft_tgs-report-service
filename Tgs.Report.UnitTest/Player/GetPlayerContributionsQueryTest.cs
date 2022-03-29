@@ -7,7 +7,7 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.Player;
 using Tgs.Report.Repository;
-using Tgs.Report.Repository.Configurations;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.Player;
 
 namespace Tgs.Report.UnitTest.Player
@@ -32,7 +32,7 @@ namespace Tgs.Report.UnitTest.Player
             var withdrawForms = CreateWithdrawFormFixture(brandId).CreateMany<WithdrawForm>(1).AsQueryable()
                 .BuildMock().Object;
 
-            var players = CreatePlayerFixture(brandId).CreateMany<Repository.Configurations.Player>(1).AsQueryable()
+            var players = CreatePlayerFixture(brandId).CreateMany<Repository.Entities.Player>(1).AsQueryable()
                 .BuildMock().Object;
 
             var request = new GetPlayerContributionsRequest
@@ -52,7 +52,7 @@ namespace Tgs.Report.UnitTest.Player
 
             var response = await sut.Handle(request, default);
 
-            Assert.AreEqual(1, response.Items.Length);
+            Assert.AreEqual(1, response.Items?.Length);
         }
 
         private static Fixture CreatePlayerAggregateFixture(Guid brandId, DateTimeOffset reportDate)
@@ -78,7 +78,7 @@ namespace Tgs.Report.UnitTest.Player
         private static Fixture CreatePlayerFixture(Guid brandId)
         {
             var fixture = new Fixture();
-            fixture.Customize<Repository.Configurations.Player>(u => u
+            fixture.Customize<Repository.Entities.Player>(u => u
                 .With(s => s.BrandId, brandId)
                 .With(s => s.Brand, new Brand()));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());

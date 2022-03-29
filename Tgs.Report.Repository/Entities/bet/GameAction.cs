@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Tgs.Report.Repository.Configurations
+namespace Tgs.Report.Repository.Entities
 {
     public partial class GameAction
     {
@@ -37,6 +37,7 @@ namespace Tgs.Report.Repository.Configurations
         public DateTimeOffset StoredOn { get; set; }
 
         public virtual GameAction? ReferencedGameAction { get; set; }
+        public virtual Round Round { get; set; } = null!;
         public virtual ICollection<GameAction> InverseReferencedGameAction { get; set; }
     }
 }

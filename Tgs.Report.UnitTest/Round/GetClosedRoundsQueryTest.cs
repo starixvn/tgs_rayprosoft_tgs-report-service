@@ -1,10 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using NUnit.Framework;
-using System;
-using System.Threading.Tasks;
 using Tgs.Report.Core.Queries.Round;
+using Tgs.Report.Enum;
 using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.Round;
 
 namespace Tgs.Report.UnitTest.Round
@@ -26,23 +28,23 @@ namespace Tgs.Report.UnitTest.Round
             var roundId = Guid.NewGuid();
             var playerCode = "playerCode";
             var externalRoundId = "externalRoundId";
-            await repository.Rounds.AddAsync(new Repository.Configurations.Round
+            await repository.Rounds.AddAsync(new Repository.Entities.Round
             {
                 Id = roundId,
                 CurrencyCode = "CNY",
                 PlayerCode = playerCode,
                 ExternalRoundId = externalRoundId,
-                Status = Enum.RoundStatus.Closed,
-                GameProviderId = gameProviderId,
+                Status = (short)RoundStatus.Closed,
+                GameProviderId = gameProviderId
             });
 
-            await repository.RoundDetails.AddAsync(new Repository.Configurations.RoundDetail
+            await repository.RoundDetails.AddAsync(new RoundDetail
             {
                 RoundId = roundId,
                 AdditionalData = "additionalData"
             });
 
-            await repository.Players.AddAsync(new Repository.Configurations.Player
+            await repository.Players.AddAsync(new Repository.Entities.Player
             {
                 PlayerCode = playerCode,
                 DefaultWalletCurrencyCode = "CNY",
@@ -53,7 +55,7 @@ namespace Tgs.Report.UnitTest.Round
                 WithdrawSalt = Array.Empty<byte>()
             });
 
-            await repository.Games.AddAsync(new Repository.Configurations.Game
+            await repository.Games.AddAsync(new Game
             {
                 AvailableCurrencies = "CNY",
                 Code = "TF",

@@ -7,7 +7,7 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.ResellerMarket;
 using Tgs.Report.Repository;
-using Tgs.Report.Repository.Configurations;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.ResellerMarket;
 
 namespace Tgs.Report.UnitTest.ResellerMarket
@@ -51,7 +51,7 @@ namespace Tgs.Report.UnitTest.ResellerMarket
 
             var response = await sut.Handle(request, default);
 
-            Assert.AreEqual(1, response.Datas.TotalCount);
+            Assert.AreEqual(1, response.Datas?.TotalCount);
         }
 
         private static Fixture CreateBrandFixture(Guid brandId, Guid resellerId)

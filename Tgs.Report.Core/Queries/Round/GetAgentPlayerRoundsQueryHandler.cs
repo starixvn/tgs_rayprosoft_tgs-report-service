@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Tgs.Report.Enum;
 using Tgs.Report.Repository;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Round;
@@ -25,7 +26,7 @@ namespace Tgs.Report.Core.Queries.Round
                     x => x.ClosedOn >= request.ClosedFrom!.Value.ToUniversalTime() &&
                         x.ClosedOn <= request.ClosedTo!.Value.ToUniversalTime())
                 .Where(request.GameProviderId, x => request.GameProviderId == x.GameProviderId)
-                .Where(request.Status, x => request.Status == x.ClientStatus)
+                .Where(request.Status, x => (short?)request.Status == x.ClientStatus)
                 .Where(request.RoundId, x => x.Id == request.RoundId)
                 .Where(request.PlayerCode, x => x.PlayerCode == request.PlayerCode)
                 .Where(request.ExternalRoundId, x => x.ExternalRoundId == request.ExternalRoundId)
@@ -126,16 +127,19 @@ namespace Tgs.Report.Core.Queries.Round
                 .Select(combine => new RoundModel
                 {
                     Id = combine.round.Id,
-                    Status = combine.round.ClientStatus,
+                    Status = (ClientRoundStatus)combine.round.ClientStatus,
                     PlayerCode = combine.player!.PlayerCode,
                     ExternalPlayerCode = combine.player.PlayerCode,
                     PlayerName = combine.player.Username,
                     GameProviderId = combine.round.GameProviderId,
-                    GameProviderCode = combine.game.GameProvider.Code,
-                    GameProviderName = combine.gameProvider.Name,
-                    SubGameProviderName = combine.game.SubGameProviderCodeNavigation.Name,
-                    GameId = combine.game.Id,
-                    GameName = combine.game.Name,
+                    GameProviderCode = combine.game == null ? "" : combine.game.GameProvider.Code,
+                    GameProviderName = combine.gameProvider == null ? "" : combine.gameProvider.Name,
+                    SubGameProviderName =
+                        combine.game == null || combine.game.SubGameProviderCodeNavigation == null
+                            ? ""
+                            : combine.game.SubGameProviderCodeNavigation.Name,
+                    GameId = combine.game == null ? 0 : combine.game.Id,
+                    GameName = combine.game == null ? "" : combine.game.Name,
                     ExternalRoundId = combine.round.ExternalRoundId,
                     ExternalCreatedOn = combine.round.ExternalCreatedOn,
                     ExternalClosedOn = combine.round.ExternalClosedOn,
@@ -148,7 +152,7 @@ namespace Tgs.Report.Core.Queries.Round
                         (combine.brandGame == null ? 100M : combine.brandGame.EffectiveBettingPercentage)) / 100M,
                     SettleAmount = combine.round.SettleAmount,
                     WinLoss = -combine.round.WinLoss,
-                    AdditionalData = combine.detail.AdditionalData
+                    AdditionalData = combine.detail == null ? "" : combine.detail.AdditionalData
                 })
                 .OrderByDescending(x => x.CreatedOn)
                 .CreatePagedResponseAsync(request);

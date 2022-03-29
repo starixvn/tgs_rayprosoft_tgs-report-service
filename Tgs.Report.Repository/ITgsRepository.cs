@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using Tgs.Report.Repository.Configurations;
+using Tgs.Report.Repository.Entities;
 
 namespace Tgs.Report.Repository
 {
@@ -42,7 +42,7 @@ namespace Tgs.Report.Repository
         DbSet<GameProviderAggregateAuditLog> GameProviderAggregateAuditLogs { get; set; }
         DbSet<GameProviderAggregateRecord> GameProviderAggregateRecords { get; set; }
 
-        IDbContextTransaction CurrentTransaction { get; }
+        IDbContextTransaction? CurrentTransaction { get; }
         DbSet<T> Set<T>() where T : class;
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
         IDbConnection GetDbConnection();

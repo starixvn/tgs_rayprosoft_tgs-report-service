@@ -2,8 +2,8 @@
 {
     public record GetBrandGameProviderRoundsResponse
     {
-        public PagedResponse<BrandGameProviderRoundsModel> Datas { get; init; }
+        public PagedResponse<BrandGameProviderRoundsModel> Datas { get; init; } = default!;
 
-        public BrandGameProviderRoundTotalModel[] Totals { get; init; }
+        public BrandGameProviderRoundTotalModel[] Totals { get; init; } = default!;
     }
 }
