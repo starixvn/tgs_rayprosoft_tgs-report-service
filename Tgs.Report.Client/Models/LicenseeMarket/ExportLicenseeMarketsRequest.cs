@@ -3,7 +3,7 @@
     public record ExportLicenseeMarketsRequest : PageableRequest
     {
         public Guid LicenseeId { get; init; }
-        public string[]? CurrencyCodes { get; init; } = null!;
+        public string[]? CurrencyCodes { get; init; } = default!;
         public string? CurrencyCode { get; init; }
         public DateTimeOffset From { get; init; }
         public DateTimeOffset To { get; init; }
