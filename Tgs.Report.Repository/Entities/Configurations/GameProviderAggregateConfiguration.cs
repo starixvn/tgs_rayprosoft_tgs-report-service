@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
-using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
 #nullable disable

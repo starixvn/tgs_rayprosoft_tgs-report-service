@@ -6,7 +6,7 @@ namespace Tgs.Report.Core
     public static class XLSXUtility
     {
         public static XLWorkbook Export<T>(this IEnumerable<T> models, string sheetName,
-            ResourceManager resourceManager = null)
+            ResourceManager? resourceManager = null)
         {
             var workbook = new XLWorkbook();
             var sheet = workbook.Worksheets.Add(sheetName);
@@ -21,7 +21,7 @@ namespace Tgs.Report.Core
             foreach (var model in models)
             {
                 var columnIndex = 1;
-                foreach (var propertyInfo in model.GetType().GetProperties())
+                foreach (var propertyInfo in model!.GetType().GetProperties())
                 {
                     sheet.Cell(rowIdx, columnIndex).Value = propertyInfo.GetValue(model);
                     columnIndex++;
@@ -33,7 +33,8 @@ namespace Tgs.Report.Core
             return workbook;
         }
 
-        public static XLWorkbook ExportDepositLocalization<T>(this IEnumerable<T> models, string sheetName, decimal sum,
+        public static XLWorkbook ExportDepositLocalization<T>(this IEnumerable<T>? models, string sheetName,
+            decimal sum,
             ResourceManager resourceManager)
         {
             var workbook = new XLWorkbook();
@@ -54,7 +55,7 @@ namespace Tgs.Report.Core
             foreach (var model in models)
             {
                 var columnIndex = 1;
-                foreach (var propertyInfo in model.GetType().GetProperties())
+                foreach (var propertyInfo in model!.GetType().GetProperties())
                 {
                     var value = propertyInfo.GetValue(model);
 
@@ -79,7 +80,7 @@ namespace Tgs.Report.Core
             return workbook;
         }
 
-        public static XLWorkbook ExportWithdrawLocalization<T>(this IEnumerable<T> models, string sheetName,
+        public static XLWorkbook ExportWithdrawLocalization<T>(this IEnumerable<T>? models, string sheetName,
             decimal sum,
             ResourceManager resourceManager)
         {
@@ -101,7 +102,7 @@ namespace Tgs.Report.Core
             foreach (var model in models)
             {
                 var columnIndex = 1;
-                foreach (var propertyInfo in model.GetType().GetProperties())
+                foreach (var propertyInfo in model!.GetType().GetProperties())
                 {
                     var value = propertyInfo.GetValue(model);
 
@@ -126,7 +127,7 @@ namespace Tgs.Report.Core
             return workbook;
         }
 
-        public static XLWorkbook ExportWithLocalization<T>(this IEnumerable<T> models, string sheetName,
+        public static XLWorkbook ExportWithLocalization<T>(this IEnumerable<T>? models, string sheetName,
             ResourceManager resourceManager)
         {
             var workbook = new XLWorkbook();
@@ -147,7 +148,7 @@ namespace Tgs.Report.Core
             foreach (var model in models)
             {
                 var columnIndex = 1;
-                foreach (var propertyInfo in model.GetType().GetProperties())
+                foreach (var propertyInfo in model!.GetType().GetProperties())
                 {
                     var value = propertyInfo.GetValue(model);
 

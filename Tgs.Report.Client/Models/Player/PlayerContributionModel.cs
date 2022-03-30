@@ -2,9 +2,9 @@
 {
     public record PlayerContributionModel
     {
-        public string Username { get; init; }
+        public string? Username { get; init; }
 
-        public string PlayerCode { get; init; }
+        public string PlayerCode { get; init; } = default!;
 
         public short Type { get; init; }
 

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Globalization;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Tgs.Report.Client.Models;
 using Tgs.Report.Client.Models.Agent;
 using Tgs.Report.Client.Models.BrandGameProvider;
@@ -14,6 +8,7 @@ using Tgs.Report.Client.Models.GameProvider;
 using Tgs.Report.Client.Models.LicenseeMarket;
 using Tgs.Report.Client.Models.Market;
 using Tgs.Report.Client.Models.Player;
+using Tgs.Report.Client.Models.ResellerMarket;
 using Tgs.Report.Client.Models.Round;
 using Tgs.Report.Client.Models.Vip;
 
@@ -271,7 +266,7 @@ namespace Tgs.Report.Client
         {
             var prefix = $"Report.LicenseeId.{request.LicenseeId}.GetLicenseeMarkets";
 
-            var keyValues = new Dictionary<string, string>();
+            var keyValues = new Dictionary<string, string?>();
             foreach (var propertyInfo in request
                          .GetType()
                          .GetProperties()
@@ -292,7 +287,7 @@ namespace Tgs.Report.Client
                     value = ((DateTimeOffset?)value)?.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.sssZ");
                 }
 
-                keyValues.Add(propertyInfo.Name, value.ToString());
+                keyValues.Add(propertyInfo.Name, value!.ToString());
             }
 
             var parameters = string.Join("&", keyValues.Select(kvp => string.Format("{0}={1}", kvp.Key, kvp.Value)));
@@ -421,7 +416,7 @@ namespace Tgs.Report.Client
 
         public async ValueTask<Stream> ExportLicenseeMarketsAsync(ExportLicenseeMarketsRequest request)
         {
-            var keyValues = new Dictionary<string, string>();
+            var keyValues = new Dictionary<string, string?>();
             foreach (var propertyInfo in request
                          .GetType()
                          .GetProperties()
@@ -442,7 +437,7 @@ namespace Tgs.Report.Client
                     value = ((DateTimeOffset?)value)?.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.sssZ");
                 }
 
-                keyValues.Add(propertyInfo.Name, value.ToString());
+                keyValues.Add(propertyInfo.Name, value!.ToString());
             }
 
             var parameters = string.Join("&", keyValues.Select(kvp => string.Format("{0}={1}", kvp.Key, kvp.Value)));
@@ -455,6 +450,38 @@ namespace Tgs.Report.Client
             parameters += string.IsNullOrEmpty(parameters) ? currencyCodeParameters : $"&{currencyCodeParameters}";
 
             var path = $"/api/LicenseeMarketReport/exportLicenseeMarkets?{parameters}";
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+
+            httpRequest.Headers.Add("Accept-Language", CultureInfo.CurrentCulture.Name);
+
+            var response = await _client.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead);
+
+            _ = response.EnsureSuccessStatusCode();
+
+            var stream = await response.Content.ReadAsStreamAsync();
+
+            return stream;
+        }
+
+        public async ValueTask<ResellerMarketsResponse> GetResellerMarketsAsync(GetResellerMarketsRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/resellerMarketReport?", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+            _ = response.EnsureSuccessStatusCode();
+
+            return JsonSerializer.Deserialize<ResellerMarketsResponse>(
+                await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+
+        public async ValueTask<Stream> ExportResellerMarketsAsync(ExportResellerMarketsRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/resellerMarketReport/exportResellerMarkets?",
+                request);
 
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
 
