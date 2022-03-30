@@ -2,7 +2,7 @@
 {
     public record LicenseeMarketTotalModel
     {
-        public string CurrencyCode { get; init; }
+        public string CurrencyCode { get; init; } = default!;
         public int RegisteredCount { get; init; }
         public int FirstFundInCount { get; init; }
         public decimal DepositAmount { get; init; }

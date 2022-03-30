@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Tgs.Report.Repository.Configurations
+namespace Tgs.Report.Repository.Entities
 {
     public partial class BrandGameProviderAggregateRecord
     {

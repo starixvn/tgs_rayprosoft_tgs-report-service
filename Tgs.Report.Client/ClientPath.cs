@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Linq;
+﻿using System.Collections;
 
 namespace Tgs.Report.Client
 {
@@ -28,6 +26,11 @@ namespace Tgs.Report.Client
 
                     if (propertyInfo.PropertyType.IsArray && value is not null)
                     {
+                        if (value is null)
+                        {
+                            return $"{current}";
+                        }
+
                         var query = string.Empty;
                         var enumerable = (IEnumerable)value;
 
