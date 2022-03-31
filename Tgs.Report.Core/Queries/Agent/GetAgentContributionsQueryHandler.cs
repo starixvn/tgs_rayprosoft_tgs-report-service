@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Tgs.Report.Enum;
 using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Agent;
 
@@ -11,15 +12,28 @@ namespace Tgs.Report.Core.Queries.Agent
         GetAgentContributionsQueryHandler : IRequestHandler<GetAgentContributionsRequest,
             PagedResponse<AgentContributionModel>>
     {
-        private readonly ITgsRepository _repository;
+        private readonly ITgsService<Repository.Entities.Agent> _agentService;
+        private readonly ITgsService<WithdrawForm> _withdrawFormsService;
+        private readonly ITgsService<Repository.Entities.Player> _playerService;
+        private readonly ITgsService<PlayerAggregate> _playerAggregateService;
 
-        public GetAgentContributionsQueryHandler(ITgsRepository repository) => _repository = repository;
+        public GetAgentContributionsQueryHandler(
+            ITgsService<Repository.Entities.Agent> agentService,
+            ITgsService<WithdrawForm> withdrawFormsService,
+            ITgsService<Repository.Entities.Player> playerService,
+            ITgsService<PlayerAggregate> playerAggregateService)
+        {
+            _agentService = agentService;
+            _withdrawFormsService = withdrawFormsService;
+            _playerService = playerService;
+            _playerAggregateService = playerAggregateService;
+        }
 
         public async Task<PagedResponse<AgentContributionModel>> Handle(
             GetAgentContributionsRequest request,
             CancellationToken cancellationToken)
         {
-            var agent = await _repository.Agents.Where(x => x.BrandId == request.BrandId)
+            var agent = await _agentService.GetQueries().Where(x => x.BrandId == request.BrandId)
                 .Where(request.AgentId, a => a.Id == request.AgentId)
                 .Where(request.Username, a => a.Username == request.Username).FirstOrDefaultAsync(cancellationToken);
 
@@ -32,11 +46,11 @@ namespace Tgs.Report.Core.Queries.Agent
                 };
             }
 
-            var playerWithdrawals = await _repository.WithdrawForms
+            var playerWithdrawals = await _withdrawFormsService.GetQueries()
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.UserType == 1 && x.Status == 9000)
                 .Where(x => x.CreatedOn >= request.From.ToUniversalTime() && x.CreatedOn < request.To.ToUniversalTime())
-                .Join(_repository.Players,
+                .Join(_playerService.GetQueries(),
                     withdrawForm => withdrawForm.UserId,
                     player => player.PlayerCode,
                     (withdrawForm, player) => new
@@ -59,12 +73,18 @@ namespace Tgs.Report.Core.Queries.Agent
                 .ToArrayAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            var childAgents = await _repository.Agents.Where(x => x.ParentAgentId == agent.Id)
+            var childAgents = await _agentService.GetQueries().Where(x => x.ParentAgentId == agent.Id)
                 .Include(x => x.Players)
+                .Select(x => new
+                {
+                    x.Id,
+                    x.Username,
+                    x.Players
+                })
                 .ToArrayAsync(cancellationToken);
             var playerCodes = childAgents.SelectMany(c => c.Players.Select(p => p.PlayerCode));
 
-            var players = agent.Players.GroupJoin(_repository.PlayerAggregates
+            var players = agent.Players.GroupJoin(_playerAggregateService.GetQueries()
                         .Where(x => x.BrandId == request.BrandId)
                         .Where(x => x.AgentId == agent.Id)
                         .Where(x => x.ReportDate >= request.From.ToUniversalTime() &&
@@ -97,7 +117,9 @@ namespace Tgs.Report.Core.Queries.Agent
                                 playerWithdrawals.FirstOrDefault(w => w.PlayerCode == player.PlayerCode)
                                     ?.WithdrawalAmount ?? 0,
                             CompanyAdjustAmount = playerAggregate.Sum(p => p.playerAggregate?.CompanyAdjustAmount ?? 0),
-                            AgentAdjustAmount = playerAggregate.Sum(p => p.playerAggregate?.AgentAdjustAmount ?? 0),
+                            AgentAdjustAmount = playerAggregate.Sum(p
+                                => p.playerAggregate?.AgentAdjustAmount ?? 0M -
+                                p.playerAggregate?.NoIncludeNetProfitAgentAdjustAmount ?? 0),
                             BonusAmount =
                                 playerAggregate.Sum(p
                                     => p.playerAggregate == null
@@ -120,10 +142,9 @@ namespace Tgs.Report.Core.Queries.Agent
                     .CreatePagedResponseAsync(players.Length);
             }
 
-            var childAgentPlayers = childAgents.GroupJoin(_repository.PlayerAggregates
+            var childAgentPlayers = childAgents.GroupJoin(_playerAggregateService.GetQueries()
                         .Where(x => x.BrandId == request.BrandId)
-                        .Where(x => playerCodes
-                            .Contains(x.PlayerCode))
+                        .Where(x => playerCodes.Contains(x.PlayerCode))
                         .Where(x => x.AgentId != null)
                         .Where(x => x.ReportDate >= request.From.ToUniversalTime() &&
                             x.ReportDate < request.To.ToUniversalTime()),

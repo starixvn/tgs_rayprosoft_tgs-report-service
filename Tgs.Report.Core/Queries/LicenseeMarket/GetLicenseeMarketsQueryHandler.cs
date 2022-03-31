@@ -77,7 +77,8 @@ namespace Tgs.Report.Core.Queries.LicenseeMarket
                     FirstFundInCount = playerAggregate.Sum(m => m.FirstFundInCount),
                     DepositAmount = playerAggregate.Sum(m => m.DepositAmount),
                     WithdrawalAmount = playerAggregate.Sum(m => m.WithdrawalAmount),
-                    CompanyAdjustAmount = playerAggregate.Sum(m => m.CompanyAdjustAmount),
+                    CompanyAdjustAmount =
+                        playerAggregate.Sum(m => m.CompanyAdjustAmount - m.NoIncludeNetProfitCompanyAdjustAmount),
                     BonusAmount = playerAggregate.Sum(m => m.RebateAmount + m.PromotionAmount),
                     BetAmount = playerAggregate.Sum(m => m.BetAmount),
                     Turnover = playerAggregate.Sum(m => m.Turnover),

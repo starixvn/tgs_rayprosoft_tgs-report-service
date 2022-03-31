@@ -1,10 +1,14 @@
+using System.Text;
+using System.Text.Json;
+using Microsoft.AspNetCore.Diagnostics;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Prometheus;
+using Tgs.MessageQueue;
 using Tgs.Report.Core;
-using Tgs.Report.Service.Middlewares;
+using Tgs.Report.ViewModel;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -112,7 +116,27 @@ builder.Services
 
 var app = builder.Build();
 
-app.UseMiddleware<ExceptionMiddleware>();
+app.UseExceptionHandler(new ExceptionHandlerOptions
+{
+    ExceptionHandler = async context =>
+    {
+        var exceptionFeature = context.Features.Get<IExceptionHandlerFeature>();
+        if (exceptionFeature?.Error != null)
+        {
+            var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
+            var logger = loggerFactory.CreateLogger("ExceptionHandler");
+
+            logger.LogError(exceptionFeature.Error, exceptionFeature.Error.Message);
+
+            var messageSender = app.Services.GetRequiredService<IMessageSender>();
+
+            await messageSender.PublishAsync("report.error",
+                    Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new ReportErrorMessage(
+                        $"{app.Environment}.report.aggregate: {exceptionFeature.Error.Message}"))))
+                .ConfigureAwait(false);
+        }
+    }
+});
 
 // Configure the HTTP request pipeline.
 app.UseSwaggerUI();

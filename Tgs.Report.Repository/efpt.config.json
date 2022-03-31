@@ -98,6 +98,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "dbo.adjust_player_records",
+         "ObjectType": 0
+      },
+      {
          "Name": "dbo.currencies",
          "ObjectType": 0
       },
