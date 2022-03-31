@@ -85,7 +85,8 @@ namespace Tgs.Report.Core.Queries.Agent
                         Turnover = list.Sum(l => l.Turnover),
                         WinLossAmount = list.Sum(l => l.WinLossAmount),
                         NetProfit = list.Sum(l => l.NetProfit),
-                        AgentDividendAmount = list.Sum(l => l.AgentDividendAmount)
+                        AgentDividendAmount = list.Sum(l => l.AgentDividendAmount),
+                        NoIncludeNetProfitAgentAdjustAmount = list.Sum(l => l.NoIncludeNetProfitAgentAdjustAmount)
                     }).ToArrayAsync(cancellationToken);
 
             var models = agentDividends.Join(agents.ToArray(),
@@ -99,7 +100,7 @@ namespace Tgs.Report.Core.Queries.Agent
                     WithdrawalAmount = playerWithdrawals.Where(w => w.AgentId == ad.AgentId)
                         .Sum(w => w.WithdrawalAmount),
                     CompanyAdjustAmount = ad.CompanyAdjustAmount,
-                    AgentAdjustAmount = ad.AgentAdjustAmount,
+                    AgentAdjustAmount = ad.AgentAdjustAmount - ad.NoIncludeNetProfitAgentAdjustAmount,
                     BonusAmount = ad.BonusAmount,
                     BetAmount = ad.BetAmount,
                     ValidBetAmount = ad.OriginalTurnover,

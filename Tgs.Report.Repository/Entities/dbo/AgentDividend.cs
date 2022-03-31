@@ -46,6 +46,8 @@ namespace Tgs.Report.Repository.Entities
         public decimal OriginalTurnover { get; set; }
         public decimal ValidBetAmount { get; set; }
         public decimal AgentAdjustAmount { get; set; }
+        public decimal NoIncludeNetProfitAgentAdjustAmount { get; set; }
+        public decimal NoIncludeNetProfitCompanyAdjustAmount { get; set; }
 
         public virtual ICollection<AgentDividendMultipleLayer> AgentDividendMultipleLayers { get; set; }
     }
