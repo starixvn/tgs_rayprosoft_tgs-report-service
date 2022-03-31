@@ -82,7 +82,9 @@ namespace Tgs.Report.Core.Queries.Market
                                 -withdrawalByDates.FirstOrDefault(w => w.Date == market.ReportDate.Date)
                                     ?.WithdrawalAmount ??
                                 0M,
-                            CompanyAdjustAmount = markets.Sum(m => m.market?.CompanyAdjustAmount ?? 0M),
+                            CompanyAdjustAmount = markets.Sum(m
+                                => m.market?.CompanyAdjustAmount ??
+                                0M - m.market?.NoIncludeNetProfitCompanyAdjustAmount ?? 0M),
                             BonusAmount =
                                 markets.Sum(
                                     m => m.market == null ? 0 : m.market.RebateAmount + m.market.PromotionAmount),
