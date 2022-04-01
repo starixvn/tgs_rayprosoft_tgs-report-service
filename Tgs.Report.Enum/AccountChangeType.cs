@@ -27,6 +27,16 @@
         CancelTransaction = 105,
         LockAmount = 106,
         UnlockAmount = 107,
-        WinJackpot = 108
+        WinJackpot = 108,
+
+        /// <summary>
+        ///     The promotion vip level upgrade
+        /// </summary>
+        PromotionVipLevelUpgrade = 3800,
+
+        /// <summary>
+        ///     The promotion vip level season
+        /// </summary>
+        PromotionVipLevelSeason = 3850
     }
 }
