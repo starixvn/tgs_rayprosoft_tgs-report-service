@@ -36,6 +36,7 @@ namespace Tgs.Report.Core
                 AccountChangeType.GameProviderDeposit      => TransactionType.GameProviderDeposit,
                 AccountChangeType.GameProviderWithdrawal   => TransactionType.GameProviderWithdrawal,
                 AccountChangeType.UnsettledBetManual       => TransactionType.UnsettledBetManual,
+                AccountChangeType.DividendAllAgentRebate   => TransactionType.DividendAllAgentRebate,
                 AccountChangeType.PromotionVipLevelUpgrade => TransactionType.PromotionVipLevelUpgrade,
                 AccountChangeType.PromotionVipLevelSeason  => TransactionType.PromotionVipLevelSeason,
                 _                                          => null
@@ -58,7 +59,7 @@ namespace Tgs.Report.Core
             var conn = _repository.GetDbConnection();
             var transaction = _repository.CurrentTransaction?.GetDbTransaction();
             var results = await conn.QueryAsync<PlayerAccountChangeModel>(spName,
-                new Dictionary<string, object>
+                new Dictionary<string, object?>
                 {
                     { "_from", request.From },
                     { "_to", request.To },
@@ -78,35 +79,42 @@ namespace Tgs.Report.Core
         {
             TransactionType? transactionType = request.AccountChangeType switch
             {
-                AccountChangeType.Deposit             => TransactionType.Deposit,
-                AccountChangeType.Withdrawal          => TransactionType.Withdrawal,
-                AccountChangeType.CompanyAdjust       => TransactionType.CompanyAdjust,
-                AccountChangeType.AgentAdjust         => TransactionType.AgentAdjust,
-                AccountChangeType.SystemAdjust        => TransactionType.SystemAdjust,
-                AccountChangeType.TransferAdjust      => TransactionType.TransferAdjust,
-                AccountChangeType.Bonus               => TransactionType.Bonus,
-                AccountChangeType.Rebate              => TransactionType.Rebate,
-                AccountChangeType.Dividend            => TransactionType.Dividend,
-                AccountChangeType.Promotion           => TransactionType.Promotion,
-                AccountChangeType.GameProviderFundOut => TransactionType.GameProviderFundOut,
-                AccountChangeType.GameProviderFundIn  => TransactionType.GameProviderFundIn,
-                AccountChangeType.CancelWithdrawal    => TransactionType.CancelWithdrawal,
-                AccountChangeType.GameProviderDeposit => TransactionType.GameProviderDeposit,
-                AccountChangeType.UnsettledBetManual  => TransactionType.UnsettledBetManual,
-                _                                     => null
+                AccountChangeType.Deposit                  => TransactionType.Deposit,
+                AccountChangeType.Withdrawal               => TransactionType.Withdrawal,
+                AccountChangeType.CompanyAdjust            => TransactionType.CompanyAdjust,
+                AccountChangeType.AgentAdjust              => TransactionType.AgentAdjust,
+                AccountChangeType.SystemAdjust             => TransactionType.SystemAdjust,
+                AccountChangeType.TransferAdjust           => TransactionType.TransferAdjust,
+                AccountChangeType.Bonus                    => TransactionType.Bonus,
+                AccountChangeType.Rebate                   => TransactionType.Rebate,
+                AccountChangeType.Dividend                 => TransactionType.Dividend,
+                AccountChangeType.Promotion                => TransactionType.Promotion,
+                AccountChangeType.GameProviderFundOut      => TransactionType.GameProviderFundOut,
+                AccountChangeType.GameProviderFundIn       => TransactionType.GameProviderFundIn,
+                AccountChangeType.CancelWithdrawal         => TransactionType.CancelWithdrawal,
+                AccountChangeType.GameProviderDeposit      => TransactionType.GameProviderDeposit,
+                AccountChangeType.GameProviderWithdrawal   => TransactionType.GameProviderWithdrawal,
+                AccountChangeType.UnsettledBetManual       => TransactionType.UnsettledBetManual,
+                AccountChangeType.DividendAllAgentRebate   => TransactionType.DividendAllAgentRebate,
+                AccountChangeType.PromotionVipLevelUpgrade => TransactionType.PromotionVipLevelUpgrade,
+                AccountChangeType.PromotionVipLevelSeason  => TransactionType.PromotionVipLevelSeason,
+                _                                          => null
             };
+
             GameActionType? gameActionType = request.AccountChangeType switch
             {
-                AccountChangeType.PlaceBet     => GameActionType.PlaceBet,
-                AccountChangeType.WinBet       => GameActionType.WinBet,
-                AccountChangeType.LoseBet      => GameActionType.LoseBet,
-                AccountChangeType.FreeBet      => GameActionType.FreeBet,
-                AccountChangeType.TieBet       => GameActionType.TieBet,
-                AccountChangeType.LockAmount   => GameActionType.LockAmount,
-                AccountChangeType.UnlockAmount => GameActionType.UnlockAmount,
-                AccountChangeType.WinJackpot   => GameActionType.WinJackpot,
-                _                              => null
+                AccountChangeType.PlaceBet          => GameActionType.PlaceBet,
+                AccountChangeType.WinBet            => GameActionType.WinBet,
+                AccountChangeType.LoseBet           => GameActionType.LoseBet,
+                AccountChangeType.FreeBet           => GameActionType.FreeBet,
+                AccountChangeType.TieBet            => GameActionType.TieBet,
+                AccountChangeType.CancelTransaction => GameActionType.CancelTransaction,
+                AccountChangeType.LockAmount        => GameActionType.LockAmount,
+                AccountChangeType.UnlockAmount      => GameActionType.UnlockAmount,
+                AccountChangeType.WinJackpot        => GameActionType.WinJackpot,
+                _                                   => null
             };
+
             var transType = (short?)transactionType;
             var gameType = (short?)gameActionType;
 
