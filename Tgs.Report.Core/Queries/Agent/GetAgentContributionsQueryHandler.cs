@@ -33,7 +33,8 @@ namespace Tgs.Report.Core.Queries.Agent
             GetAgentContributionsRequest request,
             CancellationToken cancellationToken)
         {
-            var agent = await _agentService.GetQueries().Where(x => x.BrandId == request.BrandId)
+            var agent = await _agentService.GetQueries().Include(x => x.Players)
+                .Where(x => x.BrandId == request.BrandId)
                 .Where(request.AgentId, a => a.Id == request.AgentId)
                 .Where(request.Username, a => a.Username == request.Username).FirstOrDefaultAsync(cancellationToken);
 
