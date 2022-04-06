@@ -114,7 +114,8 @@ namespace Tgs.Report.Core.Queries.Player
                     {
                         PlayerCode = playerCode,
                         DepositAmount = playerAggregates.Sum(p => p.DepositAmount),
-                        CompanyAdjustAmount = playerAggregates.Sum(p => p.CompanyAdjustAmount),
+                        CompanyAdjustAmount =
+                            playerAggregates.Sum(p => p.CompanyAdjustAmount - p.NoIncludeNetProfitCompanyAdjustAmount),
                         AgentAdjustAmount =
                             playerAggregates.Sum(p => p.AgentAdjustAmount - p.NoIncludeNetProfitAgentAdjustAmount),
                         BonusAmount = playerAggregates.Sum(p => p.RebateAmount + p.PromotionAmount),
