@@ -44,7 +44,8 @@ namespace Tgs.Report.Core.Queries.Agent
                         SportsWinLoss = list.Sum(l => l.SportsWinLoss + l.ESportsWinLoss),
                         VirtualSportsWinLoss = list.Sum(l => l.VirtualSportsWinLoss),
                         WinLossAmount = list.Sum(l => l.WinLossAmount),
-                        AgentDividendAmount = list.Sum(l => l.AgentDividendAmount),
+                        AgentDividendAmount =
+                            list.Where(l => l.AgentDividendAmount > 0).Sum(l => l.AgentDividendAmount),
                         ExpenditureAmount = list.Sum(l => l.PromotionAmount + l.RebateAmount + l.AgentAdjustAmount)
                     }).ToArrayAsync(cancellationToken);
 
