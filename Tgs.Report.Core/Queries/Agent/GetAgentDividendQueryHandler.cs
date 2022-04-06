@@ -70,25 +70,48 @@ namespace Tgs.Report.Core.Queries.Agent
                 .Where(x => x.From >= request.From.ToUniversalTime())
                 .Where(x => x.To < request.To.ToUniversalTime())
                 .Where(x => agentIds.Contains(x.AgentId))
-                .GroupBy(x => x.AgentId,
-                    (agentId, list) => new
-                    {
-                        AgentId = agentId,
-                        DepositAmount = list.Sum(l => l.DepositAmount),
-                        WithdrawalAmount = list.Sum(l => l.WithdrawalAmount),
-                        CompanyAdjustAmount = list.Sum(l => l.CompanyAdjustAmount),
-                        AgentAdjustAmount = list.Sum(l => l.AgentAdjustAmount),
-                        BonusAmount = list.Sum(l => l.BonusAmount),
-                        BetAmount = list.Sum(l => l.BetAmount),
-                        ValidBetAmount = list.Sum(l => l.ValidBetAmount),
-                        OriginalTurnover = list.Sum(l => l.OriginalTurnover),
-                        Turnover = list.Sum(l => l.Turnover),
-                        WinLossAmount = list.Sum(l => l.WinLossAmount),
-                        NetProfit = list.Sum(l => l.NetProfit),
-                        AgentDividendAmount = list.Where(l => l.AgentDividendAmount > 0).Sum(l => l.AgentDividendAmount)
-                    }).ToArrayAsync(cancellationToken);
+                .Select(x => new
+                {
+                    x.AgentId,
+                    x.DepositAmount,
+                    x.WithdrawalAmount,
+                    x.CompanyAdjustAmount,
+                    x.AgentAdjustAmount,
+                    x.BonusAmount,
+                    x.BetAmount,
+                    x.ValidBetAmount,
+                    x.OriginalTurnover,
+                    x.Turnover,
+                    x.WinLossAmount,
+                    x.NetProfit,
+                    x.AgentDividendAmount,
+                    x.ReferencedAgentDividendId,
+                    x.SentOn
+                }).ToArrayAsync(cancellationToken);
 
-            var models = agentDividends.Join(agents.ToArray(),
+            var agentDividendGroup = agentDividends.GroupBy(x => x.AgentId,
+                (agentId, list) => new
+                {
+                    AgentId = agentId,
+                    DepositAmount = list.Sum(l => l.DepositAmount),
+                    WithdrawalAmount = list.Sum(l => l.WithdrawalAmount),
+                    CompanyAdjustAmount = list.Sum(l => l.CompanyAdjustAmount),
+                    AgentAdjustAmount = list.Sum(l => l.AgentAdjustAmount),
+                    BonusAmount = list.Sum(l => l.BonusAmount),
+                    BetAmount = list.Sum(l => l.BetAmount),
+                    ValidBetAmount = list.Sum(l => l.ValidBetAmount),
+                    OriginalTurnover = list.Sum(l => l.OriginalTurnover),
+                    Turnover = list.Sum(l => l.Turnover),
+                    WinLossAmount = list.Sum(l => l.WinLossAmount),
+                    NetProfit = list.Sum(l => l.NetProfit),
+                    AgentDividendAmount =
+                        list.Where(l
+                                => l.AgentDividendAmount > 0 && l.ReferencedAgentDividendId == null &&
+                                l.SentOn != null)
+                            .Sum(l => l.AgentDividendAmount.Truncate(2))
+                }).ToArray();
+
+            var models = agentDividendGroup.Join(agents.ToArray(),
                 ad => ad.AgentId,
                 a => a.Id,
                 (ad, a) => new AgentDividendModel
