@@ -85,7 +85,7 @@ namespace Tgs.Report.Core.Queries.Agent
                         Turnover = list.Sum(l => l.Turnover),
                         WinLossAmount = list.Sum(l => l.WinLossAmount),
                         NetProfit = list.Sum(l => l.NetProfit),
-                        AgentDividendAmount = list.Sum(l => l.AgentDividendAmount)
+                        AgentDividendAmount = list.Where(l => l.AgentDividendAmount > 0).Sum(l => l.AgentDividendAmount)
                     }).ToArrayAsync(cancellationToken);
 
             var models = agentDividends.Join(agents.ToArray(),
