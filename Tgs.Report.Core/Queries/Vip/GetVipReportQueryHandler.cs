@@ -95,14 +95,16 @@ namespace Tgs.Report.Core.Queries.Vip
                         x.PlayerCode,
                         DepositAmount = players.Sum(m => m.DepositAmount),
                         WithdrawalAmount = players.Sum(m => m.WithdrawalAmount),
-                        CompanyAdjustAmount = players.Sum(m => m.CompanyAdjustAmount),
+                        CompanyAdjustAmount =
+                            players.Sum(m => m.CompanyAdjustAmount - m.NoIncludeNetProfitCompanyAdjustAmount),
                         BonusAmount = players.Sum(m => m.RebateAmount + m.PromotionAmount),
                         BetAmount = players.Sum(m => m.BetAmount),
                         ValidBetAmount = players.Sum(m => m.OriginalTurnover),
                         Turnover = players.Sum(m => m.Turnover),
                         WinLossAmount = players.Sum(m => m.WinLossAmount),
                         NetProfit = players.Sum(m
-                            => m.WinLossAmount - m.CompanyAdjustAmount - m.RebateAmount - m.PromotionAmount)
+                            => m.WinLossAmount - (m.CompanyAdjustAmount - m.NoIncludeNetProfitCompanyAdjustAmount) -
+                            m.RebateAmount - m.PromotionAmount)
                     })
                 .GroupJoin(_repository.PlayerGameRebateAggregates
                         .Where(x => x.BrandId == request.BrandId)
