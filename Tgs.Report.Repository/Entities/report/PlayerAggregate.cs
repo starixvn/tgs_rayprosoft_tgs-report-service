@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Tgs.Report.Repository.Configurations
+namespace Tgs.Report.Repository.Entities
 {
     public partial class PlayerAggregate
     {
@@ -32,5 +32,7 @@ namespace Tgs.Report.Repository.Configurations
         public decimal AllAgentRebateAmount { get; set; }
         public decimal AgentAdjustAmount { get; set; }
         public decimal SystemAdjustAmount { get; set; }
+        public decimal NoIncludeNetProfitAgentAdjustAmount { get; set; }
+        public decimal NoIncludeNetProfitCompanyAdjustAmount { get; set; }
     }
 }

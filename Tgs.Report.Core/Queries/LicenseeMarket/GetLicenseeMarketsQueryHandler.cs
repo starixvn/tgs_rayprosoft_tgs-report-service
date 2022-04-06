@@ -42,7 +42,7 @@ namespace Tgs.Report.Core.Queries.LicenseeMarket
                 .Where(!string.IsNullOrEmpty(request.CurrencyCode),
                     x => x.BrandCurrencies.Any(c => c.CurrencyCode == request.CurrencyCode))
                 .Where(request.CurrencyCodes != null,
-                    x => request.CurrencyCodes.Contains(x.BrandCurrencies.FirstOrDefault().CurrencyCode))
+                    x => request.CurrencyCodes!.Contains(x.BrandCurrencies.FirstOrDefault()!.CurrencyCode))
                 .Select(x => new
                 {
                     x.LicenseeId,
@@ -77,7 +77,8 @@ namespace Tgs.Report.Core.Queries.LicenseeMarket
                     FirstFundInCount = playerAggregate.Sum(m => m.FirstFundInCount),
                     DepositAmount = playerAggregate.Sum(m => m.DepositAmount),
                     WithdrawalAmount = playerAggregate.Sum(m => m.WithdrawalAmount),
-                    CompanyAdjustAmount = playerAggregate.Sum(m => m.CompanyAdjustAmount),
+                    CompanyAdjustAmount =
+                        playerAggregate.Sum(m => m.CompanyAdjustAmount - m.NoIncludeNetProfitCompanyAdjustAmount),
                     BonusAmount = playerAggregate.Sum(m => m.RebateAmount + m.PromotionAmount),
                     BetAmount = playerAggregate.Sum(m => m.BetAmount),
                     Turnover = playerAggregate.Sum(m => m.Turnover),

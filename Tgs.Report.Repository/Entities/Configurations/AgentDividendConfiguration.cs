@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
-using Tgs.Report.Repository.Configurations;
 using Tgs.Report.Repository.Entities;
 
 #nullable disable
@@ -92,6 +91,14 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.NetProfit)
                 .HasPrecision(18, 6)
                 .HasColumnName("net_profit");
+
+            entity.Property(e => e.NoIncludeNetProfitAgentAdjustAmount)
+                .HasPrecision(18, 6)
+                .HasColumnName("no_include_net_profit_agent_adjust_amount");
+
+            entity.Property(e => e.NoIncludeNetProfitCompanyAdjustAmount)
+                .HasPrecision(18, 6)
+                .HasColumnName("no_include_net_profit_company_adjust_amount");
 
             entity.Property(e => e.OriginalTurnover)
                 .HasPrecision(18, 6)

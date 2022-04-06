@@ -7,24 +7,28 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.Agent;
 using Tgs.Report.Repository;
-using Tgs.Report.Repository.Configurations;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.Agent;
 
 namespace Tgs.Report.UnitTest.Agent
 {
     [TestFixture]
-    public sealed class GetAgentContributionsQueryTest : BaseTest
+    public sealed class GetAgentContributionsQueryTest
     {
         [Test]
         public async Task Can_Get_Agent_Contributions()
         {
-            var fakeRepository = Substitute.For<ITgsRepository>();
+            var fakeAgent = Substitute.For<ITgsService<Repository.Entities.Agent>>();
+            var fakeWithdrawForm = Substitute.For<ITgsService<WithdrawForm>>();
+            var fakePlayer = Substitute.For<ITgsService<Repository.Entities.Player>>();
+            var fakePlayerAggregate = Substitute.For<ITgsService<PlayerAggregate>>();
 
-            var sut = new GetAgentContributionsQueryHandler(fakeRepository);
+            var sut = new GetAgentContributionsQueryHandler(fakeAgent, fakeWithdrawForm, fakePlayer,
+                fakePlayerAggregate);
 
             var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
             var agentUsername = "agentUsername";
-            var agents = CreateAgentFixture(brandId, agentUsername).CreateMany<Repository.Configurations.Agent>(1)
+            var agents = CreateAgentFixture(brandId, agentUsername).CreateMany<Repository.Entities.Agent>(1)
                 .AsQueryable()
                 .BuildMock().Object;
 
@@ -44,26 +48,21 @@ namespace Tgs.Report.UnitTest.Agent
                 SortBy = null
             };
 
-            var mockAgents = GetDbSet(agents);
-            var mockWithdrawForms = GetDbSet(withdrawForms);
-            var mockPlayers = GetDbSet(players);
-            var mockPlayerAggregates = GetDbSet(playerAggregates);
-
-            fakeRepository.Agents.Returns(mockAgents.Object);
-            fakeRepository.WithdrawForms.Returns(mockWithdrawForms.Object);
-            fakeRepository.Players.Returns(mockPlayers.Object);
-            fakeRepository.PlayerAggregates.Returns(mockPlayerAggregates.Object);
+            fakeAgent.GetQueries().Returns(agents);
+            fakeWithdrawForm.GetQueries().Returns(withdrawForms);
+            fakePlayer.GetQueries().Returns(players);
+            fakePlayerAggregate.GetQueries().Returns(playerAggregates);
 
             var response = await sut.Handle(request, default);
 
             Assert.IsTrue(response.Valid);
-            Assert.AreEqual(players.Count(), response.Items.Length);
+            Assert.AreEqual(players.Count(), response.Items?.Length);
         }
 
         private static Fixture CreateAgentFixture(Guid brandId, string username)
         {
             var fixture = new Fixture();
-            fixture.Customize<Repository.Configurations.Agent>(u => u
+            fixture.Customize<Repository.Entities.Agent>(u => u
                 .With(s => s.BrandId, brandId)
                 .With(s => s.Username, username)
                 .With(s => s.Brand, new Brand()));

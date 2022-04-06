@@ -9,6 +9,7 @@ using Tgs.Report.Client.Models.GameProvider;
 using Tgs.Report.Client.Models.LicenseeMarket;
 using Tgs.Report.Client.Models.Market;
 using Tgs.Report.Client.Models.Player;
+using Tgs.Report.Client.Models.ResellerMarket;
 using Tgs.Report.Client.Models.Round;
 using Tgs.Report.Client.Models.Vip;
 
@@ -91,5 +92,8 @@ namespace Tgs.Report.Client
             ExportAgentDividendsTrialCalculationAsync(ExportAgentDividendsTrialCalculationRequest request);
 
         ValueTask<Stream> ExportLicenseeMarketsAsync(ExportLicenseeMarketsRequest request);
+
+        ValueTask<ResellerMarketsResponse> GetResellerMarketsAsync(GetResellerMarketsRequest request);
+        ValueTask<Stream> ExportResellerMarketsAsync(ExportResellerMarketsRequest request);
     }
 }
