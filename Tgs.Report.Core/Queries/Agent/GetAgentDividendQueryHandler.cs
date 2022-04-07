@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Tgs.Report.Repository;
 using Tgs.Report.ViewModel;
@@ -60,7 +60,7 @@ namespace Tgs.Report.Core.Queries.Agent
             var subAgents = await _repository.Agents.Where(x => x.ParentAgentId == mainAgent.Id)
                 .ToListAsync(cancellationToken);
 
-            var agents = new List<Repository.Configurations.Agent> { mainAgent };
+            var agents = new List<Repository.Entities.Agent> { mainAgent };
             agents.AddRange(subAgents);
 
             var agentIds = agents.Select(x => x.Id).ToArray();
@@ -85,6 +85,7 @@ namespace Tgs.Report.Core.Queries.Agent
                     x.WinLossAmount,
                     x.NetProfit,
                     x.AgentDividendAmount,
+                    x.NoIncludeNetProfitAgentAdjustAmount,
                     x.ReferencedAgentDividendId,
                     x.SentOn
                 }).ToArrayAsync(cancellationToken);
@@ -108,7 +109,8 @@ namespace Tgs.Report.Core.Queries.Agent
                         list.Where(l
                                 => l.AgentDividendAmount > 0 && l.ReferencedAgentDividendId == null &&
                                 l.SentOn != null)
-                            .Sum(l => l.AgentDividendAmount.Truncate(2))
+                            .Sum(l => l.AgentDividendAmount.Truncate(2)),
+                    NoIncludeNetProfitAgentAdjustAmount = list.Sum(l => l.NoIncludeNetProfitAgentAdjustAmount)
                 }).ToArray();
 
             var models = agentDividendGroup.Join(agents.ToArray(),
@@ -122,7 +124,7 @@ namespace Tgs.Report.Core.Queries.Agent
                     WithdrawalAmount = playerWithdrawals.Where(w => w.AgentId == ad.AgentId)
                         .Sum(w => w.WithdrawalAmount),
                     CompanyAdjustAmount = ad.CompanyAdjustAmount,
-                    AgentAdjustAmount = ad.AgentAdjustAmount,
+                    AgentAdjustAmount = ad.AgentAdjustAmount - ad.NoIncludeNetProfitAgentAdjustAmount,
                     BonusAmount = ad.BonusAmount,
                     BetAmount = ad.BetAmount,
                     ValidBetAmount = ad.OriginalTurnover,

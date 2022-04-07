@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Tgs.Report.Repository;
-using Tgs.Report.Repository.Configurations;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.BrandGameProvider;
 
 namespace Tgs.Report.Core.Queries.BrandGameProvider
@@ -12,11 +12,11 @@ namespace Tgs.Report.Core.Queries.BrandGameProvider
     {
         private readonly ITgsService<BrandGameProviderAggregate> _brandGameProviderAggregateService;
         private readonly ITgsService<Brand> _brandService;
-        private readonly ITgsService<Repository.Configurations.GameProvider> _gameProviderService;
+        private readonly ITgsService<Repository.Entities.GameProvider> _gameProviderService;
 
         public GetBrandGameProviderRoundsQueryHandler(
             ITgsService<BrandGameProviderAggregate> brandGameProviderAggregateService, ITgsService<Brand> brandService,
-            ITgsService<Repository.Configurations.GameProvider> gameProviderService)
+            ITgsService<Repository.Entities.GameProvider> gameProviderService)
         {
             _brandGameProviderAggregateService = brandGameProviderAggregateService;
             _brandService = brandService;

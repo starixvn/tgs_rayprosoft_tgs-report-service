@@ -2,7 +2,7 @@
 {
     public record BrandGameProviderRoundTotalModel
     {
-        public string CurrencyCode { get; init; }
+        public string CurrencyCode { get; init; } = default!;
 
         public int TransactionCount { get; init; }
 

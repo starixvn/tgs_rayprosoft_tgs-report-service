@@ -45,10 +45,28 @@ namespace Tgs.Report.Core.Queries.Vip
                     x.BrandId == request.BrandId && x.Username == request.Username)
                 : null;
 
+            if (!string.IsNullOrEmpty(request.Username) && tgsPlayer is null)
+            {
+                return new PagedResponse<VipModel>
+                {
+                    Valid = false,
+                    Message = Resources.Player.NotFound
+                };
+            }
+
             var tgsPlayers = request.Level == null
                 ? null
                 : brandPlayers.Where(x => x.Vip?.Level == request.Level)
                     .Select(x => x.PlayerCode).ToArray();
+
+            if (request.Level != null && tgsPlayers is null)
+            {
+                return new PagedResponse<VipModel>
+                {
+                    Valid = true,
+                    Items = Array.Empty<VipModel>()
+                };
+            }
 
             var withdrawalByUserIds = await _repository.WithdrawForms
                 .Where(x => x.BrandId == request.BrandId)
@@ -65,7 +83,7 @@ namespace Tgs.Report.Core.Queries.Vip
             var vips = await _repository.PlayerAggregates
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
-                .Where(tgsPlayer != null, x => x.PlayerCode == tgsPlayer.PlayerCode)
+                .Where(tgsPlayer != null, x => x.PlayerCode == tgsPlayer!.PlayerCode)
                 .GroupBy(x => new
                     {
                         x.PlayerCode,
@@ -77,19 +95,21 @@ namespace Tgs.Report.Core.Queries.Vip
                         x.PlayerCode,
                         DepositAmount = players.Sum(m => m.DepositAmount),
                         WithdrawalAmount = players.Sum(m => m.WithdrawalAmount),
-                        CompanyAdjustAmount = players.Sum(m => m.CompanyAdjustAmount),
+                        CompanyAdjustAmount =
+                            players.Sum(m => m.CompanyAdjustAmount - m.NoIncludeNetProfitCompanyAdjustAmount),
                         BonusAmount = players.Sum(m => m.RebateAmount + m.PromotionAmount),
                         BetAmount = players.Sum(m => m.BetAmount),
                         ValidBetAmount = players.Sum(m => m.OriginalTurnover),
                         Turnover = players.Sum(m => m.Turnover),
                         WinLossAmount = players.Sum(m => m.WinLossAmount),
                         NetProfit = players.Sum(m
-                            => m.WinLossAmount - m.CompanyAdjustAmount - m.RebateAmount - m.PromotionAmount)
+                            => m.WinLossAmount - (m.CompanyAdjustAmount - m.NoIncludeNetProfitCompanyAdjustAmount) -
+                            m.RebateAmount - m.PromotionAmount)
                     })
                 .GroupJoin(_repository.PlayerGameRebateAggregates
                         .Where(x => x.BrandId == request.BrandId)
                         .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
-                        .Where(tgsPlayer != null, x => x.PlayerCode == tgsPlayer.PlayerCode),
+                        .Where(tgsPlayer != null, x => x.PlayerCode == tgsPlayer!.PlayerCode),
                     p => new
                     {
                         p.BrandId,
@@ -121,7 +141,7 @@ namespace Tgs.Report.Core.Queries.Vip
                         x.p.NetProfit,
                         pg
                     })
-                .Where(request.Level, x => tgsPlayers.Contains(x.PlayerCode))
+                .Where(request.Level, x => tgsPlayers!.Contains(x.PlayerCode))
                 .GroupBy(x => new
                     {
                         x.BrandId,
@@ -145,7 +165,7 @@ namespace Tgs.Report.Core.Queries.Vip
                         CompanyAdjustAmount = x.CompanyAdjustAmount,
                         RebateAmount =
                             players.Sum(m =>
-                                m.pg.VipRebateAmount),
+                                m.pg == null ? 0M : m.pg.VipRebateAmount),
                         BonusAmount = x.BonusAmount,
                         BetAmount = x.BetAmount,
                         ValidBetAmount = x.ValidBetAmount,
@@ -166,7 +186,10 @@ namespace Tgs.Report.Core.Queries.Vip
                     PlayerCode = x.PlayerCode,
                     DepositAmount = x.DepositAmount,
                     WithdrawalAmount =
-                        withdrawalByUserIds.FirstOrDefault(w => w.UserId == player.PlayerCode)?.WithdrawalAmount ?? 0,
+                        player?.PlayerCode != null
+                            ? withdrawalByUserIds.FirstOrDefault(w => w.UserId == player.PlayerCode)
+                                ?.WithdrawalAmount ?? 0
+                            : 0M,
                     CompanyAdjustAmount = x.CompanyAdjustAmount,
                     RebateAmount = x.RebateAmount,
                     BonusAmount = x.BonusAmount,

@@ -43,11 +43,11 @@ namespace Tgs.Report.Core.Queries.LicenseeMarket
 
             var resource = new ResourceManager(typeof(Resources.LicenseeMarket));
 
-            var xlsx = exportData.ExportWithLocalization("licenseeMarkets", resource);
+            var xlsx = exportData?.ExportWithLocalization("licenseeMarkets", resource);
 
             await using var stream = new MemoryStream();
 
-            xlsx.SaveAs(stream);
+            xlsx?.SaveAs(stream);
 
             return new MemoryStream(stream.ToArray());
         }
