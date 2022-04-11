@@ -124,7 +124,8 @@ namespace Tgs.Report.Core.Queries.Player
                         Turnover = playerAggregates.Sum(p => p.Turnover),
                         WinLossAmount = playerAggregates.Sum(p => p.WinLossAmount),
                         NetProfit = playerAggregates.Sum(p
-                            => p.WinLossAmount - p.AgentAdjustAmount - p.RebateAmount - p.PromotionAmount)
+                            => p.WinLossAmount - (p.AgentAdjustAmount - p.NoIncludeNetProfitAgentAdjustAmount) -
+                            p.RebateAmount - p.PromotionAmount)
                     })
                 .ToArrayAsync(cancellationToken);
 
