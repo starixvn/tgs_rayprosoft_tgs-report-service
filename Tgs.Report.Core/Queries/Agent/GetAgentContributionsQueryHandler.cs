@@ -194,7 +194,8 @@ namespace Tgs.Report.Core.Queries.Agent
                             WinLossAmount = playerAggregate.Sum(p => p.playerAggregate?.WinLossAmount ?? 0),
                             NetProfit = playerAggregate.Sum(p => p.playerAggregate == null
                                 ? 0
-                                : p.playerAggregate.WinLossAmount - p.playerAggregate.AgentAdjustAmount -
+                                : p.playerAggregate.WinLossAmount - (p.playerAggregate.AgentAdjustAmount -
+                                    p.playerAggregate.NoIncludeNetProfitAgentAdjustAmount) -
                                 p.playerAggregate.RebateAmount -
                                 p.playerAggregate.PromotionAmount)
                         }).ToArray();
