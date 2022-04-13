@@ -30,7 +30,7 @@ namespace Tgs.Report.Core.Queries.Agent
                 .Where(x => x.From >= request.From.ToUniversalTime())
                 .Where(x => x.To < request.To.ToUniversalTime())
                 .Include(x => x.AgentDividendMultipleLayers)
-                .ToArrayAsync(cancellationToken);
+                .ToArrayAsync(cancellationToken).ConfigureAwait(false);
 
             var dividendProviderAgents = mainAgentDividends.SelectMany(x => x.AgentDividendMultipleLayers)
                 .Where(x => x.AgentId == request.AgentId)
@@ -43,6 +43,7 @@ namespace Tgs.Report.Core.Queries.Agent
 
             var firstLayerAgentDividendIds = dividendProviderAgents.Where(x => x.GroupAgentId != null)
                 .Select(x => x.DividendProviderAgentId).ToArray();
+
             var firstLayerGroupAgentIds = dividendProviderAgents.Where(x => x.GroupAgentId != null)
                 .Select(x => x.GroupAgentId == null ? (Guid?)null : Guid.Parse(x.GroupAgentId)).ToArray();
 
@@ -50,12 +51,12 @@ namespace Tgs.Report.Core.Queries.Agent
                 .Where(x => firstLayerGroupAgentIds.Contains(x.AgentId))
                 .Where(x => x.From >= request.From.ToUniversalTime())
                 .Where(x => x.To < request.To.ToUniversalTime())
-                .ToArrayAsync(cancellationToken);
+                .ToArrayAsync(cancellationToken).ConfigureAwait(false);
 
             var allAgentDividends = await _agentDividendService.GetQueries()
                 .Where(x => firstLayerAgentDividendIds.Contains(x.AgentId))
                 .Where(x => x.From >= request.From.ToUniversalTime())
-                .Where(x => x.To < request.To.ToUniversalTime()).ToArrayAsync(cancellationToken);
+                .Where(x => x.To < request.To.ToUniversalTime()).ToArrayAsync(cancellationToken).ConfigureAwait(false);
 
             var agentDividends = allAgentDividends
                 .Join(dividendProviderAgents.Where(x => x.GroupAgentId != null), ad => ad.AgentId,
@@ -100,8 +101,9 @@ namespace Tgs.Report.Core.Queries.Agent
                 .ToArray();
 
             var agentIds = agentDividends.Select(x => x.AgentId).ToArray();
+
             var agents = await _agentService.GetQueries().Where(x => agentIds.Contains(x.Id))
-                .ToArrayAsync(cancellationToken);
+                .ToArrayAsync(cancellationToken).ConfigureAwait(false);
 
             var models = agentDividends.Join(agents,
                 ad => ad.AgentId,
