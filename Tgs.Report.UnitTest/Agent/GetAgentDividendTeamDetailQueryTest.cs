@@ -13,14 +13,15 @@ using Tgs.Report.ViewModel.Agent;
 namespace Tgs.Report.UnitTest.Agent
 {
     [TestFixture]
-    public sealed class GetAgentDividendTeamDetailQueryTest : BaseTest
+    public sealed class GetAgentDividendTeamDetailQueryTest
     {
         [Test]
         public async Task Can_Get_Agent_Dividend_Team_Details()
         {
-            var fakeRepository = Substitute.For<ITgsRepository>();
+            var fakeAgentRepository = Substitute.For<ITgsService<Repository.Entities.Agent>>();
+            var fakeAgentDividendRepository = Substitute.For<ITgsService<AgentDividend>>();
 
-            var sut = new GetAgentDividendTeamDetailQueryHandler(fakeRepository);
+            var sut = new GetAgentDividendTeamDetailQueryHandler(fakeAgentRepository, fakeAgentDividendRepository);
 
             var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
             var agentId = new Guid("aac11120-20f6-4f0d-6982-08d9dbdc0473");
@@ -32,12 +33,12 @@ namespace Tgs.Report.UnitTest.Agent
                 .AsQueryable()
                 .BuildMock().Object;
 
+
             var childAgents = CreateAgentFixture(brandId, childAgentId).CreateMany<Repository.Entities.Agent>(1)
                 .AsQueryable()
                 .BuildMock().Object;
 
-            var withdrawForms = CreateWithdrawFormFixture(brandId).CreateMany<WithdrawForm>(1).AsQueryable()
-                .BuildMock().Object;
+            fakeAgentRepository.GetQueries().Returns(agents.Union(childAgents));
 
             var agentDividends = CreateAgentDividendFixture(brandId, agentId, childAgentId, from, to)
                 .CreateMany<AgentDividend>(1)
@@ -48,9 +49,7 @@ namespace Tgs.Report.UnitTest.Agent
                 .CreateMany<AgentDividend>(1).AsQueryable()
                 .BuildMock().Object;
 
-            var agentDividendMultipleLayers = agentDividends.SelectMany(x => x.AgentDividendMultipleLayers);
-
-            var players = agents.SelectMany(x => x.Players);
+            fakeAgentDividendRepository.GetQueries().Returns(agentDividends.Union(childAgentDividends));
 
             var request = new GetAgentDividendTeamDetailsRequest
             {
@@ -59,18 +58,6 @@ namespace Tgs.Report.UnitTest.Agent
                 To = DateTimeOffset.UtcNow.AddDays(1),
                 SortBy = null
             };
-
-            var mockAgents = GetDbSet(agents.Union(childAgents));
-            var mockWithdrawForms = GetDbSet(withdrawForms);
-            var mockAgentDividends = GetDbSet(Queryable.Union<AgentDividend>(agentDividends, childAgentDividends));
-            var mockPlayers = GetDbSet(players);
-            var mockAgentDividendMultipleLayers = GetDbSet(agentDividendMultipleLayers);
-
-            fakeRepository.Agents.Returns(mockAgents.Object);
-            fakeRepository.WithdrawForms.Returns(mockWithdrawForms.Object);
-            fakeRepository.AgentDividends.Returns(mockAgentDividends.Object);
-            fakeRepository.Players.Returns(mockPlayers.Object);
-            fakeRepository.AgentDividendMultipleLayers.Returns(mockAgentDividendMultipleLayers.Object);
 
             var response = await sut.Handle(request, default);
 
@@ -84,16 +71,6 @@ namespace Tgs.Report.UnitTest.Agent
             fixture.Customize<Repository.Entities.Agent>(u => u
                 .With(s => s.BrandId, brandId)
                 .With(s => s.Id, agentId)
-                .With(s => s.Brand, new Brand()));
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            return fixture;
-        }
-
-        private static Fixture CreateWithdrawFormFixture(Guid brandId)
-        {
-            var fixture = new Fixture();
-            fixture.Customize<WithdrawForm>(u => u
-                .With(s => s.BrandId, brandId)
                 .With(s => s.Brand, new Brand()));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
@@ -118,15 +95,6 @@ namespace Tgs.Report.UnitTest.Agent
                         DividendProviderAgentId = childAgentId
                     }
                 }));
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            return fixture;
-        }
-
-        private static Fixture CreateAgentDividendMultipleLayerFixture()
-        {
-            var fixture = new Fixture();
-            fixture.Customize<AgentDividendMultipleLayer>(u => u
-                .With(s => s.AgentDividend, new AgentDividend()));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
