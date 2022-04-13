@@ -74,17 +74,6 @@ namespace Tgs.Report.Core.Queries.Agent
                 .ToArrayAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            var childAgents = await _agentService.GetQueries().Where(x => x.ParentAgentId == agent.Id)
-                .Include(x => x.Players)
-                .Select(x => new
-                {
-                    x.Id,
-                    x.Username,
-                    x.Players
-                })
-                .ToArrayAsync(cancellationToken);
-            var playerCodes = childAgents.SelectMany(c => c.Players.Select(p => p.PlayerCode));
-
             var players = agent.Players.GroupJoin(_playerAggregateService.GetQueries()
                         .Where(x => x.BrandId == request.BrandId)
                         .Where(x => x.AgentId == agent.Id)
@@ -149,14 +138,47 @@ namespace Tgs.Report.Core.Queries.Agent
                     .CreatePagedResponseAsync(players.Length);
             }
 
-            var childAgentPlayers = childAgents.GroupJoin(_playerAggregateService.GetQueries()
-                        .Where(x => x.BrandId == request.BrandId)
-                        .Where(x => playerCodes.Contains(x.PlayerCode))
-                        .Where(x => x.AgentId != null)
-                        .Where(x => x.ReportDate >= request.From.ToUniversalTime() &&
-                            x.ReportDate < request.To.ToUniversalTime()),
-                    a => a.Id,
-                    playerAggregate => playerAggregate.AgentId,
+            var subAgents = await _agentService.GetQueries().Where(x => x.ParentAgentId == agent.Id)
+                .Include(x => x.Players)
+                .Select(x => new
+                {
+                    x.Id,
+                    x.Username,
+                    SubAgents = x.InverseParentAgent.Select(i => new
+                    {
+                        i.Id,
+                        i.Username
+                    })
+                })
+                .ToArrayAsync(cancellationToken);
+
+            var allSubAgents = subAgents.Select(x => new
+            {
+                MainAgentId = x.Id,
+                AgentId = x.Id
+            }).Union(subAgents.SelectMany(x => x.SubAgents.Select(s => new
+            {
+                MainAgentId = x.Id,
+                AgentId = s.Id
+            }))).ToArray();
+
+            var allSubAgentIds = allSubAgents.Select(x => x.AgentId).ToArray();
+
+            var childAgentPlayers = subAgents.GroupJoin(allSubAgents.Join(_playerAggregateService.GetQueries()
+                            .Where(x => x.BrandId == request.BrandId)
+                            .Where(x => x.AgentId != null
+                                && allSubAgentIds.Contains(x.AgentId.Value))
+                            .Where(x => x.ReportDate >= request.From.ToUniversalTime() &&
+                                x.ReportDate < request.To.ToUniversalTime()), agent => agent.AgentId,
+                        agg => agg.AgentId,
+                        (agent, aggregate) => new
+                        {
+                            agent,
+                            aggregate
+                        })
+                    ,
+                    sub => sub.Id,
+                    playerAggregate => playerAggregate.agent.MainAgentId,
                     (agent, players) => new
                     {
                         agent,
@@ -166,7 +188,8 @@ namespace Tgs.Report.Core.Queries.Agent
                     (x, playerAggregate) => new
                     {
                         x.agent,
-                        playerAggregate
+                        playerAggregate = playerAggregate?.aggregate,
+                        SubAgentId = playerAggregate?.agent.AgentId
                     })
                 .GroupBy(x => new
                     {
@@ -180,7 +203,9 @@ namespace Tgs.Report.Core.Queries.Agent
                             Type = AccountType.Agent,
                             DepositAmount = playerAggregate.Sum(p => p.playerAggregate?.DepositAmount ?? 0),
                             WithdrawalAmount =
-                                playerWithdrawals.Where(w => w.AgentId == agent.Id).Sum(w => w.WithdrawalAmount),
+                                playerWithdrawals
+                                    .Where(w => playerAggregate.Select(p => p.SubAgentId).Contains(w.AgentId))
+                                    .Sum(w => w.WithdrawalAmount),
                             CompanyAdjustAmount = playerAggregate.Sum(p => p.playerAggregate?.CompanyAdjustAmount ?? 0),
                             AgentAdjustAmount = playerAggregate.Sum(p => p.playerAggregate?.AgentAdjustAmount ?? 0),
                             BonusAmount =
