@@ -134,8 +134,8 @@ namespace Tgs.Report.Core.Queries.Agent
 
             if (!request.IncludeAgents)
             {
-                return await players
-                    .CreatePagedResponseAsync(players.Length);
+                return players.AsQueryable()
+                    .CreatePagedResponse(request);
             }
 
             var subAgents = await _agentService.GetQueries().Where(x => x.ParentAgentId == agent.Id)
