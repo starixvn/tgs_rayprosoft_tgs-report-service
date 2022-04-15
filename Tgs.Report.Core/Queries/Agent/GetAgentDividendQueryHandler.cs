@@ -85,9 +85,11 @@ namespace Tgs.Report.Core.Queries.Agent
                     x.WinLossAmount,
                     x.NetProfit,
                     x.AgentDividendAmount,
+                    x.BeforeDividendAmount,
                     x.NoIncludeNetProfitAgentAdjustAmount,
                     x.ReferencedAgentDividendId,
-                    x.SentOn
+                    x.SentOn,
+                    x.AgentDividendMultipleLayers
                 }).ToArrayAsync(cancellationToken);
 
             var agentDividendGroup = agentDividends.GroupBy(x => x.AgentId,
@@ -106,11 +108,10 @@ namespace Tgs.Report.Core.Queries.Agent
                     WinLossAmount = list.Sum(l => l.WinLossAmount),
                     NetProfit = list.Sum(l => l.NetProfit),
                     AgentDividendAmount =
-                        list.Where(l
-                                => l.AgentDividendAmount > 0 && l.ReferencedAgentDividendId == null &&
-                                l.SentOn != null)
-                            .Sum(l => l.AgentDividendAmount.Truncate(2)),
-                    NoIncludeNetProfitAgentAdjustAmount = list.Sum(l => l.NoIncludeNetProfitAgentAdjustAmount)
+                        list.Sum(l => l.BeforeDividendAmount ?? l.AgentDividendAmount),
+                    NoIncludeNetProfitAgentAdjustAmount = list.Sum(l => l.NoIncludeNetProfitAgentAdjustAmount),
+                    FromPlayerAgentDividendAmount = list.Sum(l => l.AgentDividendMultipleLayers.Where(m => m.AgentId == m.DividendProviderAgentId).Sum(s => s.Dividend)),
+                    FromTeamAgentDividendAmount = list.Sum(l => l.AgentDividendMultipleLayers.Where(m => m.AgentId != m.DividendProviderAgentId).Sum(s => s.Dividend)),
                 }).ToArray();
 
             var models = agentDividendGroup.Join(agents.ToArray(),
@@ -132,17 +133,8 @@ namespace Tgs.Report.Core.Queries.Agent
                     WinLossAmount = ad.WinLossAmount,
                     NetProfit = ad.NetProfit,
                     AgentDividendAmount = ad.AgentDividendAmount,
-                    FromPlayerAgentDividendAmount = _repository.AgentDividendMultipleLayers
-                        .Where(x => x.AgentId == ad.AgentId)
-                        .Where(x => x.AgentDividend.CreatedOn >= request.From.ToUniversalTime())
-                        .Where(x => x.AgentDividend.CreatedOn < request.To.ToUniversalTime())
-                        .Where(x => x.AgentId == x.DividendProviderAgentId)
-                        .Sum(a => a.Dividend),
-                    FromTeamAgentDividendAmount = _repository.AgentDividendMultipleLayers
-                        .Where(x => x.AgentId == ad.AgentId)
-                        .Where(x => x.AgentDividend.CreatedOn >= request.From.ToUniversalTime())
-                        .Where(x => x.AgentDividend.CreatedOn < request.To.ToUniversalTime())
-                        .Where(x => x.AgentId != x.DividendProviderAgentId).Sum(a => a.Dividend)
+                    FromPlayerAgentDividendAmount = ad.FromPlayerAgentDividendAmount,
+                    FromTeamAgentDividendAmount = ad.FromTeamAgentDividendAmount,
                 }).ToArray();
 
             return models.AsQueryable().CreatePagedResponse(request);
