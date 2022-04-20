@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
-using AutoFixture;
-using MockQueryable.Moq;
-using NSubstitute;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.Round;
 using Tgs.Report.Enum;
@@ -13,39 +11,68 @@ using Tgs.Report.ViewModel.Round;
 
 namespace Tgs.Report.UnitTest.Round
 {
-    internal class GetRoundsTotalQueryTest : BaseTest
+    internal class GetRoundsTotalQueryTest
     {
         [Test]
-        public async Task Can_Get_Rounds_Total()
+        public async Task Can_Get_Rounds_Sum()
         {
-            var fakeRepository = Substitute.For<ITgsRepository>();
-
-            var sut = new GetRoundsTotalQueryHandler(fakeRepository);
+            var dbContextOptionsBuilder = new DbContextOptionsBuilder<TgsRepository>();
+            dbContextOptionsBuilder
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
+            ITgsRepository repository = new TgsRepository(dbContextOptionsBuilder.Options);
 
             var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
             var roundId = new Guid("aac02111-20f6-4f0d-6982-08d9dbdc0473");
             var gameProviderId = new Guid("aac02112-20f6-4f0d-6982-08d9dbdc0473");
             var gameId = 1;
+            var playerCode = "PlayerCode";
 
-            var players = CreatePlayerFixture(brandId).CreateMany<Repository.Entities.Player>(1).AsQueryable()
-                .BuildMock().Object;
+            _ = repository.Games.Add(new Game
+            {
+                Id = gameId,
+                GameProviderId = gameProviderId,
+                AvailableCurrencies = "",
+                Code = "Lobby",
+                CreatedByUsername = "username",
+                ExternalId = "externalId",
+                Name = "Lobby",
+                UpdatedByUsername = "username"
+            });
 
-            var rounds = CreateRoundFixture(brandId, roundId, gameProviderId, gameId)
-                .CreateMany<Repository.Entities.Round>(1).AsQueryable()
-                .BuildMock().Object;
+            _ = repository.Players.Add(new Repository.Entities.Player
+            {
+                BrandId = brandId,
+                PlayerCode = playerCode,
+                DefaultWalletCurrencyCode = "CNY",
+                Password = Array.Empty<byte>(),
+                Salt = Array.Empty<byte>(),
+                Username = "username",
+                WithdrawPassword = Array.Empty<byte>(),
+                WithdrawSalt = Array.Empty<byte>()
+            });
 
-            var games = CreateGameFixture(gameId).CreateMany<Game>(1).AsQueryable()
-                .BuildMock().Object;
+            _ = repository.Rounds.Add(new Repository.Entities.Round
+            {
+                Id = roundId,
+                GameId = gameId,
+                BrandId = brandId,
+                GameProviderId = gameProviderId,
+                BetAmount = 10m,
+                Turnover = 10m,
+                WinLoss = -15m,
+                CreatedOn = DateTimeOffset.UtcNow,
+                Status = (short)RoundStatus.Open,
+                PlayerCode = playerCode,
+                CurrencyCode = "CNY",
+                ExternalRoundId = "externalRoundId"
+            });
 
-            var roundDetails = CreateRoundDetailFixture(roundId).CreateMany<RoundDetail>(1).AsQueryable()
-                .BuildMock().Object;
+            _ = repository.RoundDetails.Add(new RoundDetail { RoundId = roundId, AdditionalData = "{}" });
 
-            var gameProviders = CreateGameProviderFixture(gameProviderId)
-                .CreateMany<Repository.Entities.GameProvider>(1).AsQueryable()
-                .BuildMock().Object;
+            _ = await repository.SaveChangesAsync();
 
-            var brandGames = CreateBrandGameFixture(brandId, gameId).CreateMany<BrandGame>(1).AsQueryable()
-                .BuildMock().Object;
+            var sut = new GetRoundsTotalQueryHandler(repository);
 
             var request = new GetRoundsTotalRequest
             {
@@ -54,91 +81,11 @@ namespace Tgs.Report.UnitTest.Round
                 To = DateTimeOffset.UtcNow.AddDays(1)
             };
 
-            var mockRounds = GetDbSet(rounds);
-            var mockPlayers = GetDbSet(players);
-            var mockGames = GetDbSet(games);
-            var mockRoundDetails = GetDbSet(roundDetails);
-            var mockGameProviders = GetDbSet(gameProviders);
-            var mockBrandGames = GetDbSet(brandGames);
-
-            _ = fakeRepository.Rounds.Returns(mockRounds.Object);
-            _ = fakeRepository.Players.Returns(mockPlayers.Object);
-            _ = fakeRepository.Games.Returns(mockGames.Object);
-            _ = fakeRepository.RoundDetails.Returns(mockRoundDetails.Object);
-            _ = fakeRepository.GameProviders.Returns(mockGameProviders.Object);
-            _ = fakeRepository.BrandGames.Returns(mockBrandGames.Object);
-
             var response = await sut.Handle(request, default);
 
             Assert.AreEqual(10, response.BetAmount);
-            Assert.AreEqual(10, response.ValidBetAmount);
-            Assert.AreEqual(15, response.WinLoss);
-        }
-
-        private static Fixture CreatePlayerFixture(Guid brandId)
-        {
-            var fixture = new Fixture();
-            fixture.Customize<Repository.Entities.Player>(u => u
-                .With(s => s.BrandId, brandId)
-                .With(s => s.PlayerCode, "PlayerCode")
-                .With(s => s.Brand, new Brand()));
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            return fixture;
-        }
-
-        private static Fixture CreateRoundFixture(Guid brandId, Guid roundId, Guid gameProviderId, int gameId)
-        {
-            var fixture = new Fixture();
-            fixture.Customize<Repository.Entities.Round>(u => u
-                .With(s => s.BrandId, brandId)
-                .With(s => s.Id, roundId)
-                .With(s => s.GameProviderId, gameProviderId)
-                .With(s => s.PlayerCode, "PlayerCode")
-                .With(s => s.Status, (short)RoundStatus.Open)
-                .With(s => s.CreatedOn, DateTimeOffset.UtcNow)
-                .With(s => s.GameId, gameId)
-                .With(s => s.BetAmount, 10m)
-                .With(s => s.Turnover, 10m)
-                .With(s => s.WinLoss, -15m));
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            return fixture;
-        }
-
-        private static Fixture CreateRoundDetailFixture(Guid roundId)
-        {
-            var fixture = new Fixture();
-            fixture.Customize<RoundDetail>(u => u
-                .With(s => s.RoundId, roundId));
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            return fixture;
-        }
-
-        private static Fixture CreateGameFixture(int gameId)
-        {
-            var fixture = new Fixture();
-            fixture.Customize<Game>(u => u
-                .With(s => s.Id, gameId));
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            return fixture;
-        }
-
-        private static Fixture CreateGameProviderFixture(Guid gameProviderId)
-        {
-            var fixture = new Fixture();
-            fixture.Customize<Repository.Entities.GameProvider>(u => u
-                .With(s => s.Id, gameProviderId));
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            return fixture;
-        }
-
-        private static Fixture CreateBrandGameFixture(Guid brandId, int gameId)
-        {
-            var fixture = new Fixture();
-            fixture.Customize<BrandGame>(u => u
-                .With(s => s.BrandId, brandId)
-                .With(s => s.GameId, gameId));
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            return fixture;
+            Assert.AreEqual(10, response!.ValidBetAmount);
+            Assert.AreEqual(15, response!.WinLoss);
         }
     }
 }
