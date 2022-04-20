@@ -22,6 +22,7 @@ namespace Tgs.Report.Client
         ValueTask<PagedResponse<VipRebateModel>> GetVipRebateReportAsync(GetVipRebateReportRequest request);
 
         ValueTask<PagedResponse<RoundModel>> GetRoundsAsync(GetRoundsRequest request);
+        ValueTask<RoundTotalModel> GetRoundsTotalAsync(GetRoundsTotalRequest request);
 
         ValueTask<GetBetRecordsResponse> GetBetRecordsAsync(GetBetRecordsRequest request);
 
