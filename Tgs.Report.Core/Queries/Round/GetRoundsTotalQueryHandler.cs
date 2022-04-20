@@ -74,62 +74,15 @@ namespace Tgs.Report.Core.Queries.Round
                 })
                 .Where(request.Username, x => request.Username == x.player!.Username)
                 .Where(request.GameType, x => x.game!.Type == (short?)request.GameType)
-                .GroupJoin(_repository.GameProviders, combine => combine.round.GameProviderId,
-                    gameProvider => gameProvider.Id,
-                    (combine, gameProvider) => new
-                    {
-                        combine.round,
-                        combine.player,
-                        combine.game,
-                        combine.detail,
-                        gameProvider
-                    })
-                .SelectMany(x => x.gameProvider.DefaultIfEmpty(),
-                    (x, gameProvider) => new
-                    {
-                        x.round,
-                        x.player,
-                        x.game,
-                        x.detail,
-                        gameProvider
-                    })
-                .GroupJoin(_repository.BrandGames,
-                    roundGroup => new
-                    {
-                        roundGroup.round.BrandId,
-                        roundGroup.round.GameId
-                    },
-                    brandGame => new
-                    {
-                        brandGame.BrandId,
-                        brandGame.GameId
-                    },
-                    (roundGroup, brandGame) => new
-                    {
-                        roundGroup.round,
-                        roundGroup.player,
-                        roundGroup.game,
-                        roundGroup.gameProvider,
-                        roundGroup.detail,
-                        brandGame
-                    })
-                .SelectMany(x => x.brandGame.DefaultIfEmpty(),
-                    (x, brandGame) => new
-                    {
-                        x.round,
-                        x.player,
-                        x.game,
-                        x.gameProvider,
-                        x.detail,
-                        brandGame
-                    });
+                .GroupBy(x => true)
+                .Select(g => new RoundTotalModel
+                {
+                    BetAmount = g.Sum(x => x.round.BetAmount),
+                    ValidBetAmount = g.Sum(r => r.round.Turnover),
+                    WinLoss = g.Sum(r => -r.round.WinLoss)
+                });
 
-            return Task.FromResult(new RoundTotalModel
-            {
-                BetAmount = result.Sum(r => r.round.BetAmount),
-                ValidBetAmount = result.Sum(r => r.round.Turnover),
-                WinLoss = result.Sum(r => -r.round.WinLoss)
-            });
+            return Task.FromResult(result.FirstOrDefault() ?? new RoundTotalModel());
         }
     }
 }
