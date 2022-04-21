@@ -171,40 +171,40 @@ namespace Tgs.Report.Core.Queries.Agent
                             .Where(x => x.ReportDate >= request.From.ToUniversalTime() &&
                                 x.ReportDate < request.To.ToUniversalTime()), agent => agent.AgentId,
                         agg => agg.AgentId,
-                        (agent, aggregate) => new
+                        (groupAgent, aggregate) => new
                         {
-                            agent,
+                            groupAgent,
                             aggregate
                         })
                     ,
                     sub => sub.Id,
-                    playerAggregate => playerAggregate.agent.MainAgentId,
-                    (agent, players) => new
+                    playerAggregate => playerAggregate.groupAgent.MainAgentId,
+                    (groupAgent, GroupPlayers) => new
                     {
-                        agent,
-                        players
+                        groupAgent,
+                        GroupPlayers
                     })
-                .SelectMany(x => x.players.DefaultIfEmpty(),
+                .SelectMany(x => x.GroupPlayers.DefaultIfEmpty(),
                     (x, playerAggregate) => new
                     {
-                        x.agent,
+                        x.groupAgent,
                         playerAggregate = playerAggregate?.aggregate,
-                        SubAgentId = playerAggregate?.agent.AgentId
+                        SubAgentId = playerAggregate?.groupAgent.AgentId
                     })
                 .GroupBy(x => new
                     {
-                        x.agent.Username,
-                        x.agent.Id
+                        x.groupAgent.Username,
+                        x.groupAgent.Id
                     },
-                    (agent, playerAggregate) =>
+                    (groupAgent, playerAggregate) =>
                         new AgentContributionModel
                         {
-                            Username = agent.Username,
+                            Username = groupAgent.Username,
                             Type = AccountType.Agent,
                             DepositAmount = playerAggregate.Sum(p => p.playerAggregate?.DepositAmount ?? 0),
                             WithdrawalAmount =
                                 playerWithdrawals
-                                    .Where(w => playerAggregate.Select(p => p.SubAgentId).Contains(w.AgentId))
+                                    .Where(w => playerAggregate.Select(p => p.SubAgentId).Contains(w.AgentId) || playerAggregate.Select(p => p.groupAgent.Id).Contains(w.AgentId.Value))
                                     .Sum(w => w.WithdrawalAmount),
                             CompanyAdjustAmount = playerAggregate.Sum(p => p.playerAggregate?.CompanyAdjustAmount ?? 0),
                             AgentAdjustAmount = playerAggregate.Sum(p => p.playerAggregate?.AgentAdjustAmount ?? 0),
