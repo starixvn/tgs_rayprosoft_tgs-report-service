@@ -204,7 +204,7 @@ namespace Tgs.Report.Core.Queries.Agent
                             DepositAmount = playerAggregate.Sum(p => p.playerAggregate?.DepositAmount ?? 0),
                             WithdrawalAmount =
                                 playerWithdrawals
-                                    .Where(w => playerAggregate.Select(p => p.SubAgentId).Contains(w.AgentId) && w.AgentId == groupAgent.Id)
+                                    .Where(w => playerAggregate.Select(p => p.SubAgentId).Contains(w.AgentId) || playerAggregate.Select(p => p.groupAgent.Id).Contains(w.AgentId.Value))
                                     .Sum(w => w.WithdrawalAmount),
                             CompanyAdjustAmount = playerAggregate.Sum(p => p.playerAggregate?.CompanyAdjustAmount ?? 0),
                             AgentAdjustAmount = playerAggregate.Sum(p => p.playerAggregate?.AgentAdjustAmount ?? 0),
