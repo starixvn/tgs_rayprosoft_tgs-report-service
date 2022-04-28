@@ -28,11 +28,11 @@ namespace Tgs.Report.UnitTest.Agent
 
             var players = CreatePlayerFixture(brandId, agentId).CreateMany<Repository.Entities.Player>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var playerAggregates = CreatePlayerAggregateFixture(brandId, agentId).CreateMany<PlayerAggregate>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var request = new GetAgentTeamInfoRequest
             {

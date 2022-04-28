@@ -29,13 +29,13 @@ namespace Tgs.Report.UnitTest.Player
             var reportDate = new DateTimeOffset(2022, 1, 21, 0, 0, 0, new TimeSpan(8, 0, 0));
 
             var transactions = CreateTransactionFixture(brandId, userId).CreateMany<Transaction>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var players = CreatePlayerFixture(brandId).CreateMany<Repository.Entities.Player>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var users = CreateUserFixture(userId).CreateMany<User>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var request = new GetPlayersAccountChangesRequest
             {

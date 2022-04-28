@@ -31,23 +31,23 @@ namespace Tgs.Report.UnitTest.Agent
 
             var agents = CreateAgentFixture(brandId, agentId).CreateMany<Repository.Entities.Agent>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
 
             var childAgents = CreateAgentFixture(brandId, childAgentId).CreateMany<Repository.Entities.Agent>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             fakeAgentRepository.GetQueries().Returns(agents.Union(childAgents));
 
             var agentDividends = CreateAgentDividendFixture(brandId, agentId, childAgentId, from, to)
                 .CreateMany<AgentDividend>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var childAgentDividends = CreateAgentDividendFixture(brandId, childAgentId, Guid.NewGuid(), from, to)
                 .CreateMany<AgentDividend>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             fakeAgentDividendRepository.GetQueries().Returns(agentDividends.Union(childAgentDividends));
 
