@@ -27,12 +27,12 @@ namespace Tgs.Report.UnitTest.GameProvider
             var gameProviders = CreateGameProviderFixture(gameProviderId)
                 .CreateMany<Repository.Entities.GameProvider>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var gameProviderAggregate = CreateGameProviderAggregateFixture(gameProviderId)
                 .CreateMany<GameProviderAggregate>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             fakeGameProvider.GetQueries().Returns(gameProviders);
             fakeGameProviderAggregate.GetQueries().Returns(gameProviderAggregate);

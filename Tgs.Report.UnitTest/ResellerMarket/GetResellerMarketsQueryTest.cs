@@ -28,14 +28,14 @@ namespace Tgs.Report.UnitTest.ResellerMarket
 
             var brands = CreateBrandFixture(brandId, resellerId).CreateMany<Brand>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var withdrawForms = CreateWithdrawFormFixture(brandId).CreateMany<WithdrawForm>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var playerAggregates = CreatePlayerAggregateFixture(brandId).CreateMany<PlayerAggregate>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             fakeBrand.GetQueries().Returns(brands);
             fakeWithdrawForm.GetQueries().Returns(withdrawForms);

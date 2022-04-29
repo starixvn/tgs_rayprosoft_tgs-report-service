@@ -27,13 +27,13 @@ namespace Tgs.Report.UnitTest.Player
 
             var playerAggregates = CreatePlayerAggregateFixture(brandId, reportDate).CreateMany<PlayerAggregate>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var withdrawForms = CreateWithdrawFormFixture(brandId).CreateMany<WithdrawForm>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var players = CreatePlayerFixture(brandId).CreateMany<Repository.Entities.Player>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var request = new GetPlayerContributionsRequest
             {

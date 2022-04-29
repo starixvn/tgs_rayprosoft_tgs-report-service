@@ -30,17 +30,17 @@ namespace Tgs.Report.UnitTest.BrandGameProvider
             var brands = CreateBrandFixture(brandId)
                 .CreateMany<Brand>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var gameProviders = CreateGameProviderFixture(gameProviderId)
                 .CreateMany<Repository.Entities.GameProvider>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var brandGameProviderAggregate = CreateBrandGameProviderAggregateFixture(brandId, gameProviderId)
                 .CreateMany<BrandGameProviderAggregate>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             fakeBrand.GetQueries().Returns(brands);
             fakeGameProvider.GetQueries().Returns(gameProviders);

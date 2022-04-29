@@ -29,24 +29,24 @@ namespace Tgs.Report.UnitTest.Round
             var gameId = 1;
 
             var players = CreatePlayerFixture(brandId).CreateMany<Repository.Entities.Player>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var rounds = CreateRoundFixture(brandId, roundId, gameProviderId, gameId)
                 .CreateMany<Repository.Entities.Round>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var games = CreateGameFixture(gameId).CreateMany<Game>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var roundDetails = CreateRoundDetailFixture(roundId).CreateMany<RoundDetail>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var gameProviders = CreateGameProviderFixture(gameProviderId)
                 .CreateMany<Repository.Entities.GameProvider>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var brandGames = CreateBrandGameFixture(brandId, gameId).CreateMany<BrandGame>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var request = new GetRoundsRequest
             {

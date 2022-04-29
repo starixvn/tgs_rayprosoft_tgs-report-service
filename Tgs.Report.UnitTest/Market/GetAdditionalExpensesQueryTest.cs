@@ -27,7 +27,7 @@ namespace Tgs.Report.UnitTest.Market
 
             var playerAggregates = CreatePlayerAggregateFixture(brandId, reportDate).CreateMany<PlayerAggregate>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var request = new GetAdditionalExpensesRequest
             {

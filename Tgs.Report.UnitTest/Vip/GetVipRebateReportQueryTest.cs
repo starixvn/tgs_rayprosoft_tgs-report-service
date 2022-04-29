@@ -26,11 +26,11 @@ namespace Tgs.Report.UnitTest.Vip
 
             var aggregates = CreatePlayerGameRebateAggregateFixture(brandId).CreateMany<PlayerGameRebateAggregate>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var players = CreatePlayerFixture(brandId)
                 .CreateMany<Repository.Entities.Player>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var request = new GetVipRebateReportRequest
             {

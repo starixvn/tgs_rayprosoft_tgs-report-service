@@ -5,7 +5,6 @@ using OpenTelemetry.Exporter;
 using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Prometheus;
 using Tgs.MessageQueue;
 using Tgs.Report.Core;
 using Tgs.Report.ViewModel;
@@ -28,8 +27,7 @@ builder.Services
         options.BaseUrl = config.GetValue<Uri>("Report:GameProvidersPluggableBaseUrl");
     });
 
-builder.Services.AddHealthChecks()
-    .ForwardToPrometheus();
+builder.Services.AddHealthChecks();
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -143,7 +141,7 @@ app.UseSwaggerUI();
 
 app.MapControllers();
 app.MapSwagger();
-app.MapHealthChecks("/health");
+app.MapHealthChecks("/healthz");
 app.MapProfileViewer();
 
 app.Run();

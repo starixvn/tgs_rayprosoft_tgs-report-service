@@ -30,15 +30,15 @@ namespace Tgs.Report.UnitTest.Agent
             var agentUsername = "agentUsername";
             var agents = CreateAgentFixture(brandId, agentUsername).CreateMany<Repository.Entities.Agent>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var withdrawForms = CreateWithdrawFormFixture(brandId).CreateMany<WithdrawForm>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var players = agents.SelectMany(x => x.Players);
 
             var playerAggregates = CreatePlayerAggregateFixture(brandId).CreateMany<PlayerAggregate>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var request = new GetAgentContributionsRequest
             {
