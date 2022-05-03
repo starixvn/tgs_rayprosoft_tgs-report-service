@@ -20,6 +20,11 @@ namespace Tgs.Report.Service.Controllers
         public Task<PagedResponse<RoundModel>> GetRoundsAsync([FromQuery] GetRoundsRequest request) =>
             _mediator.Send(request);
 
+        [HttpGet("roundsTotal", Name = "GetRoundsTotal")]
+        [Description("Get rounds Total BetAmount & ValidBetAmount & WinLoss")]
+        public Task<RoundTotalModel> GetRoundsTotalAsync([FromQuery] GetRoundsTotalRequest request) =>
+            _mediator.Send(request);
+
         [HttpGet("betRecords", Name = "GetBetRecords")]
         [Description("Get bet records")]
         public Task<GetBetRecordsResponse> GetBetRecordsAsync([FromQuery] GetBetRecordsRequest request) =>

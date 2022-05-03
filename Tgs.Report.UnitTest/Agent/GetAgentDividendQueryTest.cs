@@ -26,13 +26,13 @@ namespace Tgs.Report.UnitTest.Agent
             var agentId = new Guid("aac11120-20f6-4f0d-6982-08d9dbdc0473");
             var agents = CreateAgentFixture(brandId, agentId).CreateMany<Repository.Entities.Agent>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var withdrawForms = CreateWithdrawFormFixture(brandId).CreateMany<WithdrawForm>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var agentDividends = CreateAgentDividendFixture(brandId, agentId).CreateMany<AgentDividend>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var agentDividendMultipleLayers = agentDividends.SelectMany(x => x.AgentDividendMultipleLayers);
 

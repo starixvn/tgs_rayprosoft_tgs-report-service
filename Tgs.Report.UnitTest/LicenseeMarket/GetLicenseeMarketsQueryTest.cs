@@ -27,14 +27,14 @@ namespace Tgs.Report.UnitTest.LicenseeMarket
 
             var brands = CreateBrandFixture(brandId, licenseeId).CreateMany<Brand>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var withdrawForms = CreateWithdrawFormFixture(brandId).CreateMany<WithdrawForm>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var playerAggregates = CreatePlayerAggregateFixture(brandId).CreateMany<PlayerAggregate>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var request = new GetLicenseeMarketsRequest
             {

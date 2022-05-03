@@ -27,10 +27,10 @@ namespace Tgs.Report.UnitTest.Agent
 
             var agents = CreateAgentFixture(brandId, agentId).CreateMany<Repository.Entities.Agent>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var agentDividends = CreateAgentDividendFixture(brandId, agentId).CreateMany<AgentDividend>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var request = new GetAgentDividendDetailsRequest
             {

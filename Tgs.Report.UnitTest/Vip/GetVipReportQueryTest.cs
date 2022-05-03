@@ -26,18 +26,18 @@ namespace Tgs.Report.UnitTest.Vip
 
             var players = CreatePlayerFixture(brandId)
                 .CreateMany<Repository.Entities.Player>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var withdrawForms = CreateWithdrawFormFixture(brandId).CreateMany<WithdrawForm>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var playerAggregates = CreatePlayerAggregateFixture(brandId).CreateMany<PlayerAggregate>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var playerGameAggregates = CreatePlayerGameRebateAggregateFixture(brandId)
                 .CreateMany<PlayerGameRebateAggregate>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var request = new GetVipReportRequest
             {

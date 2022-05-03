@@ -22,7 +22,7 @@ namespace Tgs.Report.UnitTest.GameAction
 
             var gameActions = CreateGameActionFixture().CreateMany<Repository.Entities.GameAction>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var request = new GetGameActionsRequest
             {

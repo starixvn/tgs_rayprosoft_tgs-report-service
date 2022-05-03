@@ -63,7 +63,6 @@ namespace Tgs.Report.Repository.Entities
         {
             modelBuilder.HasPostgresExtension("ltree")
                 .HasPostgresExtension("pg_trgm")
-                .HasPostgresExtension("pgcrypto")
                 .HasPostgresExtension("uuid-ossp");
 
             modelBuilder.ApplyConfiguration(new Configurations.AdjustPlayerRecordConfiguration());
