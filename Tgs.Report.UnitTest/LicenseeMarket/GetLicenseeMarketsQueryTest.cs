@@ -62,7 +62,13 @@ namespace Tgs.Report.UnitTest.LicenseeMarket
             var fixture = new Fixture();
             fixture.Customize<Brand>(u => u
                 .With(s => s.Id, brandId)
-                .With(s => s.LicenseeId, licenseeId));
+                .With(s => s.LicenseeId, licenseeId)
+                .With(s => s.VipLevels, new VipLevel[] { })
+                .With(s => s.Transactions, new Transaction[] { })
+                .With(s => s.BrandCurrencies, new BrandCurrency[] { })
+                .With(s => s.Agents, new Repository.Entities.Agent[] { })
+                .With(s => s.Players, new Repository.Entities.Player[] { }));
+
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

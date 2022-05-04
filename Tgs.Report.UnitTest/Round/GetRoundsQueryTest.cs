@@ -80,7 +80,8 @@ namespace Tgs.Report.UnitTest.Round
             fixture.Customize<Repository.Entities.Player>(u => u
                 .With(s => s.BrandId, brandId)
                 .With(s => s.PlayerCode, "PlayerCode")
-                .With(s => s.Brand, new Brand()));
+                .With(s => s.Brand, new Brand())
+                .With(s => s.Birthdate, DateOnly.Parse("2022/05/04")));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
@@ -113,7 +114,8 @@ namespace Tgs.Report.UnitTest.Round
         {
             var fixture = new Fixture();
             fixture.Customize<Game>(u => u
-                .With(s => s.Id, gameId));
+                .With(s => s.Id, gameId)
+                .With(s => s.BrandGames, new BrandGame[] { }));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
@@ -122,7 +124,9 @@ namespace Tgs.Report.UnitTest.Round
         {
             var fixture = new Fixture();
             fixture.Customize<Repository.Entities.GameProvider>(u => u
-                .With(s => s.Id, gameProviderId));
+                .With(s => s.Id, gameProviderId)
+                .With(s => s.Games, new Game[] { })
+                .With(s => s.SubGameProviders, new SubGameProvider[] { }));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
@@ -132,7 +136,8 @@ namespace Tgs.Report.UnitTest.Round
             var fixture = new Fixture();
             fixture.Customize<BrandGame>(u => u
                 .With(s => s.BrandId, brandId)
-                .With(s => s.GameId, gameId));
+                .With(s => s.GameId, gameId)
+                .With(s => s.Brand, new Brand { }));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

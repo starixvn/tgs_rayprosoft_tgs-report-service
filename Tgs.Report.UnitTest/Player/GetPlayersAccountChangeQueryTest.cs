@@ -67,7 +67,8 @@ namespace Tgs.Report.UnitTest.Player
                 .With(s => s.Type, (short)TransactionType.CompanyAdjust)
                 .With(s => s.CreatedByUserId, userId)
                 .With(s => s.Description, JsonSerializer.Serialize(new AdjustRemarkModel()))
-                .With(s => s.RecordedOn, DateTimeOffset.UtcNow));
+                .With(s => s.RecordedOn, DateTimeOffset.UtcNow)
+                .With(s => s.Wallet, new Wallet{}));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
@@ -78,7 +79,8 @@ namespace Tgs.Report.UnitTest.Player
             fixture.Customize<Repository.Entities.Player>(u => u
                 .With(s => s.BrandId, brandId)
                 .With(s => s.PlayerCode, "PlayerCode")
-                .With(s => s.Brand, new Brand()));
+                .With(s => s.Brand, new Brand())
+                .With(s => s.Birthdate, DateOnly.Parse("2022/05/04")));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
@@ -87,7 +89,8 @@ namespace Tgs.Report.UnitTest.Player
         {
             var fixture = new Fixture();
             fixture.Customize<User>(u => u
-                .With(s => s.Id, userId));
+                .With(s => s.Id, userId)
+                .With(s => s.Department,new Department{}));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

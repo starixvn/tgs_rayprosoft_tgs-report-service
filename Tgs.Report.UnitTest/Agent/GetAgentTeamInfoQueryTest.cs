@@ -70,7 +70,8 @@ namespace Tgs.Report.UnitTest.Agent
                 .With(s => s.BrandId, brandId)
                 .With(s => s.AgentId, agentId)
                 .With(s => s.PlayerCode, "playerCode")
-                .With(s => s.RegisteredOn, DateTime.UtcNow));
+                .With(s => s.RegisteredOn, DateTime.UtcNow)
+                .With(s => s.Birthdate, DateOnly.Parse("2022/05/04")));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
