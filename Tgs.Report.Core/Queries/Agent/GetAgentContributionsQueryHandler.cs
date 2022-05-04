@@ -214,8 +214,10 @@ public class
                                     || w.AgentId != null && playerAggregate.Select(p => p.groupAgent.Id)
                                         .Contains(w.AgentId.Value))
                                 .Sum(w => w.WithdrawalAmount),
-                        CompanyAdjustAmount = playerAggregate.Sum(p => p.playerAggregate?.CompanyAdjustAmount ?? 0),
-                        AgentAdjustAmount = playerAggregate.Sum(p => p.playerAggregate?.AgentAdjustAmount ?? 0),
+                        CompanyAdjustAmount = playerAggregate.Sum(p => p.playerAggregate == null
+                            ? 0 : p.playerAggregate.CompanyAdjustAmount - p.playerAggregate.NoIncludeNetProfitCompanyAdjustAmount),
+                        AgentAdjustAmount = playerAggregate.Sum(p => p.playerAggregate == null
+                            ? 0 : p.playerAggregate.AgentAdjustAmount - p.playerAggregate.NoIncludeNetProfitAgentAdjustAmount),
                         BonusAmount =
                             playerAggregate.Sum(p
                                 => p.playerAggregate == null
