@@ -55,7 +55,9 @@ namespace Tgs.Report.UnitTest.GameProvider
             var fixture = new Fixture();
             fixture.Customize<Repository.Entities.GameProvider>(u => u
                 .With(s => s.Id, id)
-                .With(s => s.Code, "GameProviderCode"));
+                .With(s => s.Code, "GameProviderCode")
+                .With(s => s.Games, new Game[] { })
+                .With(s => s.SubGameProviders, new SubGameProvider[] { }));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
