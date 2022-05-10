@@ -26,11 +26,11 @@ namespace Tgs.Report.UnitTest.Vip
 
             var aggregates = CreatePlayerGameRebateAggregateFixture(brandId).CreateMany<PlayerGameRebateAggregate>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var players = CreatePlayerFixture(brandId)
                 .CreateMany<Repository.Entities.Player>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var request = new GetVipRebateReportRequest
             {
@@ -56,7 +56,8 @@ namespace Tgs.Report.UnitTest.Vip
             fixture.Customize<Repository.Entities.Player>(u => u
                 .With(s => s.BrandId, brandId)
                 .With(s => s.PlayerCode, "PlayerCode")
-                .With(s => s.Brand, new Brand()));
+                .With(s => s.Brand, new Brand())
+                .With(s => s.Birthdate, DateOnly.Parse("2022/05/04")));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

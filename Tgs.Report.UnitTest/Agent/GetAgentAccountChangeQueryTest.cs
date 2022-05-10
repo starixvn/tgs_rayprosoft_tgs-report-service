@@ -23,7 +23,7 @@ namespace Tgs.Report.UnitTest.Agent
             var sut = new GetAgentAccountChangeQueryHandler(fakeRepository);
 
             var agentTransactions = CreateAgentTransactionFixture().CreateMany<AgentTransaction>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var request = new GetAgentAccountChangesRequest
             {

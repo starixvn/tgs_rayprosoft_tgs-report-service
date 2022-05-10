@@ -30,17 +30,17 @@ namespace Tgs.Report.UnitTest.BrandGameProvider
             var brands = CreateBrandFixture(brandId)
                 .CreateMany<Brand>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var gameProviders = CreateGameProviderFixture(gameProviderId)
                 .CreateMany<Repository.Entities.GameProvider>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var brandGameProviderAggregate = CreateBrandGameProviderAggregateFixture(brandId, gameProviderId)
                 .CreateMany<BrandGameProviderAggregate>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             fakeBrand.GetQueries().Returns(brands);
             fakeGameProvider.GetQueries().Returns(gameProviders);
@@ -64,7 +64,12 @@ namespace Tgs.Report.UnitTest.BrandGameProvider
             var fixture = new Fixture();
             fixture.Customize<Brand>(u => u
                 .With(s => s.Id, brandId)
-                .With(s => s.Code, "GameProviderCode"));
+                .With(s => s.Code, "GameProviderCode")
+                .With(s => s.VipLevels,new VipLevel[]{})
+                .With(s => s.Transactions, new Transaction[]{})
+                .With(s => s.BrandCurrencies,new BrandCurrency[]{})
+                .With(s => s.Agents, new Repository.Entities.Agent[]{})
+                .With(s => s.Players, new Repository.Entities.Player[]{}));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
@@ -74,7 +79,9 @@ namespace Tgs.Report.UnitTest.BrandGameProvider
             var fixture = new Fixture();
             fixture.Customize<Repository.Entities.GameProvider>(u => u
                 .With(s => s.Id, id)
-                .With(s => s.Code, "GameProviderCode"));
+                .With(s => s.Code, "GameProviderCode")
+                .With(s => s.Games, new Game[]{})
+                .With(s => s.SubGameProviders, new SubGameProvider[]{}));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

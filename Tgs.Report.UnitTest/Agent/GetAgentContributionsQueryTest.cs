@@ -30,15 +30,15 @@ namespace Tgs.Report.UnitTest.Agent
             var agentUsername = "agentUsername";
             var agents = CreateAgentFixture(brandId, agentUsername).CreateMany<Repository.Entities.Agent>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var withdrawForms = CreateWithdrawFormFixture(brandId).CreateMany<WithdrawForm>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var players = agents.SelectMany(x => x.Players);
 
             var playerAggregates = CreatePlayerAggregateFixture(brandId).CreateMany<PlayerAggregate>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var request = new GetAgentContributionsRequest
             {
@@ -65,7 +65,8 @@ namespace Tgs.Report.UnitTest.Agent
             fixture.Customize<Repository.Entities.Agent>(u => u
                 .With(s => s.BrandId, brandId)
                 .With(s => s.Username, username)
-                .With(s => s.Brand, new Brand()));
+                .With(s => s.Brand, new Brand())
+                .With(s => s.Players, new Repository.Entities.Player[]{}));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

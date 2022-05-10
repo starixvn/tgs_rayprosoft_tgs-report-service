@@ -28,11 +28,11 @@ namespace Tgs.Report.UnitTest.Agent
 
             var players = CreatePlayerFixture(brandId, agentId).CreateMany<Repository.Entities.Player>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var playerAggregates = CreatePlayerAggregateFixture(brandId, agentId).CreateMany<PlayerAggregate>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var request = new GetAgentTeamInfoRequest
             {
@@ -70,7 +70,8 @@ namespace Tgs.Report.UnitTest.Agent
                 .With(s => s.BrandId, brandId)
                 .With(s => s.AgentId, agentId)
                 .With(s => s.PlayerCode, "playerCode")
-                .With(s => s.RegisteredOn, DateTime.UtcNow));
+                .With(s => s.RegisteredOn, DateTime.UtcNow)
+                .With(s => s.Birthdate, DateOnly.Parse("2022/05/04")));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

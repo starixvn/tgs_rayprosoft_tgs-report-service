@@ -27,10 +27,10 @@ namespace Tgs.Report.UnitTest.Agent
 
             var agents = CreateAgentFixture(brandId, agentId).CreateMany<Repository.Entities.Agent>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var agentDividends = CreateAgentDividendFixture(brandId, agentId).CreateMany<AgentDividend>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var request = new GetAgentDividendDetailsRequest
             {
@@ -58,7 +58,8 @@ namespace Tgs.Report.UnitTest.Agent
             fixture.Customize<Repository.Entities.Agent>(u => u
                 .With(s => s.BrandId, brandId)
                 .With(s => s.Id, agentId)
-                .With(s => s.Brand, new Brand()));
+                .With(s => s.Brand, new Brand())
+                .With(s => s.Players, new Repository.Entities.Player[] { }));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

@@ -27,13 +27,13 @@ namespace Tgs.Report.UnitTest.Player
 
             var playerAggregates = CreatePlayerAggregateFixture(brandId, reportDate).CreateMany<PlayerAggregate>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var withdrawForms = CreateWithdrawFormFixture(brandId).CreateMany<WithdrawForm>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var players = CreatePlayerFixture(brandId).CreateMany<Repository.Entities.Player>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var request = new GetPlayerContributionsRequest
             {
@@ -80,7 +80,8 @@ namespace Tgs.Report.UnitTest.Player
             var fixture = new Fixture();
             fixture.Customize<Repository.Entities.Player>(u => u
                 .With(s => s.BrandId, brandId)
-                .With(s => s.Brand, new Brand()));
+                .With(s => s.Brand, new Brand())
+                .With(s => s.Birthdate, DateOnly.Parse("2022/05/04")));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

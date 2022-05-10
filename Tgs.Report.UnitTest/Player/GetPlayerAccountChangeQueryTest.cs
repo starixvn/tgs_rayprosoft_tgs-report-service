@@ -34,7 +34,7 @@ namespace Tgs.Report.UnitTest.Player
             var models = CreatePlayerAccountChangeModelFixture(reportDate).CreateMany<PlayerAccountChangeModel>(1)
                 .AsEnumerable();
 
-            fakeRepository.GetPlayerAccountChangeAsync(request).Returns(ValueTask.FromResult((models.ToArray(), 1)));
+            _ = fakeRepository.GetPlayerAccountChangeAsync(request).Returns((models.ToArray(), 1));
 
             var response = await sut.Handle(request, default);
 
@@ -48,7 +48,7 @@ namespace Tgs.Report.UnitTest.Player
 
             var sut = new GetPlayerAccountChangeTotalAmountQueryHandler(fakeRepository);
 
-            var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");            
+            var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
 
             var request = new GetPlayerAccountChangesTotalAmountRequest
             {
@@ -56,9 +56,9 @@ namespace Tgs.Report.UnitTest.Player
                 PlayerCode = "PlayerCode",
                 From = DateTimeOffset.UtcNow.AddDays(-1),
                 To = DateTimeOffset.UtcNow.AddDays(1)
-            };            
-            
-            await sut.Handle(request, default);
+            };
+
+            _ = await sut.Handle(request, default);
 
             _ = fakeRepository
                 .Received(1)

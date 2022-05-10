@@ -27,14 +27,14 @@ namespace Tgs.Report.UnitTest.LicenseeMarket
 
             var brands = CreateBrandFixture(brandId, licenseeId).CreateMany<Brand>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var withdrawForms = CreateWithdrawFormFixture(brandId).CreateMany<WithdrawForm>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var playerAggregates = CreatePlayerAggregateFixture(brandId).CreateMany<PlayerAggregate>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var request = new GetLicenseeMarketsRequest
             {
@@ -62,7 +62,13 @@ namespace Tgs.Report.UnitTest.LicenseeMarket
             var fixture = new Fixture();
             fixture.Customize<Brand>(u => u
                 .With(s => s.Id, brandId)
-                .With(s => s.LicenseeId, licenseeId));
+                .With(s => s.LicenseeId, licenseeId)
+                .With(s => s.VipLevels, new VipLevel[] { })
+                .With(s => s.Transactions, new Transaction[] { })
+                .With(s => s.BrandCurrencies, new BrandCurrency[] { })
+                .With(s => s.Agents, new Repository.Entities.Agent[] { })
+                .With(s => s.Players, new Repository.Entities.Player[] { }));
+
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

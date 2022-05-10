@@ -11,5 +11,7 @@ namespace Tgs.Report.Client.Models.Player
         public short? TransactionType { get; init; }
         public short? GameActionType { get; init; }
         public DateTimeOffset RecordedOn { get; init; }
+
+        public string? Description { get; init; }
     }
 }

@@ -28,14 +28,14 @@ namespace Tgs.Report.UnitTest.ResellerMarket
 
             var brands = CreateBrandFixture(brandId, resellerId).CreateMany<Brand>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var withdrawForms = CreateWithdrawFormFixture(brandId).CreateMany<WithdrawForm>(1).AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             var playerAggregates = CreatePlayerAggregateFixture(brandId).CreateMany<PlayerAggregate>(1)
                 .AsQueryable()
-                .BuildMock().Object;
+                .BuildMock();
 
             fakeBrand.GetQueries().Returns(brands);
             fakeWithdrawForm.GetQueries().Returns(withdrawForms);
@@ -59,7 +59,13 @@ namespace Tgs.Report.UnitTest.ResellerMarket
             var fixture = new Fixture();
             fixture.Customize<Brand>(u => u
                 .With(s => s.Id, brandId)
-                .With(s => s.Licensee, new Licensee { ResellerId = resellerId }));
+                .With(s => s.Licensee, new Licensee { ResellerId = resellerId })
+                .With(s => s.VipLevels, new VipLevel[] { })
+                .With(s => s.Transactions, new Transaction[] { })
+                .With(s => s.BrandCurrencies, new BrandCurrency[] { })
+                .With(s => s.Agents, new Repository.Entities.Agent[] { })
+                .With(s => s.Players, new Repository.Entities.Player[] { }));
+
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

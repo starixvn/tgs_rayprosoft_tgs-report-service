@@ -41,6 +41,7 @@
         ///     The promotion vip level season
         /// </summary>
         PromotionVipLevelSeason = 3850,
+        PromotionVipLevelBirthday = 3860,
 
         /// <summary>
         /// 分紅 4000~4999
