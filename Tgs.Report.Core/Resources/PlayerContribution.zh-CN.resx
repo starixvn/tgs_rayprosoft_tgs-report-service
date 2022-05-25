@@ -153,4 +153,7 @@
   <data name="CompanyAdjustAmount" xml:space="preserve">
     <value>公司调账</value>
   </data>
+  <data name="BonusAdjustAmount" xml:space="preserve">
+    <value>优惠调帐</value>
+  </data>
 </root>

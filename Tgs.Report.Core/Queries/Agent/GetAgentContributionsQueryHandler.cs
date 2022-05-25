@@ -115,6 +115,11 @@ public class
                                 ? 0
                                 : p.playerAggregate.AgentAdjustAmount -
                                 p.playerAggregate.NoIncludeNetProfitAgentAdjustAmount),
+                        BonusAdjustAmount = playerAggregate.Sum(p 
+                            => p.playerAggregate == null
+                                ? 0
+                                : p.playerAggregate.BonusAdjustAmount -
+                                p.playerAggregate.NoIncludeNetProfitBonusAdjustAmount),
                         BonusAmount =
                             playerAggregate.Sum(p
                                 => p.playerAggregate == null

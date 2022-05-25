@@ -10,6 +10,7 @@ namespace Tgs.Report.ViewModel.Agent
         public decimal WithdrawalAmount { get; init; }
         public decimal CompanyAdjustAmount { get; init; }
         public decimal AgentAdjustAmount { get; init; }
+        public decimal BonusAdjustAmount { get; init; }
         public decimal BonusAmount { get; init; }
         public decimal BetAmount { get; init; }
         public decimal ValidBetAmount { get; init; }

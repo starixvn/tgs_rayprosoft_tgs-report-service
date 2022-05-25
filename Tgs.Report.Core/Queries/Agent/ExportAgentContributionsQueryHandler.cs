@@ -39,6 +39,7 @@ namespace Tgs.Report.Core.Queries.Agent
                 BonusAmount = x.BonusAmount,
                 CompanyAdjustAmount = x.CompanyAdjustAmount,
                 AgentAdjustAmount = x.AgentAdjustAmount,
+                BonusAdjustAmount = x.BonusAdjustAmount,
                 BetAmount = x.BetAmount,
                 ValidBetAmount = x.ValidBetAmount,
                 WinLossAmount = x.WinLossAmount,

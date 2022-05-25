@@ -86,6 +86,10 @@ namespace Tgs.Report.Core.Queries.Market
                                 => m.market == null
                                     ? 0M
                                     : m.market.CompanyAdjustAmount - m.market.NoIncludeNetProfitCompanyAdjustAmount),
+                            BonusAdjustAmount = markets.Sum(m
+                                => m.market == null
+                                    ? 0M
+                                    : m.market.BonusAdjustAmount - m.market.NoIncludeNetProfitBonusAdjustAmount),
                             BonusAmount =
                                 markets.Sum(
                                     m => m.market == null ? 0 : m.market.RebateAmount + m.market.PromotionAmount),
@@ -98,6 +102,7 @@ namespace Tgs.Report.Core.Queries.Market
                                     ? 0M
                                     : m.market.WinLossAmount -
                                     (m.market.CompanyAdjustAmount - m.market.NoIncludeNetProfitCompanyAdjustAmount) -
+                                    (m.market.BonusAdjustAmount - m.market.NoIncludeNetProfitBonusAdjustAmount) -
                                     m.market.RebateAmount -
                                     m.market.PromotionAmount),
                             AdditionalExpenses = markets.Sum(m => m.market?.AllAgentRebateAmount ?? 0M)

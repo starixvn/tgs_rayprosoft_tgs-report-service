@@ -50,6 +50,9 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasPrecision(18, 6)
                 .HasColumnName("bet_amount");
 
+            entity.Property(e => e.BonusAdjustAmount)
+                .HasColumnName("bonus_adjust_amount");
+
             entity.Property(e => e.BonusAmount)
                 .HasPrecision(18, 6)
                 .HasColumnName("bonus_amount");
@@ -112,7 +115,8 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasPrecision(18, 6)
                 .HasColumnName("rebate_amount");
 
-            entity.Property(e => e.ReferencedAgentDividendId).HasColumnName("referenced_agent_dividend_id");
+            entity.Property(e => e.ReferencedAgentDividendId)
+                .HasColumnName("referenced_agent_dividend_id");
 
             entity.Property(e => e.SentOn).HasColumnName("sent_on");
 
