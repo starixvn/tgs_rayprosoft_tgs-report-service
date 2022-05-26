@@ -18,6 +18,8 @@
 
         public decimal AgentAdjustAmount { get; init; }
 
+        public decimal BonusAdjustAmount { get; init; }
+
         public decimal BonusAmount { get; init; }
 
         public decimal BetAmount { get; init; }
