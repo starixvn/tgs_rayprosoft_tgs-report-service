@@ -90,7 +90,8 @@ namespace Tgs.Report.Core.Queries.Agent
                     x.ReferencedAgentDividendId,
                     x.SentOn,
                     x.AgentDividendMultipleLayers,
-                    x.BonusAdjustAmount
+                    x.BonusAdjustAmount,
+                    x.NoIncludeNetProfitBonusAdjustAmount
                 }).ToArrayAsync(cancellationToken);
 
             var agentDividendGroup = agentDividends.GroupBy(x => x.AgentId,
@@ -112,6 +113,7 @@ namespace Tgs.Report.Core.Queries.Agent
                     AgentDividendAmount =
                         list.Sum(l => l.BeforeDividendAmount ?? l.AgentDividendAmount),
                     NoIncludeNetProfitAgentAdjustAmount = list.Sum(l => l.NoIncludeNetProfitAgentAdjustAmount),
+                    NoIncludeNetProfitBonusAdjustAmount = list.Sum(l => l.NoIncludeNetProfitBonusAdjustAmount),
                     FromPlayerAgentDividendAmount = list.Sum(l => l.AgentDividendMultipleLayers.Where(m => m.AgentId == m.DividendProviderAgentId).Sum(s => s.Dividend)),
                     FromTeamAgentDividendAmount = list.Sum(l => l.AgentDividendMultipleLayers.Where(m => m.AgentId != m.DividendProviderAgentId).Sum(s => s.Dividend)),
                 }).ToArray();
@@ -128,7 +130,7 @@ namespace Tgs.Report.Core.Queries.Agent
                         .Sum(w => w.WithdrawalAmount),
                     CompanyAdjustAmount = ad.CompanyAdjustAmount,
                     AgentAdjustAmount = ad.AgentAdjustAmount - ad.NoIncludeNetProfitAgentAdjustAmount,
-                    BonusAdjustAmount = ad.BonusAdjustAmount,
+                    BonusAdjustAmount = ad.BonusAdjustAmount - ad.NoIncludeNetProfitBonusAdjustAmount,
                     BonusAmount = ad.BonusAmount,
                     BetAmount = ad.BetAmount,
                     ValidBetAmount = ad.OriginalTurnover,

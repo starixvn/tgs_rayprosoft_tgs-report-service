@@ -49,6 +49,7 @@ namespace Tgs.Report.Repository.Entities
         public decimal NoIncludeNetProfitAgentAdjustAmount { get; set; }
         public decimal NoIncludeNetProfitCompanyAdjustAmount { get; set; }
         public decimal BonusAdjustAmount { get; set; }
+        public decimal NoIncludeNetProfitBonusAdjustAmount { get; set; }
 
         public virtual ICollection<AgentDividendMultipleLayer> AgentDividendMultipleLayers { get; set; }
     }
