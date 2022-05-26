@@ -14,79 +14,7 @@
    "SelectedToBeGenerated": 0,
    "Tables": [
       {
-         "Name": "dbo.player_bucket_histories",
-         "ObjectType": 0
-      },
-      {
-         "Name": "dbo.game_provider_aggregate_audit_logs",
-         "ObjectType": 0
-      },
-      {
-         "Name": "dbo.player_buckets",
-         "ObjectType": 0
-      },
-      {
-         "Name": "dbo.settings",
-         "ObjectType": 0
-      },
-      {
-         "Name": "dbo.sub_game_providers",
-         "ObjectType": 0
-      },
-      {
-         "Name": "dbo.game_providers",
-         "ObjectType": 0
-      },
-      {
-         "Name": "dbo.brands",
-         "ObjectType": 0
-      },
-      {
-         "Name": "dbo.agent_dividend_conditions",
-         "ObjectType": 0
-      },
-      {
-         "Name": "dbo.withdraw_forms",
-         "ObjectType": 0
-      },
-      {
-         "Name": "dbo.transactions",
-         "ObjectType": 0
-      },
-      {
-         "Name": "dbo.agent_dividend_multiple_layers",
-         "ObjectType": 0
-      },
-      {
-         "Name": "dbo.departments",
-         "ObjectType": 0
-      },
-      {
-         "Name": "dbo.users",
-         "ObjectType": 0
-      },
-      {
-         "Name": "dbo.agent_dividends",
-         "ObjectType": 0
-      },
-      {
-         "Name": "dbo.games",
-         "ObjectType": 0
-      },
-      {
-         "Name": "dbo.brand_games",
-         "ObjectType": 0
-      },
-      {
-         "Name": "dbo.vip_levels",
-         "ObjectType": 0
-      },
-      {
-         "Name": "dbo.players",
-         "ObjectType": 0
-      },
-      {
-         "Name": "dbo.brand_game_provider_aggregate_audit_logs",
+         "Name": "dbo.currencies",
          "ObjectType": 0
       },
       {
@@ -94,23 +22,35 @@
          "ObjectType": 0
       },
       {
+         "Name": "dbo.wallets",
+         "ObjectType": 0
+      },
+      {
          "Name": "dbo.agents",
          "ObjectType": 0
       },
       {
-         "Name": "dbo.adjust_player_records",
+         "Name": "dbo.agent_dividend_conditions",
          "ObjectType": 0
       },
       {
-         "Name": "dbo.currencies",
+         "Name": "dbo.users",
          "ObjectType": 0
       },
       {
-         "Name": "dbo.roles",
+         "Name": "dbo.transactions",
          "ObjectType": 0
       },
       {
-         "Name": "dbo.agent_transactions",
+         "Name": "dbo.vip_levels",
+         "ObjectType": 0
+      },
+      {
+         "Name": "dbo.withdraw_forms",
+         "ObjectType": 0
+      },
+      {
+         "Name": "dbo.brand_games",
          "ObjectType": 0
       },
       {
@@ -118,11 +58,39 @@
          "ObjectType": 0
       },
       {
-         "Name": "dbo.wallets",
+         "Name": "dbo.game_providers",
          "ObjectType": 0
       },
       {
-         "Name": "dbo.resellers",
+         "Name": "dbo.player_buckets",
+         "ObjectType": 0
+      },
+      {
+         "Name": "dbo.games",
+         "ObjectType": 0
+      },
+      {
+         "Name": "dbo.sub_game_providers",
+         "ObjectType": 0
+      },
+      {
+         "Name": "dbo.adjust_player_records",
+         "ObjectType": 0
+      },
+      {
+         "Name": "dbo.game_provider_aggregate_audit_logs",
+         "ObjectType": 0
+      },
+      {
+         "Name": "dbo.players",
+         "ObjectType": 0
+      },
+      {
+         "Name": "dbo.settings",
+         "ObjectType": 0
+      },
+      {
+         "Name": "dbo.brand_game_provider_aggregate_audit_logs",
          "ObjectType": 0
       },
       {
@@ -130,11 +98,39 @@
          "ObjectType": 0
       },
       {
-         "Name": "bet.game_actions",
+         "Name": "dbo.departments",
          "ObjectType": 0
       },
       {
-         "Name": "bet.rounds",
+         "Name": "dbo.player_bucket_histories",
+         "ObjectType": 0
+      },
+      {
+         "Name": "dbo.brands",
+         "ObjectType": 0
+      },
+      {
+         "Name": "dbo.agent_transactions",
+         "ObjectType": 0
+      },
+      {
+         "Name": "dbo.roles",
+         "ObjectType": 0
+      },
+      {
+         "Name": "dbo.resellers",
+         "ObjectType": 0
+      },
+      {
+         "Name": "dbo.agent_dividends",
+         "ObjectType": 0
+      },
+      {
+         "Name": "dbo.agent_dividend_multiple_layers",
+         "ObjectType": 0
+      },
+      {
+         "Name": "bet.game_actions",
          "ObjectType": 0
       },
       {
@@ -142,19 +138,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "report.game_provider_aggregates",
-         "ObjectType": 0
-      },
-      {
-         "Name": "report.round_aggregates",
-         "ObjectType": 0
-      },
-      {
-         "Name": "report.game_provider_aggregate_records",
-         "ObjectType": 0
-      },
-      {
-         "Name": "report.player_aggregates",
+         "Name": "bet.rounds",
          "ObjectType": 0
       },
       {
@@ -162,15 +146,31 @@
          "ObjectType": 0
       },
       {
-         "Name": "report.brand_game_provider_aggregates",
+         "Name": "report.player_aggregates",
          "ObjectType": 0
       },
       {
          "Name": "report.player_game_rebate_aggregates",
          "ObjectType": 0
+      },
+      {
+         "Name": "report.round_aggregates",
+         "ObjectType": 0
+      },
+      {
+         "Name": "report.game_provider_aggregates",
+         "ObjectType": 0
+      },
+      {
+         "Name": "report.game_provider_aggregate_records",
+         "ObjectType": 0
+      },
+      {
+         "Name": "report.brand_game_provider_aggregates",
+         "ObjectType": 0
       }
    ],
-   "UiHint": "tgs",
+   "UiHint": "LocalDB",
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,
    "UseDbContextSplitting": true,

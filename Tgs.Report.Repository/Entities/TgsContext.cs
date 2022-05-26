@@ -62,8 +62,7 @@ namespace Tgs.Report.Repository.Entities
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasPostgresExtension("ltree")
-                .HasPostgresExtension("pg_trgm")
-                .HasPostgresExtension("uuid-ossp");
+                .HasPostgresExtension("pg_trgm");
 
             modelBuilder.ApplyConfiguration(new Configurations.AdjustPlayerRecordConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.AgentConfiguration());

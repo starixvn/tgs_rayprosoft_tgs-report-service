@@ -15,7 +15,7 @@ namespace Tgs.Report.ViewModel.Market
         public decimal WithdrawalAmount { get; init; }
 
         public decimal CompanyAdjustAmount { get; init; }
-
+        public decimal BonusAdjustAmount { get; set; }
         public decimal BonusAmount { get; init; }
 
         public decimal BetAmount { get; init; }
