@@ -61,10 +61,10 @@ public class
                     WithdrawalAmount = withdrawForm.ActualAmount ?? withdrawForm.Amount
                 })
             .GroupBy(x => new
-                {
-                    x.AgentId,
-                    x.PlayerCode
-                },
+            {
+                x.AgentId,
+                x.PlayerCode
+            },
                 (x, withdrawals) => new
                 {
                     x.AgentId,
@@ -93,10 +93,10 @@ public class
                     playerAggregate
                 })
             .GroupBy(x => new
-                {
-                    x.player.Username,
-                    x.player.PlayerCode
-                },
+            {
+                x.player.Username,
+                x.player.PlayerCode
+            },
                 (player, playerAggregate) =>
                     new AgentContributionModel
                     {
@@ -115,7 +115,7 @@ public class
                                 ? 0
                                 : p.playerAggregate.AgentAdjustAmount -
                                 p.playerAggregate.NoIncludeNetProfitAgentAdjustAmount),
-                        BonusAdjustAmount = playerAggregate.Sum(p 
+                        BonusAdjustAmount = playerAggregate.Sum(p
                             => p.playerAggregate == null
                                 ? 0
                                 : p.playerAggregate.BonusAdjustAmount -
@@ -131,10 +131,11 @@ public class
                         WinLossAmount = playerAggregate.Sum(p => p.playerAggregate?.WinLossAmount ?? 0),
                         NetProfit = playerAggregate.Sum(p => p.playerAggregate == null
                             ? 0
-                            : p.playerAggregate.WinLossAmount - (p.playerAggregate.AgentAdjustAmount -
-                                p.playerAggregate.NoIncludeNetProfitAgentAdjustAmount) -
-                            p.playerAggregate.RebateAmount -
-                            p.playerAggregate.PromotionAmount)
+                            : p.playerAggregate.WinLossAmount
+                                - (p.playerAggregate.AgentAdjustAmount - p.playerAggregate.NoIncludeNetProfitAgentAdjustAmount)
+                                - (p.playerAggregate.BonusAdjustAmount - p.playerAggregate.NoIncludeNetProfitBonusAdjustAmount)
+                                - p.playerAggregate.RebateAmount
+                                - p.playerAggregate.PromotionAmount)
                     }).ToArray();
 
         if (!request.IncludeAgents)
@@ -166,7 +167,7 @@ public class
                 {
                     AgentId = x.Id,
                     x.Path.NLevel,
-                    MainAgentIdString = x.Path.Subtree(nLevel, nLevel+1)
+                    MainAgentIdString = x.Path.Subtree(nLevel, nLevel + 1)
                 }).ToArrayAsync(cancellationToken).ConfigureAwait(false))
             .Select(x => new
             {
@@ -202,10 +203,10 @@ public class
                     SubAgentId = playerAggregate?.groupAgent.AgentId
                 })
             .GroupBy(x => new
-                {
-                    x.groupAgent.Username,
-                    x.groupAgent.Id
-                },
+            {
+                x.groupAgent.Username,
+                x.groupAgent.Id
+            },
                 (groupAgent, playerAggregate) =>
                     new AgentContributionModel
                     {
