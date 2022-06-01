@@ -11,6 +11,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddTransient<IRoundFactory, RoundFactory>();
             services.AddTransient<IPlayerFactory, PlayerFactory>();
+            services.AddTransient<IPlayerDepositFactory, PlayerDepositFactory>();
 
             return services;
         }

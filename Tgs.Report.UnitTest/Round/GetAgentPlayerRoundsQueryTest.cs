@@ -39,7 +39,11 @@ namespace Tgs.Report.UnitTest.Round
                     PlayerCode = playerCode1,
                     ExternalRoundId = "externalRoundId1",
                     Status = (short)RoundStatus.Closed,
-                    GameProviderId = Guid.Parse("3924FF4E-8ECA-A25F-ABDC-9B8606A46316")
+                    GameProviderId = Guid.Parse("3924FF4E-8ECA-A25F-ABDC-9B8606A46316"),
+                    ExternalCreatedOn = DateTime.UtcNow,
+                    ExternalClosedOn = DateTime.UtcNow,
+                    CreatedOn = DateTime.UtcNow,
+                    ClosedOn = DateTime.UtcNow
                 }, new Repository.Entities.Round
                 {
                     Id = Guid.Parse("DBE0C089-A956-4F14-B325-125F7935CB30"),
@@ -47,7 +51,11 @@ namespace Tgs.Report.UnitTest.Round
                     PlayerCode = playerCode2,
                     ExternalRoundId = "externalRoundId2",
                     Status = (short)RoundStatus.Open,
-                    GameProviderId = Guid.Parse("3924FF4E-8ECA-A25F-ABDC-9B8606A46316")
+                    GameProviderId = Guid.Parse("3924FF4E-8ECA-A25F-ABDC-9B8606A46316"),
+                    ExternalCreatedOn = DateTime.UtcNow,
+                    ExternalClosedOn = DateTime.UtcNow,
+                    CreatedOn = DateTime.UtcNow,
+                    ClosedOn = DateTime.UtcNow                    
                 });
 
             _ = await repository.RoundDetails.AddAsync(new RoundDetail

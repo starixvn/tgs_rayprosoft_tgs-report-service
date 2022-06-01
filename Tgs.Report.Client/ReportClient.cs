@@ -509,6 +509,45 @@ namespace Tgs.Report.Client
             return stream;
         }
 
+        public async ValueTask<PagedResponse<PlayerDepositModel>> GetPlayerDepositsAsync(GetPlayerDepositsRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/marketReport/playerDeposits?", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+            _ = response.EnsureSuccessStatusCode();
+
+            return JsonSerializer.Deserialize<PagedResponse<PlayerDepositModel>>(await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+
+        public async ValueTask<PagedResponse<PlayerFirstDepositDetailModel>> GetPlayerFirstDepositDetailsAsync(GetPlayerFirstDepositDetailsRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/marketReport/playerFirstDepositDetails?", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+            _ = response.EnsureSuccessStatusCode();
+
+            return JsonSerializer.Deserialize<PagedResponse<PlayerFirstDepositDetailModel>>(await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+
+        public async ValueTask<PagedResponse<PlayerNoSecondDepositDetailModel>> GetPlayerNoSecondDepositDetailsAsync(GetPlayerNoSecondDepositDetailsRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/marketReport/playerNoSecondDepositDetails?", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+            _ = response.EnsureSuccessStatusCode();
+
+            return JsonSerializer.Deserialize<PagedResponse<PlayerNoSecondDepositDetailModel>>(await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+
         public async ValueTask<GetBrandGameProviderRoundsResponse> GetBrandGameProviderRoundsAsync(
             GetBrandGameProviderRoundsRequest request)
         {

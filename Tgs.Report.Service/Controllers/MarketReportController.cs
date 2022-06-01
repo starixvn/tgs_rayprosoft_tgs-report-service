@@ -28,6 +28,25 @@ namespace Tgs.Report.Service.Controllers
             [FromQuery] GetAdditionalExpensesRequest request) =>
             _mediator.Send(request);
 
+        [HttpGet("playerDeposits")]
+        [Description("Get player deposits")]
+        public Task<PagedResponse<PlayerDepositModel>> GetPlayerDepositsAsync(
+            [FromQuery] GetPlayerDepositsRequest request) =>
+            _mediator.Send(request);
+
+        [HttpGet("playerFirstDepositDetails")]
+        [Description("Get player first deposit details")]
+        public Task<PagedResponse<PlayerFirstDepositDetailModel>> GetPlayerFirstDepositDetailsAsync(
+            [FromQuery] GetPlayerFirstDepositDetailsRequest request) =>
+            _mediator.Send(request);
+
+        [HttpGet("playerNoSecondDepositDetails")]
+        [Description("Get player no second deposit details")]
+        public Task<PagedResponse<PlayerNoSecondDepositDetailModel>> GetPlayerNoSecondDepositDetailsAsync(
+            [FromQuery] GetPlayerNoSecondDepositDetailsRequest request) =>
+            _mediator.Send(request);
+
+
         [HttpGet("exportMarkets")]
         [Description("export markets")]
         public async Task<IActionResult> ExportMarketsAsync([FromQuery] ExportMarketsRequest request) => File(

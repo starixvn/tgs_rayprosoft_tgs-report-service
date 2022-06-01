@@ -56,7 +56,7 @@ namespace Tgs.Report.UnitTest.Market
             var fixture = new Fixture();
             fixture.Customize<PlayerAggregate>(u => u
                 .With(s => s.BrandId, brandId)
-                .With(s => s.ReportDate, reportDate));
+                .With(s => s.ReportDate, reportDate.DateTime));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

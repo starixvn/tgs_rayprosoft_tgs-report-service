@@ -62,14 +62,13 @@ namespace Tgs.Report.Repository.Entities.Configurations
 
             entity.Property(e => e.CurrentSettlementFrom)
                 .HasColumnName("current_settlement_from")
-                .HasDefaultValueSql("'0001-01-01 08:06:00+08:06'::timestamp with time zone");
+                .HasDefaultValueSql("'0001-01-01 00:00:00+00'::timestamp with time zone");
 
             entity.Property(e => e.CurrentSettlementTo)
                 .HasColumnName("current_settlement_to")
-                .HasDefaultValueSql("'0001-01-01 08:06:00+08:06'::timestamp with time zone");
+                .HasDefaultValueSql("'0001-01-01 00:00:00+00'::timestamp with time zone");
 
-            entity.Property(e => e.DepositHandlingFeeRateTenPercentile)
-                .HasColumnName("deposit_handling_fee_rate_ten_percentile");
+            entity.Property(e => e.DepositHandlingFeeRateTenPercentile).HasColumnName("deposit_handling_fee_rate_ten_percentile");
 
             entity.Property(e => e.Description)
                 .HasMaxLength(256)
@@ -95,11 +94,11 @@ namespace Tgs.Report.Repository.Entities.Configurations
 
             entity.Property(e => e.NextSettlementFrom)
                 .HasColumnName("next_settlement_from")
-                .HasDefaultValueSql("'0001-01-01 08:06:00+08:06'::timestamp with time zone");
+                .HasDefaultValueSql("'0001-01-01 00:00:00+00'::timestamp with time zone");
 
             entity.Property(e => e.NextSettlementTo)
                 .HasColumnName("next_settlement_to")
-                .HasDefaultValueSql("'0001-01-01 08:06:00+08:06'::timestamp with time zone");
+                .HasDefaultValueSql("'0001-01-01 00:00:00+00'::timestamp with time zone");
 
             entity.Property(e => e.OperationalEmail)
                 .HasMaxLength(128)
@@ -111,11 +110,11 @@ namespace Tgs.Report.Repository.Entities.Configurations
 
             entity.Property(e => e.PreviousSettlementFrom)
                 .HasColumnName("previous_settlement_from")
-                .HasDefaultValueSql("'0001-01-01 08:06:00+08:06'::timestamp with time zone");
+                .HasDefaultValueSql("'0001-01-01 00:00:00+00'::timestamp with time zone");
 
             entity.Property(e => e.PreviousSettlementTo)
                 .HasColumnName("previous_settlement_to")
-                .HasDefaultValueSql("'0001-01-01 08:06:00+08:06'::timestamp with time zone");
+                .HasDefaultValueSql("'0001-01-01 00:00:00+00'::timestamp with time zone");
 
             entity.Property(e => e.SecretKey)
                 .HasMaxLength(32)
@@ -143,8 +142,7 @@ namespace Tgs.Report.Repository.Entities.Configurations
 
             entity.Property(e => e.UpdatedOn).HasColumnName("updated_on");
 
-            entity.Property(e => e.WithdrawHandlingFeeRateTenPercentile)
-                .HasColumnName("withdraw_handling_fee_rate_ten_percentile");
+            entity.Property(e => e.WithdrawHandlingFeeRateTenPercentile).HasColumnName("withdraw_handling_fee_rate_ten_percentile");
 
             entity.HasOne(d => d.Licensee)
                 .WithMany(p => p.Brands)
