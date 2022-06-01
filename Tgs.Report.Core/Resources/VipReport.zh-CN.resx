@@ -147,4 +147,7 @@
   <data name="WithdrawalAmount" xml:space="preserve">
     <value>提款金额</value>
   </data>
+  <data name="BonusAdjustAmount" xml:space="preserve">
+    <value>优惠调帐</value>
+  </data>
 </root>

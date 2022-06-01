@@ -153,4 +153,7 @@
   <data name="CompanyAdjustAmount" xml:space="preserve">
     <value>COMPANY ADJUST AMOUNT</value>
   </data>
+  <data name="BonusAdjustAmount" xml:space="preserve">
+    <value>BONUS ADJUST AMOUNT</value>
+  </data>
 </root>

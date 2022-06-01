@@ -56,6 +56,9 @@ namespace Tgs.Report.Repository.Entities
         public bool EnableAgentSms { get; set; }
         public bool EnablePlayerIdentity { get; set; }
         public bool AutoClearWageringRequirement { get; set; }
+        public decimal AutoClearWageringRequirementBalance { get; set; }
+        public decimal DepositHandlingFeeRateTenPercentile { get; set; }
+        public decimal WithdrawHandlingFeeRateTenPercentile { get; set; }
 
         public virtual Licensee Licensee { get; set; } = null!;
         public virtual ICollection<AgentTransaction> AgentTransactions { get; set; }
