@@ -96,5 +96,11 @@ namespace Tgs.Report.Client
 
         ValueTask<ResellerMarketsResponse> GetResellerMarketsAsync(GetResellerMarketsRequest request);
         ValueTask<Stream> ExportResellerMarketsAsync(ExportResellerMarketsRequest request);
+
+        ValueTask<PagedResponse<PlayerDepositModel>> GetPlayerDepositsAsync(GetPlayerDepositsRequest request);
+
+        ValueTask<PagedResponse<PlayerFirstDepositDetailModel>> GetPlayerFirstDepositDetailsAsync(GetPlayerFirstDepositDetailsRequest request);
+
+        ValueTask<PagedResponse<PlayerNoSecondDepositDetailModel>> GetPlayerNoSecondDepositDetailsAsync(GetPlayerNoSecondDepositDetailsRequest request);
     }
 }

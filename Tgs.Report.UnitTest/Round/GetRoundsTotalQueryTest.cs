@@ -61,7 +61,7 @@ namespace Tgs.Report.UnitTest.Round
                 BetAmount = 10m,
                 Turnover = 10m,
                 WinLoss = -15m,
-                CreatedOn = DateTimeOffset.UtcNow,
+                CreatedOn = DateTime.UtcNow,
                 Status = (short)RoundStatus.Open,
                 PlayerCode = playerCode,
                 CurrencyCode = "CNY",

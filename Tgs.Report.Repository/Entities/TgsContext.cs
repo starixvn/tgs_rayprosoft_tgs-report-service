@@ -33,6 +33,7 @@ namespace Tgs.Report.Repository.Entities
         public virtual DbSet<BrandGameProviderAggregateRecord> BrandGameProviderAggregateRecords { get; set; } = null!;
         public virtual DbSet<Currency> Currencies { get; set; } = null!;
         public virtual DbSet<Department> Departments { get; set; } = null!;
+        public virtual DbSet<DepositForm> DepositForms { get; set; } = null!;
         public virtual DbSet<Game> Games { get; set; } = null!;
         public virtual DbSet<GameAction> GameActions { get; set; } = null!;
         public virtual DbSet<GameProvider> GameProviders { get; set; } = null!;
@@ -45,6 +46,7 @@ namespace Tgs.Report.Repository.Entities
         public virtual DbSet<PlayerBucket> PlayerBuckets { get; set; } = null!;
         public virtual DbSet<PlayerBucketHistory> PlayerBucketHistories { get; set; } = null!;
         public virtual DbSet<PlayerGameRebateAggregate> PlayerGameRebateAggregates { get; set; } = null!;
+        public virtual DbSet<PlayerIpRecord> PlayerIpRecords { get; set; } = null!;
         public virtual DbSet<Reseller> Resellers { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<Round> Rounds { get; set; } = null!;
@@ -62,7 +64,8 @@ namespace Tgs.Report.Repository.Entities
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasPostgresExtension("ltree")
-                .HasPostgresExtension("pg_trgm");
+                .HasPostgresExtension("pg_trgm")
+                .HasPostgresExtension("uuid-ossp");
 
             modelBuilder.ApplyConfiguration(new Configurations.AdjustPlayerRecordConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.AgentConfiguration());
@@ -78,6 +81,7 @@ namespace Tgs.Report.Repository.Entities
             modelBuilder.ApplyConfiguration(new Configurations.BrandGameProviderAggregateRecordConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.CurrencyConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.DepartmentConfiguration());
+            modelBuilder.ApplyConfiguration(new Configurations.DepositFormConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.GameConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.GameActionConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.GameProviderConfiguration());
@@ -90,6 +94,7 @@ namespace Tgs.Report.Repository.Entities
             modelBuilder.ApplyConfiguration(new Configurations.PlayerBucketConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.PlayerBucketHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.PlayerGameRebateAggregateConfiguration());
+            modelBuilder.ApplyConfiguration(new Configurations.PlayerIpRecordConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.ResellerConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.RoleConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.RoundConfiguration());

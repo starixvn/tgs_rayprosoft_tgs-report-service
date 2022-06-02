@@ -47,7 +47,7 @@ namespace Tgs.Report.Core.Queries.Market
                 .ToArrayAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            var withdrawalByDates = withdrawals.GroupBy(x => x.CreatedOn.ToOffset(offset).Date,
+            var withdrawalByDates = withdrawals.GroupBy(x => ((DateTimeOffset)x.CreatedOn).ToOffset(offset).Date,
                 (date, withdrawals) => new
                 {
                     Date = date,

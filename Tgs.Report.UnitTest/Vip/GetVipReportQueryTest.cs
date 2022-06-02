@@ -89,7 +89,7 @@ namespace Tgs.Report.UnitTest.Vip
             fixture.Customize<PlayerAggregate>(u => u
                 .With(s => s.BrandId, brandId)
                 .With(s => s.PlayerCode, "PlayerCode")
-                .With(s => s.ReportDate, DateTimeOffset.UtcNow));
+                .With(s => s.ReportDate, DateTime.UtcNow));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
@@ -100,7 +100,7 @@ namespace Tgs.Report.UnitTest.Vip
             fixture.Customize<PlayerGameRebateAggregate>(u => u
                 .With(s => s.BrandId, brandId)
                 .With(s => s.PlayerCode, "PlayerCode")
-                .With(s => s.ReportDate, DateTimeOffset.UtcNow));
+                .With(s => s.ReportDate, DateTime.UtcNow));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
