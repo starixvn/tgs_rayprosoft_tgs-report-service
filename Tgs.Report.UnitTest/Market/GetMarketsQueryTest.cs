@@ -29,7 +29,7 @@ namespace Tgs.Report.UnitTest.Market
                 .AsQueryable()
                 .BuildMock();
 
-            var withdrawForms = CreateWithdrawFormFixture(brandId).CreateMany<WithdrawForm>(1).AsQueryable()
+            var withdrawForms = CreateWithdrawFormFixture(brandId, reportDate.UtcDateTime).CreateMany<WithdrawForm>(1).AsQueryable()
                 .BuildMock();
 
             var request = new GetMarketsRequest
@@ -61,12 +61,13 @@ namespace Tgs.Report.UnitTest.Market
             return fixture;
         }
 
-        private static Fixture CreateWithdrawFormFixture(Guid brandId)
+        private static Fixture CreateWithdrawFormFixture(Guid brandId,DateTime createdOn)
         {
             var fixture = new Fixture();
             fixture.Customize<WithdrawForm>(u => u
                 .With(s => s.BrandId, brandId)
-                .With(s => s.Brand, new Brand()));
+                .With(s => s.Brand, new Brand())
+                .With(s => s.CreatedOn, createdOn));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

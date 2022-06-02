@@ -47,7 +47,7 @@ namespace Tgs.Report.Core.Queries.Market
                 .ToArrayAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            var withdrawalByDates = withdrawals.GroupBy(x => ((DateTimeOffset)DateTime.SpecifyKind(x.CreatedOn, DateTimeKind.Utc)).ToOffset(offset).Date,
+            var withdrawalByDates = withdrawals.GroupBy(x => ((DateTimeOffset)x.CreatedOn).ToOffset(offset).Date,
                 (date, withdrawals) => new
                 {
                     Date = date,
@@ -56,7 +56,7 @@ namespace Tgs.Report.Core.Queries.Market
 
             return await dates.GroupJoin(_repository.PlayerAggregates
                         .Where(x => x.BrandId == request.BrandId)
-                        .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime()),
+                        .Where(x => x.ReportDate >= from.UtcDateTime && x.ReportDate < to.UtcDateTime),
                     date => date,
                     market => market.ReportDate,
                     (date, markets) => new
