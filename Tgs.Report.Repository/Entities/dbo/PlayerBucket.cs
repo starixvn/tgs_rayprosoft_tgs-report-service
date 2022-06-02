@@ -12,7 +12,7 @@ namespace Tgs.Report.Repository.Entities
         public decimal BucketAmount { get; set; }
         public short BucketType { get; set; }
         public bool IsFull { get; set; }
-        public DateTime CreatedOn { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
         public decimal CurrentBucketAmount { get; set; }
 
         public virtual Player PlayerCodeNavigation { get; set; } = null!;

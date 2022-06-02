@@ -21,12 +21,12 @@ namespace Tgs.Report.Repository.Entities
         public short Status { get; set; }
         public Guid GameProviderConfigurationId { get; set; }
         public Guid WalletId { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public DateTime? ClosedOn { get; set; }
-        public DateTime UpdatedOn { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
+        public DateTimeOffset? ClosedOn { get; set; }
+        public DateTimeOffset UpdatedOn { get; set; }
         public Guid BrandId { get; set; }
-        public DateTime? ExternalCreatedOn { get; set; }
-        public DateTime? ExternalClosedOn { get; set; }
+        public DateTimeOffset? ExternalCreatedOn { get; set; }
+        public DateTimeOffset? ExternalClosedOn { get; set; }
         public decimal? BetAmount { get; set; }
         public decimal? ValidBetAmount { get; set; }
         public decimal? SettleAmount { get; set; }
@@ -36,7 +36,7 @@ namespace Tgs.Report.Repository.Entities
         public decimal? TieBetAdjustment { get; set; }
         public short ClientStatus { get; set; }
         public decimal? ReopenTurnoverAdjustment { get; set; }
-        public DateTime? ReopenedOn { get; set; }
+        public DateTimeOffset? ReopenedOn { get; set; }
         public decimal? EffectiveBettingPercentage { get; set; }
 
         public virtual RoundDetail RoundDetail { get; set; } = null!;
