@@ -22,7 +22,7 @@ namespace Tgs.Report.Core.Queries.Market
         {
             var playerAggregates = await _repository.PlayerAggregates
                 .Where(x => x.BrandId == request.BrandId)
-                .Where(x => x.ReportDate == request.ReportDate.UtcDateTime)
+                .Where(x => x.ReportDate == request.ReportDate.ToUniversalTime())
                 .Select(x => new { x.AllAgentRebateAmount }).ToArrayAsync(cancellationToken);
 
             return new GetAdditionalExpensesResponse

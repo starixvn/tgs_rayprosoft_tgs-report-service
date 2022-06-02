@@ -48,11 +48,11 @@ public class GetPlayerDepositQueryHandler : IRequestHandler<GetPlayerDepositsReq
                 FirstDepositOn = group.Min(x => x.CreatedOn),
                 LastDepositOn = group.Max(x => x.CreatedOn)
             })
-            .Where(x => x.FirstDepositOn >= from.UtcDateTime && x.FirstDepositOn < to.UtcDateTime);
+            .Where(x => x.FirstDepositOn >= from.ToUniversalTime() && x.FirstDepositOn < to.ToUniversalTime());
 
         return await dates.GroupJoin(deposits,
                 date => date,
-                deposit => ((DateTimeOffset)deposit.FirstDepositOn).ToOffset(offset).Date,
+                deposit => deposit.FirstDepositOn.ToOffset(offset).Date,
                 (date, groupDeposits) => new
                 {
                     date,

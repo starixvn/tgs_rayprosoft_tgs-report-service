@@ -19,15 +19,15 @@ namespace Tgs.Report.Repository.Entities
         public string BankInfo { get; set; } = null!;
         public string? ApplyInfo { get; set; }
         public string? PaymentReturn { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public DateTime UpdatedOn { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
+        public DateTimeOffset UpdatedOn { get; set; }
         public string? UserName { get; set; }
         public int UserType { get; set; }
         public string? ThirdPartyOrderNo { get; set; }
-        public DateTime? ReviewedOn { get; set; }
+        public DateTimeOffset? ReviewedOn { get; set; }
         public string? ReviewedUserId { get; set; }
         public string? ReviewedUserName { get; set; }
-        public DateTime? PaidOn { get; set; }
+        public DateTimeOffset? PaidOn { get; set; }
         public string? PaidUserId { get; set; }
         public string? PaidUserName { get; set; }
         public string? OrderNo { get; set; }
