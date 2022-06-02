@@ -56,7 +56,7 @@ namespace Tgs.Report.UnitTest.Market
             var fixture = new Fixture();
             fixture.Customize<PlayerAggregate>(u => u
                 .With(s => s.BrandId, brandId)
-                .With(s => s.ReportDate, reportDate.DateTime));
+                .With(s => s.ReportDate, reportDate));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
@@ -66,8 +66,7 @@ namespace Tgs.Report.UnitTest.Market
             var fixture = new Fixture();
             fixture.Customize<WithdrawForm>(u => u
                 .With(s => s.BrandId, brandId)
-                .With(s => s.Brand, new Brand())
-                .With(s => s.CreatedOn));
+                .With(s => s.Brand, new Brand()));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
