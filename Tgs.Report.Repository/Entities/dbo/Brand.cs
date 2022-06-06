@@ -15,6 +15,7 @@ namespace Tgs.Report.Repository.Entities
             BrandGames = new HashSet<BrandGame>();
             Departments = new HashSet<Department>();
             DepositForms = new HashSet<DepositForm>();
+            PlayerLoginRecords = new HashSet<PlayerLoginRecord>();
             Players = new HashSet<Player>();
             Transactions = new HashSet<Transaction>();
             VipLevels = new HashSet<VipLevel>();
@@ -31,18 +32,18 @@ namespace Tgs.Report.Repository.Entities
         public string SecretKey { get; set; } = null!;
         public string ApiKey { get; set; } = null!;
         public short SettlementIntervalType { get; set; }
-        public DateTimeOffset PreviousSettlementFrom { get; set; }
-        public DateTimeOffset PreviousSettlementTo { get; set; }
-        public DateTimeOffset CurrentSettlementFrom { get; set; }
-        public DateTimeOffset CurrentSettlementTo { get; set; }
-        public DateTimeOffset NextSettlementFrom { get; set; }
-        public DateTimeOffset NextSettlementTo { get; set; }
+        public DateTime PreviousSettlementFrom { get; set; }
+        public DateTime PreviousSettlementTo { get; set; }
+        public DateTime CurrentSettlementFrom { get; set; }
+        public DateTime CurrentSettlementTo { get; set; }
+        public DateTime NextSettlementFrom { get; set; }
+        public DateTime NextSettlementTo { get; set; }
         public bool AutoSentPlayerBonus { get; set; }
         public bool AutoSentAgentBonus { get; set; }
         public string Code { get; set; } = null!;
         public string Name { get; set; } = null!;
-        public DateTimeOffset CreatedOn { get; set; }
-        public DateTimeOffset UpdatedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime UpdatedOn { get; set; }
         public string CreatedByUsername { get; set; } = null!;
         public string UpdatedByUsername { get; set; } = null!;
         public int? SettlementDay { get; set; }
@@ -68,6 +69,7 @@ namespace Tgs.Report.Repository.Entities
         public virtual ICollection<BrandGame> BrandGames { get; set; }
         public virtual ICollection<Department> Departments { get; set; }
         public virtual ICollection<DepositForm> DepositForms { get; set; }
+        public virtual ICollection<PlayerLoginRecord> PlayerLoginRecords { get; set; }
         public virtual ICollection<Player> Players { get; set; }
         public virtual ICollection<Transaction> Transactions { get; set; }
         public virtual ICollection<VipLevel> VipLevels { get; set; }

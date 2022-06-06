@@ -51,6 +51,8 @@ namespace Tgs.Report.Repository
         public DbSet<RoundDetail> RoundDetails { get; set; } = default!;
         public DbSet<DepositForm> DepositForms { get; set; } = null!;
         public DbSet<PlayerIpRecord> PlayerIpRecords { get; set; } = null!;
+        public DbSet<PlayerLoginRecord> PlayerLoginRecords { get; set; } = null!;
+        public DbSet<SubGameProvider> SubGameProviders { get; set; } = null!;
 
         public IDbConnection GetDbConnection() =>
             Database.GetDbConnection();

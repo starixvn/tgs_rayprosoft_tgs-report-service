@@ -1,16 +1,24 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Tgs.Report.Repository;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Market;
+using Tgs.Report.ViewModel.PlayerDeposit;
 
 namespace Tgs.Report.Core.Queries.Market;
 
-public class GetPlayerDepositNoSecondDetailQueryHandler : IRequestHandler<GetPlayerNoSecondDepositDetailsRequest,
+public class GetPlayerNoSecondDepositDetailQueryHandler : IRequestHandler<GetPlayerNoSecondDepositDetailsRequest,
     PagedResponse<PlayerNoSecondDepositDetailModel>>
 {
     private readonly IPlayerDepositFactory _playerDepositFactory;
+    private readonly ITgsRepository _repository;
 
-    public GetPlayerDepositNoSecondDetailQueryHandler(IPlayerDepositFactory playerDepositFactory)
-        => _playerDepositFactory = playerDepositFactory;
+    public GetPlayerNoSecondDepositDetailQueryHandler(IPlayerDepositFactory playerDepositFactory,
+        ITgsRepository repository)
+    {
+        _repository = repository;
+        _playerDepositFactory = playerDepositFactory;
+    }
 
     public async Task<PagedResponse<PlayerNoSecondDepositDetailModel>> Handle(
         GetPlayerNoSecondDepositDetailsRequest request,
@@ -36,8 +44,21 @@ public class GetPlayerDepositNoSecondDetailQueryHandler : IRequestHandler<GetPla
             0,
             requestTo.Offset);
 
-        var details = await _playerDepositFactory.GetPlayerNoSecondDepositDetailsAsync(request.BrandId, from.ToUniversalTime(), to.ToUniversalTime());
-        
+        var agent = await _repository.Agents
+            .FirstOrDefaultAsync(x => x.Username == request.AgentUsername, cancellationToken).ConfigureAwait(false);
+
+        if (agent == null)
+        {
+            return new()
+            {
+                Valid = false,
+                Message = Resources.Agent.NotFound
+            };
+        }
+
+        var details = await _playerDepositFactory.GetPlayerNoSecondDepositDetailsAsync(request.BrandId, agent.Id,
+            from.ToUniversalTime(), to.ToUniversalTime());
+
         return await details.CreatePagedResponseAsync(details.Count());
     }
 }

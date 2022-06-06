@@ -54,6 +54,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "dbo.player_login_records",
+         "ObjectType": 0
+      },
+      {
          "Name": "dbo.agent_dividend_multiple_layers",
          "ObjectType": 0
       },

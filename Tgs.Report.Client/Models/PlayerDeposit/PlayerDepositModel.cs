@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Tgs.Report.ViewModel.Market
+﻿namespace Tgs.Report.Client.Models.PlayerDeposit
 {
     public record PlayerDepositModel
     {

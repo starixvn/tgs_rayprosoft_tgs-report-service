@@ -3,6 +3,7 @@ using Dapper;
 using Microsoft.EntityFrameworkCore.Storage;
 using Tgs.Report.Repository;
 using Tgs.Report.ViewModel.Market;
+using Tgs.Report.ViewModel.PlayerDeposit;
 using Tgs.Report.ViewModel.Round;
 
 namespace Tgs.Report.Core
@@ -60,7 +61,7 @@ namespace Tgs.Report.Core
             return result.ToArray();
         }
 
-        public async Task<IEnumerable<PlayerFirstDepositDetailModel>> GetPlayerFirstDepositDetailsAsync(Guid brandId, DateTimeOffset start, DateTimeOffset end)
+        public async Task<IEnumerable<PlayerFirstDepositDetailModel>> GetPlayerFirstDepositDetailsAsync(Guid brandId,Guid agentId, DateTimeOffset start, DateTimeOffset end)
         {
             const string spName = "dbo.report_get_player_first_deposit_details";
             var conn = _repository.GetDbConnection();
@@ -69,12 +70,13 @@ namespace Tgs.Report.Core
                 new Dictionary<string, object>
                 {
                     { "_brand_id",brandId },
+                    { "_agent_id",agentId },
                     { "_from", start },
                     { "_to", end }
                 }, commandType: CommandType.StoredProcedure, transaction: transaction);
         }
 
-        public async Task<IEnumerable<PlayerNoSecondDepositDetailModel>> GetPlayerNoSecondDepositDetailsAsync(Guid brandId, DateTimeOffset start, DateTimeOffset end)
+        public async Task<IEnumerable<PlayerNoSecondDepositDetailModel>> GetPlayerNoSecondDepositDetailsAsync(Guid brandId, Guid agentId, DateTimeOffset start, DateTimeOffset end)
         {
             const string spName = "dbo.report_get_player_no_second_deposit_details";
             var conn = _repository.GetDbConnection();
@@ -83,6 +85,7 @@ namespace Tgs.Report.Core
                 new Dictionary<string, object>
                 {
                     { "_brand_id",brandId },
+                    { "_agent_id",agentId },
                     { "_from", start },
                     { "_to", end }
                 }, commandType: CommandType.StoredProcedure, transaction: transaction);

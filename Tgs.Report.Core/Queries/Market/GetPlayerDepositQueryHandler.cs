@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Tgs.Report.Repository;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Market;
+using Tgs.Report.ViewModel.PlayerDeposit;
 
 namespace Tgs.Report.Core.Queries.Market;
 
@@ -36,12 +37,26 @@ public class GetPlayerDepositQueryHandler : IRequestHandler<GetPlayerDepositsReq
             0,
             requestTo.Offset);
 
+        var agent = await _repository.Agents
+            .FirstOrDefaultAsync(x => x.Username == request.AgentUsername, cancellationToken).ConfigureAwait(false);
+
+        if (agent == null)
+        {
+            return new()
+            {
+                Valid = false,
+                Message = Resources.Agent.NotFound
+            };
+        }
+
         var dates = Enumerable.Range(0, to.Subtract(from).Days)
             .Select(x => from.AddDays(x))
             .ToArray();
         
         var deposits = _repository.DepositForms
             .Where(x => x.BrandId == request.BrandId && x.Status == 8000)
+            .Join(_repository.Players, form => form.PlayerCode, player => player.PlayerCode,(form, player)=> new {form.PlayerCode,form.CreatedOn,player.AgentId})
+            .Where(x => x.AgentId == agent.Id)
             .GroupBy(x => x.PlayerCode, (playerCode, group) => new
             {
                 PlayerCode = playerCode,
@@ -52,7 +67,7 @@ public class GetPlayerDepositQueryHandler : IRequestHandler<GetPlayerDepositsReq
 
         return await dates.GroupJoin(deposits,
                 date => date,
-                deposit => deposit.FirstDepositOn.ToOffset(offset).Date,
+                deposit => deposit.FirstDepositOn,
                 (date, groupDeposits) => new
                 {
                     date,

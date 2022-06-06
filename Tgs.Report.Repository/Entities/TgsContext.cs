@@ -47,6 +47,7 @@ namespace Tgs.Report.Repository.Entities
         public virtual DbSet<PlayerBucketHistory> PlayerBucketHistories { get; set; } = null!;
         public virtual DbSet<PlayerGameRebateAggregate> PlayerGameRebateAggregates { get; set; } = null!;
         public virtual DbSet<PlayerIpRecord> PlayerIpRecords { get; set; } = null!;
+        public virtual DbSet<PlayerLoginRecord> PlayerLoginRecords { get; set; } = null!;
         public virtual DbSet<Reseller> Resellers { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<Round> Rounds { get; set; } = null!;
@@ -95,6 +96,7 @@ namespace Tgs.Report.Repository.Entities
             modelBuilder.ApplyConfiguration(new Configurations.PlayerBucketHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.PlayerGameRebateAggregateConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.PlayerIpRecordConfiguration());
+            modelBuilder.ApplyConfiguration(new Configurations.PlayerLoginRecordConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.ResellerConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.RoleConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.RoundConfiguration());

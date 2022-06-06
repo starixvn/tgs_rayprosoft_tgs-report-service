@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace Tgs.Report.ViewModel.Market
+﻿namespace Tgs.Report.Client.Models.Marketing
 {
-    public record PlayerNoSecondDepositDetailModel
+    public record MarketingFirstDepositDetailModel
     {
         public string Username { get; init; } = default!;
         public DateTimeOffset FirstDepositOn { get; init; }
