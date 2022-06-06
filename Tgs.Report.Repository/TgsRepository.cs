@@ -18,7 +18,7 @@ namespace Tgs.Report.Repository
         public DbSet<GameProviderAggregate> GameProviderAggregates { get; set; } = default!;
         public DbSet<GameProviderAggregateAuditLog> GameProviderAggregateAuditLogs { get; set; } = default!;
         public DbSet<GameProviderAggregateRecord> GameProviderAggregateRecords { get; set; } = default!;
-
+        public DbSet<AdjustPlayerRecord> AdjustPlayerRecords { get; set; } = default!;
         public DbSet<AgentDividendCondition> AgentDividendConditions { get; set; } = default!;
 
         public IDbContextTransaction? CurrentTransaction =>
