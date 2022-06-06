@@ -9,6 +9,7 @@ namespace Tgs.Report.Repository
 {
     public interface ITgsRepository
     {
+        DbSet<AdjustPlayerRecord> AdjustPlayerRecords { get; set; }
         DbSet<AgentDividendCondition> AgentDividendConditions { get; set; }
         DbSet<AgentDividendMultipleLayer> AgentDividendMultipleLayers { get; set; }
         DbSet<AgentDividend> AgentDividends { get; set; }
@@ -45,8 +46,11 @@ namespace Tgs.Report.Repository
         DbSet<PlayerIpRecord> PlayerIpRecords { get; set; }
 
         IDbContextTransaction? CurrentTransaction { get; }
+
         DbSet<T> Set<T>() where T : class;
+
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+
         IDbConnection GetDbConnection();
     }
 }
