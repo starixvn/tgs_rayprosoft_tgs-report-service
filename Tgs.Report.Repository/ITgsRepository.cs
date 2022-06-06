@@ -44,6 +44,8 @@ namespace Tgs.Report.Repository
         DbSet<GameProviderAggregateRecord> GameProviderAggregateRecords { get; set; }
         DbSet<DepositForm> DepositForms { get; set; }
         DbSet<PlayerIpRecord> PlayerIpRecords { get; set; }
+        DbSet<PlayerLoginRecord> PlayerLoginRecords { get; set; }
+        DbSet<SubGameProvider> SubGameProviders { get; set; }
 
         IDbContextTransaction? CurrentTransaction { get; }
 

@@ -1,6 +1,9 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Tgs.Report.Repository;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Market;
+using Tgs.Report.ViewModel.PlayerDeposit;
 
 namespace Tgs.Report.Core.Queries.Market;
 
@@ -8,9 +11,14 @@ public class GetPlayerDepositFirstDetailQueryHandler : IRequestHandler<GetPlayer
     PagedResponse<PlayerFirstDepositDetailModel>>
 {
     private readonly IPlayerDepositFactory _playerDepositFactory;
+    private readonly ITgsRepository _repository;
 
-    public GetPlayerDepositFirstDetailQueryHandler(IPlayerDepositFactory playerDepositFactory)
-        => _playerDepositFactory = playerDepositFactory;
+    public GetPlayerDepositFirstDetailQueryHandler(IPlayerDepositFactory playerDepositFactory,
+        ITgsRepository repository)
+    {
+        _repository = repository;
+        _playerDepositFactory = playerDepositFactory;
+    }
 
     public async Task<PagedResponse<PlayerFirstDepositDetailModel>> Handle(
         GetPlayerFirstDepositDetailsRequest request,
@@ -36,7 +44,20 @@ public class GetPlayerDepositFirstDetailQueryHandler : IRequestHandler<GetPlayer
             0,
             requestTo.Offset);
 
-        var details = await _playerDepositFactory.GetPlayerFirstDepositDetailsAsync(request.BrandId, from.ToUniversalTime(), to.ToUniversalTime());
+        var agent = await _repository.Agents
+            .FirstOrDefaultAsync(x => x.Username == request.AgentUsername, cancellationToken).ConfigureAwait(false);
+
+        if (agent == null)
+        {
+            return new()
+            {
+                Valid = false,
+                Message = Resources.Agent.NotFound
+            };
+        }
+
+        var details = await _playerDepositFactory.GetPlayerFirstDepositDetailsAsync(request.BrandId, agent.Id,
+            from.ToUniversalTime(), to.ToUniversalTime());
 
         return await details.CreatePagedResponseAsync(details.Count());
     }

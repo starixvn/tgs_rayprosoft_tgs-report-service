@@ -7,7 +7,9 @@ using Tgs.Report.Client.Models.GameAction;
 using Tgs.Report.Client.Models.GameProvider;
 using Tgs.Report.Client.Models.LicenseeMarket;
 using Tgs.Report.Client.Models.Market;
+using Tgs.Report.Client.Models.Marketing;
 using Tgs.Report.Client.Models.Player;
+using Tgs.Report.Client.Models.PlayerDeposit;
 using Tgs.Report.Client.Models.ResellerMarket;
 using Tgs.Report.Client.Models.Round;
 using Tgs.Report.Client.Models.Vip;
@@ -511,7 +513,7 @@ namespace Tgs.Report.Client
 
         public async ValueTask<PagedResponse<PlayerDepositModel>> GetPlayerDepositsAsync(GetPlayerDepositsRequest request)
         {
-            var path = ClientPath.AppendWithProperties("/api/marketReport/playerDeposits?", request);
+            var path = ClientPath.AppendWithProperties("/api/playerDepositReport?", request);
 
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
@@ -524,7 +526,7 @@ namespace Tgs.Report.Client
 
         public async ValueTask<PagedResponse<PlayerFirstDepositDetailModel>> GetPlayerFirstDepositDetailsAsync(GetPlayerFirstDepositDetailsRequest request)
         {
-            var path = ClientPath.AppendWithProperties("/api/marketReport/playerFirstDepositDetails?", request);
+            var path = ClientPath.AppendWithProperties("/api/playerDepositReport/playerFirstDepositDetails?", request);
 
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
@@ -537,7 +539,7 @@ namespace Tgs.Report.Client
 
         public async ValueTask<PagedResponse<PlayerNoSecondDepositDetailModel>> GetPlayerNoSecondDepositDetailsAsync(GetPlayerNoSecondDepositDetailsRequest request)
         {
-            var path = ClientPath.AppendWithProperties("/api/marketReport/playerNoSecondDepositDetails?", request);
+            var path = ClientPath.AppendWithProperties("/api/playerDepositReport/playerNoSecondDepositDetails?", request);
 
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
@@ -545,6 +547,58 @@ namespace Tgs.Report.Client
             _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<PagedResponse<PlayerNoSecondDepositDetailModel>>(await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+        
+        public async ValueTask<PagedResponse<MarketingModel>> GetMarketingListAsync(GetMarketingListRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/marketingReport?", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+            _ = response.EnsureSuccessStatusCode();
+
+            return JsonSerializer.Deserialize<PagedResponse<MarketingModel>>(await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+
+        public async ValueTask<PagedResponse<MarketingRegisterDetailModel>> GetMarketingRegisterDetailsAsync(GetMarketingRegisterDetailRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/marketingReport/registerDetail?", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+            _ = response.EnsureSuccessStatusCode();
+            
+            return JsonSerializer.Deserialize<PagedResponse<MarketingRegisterDetailModel>>(await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+
+        public async ValueTask<PagedResponse<MarketingFirstDepositDetailModel>> GetMarketingFirstDepositDetailsAsync(GetMarketingFirstDepositDetailRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/marketingReport/FirstDepositDetail?", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+            _ = response.EnsureSuccessStatusCode();
+
+            return JsonSerializer.Deserialize<PagedResponse<MarketingFirstDepositDetailModel>>(await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+
+        public async ValueTask<PagedResponse<MarketingGamingDetailModel>> GetMarketingGamingDetailsAsync(GetMarketingGamingDetailRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/marketingReport/GamingDetail?", request);
+            
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+            _ = response.EnsureSuccessStatusCode();
+
+            return JsonSerializer.Deserialize<PagedResponse<MarketingGamingDetailModel>>(await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 

@@ -1,4 +1,4 @@
-﻿namespace Tgs.Report.Client.Models.Market
+﻿namespace Tgs.Report.Client.Models.PlayerDeposit
 {
     public record GetPlayerNoSecondDepositDetailsRequest : PageableRequest
     {

@@ -21,6 +21,8 @@ namespace Tgs.Report.Core.Queries.Player
         {
             var (playerAccountChanges, totalCount) = await _playerFactory.GetPlayerAccountChangeAsync(request);
 
+
+
             return await playerAccountChanges.CreatePagedResponseAsync(totalCount);
         }
     }

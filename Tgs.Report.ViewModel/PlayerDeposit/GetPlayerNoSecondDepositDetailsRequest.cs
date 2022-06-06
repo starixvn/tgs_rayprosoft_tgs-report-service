@@ -1,12 +1,12 @@
 ﻿using System;
 using MediatR;
-using Tgs.Report.ViewModel.Round;
 
-namespace Tgs.Report.ViewModel.Market
+namespace Tgs.Report.ViewModel.PlayerDeposit
 {
     public record GetPlayerNoSecondDepositDetailsRequest : PageableRequest, IRequest<PagedResponse<PlayerNoSecondDepositDetailModel>>
     {
         public Guid BrandId { get; init; }
+        public string AgentUsername { get; init; } = default!;
         public DateTimeOffset Date { get; init; }
     }
 }
