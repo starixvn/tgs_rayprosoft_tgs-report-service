@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Tgs.Report.Repository;
 using Tgs.Report.ViewModel;
-using Tgs.Report.ViewModel.Market;
 using Tgs.Report.ViewModel.PlayerDeposit;
 
 namespace Tgs.Report.Core.Queries.Market;
@@ -38,7 +37,8 @@ public class GetPlayerDepositQueryHandler : IRequestHandler<GetPlayerDepositsReq
             requestTo.Offset);
 
         var agent = await _repository.Agents
-            .FirstOrDefaultAsync(x => x.Username == request.AgentUsername, cancellationToken).ConfigureAwait(false);
+            .FirstOrDefaultAsync(x => x.BrandId == request.BrandId && x.Username == request.AgentUsername,
+                cancellationToken).ConfigureAwait(false);
 
         if (agent == null)
         {
@@ -52,10 +52,16 @@ public class GetPlayerDepositQueryHandler : IRequestHandler<GetPlayerDepositsReq
         var dates = Enumerable.Range(0, to.Subtract(from).Days)
             .Select(x => from.AddDays(x))
             .ToArray();
-        
+
         var deposits = _repository.DepositForms
             .Where(x => x.BrandId == request.BrandId && x.Status == 8000)
-            .Join(_repository.Players, form => form.PlayerCode, player => player.PlayerCode,(form, player)=> new {form.PlayerCode,form.CreatedOn,player.AgentId})
+            .Join(_repository.Players, form => form.PlayerCode, player => player.PlayerCode,
+                (form, player) => new
+                {
+                    form.PlayerCode,
+                    form.CreatedOn,
+                    player.AgentId
+                })
             .Where(x => x.AgentId == agent.Id)
             .GroupBy(x => x.PlayerCode, (playerCode, group) => new
             {
