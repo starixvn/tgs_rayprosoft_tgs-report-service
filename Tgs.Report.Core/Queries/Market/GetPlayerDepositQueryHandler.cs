@@ -1,5 +1,7 @@
-﻿using MediatR;
+﻿using System.Text.Json;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Tgs.Report.Repository;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.PlayerDeposit;
@@ -9,8 +11,13 @@ namespace Tgs.Report.Core.Queries.Market;
 public class GetPlayerDepositQueryHandler : IRequestHandler<GetPlayerDepositsRequest, PagedResponse<PlayerDepositModel>>
 {
     private readonly ITgsRepository _repository;
+    private readonly ILogger<GetPlayerDepositQueryHandler> _logger;
 
-    public GetPlayerDepositQueryHandler(ITgsRepository repository) => _repository = repository;
+    public GetPlayerDepositQueryHandler(ITgsRepository repository, ILogger<GetPlayerDepositQueryHandler> logger)
+    {
+        _repository = repository;
+        _logger = logger;
+    }
 
     public async Task<PagedResponse<PlayerDepositModel>> Handle(
         GetPlayerDepositsRequest request,
@@ -71,6 +78,9 @@ public class GetPlayerDepositQueryHandler : IRequestHandler<GetPlayerDepositsReq
             })
             .Where(x => x.FirstDepositOn >= from.ToUniversalTime() && x.FirstDepositOn < to.ToUniversalTime())
             .ToArrayAsync(cancellationToken).ConfigureAwait(false);
+
+        _logger.LogInformation(JsonSerializer.Serialize(dates));
+        _logger.LogInformation(JsonSerializer.Serialize(deposits));
 
         return await dates.GroupJoin(deposits,
                 date => date,
