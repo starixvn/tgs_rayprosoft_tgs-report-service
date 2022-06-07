@@ -53,7 +53,7 @@ public class GetPlayerDepositQueryHandler : IRequestHandler<GetPlayerDepositsReq
             .Select(x => from.AddDays(x))
             .ToArray();
 
-        var deposits = _repository.DepositForms
+        var deposits = await _repository.DepositForms
             .Where(x => x.BrandId == request.BrandId && x.Status == 8000)
             .Join(_repository.Players, form => form.PlayerCode, player => player.PlayerCode,
                 (form, player) => new
@@ -69,11 +69,26 @@ public class GetPlayerDepositQueryHandler : IRequestHandler<GetPlayerDepositsReq
                 FirstDepositOn = group.Min(x => x.CreatedOn),
                 LastDepositOn = group.Max(x => x.CreatedOn)
             })
-            .Where(x => x.FirstDepositOn >= from.ToUniversalTime() && x.FirstDepositOn < to.ToUniversalTime());
+            .Where(x => x.FirstDepositOn >= from.ToUniversalTime() && x.FirstDepositOn < to.ToUniversalTime())
+            .ToArrayAsync(cancellationToken).ConfigureAwait(false);
 
-        return await dates.GroupJoin(deposits,
+        var depositFormatDays = deposits.Select(x =>
+        {
+            var firstDepositOn8Timezone = x.FirstDepositOn.ToOffset(offset);
+            var firstDepositOnDate = new DateTimeOffset(firstDepositOn8Timezone.Year, firstDepositOn8Timezone.Month,
+                firstDepositOn8Timezone.Day, 0, 0, 0, offset);
+            return new
+            {
+                x.PlayerCode,
+                x.FirstDepositOn,
+                x.LastDepositOn,
+                FirstDepositOnDate = firstDepositOnDate
+            };
+        }).ToArray();
+
+        return await dates.GroupJoin(depositFormatDays,
                 date => date,
-                deposit => deposit.FirstDepositOn,
+                deposit => deposit.FirstDepositOnDate,
                 (date, groupDeposits) => new
                 {
                     date,
