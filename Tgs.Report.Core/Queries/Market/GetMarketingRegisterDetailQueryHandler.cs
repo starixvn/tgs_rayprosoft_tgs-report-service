@@ -42,7 +42,7 @@ public class GetMarketingRegisterDetailQueryHandler : IRequestHandler<GetMarketi
         }
 
         return await _repository.PlayerAggregates
-            .Where(x => x.BrandId == request.BrandId && x.ReportDate == reportDate && x.AgentId == agent.Id)
+            .Where(x => x.BrandId == request.BrandId && x.ReportDate == reportDate.ToUniversalTime() && x.AgentId == agent.Id)
             .Where(x => x.RegisteredCount == 1)
             .GroupBy(x => x.PlayerCode, (playerCode, group) => new { playerCode })
             .Join(_repository.Players, x => x.playerCode, y => y.PlayerCode, (x, y) => new

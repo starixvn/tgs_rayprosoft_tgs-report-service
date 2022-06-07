@@ -45,7 +45,7 @@ public class GetMarketingGamingQueryHandler : IRequestHandler<GetMarketingGaming
         }
 
         return await _repository.PlayerGameRebateAggregates
-            .Where(x => x.BrandId == request.BrandId && x.ReportDate == reportDate && x.AgentId == agent.Id)
+            .Where(x => x.BrandId == request.BrandId && x.ReportDate == reportDate.ToUniversalTime() && x.AgentId == agent.Id)
             .Join(_repository.Players, aggregate => aggregate.PlayerCode, player => player.PlayerCode,
                 (aggregate, player) => new
                 {
