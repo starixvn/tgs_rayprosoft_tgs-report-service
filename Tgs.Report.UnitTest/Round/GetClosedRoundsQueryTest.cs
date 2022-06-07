@@ -35,7 +35,11 @@ namespace Tgs.Report.UnitTest.Round
                 PlayerCode = playerCode,
                 ExternalRoundId = externalRoundId,
                 Status = (short)RoundStatus.Closed,
-                GameProviderId = gameProviderId
+                GameProviderId = gameProviderId,
+                ExternalCreatedOn = DateTime.UtcNow,
+                ExternalClosedOn = DateTime.UtcNow,
+                CreatedOn = DateTime.UtcNow,
+                ClosedOn = DateTime.UtcNow
             });
 
             await repository.RoundDetails.AddAsync(new RoundDetail

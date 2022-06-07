@@ -67,7 +67,9 @@ namespace Tgs.Report.UnitTest.LicenseeMarket
                 .With(s => s.Transactions, new Transaction[] { })
                 .With(s => s.BrandCurrencies, new BrandCurrency[] { })
                 .With(s => s.Agents, new Repository.Entities.Agent[] { })
-                .With(s => s.Players, new Repository.Entities.Player[] { }));
+                .With(s => s.Players, new Repository.Entities.Player[] { })
+                .With(s => s.DepositForms, new DepositForm[] { })
+                .With(s => s.PlayerLoginRecords, new PlayerLoginRecord[] { }));
 
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;

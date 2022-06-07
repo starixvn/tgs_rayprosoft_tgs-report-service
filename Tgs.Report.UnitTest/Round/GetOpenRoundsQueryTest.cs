@@ -93,7 +93,7 @@ namespace Tgs.Report.UnitTest.Round
                 .With(s => s.GameProviderId, gameProviderId)
                 .With(s => s.PlayerCode, "PlayerCode")
                 .With(s => s.Status, (short)RoundStatus.Open)
-                .With(s => s.CreatedOn, DateTimeOffset.UtcNow)
+                .With(s => s.CreatedOn, DateTime.UtcNow)
                 .With(s => s.GameId, gameId));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
