@@ -51,8 +51,8 @@ public class GetPlayerDepositFirstDetailQueryHandler : IRequestHandler<GetPlayer
         {
             return new()
             {
-                Valid = false,
-                Message = Resources.Agent.NotFound
+                Valid = true,
+                Items = Array.Empty<PlayerFirstDepositDetailModel>()
             };
         }
 

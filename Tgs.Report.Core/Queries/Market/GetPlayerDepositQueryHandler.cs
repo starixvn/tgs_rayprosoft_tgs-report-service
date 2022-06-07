@@ -44,8 +44,8 @@ public class GetPlayerDepositQueryHandler : IRequestHandler<GetPlayerDepositsReq
         {
             return new()
             {
-                Valid = false,
-                Message = Resources.Agent.NotFound
+                Valid = true,
+                Items = Array.Empty<PlayerDepositModel>()
             };
         }
 
