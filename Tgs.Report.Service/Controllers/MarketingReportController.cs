@@ -26,13 +26,13 @@ public class MarketingReportController : ControllerBase
         [FromQuery] GetMarketingRegisterDetailRequest request) =>
         _mediator.Send(request);
 
-    [HttpGet("FirstDepositDetail")]
+    [HttpGet("firstDepositDetail")]
     [Description("Get first deposit details")]
     public Task<PagedResponse<MarketingFirstDepositDetailModel>> GetMarketingFirstDepositDetailsAsync(
         [FromQuery] GetMarketingFirstDepositDetailRequest request) =>
         _mediator.Send(request);
 
-    [HttpGet("GamingDetail")]
+    [HttpGet("gamingDetail")]
     [Description("Get gaming details")]
     public Task<PagedResponse<MarketingGamingDetailModel>> GetMarketingGamingDetailsAsync(
         [FromQuery] GetMarketingGamingDetailRequest request) =>

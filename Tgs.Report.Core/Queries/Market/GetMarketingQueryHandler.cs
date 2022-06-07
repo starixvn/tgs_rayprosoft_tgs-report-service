@@ -43,8 +43,8 @@ public class GetMarketingQueryHandler : IRequestHandler<GetMarketingListRequest,
         {
             return new()
             {
-                Valid = false,
-                Message = Resources.Agent.NotFound
+                Valid = true,
+                Items = Array.Empty<MarketingModel>()
             };
         }
 

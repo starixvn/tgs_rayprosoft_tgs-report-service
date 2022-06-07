@@ -39,8 +39,8 @@ public class GetMarketingGamingQueryHandler : IRequestHandler<GetMarketingGaming
         {
             return new()
             {
-                Valid = false,
-                Message = Resources.Agent.NotFound
+                Valid = true,
+                Items = Array.Empty<MarketingGamingDetailModel>()
             };
         }
 

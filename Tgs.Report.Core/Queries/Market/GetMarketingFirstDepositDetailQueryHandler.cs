@@ -42,8 +42,8 @@ public class GetMarketingFirstDepositDetailQueryHandler : IRequestHandler<GetMar
         {
             return new()
             {
-                Valid = false,
-                Message = Resources.Agent.NotFound
+                Valid = true,
+                Items = Array.Empty<MarketingFirstDepositDetailModel>()
             };
         }
 

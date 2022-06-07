@@ -36,8 +36,8 @@ public class GetMarketingRegisterDetailQueryHandler : IRequestHandler<GetMarketi
         {
             return new()
             {
-                Valid = false,
-                Message = Resources.Agent.NotFound
+                Valid = true,
+                Items = Array.Empty<MarketingRegisterDetailModel>()
             };
         }
 
