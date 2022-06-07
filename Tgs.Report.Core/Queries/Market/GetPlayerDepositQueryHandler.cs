@@ -73,7 +73,7 @@ public class GetPlayerDepositQueryHandler : IRequestHandler<GetPlayerDepositsReq
 
         return await dates.GroupJoin(deposits,
                 date => date,
-                deposit => deposit.FirstDepositOn,
+                deposit => deposit.FirstDepositOn.ToOffset(offset).Date,
                 (date, groupDeposits) => new
                 {
                     date,
