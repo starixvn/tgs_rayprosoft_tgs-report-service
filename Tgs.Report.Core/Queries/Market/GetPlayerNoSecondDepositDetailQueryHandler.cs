@@ -45,7 +45,8 @@ public class GetPlayerNoSecondDepositDetailQueryHandler : IRequestHandler<GetPla
             requestTo.Offset);
 
         var agent = await _repository.Agents
-            .FirstOrDefaultAsync(x => x.Username == request.AgentUsername, cancellationToken).ConfigureAwait(false);
+            .FirstOrDefaultAsync(x => x.BrandId == request.BrandId && x.Username == request.AgentUsername,
+                cancellationToken).ConfigureAwait(false);
 
         if (agent == null)
         {
