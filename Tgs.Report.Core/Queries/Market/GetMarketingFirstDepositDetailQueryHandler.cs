@@ -56,7 +56,7 @@ public class GetMarketingFirstDepositDetailQueryHandler : IRequestHandler<GetMar
         }, cancellationToken).ConfigureAwait(false);
 
         var playerUsernames = await _repository.PlayerAggregates
-            .Where(x => x.BrandId == request.BrandId && x.ReportDate == reportDate && x.AgentId == agent.Id)
+            .Where(x => x.BrandId == request.BrandId && x.ReportDate == reportDate.ToUniversalTime() && x.AgentId == agent.Id)
             .Where(x => x.FirstFundInCount == 1)
             .Join(_repository.Players, aggregate => aggregate.PlayerCode, player => player.PlayerCode,
                 (aggregate, player) => new
