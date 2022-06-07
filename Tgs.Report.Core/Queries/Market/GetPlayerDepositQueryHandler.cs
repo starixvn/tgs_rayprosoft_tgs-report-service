@@ -1,7 +1,5 @@
-﻿using System.Text.Json;
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Tgs.Report.Repository;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.PlayerDeposit;
@@ -11,13 +9,8 @@ namespace Tgs.Report.Core.Queries.Market;
 public class GetPlayerDepositQueryHandler : IRequestHandler<GetPlayerDepositsRequest, PagedResponse<PlayerDepositModel>>
 {
     private readonly ITgsRepository _repository;
-    private readonly ILogger<GetPlayerDepositQueryHandler> _logger;
 
-    public GetPlayerDepositQueryHandler(ITgsRepository repository, ILogger<GetPlayerDepositQueryHandler> logger)
-    {
-        _repository = repository;
-        _logger = logger;
-    }
+    public GetPlayerDepositQueryHandler(ITgsRepository repository) => _repository = repository;
 
     public async Task<PagedResponse<PlayerDepositModel>> Handle(
         GetPlayerDepositsRequest request,
@@ -79,12 +72,23 @@ public class GetPlayerDepositQueryHandler : IRequestHandler<GetPlayerDepositsReq
             .Where(x => x.FirstDepositOn >= from.ToUniversalTime() && x.FirstDepositOn < to.ToUniversalTime())
             .ToArrayAsync(cancellationToken).ConfigureAwait(false);
 
-        _logger.LogInformation(JsonSerializer.Serialize(dates));
-        _logger.LogInformation(JsonSerializer.Serialize(deposits));
+        var depositFormatDays = deposits.Select(x =>
+        {
+            var firstDepositOn8Timezone = x.FirstDepositOn.ToOffset(offset);
+            var firstDepositOnDate = new DateTimeOffset(firstDepositOn8Timezone.Year, firstDepositOn8Timezone.Month,
+                firstDepositOn8Timezone.Day, 0, 0, 0, offset);
+            return new
+            {
+                x.PlayerCode,
+                x.FirstDepositOn,
+                x.LastDepositOn,
+                FirstDepositOnDate = firstDepositOnDate
+            };
+        }).ToArray();
 
-        return await dates.GroupJoin(deposits,
+        return await dates.GroupJoin(depositFormatDays,
                 date => date,
-                deposit => deposit.FirstDepositOn.ToOffset(offset).Date,
+                deposit => deposit.FirstDepositOnDate,
                 (date, groupDeposits) => new
                 {
                     date,
