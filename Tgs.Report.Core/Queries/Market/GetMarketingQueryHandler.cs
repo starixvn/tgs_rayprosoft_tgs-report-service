@@ -57,12 +57,13 @@ public class GetMarketingQueryHandler : IRequestHandler<GetMarketingListRequest,
         var playerAggregates = await _repository.PlayerAggregates
             .Where(x => x.BrandId == request.BrandId)
             .Where(x => x.AgentId == agent.Id)
-            .GroupBy(x => new { x.ReportDate, x.PlayerCode }, (player, group) => new MarketingModel
+            .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
+            .GroupBy(x => x.ReportDate, (reportDate, group) => new MarketingModel
             {
-                ReportDate = player.ReportDate,
+                ReportDate = reportDate,
                 RegisterCount = group.Sum(x => x.RegisteredCount),
                 FirstDepositCount = group.Sum(x => x.FirstFundInCount),
-                GamingCount = group.Count()
+                GamingCount = group.Count(x => x.RebateAmount > 0)
             }).ToArrayAsync(cancellationToken).ConfigureAwait(false);
 
         return await dates.GroupJoin(playerAggregates,
