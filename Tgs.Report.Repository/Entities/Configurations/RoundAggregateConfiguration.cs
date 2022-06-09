@@ -20,6 +20,10 @@ namespace Tgs.Report.Repository.Entities.Configurations
 
             entity.HasIndex(e => e.PlayerCode, "ix_round_aggregate_player_code");
 
+            entity.HasIndex(e => new { e.BrandId, e.PlayerCode, e.AgentId, e.GameProviderId, e.GameId, e.ReportDate, e.Hour }, "ix_round_aggregates_unique")
+                .IsUnique()
+                .HasFilter("(report_date > '2022-05-27 03:00:00+00'::timestamp with time zone)");
+
             entity.Property(e => e.Id).HasColumnName("id");
 
             entity.Property(e => e.AgentId).HasColumnName("agent_id");

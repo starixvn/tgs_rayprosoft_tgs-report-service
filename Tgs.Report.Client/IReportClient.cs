@@ -8,7 +8,9 @@ using Tgs.Report.Client.Models.GameAction;
 using Tgs.Report.Client.Models.GameProvider;
 using Tgs.Report.Client.Models.LicenseeMarket;
 using Tgs.Report.Client.Models.Market;
+using Tgs.Report.Client.Models.Marketing;
 using Tgs.Report.Client.Models.Player;
+using Tgs.Report.Client.Models.PlayerDeposit;
 using Tgs.Report.Client.Models.ResellerMarket;
 using Tgs.Report.Client.Models.Round;
 using Tgs.Report.Client.Models.Vip;
@@ -96,5 +98,19 @@ namespace Tgs.Report.Client
 
         ValueTask<ResellerMarketsResponse> GetResellerMarketsAsync(GetResellerMarketsRequest request);
         ValueTask<Stream> ExportResellerMarketsAsync(ExportResellerMarketsRequest request);
+
+        ValueTask<PagedResponse<PlayerDepositModel>> GetPlayerDepositsAsync(GetPlayerDepositsRequest request);
+
+        ValueTask<PagedResponse<PlayerFirstDepositDetailModel>> GetPlayerFirstDepositDetailsAsync(GetPlayerFirstDepositDetailsRequest request);
+
+        ValueTask<PagedResponse<PlayerNoSecondDepositDetailModel>> GetPlayerNoSecondDepositDetailsAsync(GetPlayerNoSecondDepositDetailsRequest request);
+
+        ValueTask<PagedResponse<MarketingModel>> GetMarketingListAsync(GetMarketingListRequest request);
+
+        ValueTask<PagedResponse<MarketingRegisterDetailModel>> GetMarketingRegisterDetailsAsync(GetMarketingRegisterDetailRequest request);
+
+        ValueTask<PagedResponse<MarketingFirstDepositDetailModel>> GetMarketingFirstDepositDetailsAsync(GetMarketingFirstDepositDetailRequest request);
+
+        ValueTask<PagedResponse<MarketingGamingDetailModel>> GetMarketingGamingDetailsAsync(GetMarketingGamingDetailRequest request);
     }
 }

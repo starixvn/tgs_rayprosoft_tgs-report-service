@@ -69,7 +69,9 @@ namespace Tgs.Report.UnitTest.BrandGameProvider
                 .With(s => s.Transactions, new Transaction[]{})
                 .With(s => s.BrandCurrencies,new BrandCurrency[]{})
                 .With(s => s.Agents, new Repository.Entities.Agent[]{})
-                .With(s => s.Players, new Repository.Entities.Player[]{}));
+                .With(s => s.Players, new Repository.Entities.Player[]{})
+                .With(s => s.DepositForms, new DepositForm[]{})
+                .With(s => s.PlayerLoginRecords, new PlayerLoginRecord[] { }));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
@@ -92,7 +94,7 @@ namespace Tgs.Report.UnitTest.BrandGameProvider
             fixture.Customize<BrandGameProviderAggregate>(u => u
                 .With(s => s.BrandId, brandId)
                 .With(s => s.GameProviderId, gameProviderId)
-                .With(s => s.ReportDate, DateTimeOffset.UtcNow));
+                .With(s => s.ReportDate, DateTime.UtcNow));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

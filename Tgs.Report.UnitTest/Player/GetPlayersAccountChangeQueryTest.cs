@@ -67,7 +67,7 @@ namespace Tgs.Report.UnitTest.Player
                 .With(s => s.Type, (short)TransactionType.CompanyAdjust)
                 .With(s => s.CreatedByUserId, userId)
                 .With(s => s.Description, JsonSerializer.Serialize(new AdjustRemarkModel()))
-                .With(s => s.RecordedOn, DateTimeOffset.UtcNow)
+                .With(s => s.RecordedOn, DateTime.UtcNow)
                 .With(s => s.Wallet, new Wallet{}));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;

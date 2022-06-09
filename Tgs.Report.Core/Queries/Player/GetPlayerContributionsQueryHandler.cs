@@ -116,6 +116,8 @@ namespace Tgs.Report.Core.Queries.Player
                         DepositAmount = playerAggregates.Sum(p => p.DepositAmount),
                         CompanyAdjustAmount =
                             playerAggregates.Sum(p => p.CompanyAdjustAmount - p.NoIncludeNetProfitCompanyAdjustAmount),
+                        BonusAdjustAmount =
+                            playerAggregates.Sum(p => p.BonusAdjustAmount - p.NoIncludeNetProfitBonusAdjustAmount),
                         AgentAdjustAmount =
                             playerAggregates.Sum(p => p.AgentAdjustAmount - p.NoIncludeNetProfitAgentAdjustAmount),
                         BonusAmount = playerAggregates.Sum(p => p.RebateAmount + p.PromotionAmount),
@@ -125,6 +127,7 @@ namespace Tgs.Report.Core.Queries.Player
                         WinLossAmount = playerAggregates.Sum(p => p.WinLossAmount),
                         NetProfit = playerAggregates.Sum(p
                             => p.WinLossAmount - (p.AgentAdjustAmount - p.NoIncludeNetProfitAgentAdjustAmount) -
+                            (p.BonusAdjustAmount - p.NoIncludeNetProfitBonusAdjustAmount) -
                             p.RebateAmount - p.PromotionAmount)
                     })
                 .ToArrayAsync(cancellationToken);
@@ -147,6 +150,7 @@ namespace Tgs.Report.Core.Queries.Player
                             withdrawalByUserIds.FirstOrDefault(w => w.UserId == x.PlayerCode)?.WithdrawalAmount ?? 0,
                         CompanyAdjustAmount = x.CompanyAdjustAmount,
                         AgentAdjustAmount = x.AgentAdjustAmount,
+                        BonusAdjustAmount = x.BonusAdjustAmount,
                         BonusAmount = x.BonusAmount,
                         BetAmount = x.BetAmount,
                         ValidBetAmount = x.ValidBetAmount,
@@ -169,6 +173,7 @@ namespace Tgs.Report.Core.Queries.Player
                             withdrawalByUserIds.FirstOrDefault(w => w.UserId == playerCode)?.WithdrawalAmount ?? 0,
                         CompanyAdjustAmount = 0,
                         AgentAdjustAmount = 0,
+                        BonusAdjustAmount = 0,
                         BonusAmount = 0,
                         BetAmount = 0,
                         ValidBetAmount = 0,

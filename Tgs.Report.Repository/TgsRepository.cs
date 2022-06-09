@@ -18,7 +18,7 @@ namespace Tgs.Report.Repository
         public DbSet<GameProviderAggregate> GameProviderAggregates { get; set; } = default!;
         public DbSet<GameProviderAggregateAuditLog> GameProviderAggregateAuditLogs { get; set; } = default!;
         public DbSet<GameProviderAggregateRecord> GameProviderAggregateRecords { get; set; } = default!;
-
+        public DbSet<AdjustPlayerRecord> AdjustPlayerRecords { get; set; } = default!;
         public DbSet<AgentDividendCondition> AgentDividendConditions { get; set; } = default!;
 
         public IDbContextTransaction? CurrentTransaction =>
@@ -49,6 +49,10 @@ namespace Tgs.Report.Repository
         public DbSet<Round> Rounds { get; set; } = default!;
         public DbSet<Setting> Settings { get; set; } = default!;
         public DbSet<RoundDetail> RoundDetails { get; set; } = default!;
+        public DbSet<DepositForm> DepositForms { get; set; } = null!;
+        public DbSet<PlayerIpRecord> PlayerIpRecords { get; set; } = null!;
+        public DbSet<PlayerLoginRecord> PlayerLoginRecords { get; set; } = null!;
+        public DbSet<SubGameProvider> SubGameProviders { get; set; } = null!;
 
         public IDbConnection GetDbConnection() =>
             Database.GetDbConnection();

@@ -32,6 +32,7 @@ namespace Tgs.Report.Core.Queries.Market
                 DepositAmount = x.DepositAmount,
                 WithdrawalAmount = x.WithdrawalAmount,
                 CompanyAdjustAmount = x.CompanyAdjustAmount,
+                BonusAdjustAmount = x.BonusAdjustAmount,
                 BonusAmount = x.BonusAmount,
                 BetAmount = x.BetAmount,
                 ValidBetAmount = x.ValidBetAmount,

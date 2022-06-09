@@ -97,6 +97,8 @@ namespace Tgs.Report.Core.Queries.Vip
                         WithdrawalAmount = players.Sum(m => m.WithdrawalAmount),
                         CompanyAdjustAmount =
                             players.Sum(m => m.CompanyAdjustAmount - m.NoIncludeNetProfitCompanyAdjustAmount),
+                        BonusAdjustAmount =
+                            players.Sum(m => m.BonusAdjustAmount - m.NoIncludeNetProfitBonusAdjustAmount),
                         BonusAmount = players.Sum(m => m.RebateAmount + m.PromotionAmount),
                         BetAmount = players.Sum(m => m.BetAmount),
                         ValidBetAmount = players.Sum(m => m.OriginalTurnover),
@@ -133,6 +135,7 @@ namespace Tgs.Report.Core.Queries.Vip
                         x.p.DepositAmount,
                         x.p.WithdrawalAmount,
                         x.p.CompanyAdjustAmount,
+                        x.p.BonusAdjustAmount,
                         x.p.BonusAmount,
                         x.p.BetAmount,
                         x.p.ValidBetAmount,
@@ -149,6 +152,7 @@ namespace Tgs.Report.Core.Queries.Vip
                         x.DepositAmount,
                         x.WithdrawalAmount,
                         x.CompanyAdjustAmount,
+                        x.BonusAdjustAmount,
                         x.BonusAmount,
                         x.BetAmount,
                         x.ValidBetAmount,
@@ -163,6 +167,7 @@ namespace Tgs.Report.Core.Queries.Vip
                         DepositAmount = x.DepositAmount,
                         WithdrawalAmount = x.WithdrawalAmount,
                         CompanyAdjustAmount = x.CompanyAdjustAmount,
+                        BonusAdjustAmount = x.BonusAdjustAmount,
                         RebateAmount =
                             players.Sum(m =>
                                 m.pg == null ? 0M : m.pg.VipRebateAmount),
@@ -191,6 +196,7 @@ namespace Tgs.Report.Core.Queries.Vip
                                 ?.WithdrawalAmount ?? 0
                             : 0M,
                     CompanyAdjustAmount = x.CompanyAdjustAmount,
+                    BonusAdjustAmount = x.BonusAdjustAmount,
                     RebateAmount = x.RebateAmount,
                     BonusAmount = x.BonusAmount,
                     BetAmount = x.BetAmount,

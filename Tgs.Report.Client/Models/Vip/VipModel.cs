@@ -20,6 +20,8 @@ namespace Tgs.Report.Client.Models.Vip
 
         public decimal CompanyAdjustAmount { get; init; }
 
+        public decimal BonusAdjustAmount { get; init; }
+
         public decimal RebateAmount { get; init; }
 
         public decimal BetAmount { get; init; }

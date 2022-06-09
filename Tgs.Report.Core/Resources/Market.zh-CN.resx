@@ -150,4 +150,7 @@
   <data name="NetProfit" xml:space="preserve">
     <value>净盈利</value>
   </data>
+  <data name="BonusAdjustAmount" xml:space="preserve">
+    <value>优惠调帐</value>
+  </data>
 </root>

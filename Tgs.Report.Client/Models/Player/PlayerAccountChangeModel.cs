@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Tgs.Report.Client.Models.Player
+﻿namespace Tgs.Report.Client.Models.Player
 {
     public record PlayerAccountChangeModel
     {
@@ -11,7 +9,7 @@ namespace Tgs.Report.Client.Models.Player
         public short? TransactionType { get; init; }
         public short? GameActionType { get; init; }
         public DateTimeOffset RecordedOn { get; init; }
-
         public string? Description { get; init; }
+        public bool IncludeInNetProfit { get; init; }
     }
 }

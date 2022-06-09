@@ -36,6 +36,7 @@ namespace Tgs.Report.Core.Queries.Vip
                 WithdrawalAmount = x.WithdrawalAmount,
                 BonusAmount = x.BonusAmount,
                 CompanyAdjustAmount = x.CompanyAdjustAmount,
+                BonusAdjustAmount = x.BonusAdjustAmount,
                 RebateAmount = x.RebateAmount,
                 ValidBetAmount = x.Turnover,
                 WinLossAmount = x.WinLossAmount,

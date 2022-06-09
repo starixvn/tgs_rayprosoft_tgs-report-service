@@ -67,7 +67,7 @@ namespace Tgs.Report.UnitTest.GameProvider
             var fixture = new Fixture();
             fixture.Customize<GameProviderAggregate>(u => u
                 .With(s => s.GameProviderId, id)
-                .With(s => s.ReportDate, DateTimeOffset.UtcNow));
+                .With(s => s.ReportDate, DateTime.UtcNow));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
