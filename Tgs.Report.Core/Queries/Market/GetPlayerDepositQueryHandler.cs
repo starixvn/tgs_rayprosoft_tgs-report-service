@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.PlayerDeposit;
 
@@ -8,9 +8,12 @@ namespace Tgs.Report.Core.Queries.Market;
 
 public class GetPlayerDepositQueryHandler : IRequestHandler<GetPlayerDepositsRequest, PagedResponse<PlayerDepositModel>>
 {
-    private readonly ITgsRepository _repository;
+    private readonly TgsContext _context;
 
-    public GetPlayerDepositQueryHandler(ITgsRepository repository) => _repository = repository;
+    public GetPlayerDepositQueryHandler(TgsContext context)
+    {
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+    }
 
     public async Task<PagedResponse<PlayerDepositModel>> Handle(
         GetPlayerDepositsRequest request,
@@ -36,7 +39,7 @@ public class GetPlayerDepositQueryHandler : IRequestHandler<GetPlayerDepositsReq
             0,
             requestTo.Offset);
 
-        var agent = await _repository.Agents
+        var agent = await _context.Agents
             .FirstOrDefaultAsync(x => x.BrandId == request.BrandId && x.Username == request.AgentUsername,
                 cancellationToken).ConfigureAwait(false);
 
@@ -53,9 +56,9 @@ public class GetPlayerDepositQueryHandler : IRequestHandler<GetPlayerDepositsReq
             .Select(x => from.AddDays(x))
             .ToArray();
 
-        var deposits = await _repository.DepositForms
+        var deposits = await _context.DepositForms
             .Where(x => x.BrandId == request.BrandId && x.Status == 8000)
-            .Join(_repository.Players, form => form.PlayerCode, player => player.PlayerCode,
+            .Join(_context.Players, form => form.PlayerCode, player => player.PlayerCode,
                 (form, player) => new
                 {
                     form.PlayerCode,

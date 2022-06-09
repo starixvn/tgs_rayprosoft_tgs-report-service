@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Tgs.Report.Enum;
 using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.GameAction;
 
@@ -8,17 +9,17 @@ namespace Tgs.Report.Core.Queries.GameAction
 {
     public class GetGameActionsQueryHandler : IRequestHandler<GetGameActionsRequest, PagedResponse<GameActionModel>>
     {
-        private readonly ITgsRepository _repository;
+        private readonly TgsContext _context;
 
-        public GetGameActionsQueryHandler(ITgsRepository repository)
+        public GetGameActionsQueryHandler(TgsContext context)
         {
-            _repository = repository;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public Task<PagedResponse<GameActionModel>> Handle(
             GetGameActionsRequest request,
             CancellationToken cancellationToken)
-            => _repository.GameActions.Where(x => x.RoundId == request.RoundId)
+            => _context.GameActions.Where(x => x.RoundId == request.RoundId)
                 .Select(x => new GameActionModel
                 {
                     RecordedOn = x.RecordedOn,

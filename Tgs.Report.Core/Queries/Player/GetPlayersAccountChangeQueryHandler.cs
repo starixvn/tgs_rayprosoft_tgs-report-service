@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using MediatR;
 using Tgs.Report.Enum;
-using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Player;
 
@@ -11,15 +11,18 @@ namespace Tgs.Report.Core.Queries.Player
         GetPlayersAccountChangeQueryHandler : IRequestHandler<GetPlayersAccountChangesRequest,
             PagedResponse<PlayersAccountChangeModel>>
     {
-        private readonly ITgsRepository _repository;
+        private readonly TgsContext _context;
 
-        public GetPlayersAccountChangeQueryHandler(ITgsRepository repository) => _repository = repository;
+        public GetPlayersAccountChangeQueryHandler(TgsContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
 
         public async Task<PagedResponse<PlayersAccountChangeModel>> Handle(
             GetPlayersAccountChangesRequest request,
             CancellationToken cancellationToken)
         {
-            var playersAccountChanges = await _repository.Transactions
+            var playersAccountChanges = await _context.Transactions
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.RecordedOn >= request.From.ToUniversalTime() &&
                     x.RecordedOn < request.To.ToUniversalTime())
@@ -31,7 +34,7 @@ namespace Tgs.Report.Core.Queries.Player
                         x.Type == (short)TransactionType.Rebate ||
                         x.Type == (short)TransactionType.Promotion ||
                         x.Type == (short)TransactionType.UnsettledBetManual)
-                .Join(_repository.Players,
+                .Join(_context.Players,
                     transaction => transaction.PlayerCode,
                     player => player.PlayerCode,
                     (transaction, player) => new
@@ -40,7 +43,7 @@ namespace Tgs.Report.Core.Queries.Player
                         Player = player
                     })
                 .Where(!string.IsNullOrEmpty(request.Username), x => x.Player.Username == request.Username)
-                .GroupJoin(_repository.Users,
+                .GroupJoin(_context.Users,
                     group => group.Transaction.CreatedByUserId,
                     user => user.Id,
                     (group, user) => new

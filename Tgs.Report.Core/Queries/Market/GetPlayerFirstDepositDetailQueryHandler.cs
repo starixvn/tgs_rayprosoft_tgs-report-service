@@ -1,23 +1,23 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel;
-using Tgs.Report.ViewModel.Market;
 using Tgs.Report.ViewModel.PlayerDeposit;
 
 namespace Tgs.Report.Core.Queries.Market;
 
-public class GetPlayerDepositFirstDetailQueryHandler : IRequestHandler<GetPlayerFirstDepositDetailsRequest,
-    PagedResponse<PlayerFirstDepositDetailModel>>
+public class GetPlayerDepositFirstDetailQueryHandler
+    : IRequestHandler<GetPlayerFirstDepositDetailsRequest, PagedResponse<PlayerFirstDepositDetailModel>>
 {
     private readonly IPlayerDepositFactory _playerDepositFactory;
-    private readonly ITgsRepository _repository;
+    private readonly TgsContext _context;
 
-    public GetPlayerDepositFirstDetailQueryHandler(IPlayerDepositFactory playerDepositFactory,
-        ITgsRepository repository)
+    public GetPlayerDepositFirstDetailQueryHandler(
+        IPlayerDepositFactory playerDepositFactory,
+        TgsContext context)
     {
-        _repository = repository;
-        _playerDepositFactory = playerDepositFactory;
+        _playerDepositFactory = playerDepositFactory ?? throw new ArgumentNullException(nameof(playerDepositFactory));
+        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
     public async Task<PagedResponse<PlayerFirstDepositDetailModel>> Handle(
@@ -44,7 +44,7 @@ public class GetPlayerDepositFirstDetailQueryHandler : IRequestHandler<GetPlayer
             0,
             requestTo.Offset);
 
-        var agent = await _repository.Agents
+        var agent = await _context.Agents
             .FirstOrDefaultAsync(x => x.BrandId == request.BrandId && x.Username == request.AgentUsername,
                 cancellationToken).ConfigureAwait(false);
 

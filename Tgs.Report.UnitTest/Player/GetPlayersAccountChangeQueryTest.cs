@@ -8,7 +8,6 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.Player;
 using Tgs.Report.Enum;
-using Tgs.Report.Repository;
 using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.Player;
 
@@ -20,9 +19,9 @@ namespace Tgs.Report.UnitTest.Player
         [Test]
         public async Task Can_Get_Players_Account_Change()
         {
-            var fakeRepository = Substitute.For<ITgsRepository>();
+            var fakeDbContext = Substitute.For<TgsContext>();
 
-            var sut = new GetPlayersAccountChangeQueryHandler(fakeRepository);
+            var sut = new GetPlayersAccountChangeQueryHandler(fakeDbContext);
 
             var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
             var userId = new Guid("aac11120-20f6-4f0d-6982-08d9dbdc0473");
@@ -48,9 +47,9 @@ namespace Tgs.Report.UnitTest.Player
             var mockPlayers = GetDbSet(players);
             var mockUsers = GetDbSet(users);
 
-            fakeRepository.Transactions.Returns(mockTransactions.Object);
-            fakeRepository.Players.Returns(mockPlayers.Object);
-            fakeRepository.Users.Returns(mockUsers.Object);
+            fakeDbContext.Transactions.Returns(mockTransactions.Object);
+            fakeDbContext.Players.Returns(mockPlayers.Object);
+            fakeDbContext.Users.Returns(mockUsers.Object);
 
             var response = await sut.Handle(request, default);
 
@@ -68,7 +67,7 @@ namespace Tgs.Report.UnitTest.Player
                 .With(s => s.CreatedByUserId, userId)
                 .With(s => s.Description, JsonSerializer.Serialize(new AdjustRemarkModel()))
                 .With(s => s.RecordedOn, DateTime.UtcNow)
-                .With(s => s.Wallet, new Wallet{}));
+                .With(s => s.Wallet, new Wallet { }));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
@@ -90,7 +89,7 @@ namespace Tgs.Report.UnitTest.Player
             var fixture = new Fixture();
             fixture.Customize<User>(u => u
                 .With(s => s.Id, userId)
-                .With(s => s.Department,new Department{}));
+                .With(s => s.Department, new Department { }));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

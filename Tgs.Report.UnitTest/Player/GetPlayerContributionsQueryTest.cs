@@ -6,7 +6,6 @@ using MockQueryable.Moq;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.Player;
-using Tgs.Report.Repository;
 using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.Player;
 
@@ -18,9 +17,9 @@ namespace Tgs.Report.UnitTest.Player
         [Test]
         public async Task Can_Get_Player_Contributions()
         {
-            var fakeRepository = Substitute.For<ITgsRepository>();
+            var fakeDbContext = Substitute.For<TgsContext>();
 
-            var sut = new GetPlayerContributionsQueryHandler(fakeRepository);
+            var sut = new GetPlayerContributionsQueryHandler(fakeDbContext);
 
             var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
             var reportDate = new DateTimeOffset(2022, 1, 21, 0, 0, 0, new TimeSpan(8, 0, 0));
@@ -46,9 +45,9 @@ namespace Tgs.Report.UnitTest.Player
             var mockWithdrawForms = GetDbSet(withdrawForms);
             var mockPlayers = GetDbSet(players);
 
-            fakeRepository.WithdrawForms.Returns(mockWithdrawForms.Object);
-            fakeRepository.PlayerAggregates.Returns(mockPlayerAggregates.Object);
-            fakeRepository.Players.Returns(mockPlayers.Object);
+            fakeDbContext.WithdrawForms.Returns(mockWithdrawForms.Object);
+            fakeDbContext.PlayerAggregates.Returns(mockPlayerAggregates.Object);
+            fakeDbContext.Players.Returns(mockPlayers.Object);
 
             var response = await sut.Handle(request, default);
 

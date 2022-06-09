@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Tgs.Report.Enum;
-using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Agent;
 
@@ -10,17 +10,17 @@ namespace Tgs.Report.Core.Queries.Agent
         GetAgentAccountChangeQueryHandler : IRequestHandler<GetAgentAccountChangesRequest,
             PagedResponse<AgentAccountChangeModel>>
     {
-        private readonly ITgsRepository _repository;
+        private readonly TgsContext _context;
 
-        public GetAgentAccountChangeQueryHandler(ITgsRepository repository)
+        public GetAgentAccountChangeQueryHandler(TgsContext context)
         {
-            _repository = repository;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public Task<PagedResponse<AgentAccountChangeModel>> Handle(
             GetAgentAccountChangesRequest request,
-            CancellationToken cancellationToken) =>
-            _repository.AgentTransactions
+            CancellationToken cancellationToken)
+            => _context.AgentTransactions
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.AgentId == request.AgentId)
                 .Where(request.TransactionType, x => x.Type == (short?)request.TransactionType)

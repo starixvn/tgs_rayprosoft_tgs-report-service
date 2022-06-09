@@ -1,8 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel;
-using Tgs.Report.ViewModel.Market;
 using Tgs.Report.ViewModel.Marketing;
 using Tgs.Report.ViewModel.PlayerDeposit;
 
@@ -11,13 +10,15 @@ namespace Tgs.Report.Core.Queries.Market;
 public class GetMarketingFirstDepositDetailQueryHandler : IRequestHandler<GetMarketingFirstDepositDetailRequest,
     PagedResponse<MarketingFirstDepositDetailModel>>
 {
+    private readonly TgsContext _context;
     private readonly IMediator _mediator;
-    private readonly ITgsRepository _repository;
 
-    public GetMarketingFirstDepositDetailQueryHandler(ITgsRepository repository, IMediator mediator)
+    public GetMarketingFirstDepositDetailQueryHandler(
+        TgsContext context,
+        IMediator mediator)
     {
-        _repository = repository;
-        _mediator = mediator;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
     public async Task<PagedResponse<MarketingFirstDepositDetailModel>> Handle(
@@ -35,7 +36,7 @@ public class GetMarketingFirstDepositDetailQueryHandler : IRequestHandler<GetMar
             0,
             requestDate.Offset);
 
-        var agent = await _repository.Agents
+        var agent = await _context.Agents
             .FirstOrDefaultAsync(x => x.BrandId == request.BrandId && x.Username == request.AgentUsername,
                 cancellationToken).ConfigureAwait(false);
 
@@ -56,10 +57,10 @@ public class GetMarketingFirstDepositDetailQueryHandler : IRequestHandler<GetMar
             ShowAll = true
         }, cancellationToken).ConfigureAwait(false);
 
-        var playerUsernames = await _repository.PlayerAggregates
+        var playerUsernames = await _context.PlayerAggregates
             .Where(x => x.BrandId == request.BrandId && x.ReportDate == reportDate.ToUniversalTime() && x.AgentId == agent.Id)
             .Where(x => x.FirstFundInCount == 1)
-            .Join(_repository.Players, aggregate => aggregate.PlayerCode, player => player.PlayerCode,
+            .Join(_context.Players, aggregate => aggregate.PlayerCode, player => player.PlayerCode,
                 (aggregate, player) => new
                 {
                     player.Username,

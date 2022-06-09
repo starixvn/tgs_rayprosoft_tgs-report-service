@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Tgs.Report.Enum;
-using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Round;
 
@@ -8,17 +8,17 @@ namespace Tgs.Report.Core.Queries.Round
 {
     public class GetAgentPlayerRoundsQueryHandler : IRequestHandler<GetAgentPlayerRoundsRequest, PagedResponse<RoundModel>>
     {
-        private readonly ITgsRepository _repository;
+        private readonly TgsContext _context;
 
-        public GetAgentPlayerRoundsQueryHandler(ITgsRepository repository)
+        public GetAgentPlayerRoundsQueryHandler(TgsContext context)
         {
-            _repository = repository;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public Task<PagedResponse<RoundModel>> Handle(
             GetAgentPlayerRoundsRequest request,
             CancellationToken cancellationToken) =>
-            _repository.Rounds.Where(x => x.BrandId == request.BrandId)
+            _context.Rounds.Where(x => x.BrandId == request.BrandId)
                 .Where(request.From.HasValue && request.To.HasValue,
                     x => x.CreatedOn >= request.From!.Value.ToUniversalTime() &&
                         x.CreatedOn <= request.To!.Value.ToUniversalTime())
@@ -31,7 +31,7 @@ namespace Tgs.Report.Core.Queries.Round
                 .Where(request.PlayerCode, x => x.PlayerCode == request.PlayerCode)
                 .Where(request.ExternalRoundId, x => x.ExternalRoundId == request.ExternalRoundId)
                 .GroupJoin(
-                    _repository.Players,
+                    _context.Players,
                     round => round.PlayerCode, player => player.PlayerCode,
                     (round, player) => new
                     {
@@ -44,7 +44,7 @@ namespace Tgs.Report.Core.Queries.Round
                     player
                 })
                 .Where(x => x.player!.AgentId == request.AgentId)
-                .GroupJoin(_repository.Games,
+                .GroupJoin(_context.Games,
                     combine => combine.round.GameId, game => game.Id,
                     (combine, game) => new
                     {
@@ -58,7 +58,7 @@ namespace Tgs.Report.Core.Queries.Round
                     x.player,
                     game
                 })
-                .GroupJoin(_repository.RoundDetails, c => c.round.Id, detail => detail.RoundId,
+                .GroupJoin(_context.RoundDetails, c => c.round.Id, detail => detail.RoundId,
                     (combine, detail) => new
                     {
                         combine.round,
@@ -75,7 +75,7 @@ namespace Tgs.Report.Core.Queries.Round
                 })
                 .Where(request.Username, x => request.Username == x.player!.Username)
                 .Where(request.GameType, x => x.game!.Type == (short?)request.GameType)
-                .GroupJoin(_repository.GameProviders, combine => combine.round.GameProviderId,
+                .GroupJoin(_context.GameProviders, combine => combine.round.GameProviderId,
                     gameProvider => gameProvider.Id,
                     (combine, gameProvider) => new
                     {
@@ -94,7 +94,7 @@ namespace Tgs.Report.Core.Queries.Round
                         x.detail,
                         gameProvider
                     })
-                .GroupJoin(_repository.BrandGames,
+                .GroupJoin(_context.BrandGames,
                     roundGroup => new
                     {
                         roundGroup.round.BrandId,

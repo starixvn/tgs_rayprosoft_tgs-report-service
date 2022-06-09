@@ -1,8 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel;
-using Tgs.Report.ViewModel.Market;
 using Tgs.Report.ViewModel.Marketing;
 
 namespace Tgs.Report.Core.Queries.Market;
@@ -10,9 +9,12 @@ namespace Tgs.Report.Core.Queries.Market;
 public class GetMarketingRegisterDetailQueryHandler : IRequestHandler<GetMarketingRegisterDetailRequest,
     PagedResponse<MarketingRegisterDetailModel>>
 {
-    private readonly ITgsRepository _repository;
+    private readonly TgsContext _context;
 
-    public GetMarketingRegisterDetailQueryHandler(ITgsRepository repository) => _repository = repository;
+    public GetMarketingRegisterDetailQueryHandler(TgsContext context)
+    {
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+    }
 
     public async Task<PagedResponse<MarketingRegisterDetailModel>> Handle(
         GetMarketingRegisterDetailRequest request,
@@ -29,7 +31,7 @@ public class GetMarketingRegisterDetailQueryHandler : IRequestHandler<GetMarketi
             0,
             requestDate.Offset);
 
-        var agent = await _repository.Agents
+        var agent = await _context.Agents
             .FirstOrDefaultAsync(x => x.BrandId == request.BrandId && x.Username == request.AgentUsername,
                 cancellationToken).ConfigureAwait(false);
 
@@ -42,16 +44,18 @@ public class GetMarketingRegisterDetailQueryHandler : IRequestHandler<GetMarketi
             };
         }
 
-        return await _repository.PlayerAggregates
+        return await _context.PlayerAggregates
             .Where(x => x.BrandId == request.BrandId && x.ReportDate == reportDate.ToUniversalTime() && x.AgentId == agent.Id)
             .Where(x => x.RegisteredCount == 1)
-            .GroupBy(x => x.PlayerCode, (playerCode, group) => new { playerCode })
-            .Join(_repository.Players, x => x.playerCode, y => y.PlayerCode, (x, y) => new
+            .GroupBy(
+                x => x.PlayerCode,
+                (playerCode, group) => new { playerCode })
+            .Join(_context.Players, x => x.playerCode, y => y.PlayerCode, (x, y) => new
             {
                 y.Username,
                 x.playerCode,
                 y.RegisteredOn
-            }).GroupJoin(_repository.PlayerIpRecords, player => player.playerCode, ipr => ipr.PlayerCode,
+            }).GroupJoin(_context.PlayerIpRecords, player => player.playerCode, ipr => ipr.PlayerCode,
                 (player, ipr) => new
                 {
                     player.Username,
@@ -77,7 +81,7 @@ public class GetMarketingRegisterDetailQueryHandler : IRequestHandler<GetMarketi
                 player.RegisteredOn,
                 LastLoginOn = group.FirstOrDefault().RecordOn
             })
-            .GroupJoin(_repository.PlayerLoginRecords, player => player.playerCode, login => login.PlayerCode,
+            .GroupJoin(_context.PlayerLoginRecords, player => player.playerCode, login => login.PlayerCode,
                 (player, login) => new
                 {
                     player.Username,
@@ -86,24 +90,24 @@ public class GetMarketingRegisterDetailQueryHandler : IRequestHandler<GetMarketi
                     player.LastLoginOn,
                     login
                 }).SelectMany(x => x.login.DefaultIfEmpty(), (x, y) => new
-            {
-                x.Username,
-                x.playerCode,
-                x.RegisteredOn,
-                x.LastLoginOn,
-                y
-            }).GroupBy(x => new
-            {
-                x.Username,
-                x.playerCode,
-                x.RegisteredOn,
-                x.LastLoginOn
-            }, (player, group) => new MarketingRegisterDetailModel
-            {
-                Username = player.Username,
-                RegisteredOn = player.RegisteredOn.Value,
-                LastLoginOn = player.LastLoginOn,
-                LoginCount = group.Count(c => c.y.Status == 1)
-            }).CreatePagedResponseAsync(request);
+                {
+                    x.Username,
+                    x.playerCode,
+                    x.RegisteredOn,
+                    x.LastLoginOn,
+                    y
+                }).GroupBy(x => new
+                {
+                    x.Username,
+                    x.playerCode,
+                    x.RegisteredOn,
+                    x.LastLoginOn
+                }, (player, group) => new MarketingRegisterDetailModel
+                {
+                    Username = player.Username,
+                    RegisteredOn = player.RegisteredOn.Value,
+                    LastLoginOn = player.LastLoginOn,
+                    LoginCount = group.Count(c => c.y.Status == 1)
+                }).CreatePagedResponseAsync(request);
     }
 }

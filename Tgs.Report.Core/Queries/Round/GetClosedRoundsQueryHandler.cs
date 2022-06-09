@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Tgs.Report.Enum;
-using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Round;
 
@@ -8,22 +8,22 @@ namespace Tgs.Report.Core.Queries.Round
 {
     public class GetClosedRoundsQueryHandler : IRequestHandler<GetClosedRoundsRequest, PagedResponse<ClosedRoundModel>>
     {
-        private readonly ITgsRepository _repository;
+        private readonly TgsContext _context;
 
-        public GetClosedRoundsQueryHandler(ITgsRepository repository)
+        public GetClosedRoundsQueryHandler(TgsContext context)
         {
-            _repository = repository;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public Task<PagedResponse<ClosedRoundModel>> Handle(
             GetClosedRoundsRequest request,
             CancellationToken cancellationToken)
-            => _repository.Rounds
+            => _context.Rounds
                 .Where(x => x.Status == (short)RoundStatus.Closed)
                 .Where(request.GameProviderId, x => request.GameProviderId == x.GameProviderId)
                 .Where(request.ExternalRoundId, x => x.ExternalRoundId == request.ExternalRoundId)
                 .GroupJoin(
-                    _repository.Players,
+                    _context.Players,
                     round => round.PlayerCode,
                     player => player.PlayerCode,
                     (round, player) => new
@@ -39,7 +39,7 @@ namespace Tgs.Report.Core.Queries.Round
                         player
                     })
                 .GroupJoin(
-                    _repository.Games,
+                    _context.Games,
                     combine => combine.round.GameId,
                     game => game.Id,
                     (combine, game) => new
@@ -57,7 +57,7 @@ namespace Tgs.Report.Core.Queries.Round
                         game
                     })
                 .GroupJoin(
-                    _repository.RoundDetails,
+                    _context.RoundDetails,
                     c => c.round.Id,
                     detail => detail.RoundId,
                     (combine, detail) => new
@@ -77,7 +77,7 @@ namespace Tgs.Report.Core.Queries.Round
                         detail
                     })
                 .GroupJoin(
-                    _repository.GameProviders,
+                    _context.GameProviders,
                     combine => combine.round.GameProviderId,
                     gameProvider => gameProvider.Id,
                     (combine, gameProvider) => new
@@ -99,7 +99,7 @@ namespace Tgs.Report.Core.Queries.Round
                         gameProvider
                     })
                 .GroupJoin(
-                    _repository.BrandGames,
+                    _context.BrandGames,
                     roundGroup => new
                     {
                         roundGroup.round.BrandId,
