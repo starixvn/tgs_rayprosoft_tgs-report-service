@@ -1,9 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Tgs.Report.Repository;
 using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel;
-using Tgs.Report.ViewModel.Market;
 using Tgs.Report.ViewModel.Marketing;
 
 namespace Tgs.Report.Core.Queries.Market;
@@ -67,7 +65,8 @@ public class GetMarketingQueryHandler : IRequestHandler<GetMarketingListRequest,
                 ReportDate = player.ReportDate,
                 PlayerCode = player.PlayerCode,
                 RegisterCount = group.Sum(x => x.RegisteredCount),
-                FirstDepositCount = group.Sum(x => x.FirstFundInCount)
+                FirstDepositCount = group.Sum(x => x.FirstFundInCount),
+                BetAmount = group.Sum(x => x.BetAmount)
             }).ToArrayAsync(cancellationToken).ConfigureAwait(false);
 
         var dateAggregates = playerAggregates.GroupBy(x => x.ReportDate,
@@ -76,7 +75,7 @@ public class GetMarketingQueryHandler : IRequestHandler<GetMarketingListRequest,
                 ReportDate = reportDate,
                 RegisterCount = group.Sum(x => x.RegisterCount),
                 FirstDepositCount = group.Sum(x => x.FirstDepositCount),
-                GamingCount = group.Count()
+                GamingCount = group.Count(x => x.BetAmount > 0)
             });
 
         return await dates.GroupJoin(dateAggregates,

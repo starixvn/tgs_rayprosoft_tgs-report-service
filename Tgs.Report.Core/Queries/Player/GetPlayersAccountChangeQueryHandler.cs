@@ -78,7 +78,7 @@ namespace Tgs.Report.Core.Queries.Player
             foreach (var item in playersAccountChanges.Items)
             {
                 if (item.TransactionType is not (TransactionType.CompanyAdjust or TransactionType.AgentAdjust
-                    or TransactionType.SystemAdjust or TransactionType.TransferAdjust))
+                    or TransactionType.SystemAdjust or TransactionType.TransferAdjust or TransactionType.BonusAdjust))
                 {
                     continue;
                 }
