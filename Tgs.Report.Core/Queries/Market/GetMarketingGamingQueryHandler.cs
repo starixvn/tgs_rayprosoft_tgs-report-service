@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Tgs.Report.Repository;
 using Tgs.Report.ViewModel;
-using Tgs.Report.ViewModel.Market;
 using Tgs.Report.ViewModel.Marketing;
 
 namespace Tgs.Report.Core.Queries.Market;
@@ -12,10 +11,7 @@ public class GetMarketingGamingQueryHandler : IRequestHandler<GetMarketingGaming
 {
     private readonly ITgsRepository _repository;
 
-    public GetMarketingGamingQueryHandler(ITgsRepository repository)
-    {
-        _repository = repository;
-    }
+    public GetMarketingGamingQueryHandler(ITgsRepository repository) => _repository = repository;
 
     public async Task<PagedResponse<MarketingGamingDetailModel>> Handle(
         GetMarketingGamingDetailRequest request,
@@ -46,7 +42,8 @@ public class GetMarketingGamingQueryHandler : IRequestHandler<GetMarketingGaming
         }
 
         return await _repository.PlayerGameRebateAggregates
-            .Where(x => x.BrandId == request.BrandId && x.ReportDate == reportDate.ToUniversalTime() && x.AgentId == agent.Id)
+            .Where(x => x.BrandId == request.BrandId && x.ReportDate == reportDate.ToUniversalTime() &&
+                x.AgentId == agent.Id)
             .Join(_repository.Players, aggregate => aggregate.PlayerCode, player => player.PlayerCode,
                 (aggregate, player) => new
                 {
@@ -56,6 +53,7 @@ public class GetMarketingGamingQueryHandler : IRequestHandler<GetMarketingGaming
                     aggregate.GameId,
                     aggregate.WinLoss
                 })
+            .Where(request.PlayerUsername, x => x.Username == request.PlayerUsername)
             .Join(_repository.Games, aggregate => aggregate.GameId, game => game.Id,
                 (aggregate, game) => new
                 {
