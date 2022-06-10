@@ -14,7 +14,7 @@ namespace Tgs.Report.ViewModel.Player
 
         public decimal DepositAmount { get; init; }
 
-        public decimal WithdrawalAmount { get; init; }
+        public decimal WithdrawalAmount { get; set; }
 
         public decimal CompanyAdjustAmount { get; init; }
 
