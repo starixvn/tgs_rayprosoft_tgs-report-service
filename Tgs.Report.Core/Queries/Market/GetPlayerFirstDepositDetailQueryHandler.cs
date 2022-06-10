@@ -60,6 +60,6 @@ public class GetPlayerDepositFirstDetailQueryHandler : IRequestHandler<GetPlayer
         var details = await _playerDepositFactory.GetPlayerFirstDepositDetailsAsync(request.BrandId, agent.Id,
             from.ToUniversalTime(), to.ToUniversalTime());
 
-        return await details.CreatePagedResponseAsync(details.Count());
+        return details.AsQueryable().CreatePagedResponse(request);
     }
 }
