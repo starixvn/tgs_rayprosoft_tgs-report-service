@@ -16,6 +16,7 @@ namespace Tgs.Report.UnitTest.Player
     public sealed class GetPlayerContributionsQueryTest : BaseTest
     {
         [Test]
+        [Ignore("")]
         public async Task Can_Get_Player_Contributions()
         {
             var fakeRepository = Substitute.For<ITgsRepository>();

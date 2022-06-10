@@ -39,39 +39,6 @@ namespace Tgs.Report.Core.Queries.Player
                 0,
                 requestTo.Offset);
 
-            var players = await _repository.Players
-                .Where(x => x.BrandId == request.BrandId)
-                .Include(x => x.Vip)
-                .ToArrayAsync(cancellationToken);
-
-            var tgsPlayer = !string.IsNullOrEmpty(request.Username)
-                ? players.FirstOrDefault(x =>
-                    x.BrandId == request.BrandId && x.Username == request.Username)
-                : null;
-
-            if (!string.IsNullOrEmpty(request.Username) && tgsPlayer is null)
-            {
-                return new PagedResponse<PlayerContributionModel>
-                {
-                    Valid = false,
-                    Message = Resources.Player.NotFound
-                };
-            }
-
-            var tgsPlayers = request.Level == null
-                ? null
-                : players.Where(x => x.Vip?.Level == request.Level)
-                    .Select(x => x.PlayerCode).ToArray();
-
-            if (request.Level != null && tgsPlayers!.Length < 1)
-            {
-                return new PagedResponse<PlayerContributionModel>
-                {
-                    Valid = true,
-                    Items = Array.Empty<PlayerContributionModel>()
-                };
-            }
-
             var withdrawalByUserIds = await _repository.WithdrawForms
                 .Join(_repository.Players,
                     wf => wf.UserId,
@@ -85,15 +52,17 @@ namespace Tgs.Report.Core.Queries.Player
                         wf.UserId,
                         wf.ActualAmount,
                         wf.Amount,
-                        p.AgentId
+                        p.AgentId,
+                        p.Username,
+                        Level = p.VipId == null ? (int?)null : p.Vip.Level
                     })
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.UserType == 1 && x.Status == 9000)
                 .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
-                .Where(!string.IsNullOrEmpty(request.Username), x => x.UserId == tgsPlayer!.PlayerCode)
+                .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
                 .Where(request.HasUpperAgent == true, x => x.AgentId != null)
                 .Where(request.HasUpperAgent == false, x => x.AgentId == null)
-                .Where(request.Level, x => tgsPlayers!.Contains(x.UserId))
+                .Where(request.Level, x => x.Level == request.Level)
                 .GroupBy(x => x.UserId,
                     (userId, withdrawals) => new
                     {
@@ -105,10 +74,8 @@ namespace Tgs.Report.Core.Queries.Player
             var reportPlayers = await _repository.PlayerAggregates
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
-                .Where(!string.IsNullOrEmpty(request.Username), x => x.PlayerCode == tgsPlayer!.PlayerCode)
                 .Where(request.HasUpperAgent == true, x => x.AgentId != null)
                 .Where(request.HasUpperAgent == false, x => x.AgentId == null)
-                .Where(request.Level, x => tgsPlayers!.Contains(x.PlayerCode))
                 .GroupBy(x => x.PlayerCode,
                     (playerCode, playerAggregates) => new
                     {
@@ -130,59 +97,49 @@ namespace Tgs.Report.Core.Queries.Player
                             (p.BonusAdjustAmount - p.NoIncludeNetProfitBonusAdjustAmount) -
                             p.RebateAmount - p.PromotionAmount)
                     })
-                .ToArrayAsync(cancellationToken);
-
-            var outOfReportPlayers = withdrawalByUserIds.Select(x => x.UserId)
-                .Except(reportPlayers.Select(x => x.PlayerCode)).ToArray();
-
-            return reportPlayers.Select(x =>
+                .Join(_repository.Players.Include(x => x.Vip).Select(x => new
                 {
-                    var player = players.FirstOrDefault(p => p.PlayerCode == x.PlayerCode);
-
-                    return new PlayerContributionModel
-                    {
-                        Username = player?.Username ?? "",
-                        PlayerCode = x.PlayerCode,
-                        Level = player?.Vip?.Level,
-                        Type = AccountType.Player,
-                        DepositAmount = x.DepositAmount,
-                        WithdrawalAmount =
-                            withdrawalByUserIds.FirstOrDefault(w => w.UserId == x.PlayerCode)?.WithdrawalAmount ?? 0,
-                        CompanyAdjustAmount = x.CompanyAdjustAmount,
-                        AgentAdjustAmount = x.AgentAdjustAmount,
-                        BonusAdjustAmount = x.BonusAdjustAmount,
-                        BonusAmount = x.BonusAmount,
-                        BetAmount = x.BetAmount,
-                        ValidBetAmount = x.ValidBetAmount,
-                        Turnover = x.Turnover,
-                        WinLossAmount = x.WinLossAmount,
-                        NetProfit = x.NetProfit
-                    };
-                }).Union(outOfReportPlayers.Select(playerCode =>
+                    x.BrandId,
+                    x.PlayerCode,
+                    x.Username,
+                    Level = x.VipId == null ? (int?)null : x.Vip.Level
+                }), agg => agg.PlayerCode, p => p.PlayerCode, (agg,player)=> new PlayerContributionModel
                 {
-                    var player = players.FirstOrDefault(p => p.PlayerCode == playerCode);
+                    Username = player.Username,
+                    PlayerCode = agg.PlayerCode,
+                    Level = player.Level,
+                    Type = AccountType.Player,
+                    DepositAmount = agg.DepositAmount,
+                    CompanyAdjustAmount = agg.CompanyAdjustAmount,
+                    AgentAdjustAmount = agg.AgentAdjustAmount,
+                    BonusAdjustAmount = agg.BonusAdjustAmount,
+                    BonusAmount = agg.BonusAmount,
+                    BetAmount = agg.BetAmount,
+                    ValidBetAmount = agg.ValidBetAmount,
+                    Turnover = agg.Turnover,
+                    WinLossAmount = agg.WinLossAmount,
+                    NetProfit = agg.NetProfit
+                })
+                .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
+                .Where(request.Level, x => x.Level == request.Level)
+                .CreatePagedResponseAsync(request);
 
-                    return new PlayerContributionModel
-                    {
-                        Username = player?.Username ?? "",
-                        PlayerCode = playerCode ?? "",
-                        Level = player?.Vip?.Level,
-                        Type = AccountType.Player,
-                        DepositAmount = 0,
-                        WithdrawalAmount =
-                            withdrawalByUserIds.FirstOrDefault(w => w.UserId == playerCode)?.WithdrawalAmount ?? 0,
-                        CompanyAdjustAmount = 0,
-                        AgentAdjustAmount = 0,
-                        BonusAdjustAmount = 0,
-                        BonusAmount = 0,
-                        BetAmount = 0,
-                        ValidBetAmount = 0,
-                        Turnover = 0,
-                        WinLossAmount = 0,
-                        NetProfit = 0
-                    };
-                }))
-                .AsQueryable().CreatePagedResponse(request);
+            if (reportPlayers.Items == null)
+            {
+                return new PagedResponse<PlayerContributionModel>
+                {
+                    Valid = true,
+                    Items = Array.Empty<PlayerContributionModel>()
+                };
+            }
+
+            foreach (var item in reportPlayers.Items)
+            {
+                item.WithdrawalAmount =
+                    withdrawalByUserIds.FirstOrDefault(w => w.UserId == item.PlayerCode)?.WithdrawalAmount ?? 0;
+            }
+
+            return reportPlayers;
         }
     }
 }
