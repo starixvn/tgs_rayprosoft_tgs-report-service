@@ -77,7 +77,7 @@ public class GetMarketingQueryHandler : IRequestHandler<GetMarketingListRequest,
             });
 
 
-        return await dates.GroupJoin(dateAggregates,
+        return dates.GroupJoin(dateAggregates,
                 date => date,
                 player => player.ReportDate,
                 (date, groupDeposits) => new
@@ -100,6 +100,6 @@ public class GetMarketingQueryHandler : IRequestHandler<GetMarketingListRequest,
                     GamingCount = groupDeposits.FirstOrDefault(x => date.ReportDate == x.ReportDate)?.player?.GamingCount ?? 0
                 })
             .AsQueryable()
-            .CreatePagedResponseAsync(request);
+            .CreatePagedResponse(request);
     }
 }

@@ -98,7 +98,6 @@ public class GetMarketingGamingQueryHandler : IRequestHandler<GetMarketingGaming
                 SubGameProviderName = player.SubGameProviderName,
                 WinLossAmount = group.Sum(x => x.WinLoss)
             })
-            .AsQueryable()
             .CreatePagedResponseAsync(request);
     }
 }
