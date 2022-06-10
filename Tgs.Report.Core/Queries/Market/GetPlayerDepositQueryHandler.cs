@@ -86,7 +86,7 @@ public class GetPlayerDepositQueryHandler : IRequestHandler<GetPlayerDepositsReq
             };
         }).ToArray();
 
-        return await dates.GroupJoin(depositFormatDays,
+        return dates.GroupJoin(depositFormatDays,
                 date => date,
                 deposit => deposit.FirstDepositOnDate,
                 (date, groupDeposits) => new
@@ -109,6 +109,6 @@ public class GetPlayerDepositQueryHandler : IRequestHandler<GetPlayerDepositsReq
                         => x.deposit != null && x.deposit.FirstDepositOn == x.deposit.LastDepositOn)
                 })
             .AsQueryable()
-            .CreatePagedResponseAsync(request);
+            .CreatePagedResponse(request);
     }
 }
