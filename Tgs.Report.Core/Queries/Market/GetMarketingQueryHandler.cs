@@ -99,6 +99,7 @@ public class GetMarketingQueryHandler : IRequestHandler<GetMarketingListRequest,
                     FirstDepositCount = groupDeposits.FirstOrDefault(x => date.ReportDate == x.ReportDate)?.player?.FirstDepositCount ?? 0,
                     GamingCount = groupDeposits.FirstOrDefault(x => date.ReportDate == x.ReportDate)?.player?.GamingCount ?? 0
                 })
-            .CreatePagedResponseAsync(dates.Length);
+            .AsQueryable()
+            .CreatePagedResponseAsync(request);
     }
 }

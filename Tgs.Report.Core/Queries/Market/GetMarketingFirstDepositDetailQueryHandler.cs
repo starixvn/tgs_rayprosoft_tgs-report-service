@@ -79,6 +79,7 @@ public class GetMarketingFirstDepositDetailQueryHandler : IRequestHandler<GetMar
                     TotalWithdrawAmount = detail.TotalWithdrawAmount,
                     DepositSubtractWithdraw = detail.DepositSubtractWithdraw,
                     IpAddress = detail.IpAddress
-                }).CreatePagedResponseAsync(playerUsernames.Length);
+                }).AsQueryable()
+            .CreatePagedResponseAsync(request);
     }
 }

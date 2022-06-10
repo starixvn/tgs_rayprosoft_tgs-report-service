@@ -60,6 +60,6 @@ public class GetPlayerNoSecondDepositDetailQueryHandler : IRequestHandler<GetPla
         var details = await _playerDepositFactory.GetPlayerNoSecondDepositDetailsAsync(request.BrandId, agent.Id,
             from.ToUniversalTime(), to.ToUniversalTime());
 
-        return await details.CreatePagedResponseAsync(details.Count());
+        return await details.AsQueryable().CreatePagedResponseAsync(request);
     }
 }
