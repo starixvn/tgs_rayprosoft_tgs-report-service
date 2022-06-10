@@ -42,6 +42,13 @@ namespace Tgs.Report.Core.Queries.Player
             var players = await _repository.Players
                 .Where(x => x.BrandId == request.BrandId)
                 .Include(x => x.Vip)
+                .Select(x => new
+                {
+                    x.BrandId,
+                    x.PlayerCode,
+                    x.Username,
+                    Level = x.VipId == null ? (int?)null : x.Vip.Level
+                })
                 .ToArrayAsync(cancellationToken);
 
             var tgsPlayer = !string.IsNullOrEmpty(request.Username)
@@ -60,7 +67,7 @@ namespace Tgs.Report.Core.Queries.Player
 
             var tgsPlayers = request.Level == null
                 ? null
-                : players.Where(x => x.Vip?.Level == request.Level)
+                : players.Where(x => x.Level == request.Level)
                     .Select(x => x.PlayerCode).ToArray();
 
             if (request.Level != null && tgsPlayers!.Length < 1)
@@ -143,7 +150,7 @@ namespace Tgs.Report.Core.Queries.Player
                     {
                         Username = player?.Username ?? "",
                         PlayerCode = x.PlayerCode,
-                        Level = player?.Vip?.Level,
+                        Level = player?.Level,
                         Type = AccountType.Player,
                         DepositAmount = x.DepositAmount,
                         WithdrawalAmount =
@@ -166,7 +173,7 @@ namespace Tgs.Report.Core.Queries.Player
                     {
                         Username = player?.Username ?? "",
                         PlayerCode = playerCode ?? "",
-                        Level = player?.Vip?.Level,
+                        Level = player?.Level,
                         Type = AccountType.Player,
                         DepositAmount = 0,
                         WithdrawalAmount =
