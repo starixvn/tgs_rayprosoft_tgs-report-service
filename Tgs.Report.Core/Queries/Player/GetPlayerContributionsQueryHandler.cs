@@ -47,7 +47,7 @@ namespace Tgs.Report.Core.Queries.Player
                     x.BrandId,
                     x.PlayerCode,
                     x.Username,
-                    x.Vip.Level
+                    Level = x.VipId == null ? (int?)null : x.Vip.Level
                 })
                 .ToArrayAsync(cancellationToken);
 
