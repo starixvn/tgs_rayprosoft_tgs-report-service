@@ -106,7 +106,8 @@ namespace Tgs.Report.Core.Queries.Market
                                     m.market.PromotionAmount),
                             AdditionalExpenses = markets.Sum(m => m.market?.AllAgentRebateAmount ?? 0M)
                         })
-                .CreatePagedResponseAsync(dates.Length);
+                .AsQueryable()
+                .CreatePagedResponseAsync(request);
         }
     }
 }

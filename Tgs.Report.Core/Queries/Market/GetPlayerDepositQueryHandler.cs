@@ -108,6 +108,7 @@ public class GetPlayerDepositQueryHandler : IRequestHandler<GetPlayerDepositsReq
                     NoSecondDepositCount = groupDeposits.Count(x
                         => x.deposit != null && x.deposit.FirstDepositOn == x.deposit.LastDepositOn)
                 })
-            .CreatePagedResponseAsync(dates.Length);
+            .AsQueryable()
+            .CreatePagedResponseAsync(request);
     }
 }
