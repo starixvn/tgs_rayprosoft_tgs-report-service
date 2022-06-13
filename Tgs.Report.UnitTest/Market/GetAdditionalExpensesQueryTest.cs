@@ -6,7 +6,6 @@ using MockQueryable.Moq;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.Market;
-using Tgs.Report.Repository;
 using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.Market;
 
@@ -18,9 +17,9 @@ namespace Tgs.Report.UnitTest.Market
         [Test]
         public async Task Can_Get_Additional_Expenses()
         {
-            var fakeRepository = Substitute.For<ITgsRepository>();
+            var fakeDbContext = Substitute.For<TgsContext>();
 
-            var sut = new GetAdditionalExpensesQueryHandler(fakeRepository);
+            var sut = new GetAdditionalExpensesQueryHandler(fakeDbContext);
 
             var brandId = Guid.NewGuid();
             var reportDate = DateTimeOffset.UtcNow;
@@ -37,7 +36,7 @@ namespace Tgs.Report.UnitTest.Market
 
             var mockPlayerAggregates = GetDbSet(playerAggregates);
 
-            fakeRepository.PlayerAggregates.Returns(mockPlayerAggregates.Object);
+            fakeDbContext.PlayerAggregates.Returns(mockPlayerAggregates.Object);
 
             var response = await sut.Handle(request, default);
 

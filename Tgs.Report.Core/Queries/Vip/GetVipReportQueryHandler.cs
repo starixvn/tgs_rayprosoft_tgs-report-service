@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Vip;
 
@@ -8,9 +8,12 @@ namespace Tgs.Report.Core.Queries.Vip
 {
     public class GetVipReportQueryHandler : IRequestHandler<GetVipReportRequest, PagedResponse<VipModel>>
     {
-        private readonly ITgsRepository _repository;
+        private readonly TgsContext _context;
 
-        public GetVipReportQueryHandler(ITgsRepository repository) => _repository = repository;
+        public GetVipReportQueryHandler(TgsContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
 
         public async Task<PagedResponse<VipModel>> Handle(
             GetVipReportRequest request,
@@ -36,7 +39,7 @@ namespace Tgs.Report.Core.Queries.Vip
                 0,
                 requestTo.Offset);
 
-            var brandPlayers = await _repository.Players.Where(x => x.BrandId == request.BrandId)
+            var brandPlayers = await _context.Players.Where(x => x.BrandId == request.BrandId)
                 .Include(x => x.Vip)
                 .ToArrayAsync(cancellationToken);
 
@@ -68,7 +71,7 @@ namespace Tgs.Report.Core.Queries.Vip
                 };
             }
 
-            var withdrawalByUserIds = await _repository.WithdrawForms
+            var withdrawalByUserIds = await _context.WithdrawForms
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.UserType == 1 && x.Status == 9000)
                 .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
@@ -80,15 +83,15 @@ namespace Tgs.Report.Core.Queries.Vip
                     }).ToArrayAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            var vips = await _repository.PlayerAggregates
+            var vips = await _context.PlayerAggregates
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
                 .Where(tgsPlayer != null, x => x.PlayerCode == tgsPlayer!.PlayerCode)
                 .GroupBy(x => new
-                    {
-                        x.PlayerCode,
-                        x.BrandId
-                    },
+                {
+                    x.PlayerCode,
+                    x.BrandId
+                },
                     (x, players) => new
                     {
                         x.BrandId,
@@ -108,7 +111,7 @@ namespace Tgs.Report.Core.Queries.Vip
                             => m.WinLossAmount - (m.CompanyAdjustAmount - m.NoIncludeNetProfitCompanyAdjustAmount) -
                             m.RebateAmount - m.PromotionAmount)
                     })
-                .GroupJoin(_repository.PlayerGameRebateAggregates
+                .GroupJoin(_context.PlayerGameRebateAggregates
                         .Where(x => x.BrandId == request.BrandId)
                         .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
                         .Where(tgsPlayer != null, x => x.PlayerCode == tgsPlayer!.PlayerCode),
@@ -146,20 +149,20 @@ namespace Tgs.Report.Core.Queries.Vip
                     })
                 .Where(request.Level, x => tgsPlayers!.Contains(x.PlayerCode))
                 .GroupBy(x => new
-                    {
-                        x.BrandId,
-                        x.PlayerCode,
-                        x.DepositAmount,
-                        x.WithdrawalAmount,
-                        x.CompanyAdjustAmount,
-                        x.BonusAdjustAmount,
-                        x.BonusAmount,
-                        x.BetAmount,
-                        x.ValidBetAmount,
-                        x.Turnover,
-                        x.WinLossAmount,
-                        x.NetProfit
-                    },
+                {
+                    x.BrandId,
+                    x.PlayerCode,
+                    x.DepositAmount,
+                    x.WithdrawalAmount,
+                    x.CompanyAdjustAmount,
+                    x.BonusAdjustAmount,
+                    x.BonusAmount,
+                    x.BetAmount,
+                    x.ValidBetAmount,
+                    x.Turnover,
+                    x.WinLossAmount,
+                    x.NetProfit
+                },
                     (x, players) => new VipModel
                     {
                         BrandId = x.BrandId,

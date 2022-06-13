@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Agent;
 
@@ -7,19 +8,19 @@ namespace Tgs.Report.Core.Queries.Agent
 {
     public class GetAgentTeamInfoQueryHandler : IRequestHandler<GetAgentTeamInfoRequest, PagedResponse<TeamInfoModel>>
     {
-        private readonly ITgsRepository _repository;
+        private readonly TgsContext _context;
 
-        public GetAgentTeamInfoQueryHandler(ITgsRepository repository)
+        public GetAgentTeamInfoQueryHandler(TgsContext context)
         {
-            _repository = repository;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public Task<PagedResponse<TeamInfoModel>> Handle(
             GetAgentTeamInfoRequest request,
             CancellationToken cancellationToken) =>
-            _repository.Players.Where(x => x.AgentId == request.AgentId)
+            _context.Players.Where(x => x.AgentId == request.AgentId)
                 .Where(x => x.RegisteredOn != null).GroupJoin(
-                    _repository.PlayerAggregates.Where(x => x.AgentId == request.AgentId),
+                    _context.PlayerAggregates.Where(x => x.AgentId == request.AgentId),
                     p => p.PlayerCode,
                     a => a.PlayerCode,
                     (player, playerAggregate) => new
@@ -35,10 +36,10 @@ namespace Tgs.Report.Core.Queries.Agent
                         playerAggregate
                     })
                 .GroupBy(x => new
-                    {
-                        x.Username,
-                        x.RegisteredOn
-                    },
+                {
+                    x.Username,
+                    x.RegisteredOn
+                },
                     (player, playerAggregate) =>
                         new TeamInfoModel
                         {

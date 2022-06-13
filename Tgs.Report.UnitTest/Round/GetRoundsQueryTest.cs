@@ -7,7 +7,6 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.Round;
 using Tgs.Report.Enum;
-using Tgs.Report.Repository;
 using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.Round;
 
@@ -19,9 +18,9 @@ namespace Tgs.Report.UnitTest.Round
         [Test]
         public async Task Can_Get_Rounds()
         {
-            var fakeRepository = Substitute.For<ITgsRepository>();
+            var fakeDbContext = Substitute.For<TgsContext>();
 
-            var sut = new GetRoundsQueryHandler(fakeRepository);
+            var sut = new GetRoundsQueryHandler(fakeDbContext);
 
             var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
             var roundId = new Guid("aac02111-20f6-4f0d-6982-08d9dbdc0473");
@@ -62,12 +61,12 @@ namespace Tgs.Report.UnitTest.Round
             var mockGameProviders = GetDbSet(gameProviders);
             var mockBrandGames = GetDbSet(brandGames);
 
-            fakeRepository.Rounds.Returns(mockRounds.Object);
-            fakeRepository.Players.Returns(mockPlayers.Object);
-            fakeRepository.Games.Returns(mockGames.Object);
-            fakeRepository.RoundDetails.Returns(mockRoundDetails.Object);
-            fakeRepository.GameProviders.Returns(mockGameProviders.Object);
-            fakeRepository.BrandGames.Returns(mockBrandGames.Object);
+            fakeDbContext.Rounds.Returns(mockRounds.Object);
+            fakeDbContext.Players.Returns(mockPlayers.Object);
+            fakeDbContext.Games.Returns(mockGames.Object);
+            fakeDbContext.RoundDetails.Returns(mockRoundDetails.Object);
+            fakeDbContext.GameProviders.Returns(mockGameProviders.Object);
+            fakeDbContext.BrandGames.Returns(mockBrandGames.Object);
 
             var response = await sut.Handle(request, default);
 

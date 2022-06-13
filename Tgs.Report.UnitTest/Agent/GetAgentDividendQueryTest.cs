@@ -6,7 +6,6 @@ using MockQueryable.Moq;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.Agent;
-using Tgs.Report.Repository;
 using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.Agent;
 
@@ -18,9 +17,9 @@ namespace Tgs.Report.UnitTest.Agent
         [Test]
         public async Task Can_Get_Agent_Dividends()
         {
-            var fakeRepository = Substitute.For<ITgsRepository>();
+            var fakeDbContext = Substitute.For<TgsContext>();
 
-            var sut = new GetAgentDividendQueryHandler(fakeRepository);
+            var sut = new GetAgentDividendQueryHandler(fakeDbContext);
 
             var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
             var agentId = new Guid("aac11120-20f6-4f0d-6982-08d9dbdc0473");
@@ -53,11 +52,11 @@ namespace Tgs.Report.UnitTest.Agent
             var mockPlayers = GetDbSet(players);
             var mockAgentDividendMultipleLayers = GetDbSet(agentDividendMultipleLayers);
 
-            fakeRepository.Agents.Returns(mockAgents.Object);
-            fakeRepository.WithdrawForms.Returns(mockWithdrawForms.Object);
-            fakeRepository.AgentDividends.Returns(mockAgentDividends.Object);
-            fakeRepository.Players.Returns(mockPlayers.Object);
-            fakeRepository.AgentDividendMultipleLayers.Returns(mockAgentDividendMultipleLayers.Object);
+            fakeDbContext.Agents.Returns(mockAgents.Object);
+            fakeDbContext.WithdrawForms.Returns(mockWithdrawForms.Object);
+            fakeDbContext.AgentDividends.Returns(mockAgentDividends.Object);
+            fakeDbContext.Players.Returns(mockPlayers.Object);
+            fakeDbContext.AgentDividendMultipleLayers.Returns(mockAgentDividendMultipleLayers.Object);
 
             var response = await sut.Handle(request, default);
 

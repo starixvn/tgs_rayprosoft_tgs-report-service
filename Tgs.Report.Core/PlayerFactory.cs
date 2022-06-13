@@ -1,17 +1,22 @@
 ﻿using System.Data;
 using Dapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Tgs.Report.Enum;
 using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.Player;
 
 namespace Tgs.Report.Core
 {
     public class PlayerFactory : IPlayerFactory
     {
-        public readonly ITgsRepository _repository;
+        private readonly TgsContext _context;
 
-        public PlayerFactory(ITgsRepository repository) => _repository = repository;
+        public PlayerFactory(TgsContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
 
         public async ValueTask<(PlayerAccountChangeModel[], int)> GetPlayerAccountChangeAsync(
             GetPlayerAccountChangesRequest request)
@@ -58,8 +63,8 @@ namespace Tgs.Report.Core
                 _ => null
             };
 
-            var conn = _repository.GetDbConnection();
-            var transaction = _repository.CurrentTransaction?.GetDbTransaction();
+            var conn = _context.Database.GetDbConnection();
+            var transaction = _context.Database.CurrentTransaction?.GetDbTransaction();
             var playerAccountChangeModels = await conn.QueryAsync<PlayerAccountChangeModel>(spName,
                 new Dictionary<string, object?>
                 {
@@ -78,7 +83,7 @@ namespace Tgs.Report.Core
                 .Select(pac => pac.TransactionId)
                 .ToArray();
 
-            var adjustPlayerRecords = _repository.AdjustPlayerRecords
+            var adjustPlayerRecords = _context.AdjustPlayerRecords
                 .Where(apr => transactionIds.Contains(apr.TransactionId))
                 .ToArray();
 
@@ -92,7 +97,7 @@ namespace Tgs.Report.Core
                              Description = pac.Description,
                              GameActionId = pac.GameActionId,
                              GameActionType = pac.GameActionType,
-                             IncludeInNetProfit = apr != null ? apr.IncludeInNetProfit : false,
+                             IncludeInNetProfit = apr?.IncludeInNetProfit ?? false,
                              RecordedOn = pac.RecordedOn,
                              TotalCount = pac.TotalCount,
                              TransactionId = pac.TransactionId,
@@ -149,7 +154,7 @@ namespace Tgs.Report.Core
             var gameType = (short?)gameActionType;
 
             var queryTransaction =
-                from t in _repository.Transactions
+                from t in _context.Transactions
                 where t.RecordedOn >= request.From
                     && t.RecordedOn < request.To
                     && t.PlayerCode == request.PlayerCode && (transTypes == null || transTypes.Contains(t.Type)) &&
@@ -161,7 +166,7 @@ namespace Tgs.Report.Core
                 };
 
             var queryGameAction =
-                from ga in _repository.GameActions
+                from ga in _context.GameActions
                 where ga.RecordedOn >= request.From
                     && ga.RecordedOn < request.To
                     && ga.PlayerCode == request.PlayerCode && (gameType == null || ga.Type == gameType) &&

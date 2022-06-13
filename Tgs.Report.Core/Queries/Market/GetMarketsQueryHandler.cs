@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Market;
 
@@ -8,9 +8,12 @@ namespace Tgs.Report.Core.Queries.Market
 {
     public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedResponse<MarketModel>>
     {
-        private readonly ITgsRepository _repository;
+        private readonly TgsContext _context;
 
-        public GetMarketsQueryHandler(ITgsRepository repository) => _repository = repository;
+        public GetMarketsQueryHandler(TgsContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
 
         public async Task<PagedResponse<MarketModel>> Handle(
             GetMarketsRequest request,
@@ -40,7 +43,7 @@ namespace Tgs.Report.Core.Queries.Market
                 .Select(x => from.AddDays(x))
                 .ToArray();
 
-            var withdrawals = await _repository.WithdrawForms
+            var withdrawals = await _context.WithdrawForms
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.UserType == 1 && x.Status == 9000)
                 .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
@@ -54,7 +57,7 @@ namespace Tgs.Report.Core.Queries.Market
                     WithdrawalAmount = withdrawals.Sum(w => w.ActualAmount ?? w.Amount)
                 });
 
-            return dates.GroupJoin(_repository.PlayerAggregates
+            return dates.GroupJoin(_context.PlayerAggregates
                         .Where(x => x.BrandId == request.BrandId)
                         .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime()),
                     date => date,
@@ -101,7 +104,7 @@ namespace Tgs.Report.Core.Queries.Market
                                 => m.market == null
                                     ? 0M
                                     : m.market.WinLossAmount -
-                                    (m.market.CompanyAdjustAmount - m.market.NoIncludeNetProfitCompanyAdjustAmount) -                                    
+                                    (m.market.CompanyAdjustAmount - m.market.NoIncludeNetProfitCompanyAdjustAmount) -
                                     m.market.RebateAmount -
                                     m.market.PromotionAmount),
                             AdditionalExpenses = markets.Sum(m => m.market?.AllAgentRebateAmount ?? 0M)
