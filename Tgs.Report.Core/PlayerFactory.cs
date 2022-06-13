@@ -105,30 +105,30 @@ namespace Tgs.Report.Core
         public ValueTask<decimal> GetPlayerAccountChangeTotalAmountAsync(
             GetPlayerAccountChangesTotalAmountRequest request)
         {
-            TransactionType? transactionType = request.AccountChangeType switch
+            var transactionTypes = request.AccountChangeType switch
             {
-                AccountChangeType.Deposit => TransactionType.Deposit,
-                AccountChangeType.Withdrawal => TransactionType.Withdrawal,
-                AccountChangeType.CompanyAdjust => TransactionType.CompanyAdjust,
-                AccountChangeType.BonusAdjust => TransactionType.BonusAdjust,
-                AccountChangeType.AgentAdjust => TransactionType.AgentAdjust,
-                AccountChangeType.SystemAdjust => TransactionType.SystemAdjust,
-                AccountChangeType.TransferAdjust => TransactionType.TransferAdjust,
-                AccountChangeType.Bonus => TransactionType.Bonus,
-                AccountChangeType.Rebate => TransactionType.Rebate,
-                AccountChangeType.Dividend => TransactionType.Dividend,
-                AccountChangeType.Promotion => TransactionType.Promotion,
-                AccountChangeType.GameProviderFundOut => TransactionType.GameProviderFundOut,
-                AccountChangeType.GameProviderFundIn => TransactionType.GameProviderFundIn,
-                AccountChangeType.CancelWithdrawal => TransactionType.CancelWithdrawal,
-                AccountChangeType.GameProviderDeposit => TransactionType.GameProviderDeposit,
-                AccountChangeType.GameProviderWithdrawal => TransactionType.GameProviderWithdrawal,
-                AccountChangeType.UnsettledBetManual => TransactionType.UnsettledBetManual,
-                AccountChangeType.DividendAllAgentRebate => TransactionType.DividendAllAgentRebate,
-                AccountChangeType.PromotionVipLevelUpgrade => TransactionType.PromotionVipLevelUpgrade,
-                AccountChangeType.PromotionVipLevelSeason => TransactionType.PromotionVipLevelSeason,
-                AccountChangeType.PromotionVipLevelBirthday => TransactionType.PromotionVipLevelBirthday,
-                _ => null
+                AccountChangeType.Deposit                   => new []{ TransactionType.Deposit, TransactionType.Deposited },
+                AccountChangeType.Withdrawal                => new[] { TransactionType.Withdrawal, TransactionType.WithdrawLock },
+                AccountChangeType.CompanyAdjust             => new[] { TransactionType.CompanyAdjust },
+                AccountChangeType.BonusAdjust               => new[] { TransactionType.BonusAdjust },
+                AccountChangeType.AgentAdjust               => new[] { TransactionType.AgentAdjust },
+                AccountChangeType.SystemAdjust              => new[] { TransactionType.SystemAdjust },
+                AccountChangeType.TransferAdjust            => new[] { TransactionType.TransferAdjust },
+                AccountChangeType.Bonus                     => new[] { TransactionType.Bonus },
+                AccountChangeType.Rebate                    => new[] { TransactionType.Rebate },
+                AccountChangeType.Dividend                  => new[] { TransactionType.Dividend },
+                AccountChangeType.Promotion                 => new[] { TransactionType.Promotion },
+                AccountChangeType.GameProviderFundOut       => new[] { TransactionType.GameProviderFundOut },
+                AccountChangeType.GameProviderFundIn        => new[] { TransactionType.GameProviderFundIn },
+                AccountChangeType.CancelWithdrawal          => new[] { TransactionType.CancelWithdrawal, TransactionType.WithdrawRollback },
+                AccountChangeType.GameProviderDeposit       => new[] { TransactionType.GameProviderDeposit },
+                AccountChangeType.GameProviderWithdrawal    => new[] { TransactionType.GameProviderWithdrawal },
+                AccountChangeType.UnsettledBetManual        => new[] { TransactionType.UnsettledBetManual },
+                AccountChangeType.DividendAllAgentRebate    => new[] { TransactionType.DividendAllAgentRebate },
+                AccountChangeType.PromotionVipLevelUpgrade  => new[] { TransactionType.PromotionVipLevelUpgrade },
+                AccountChangeType.PromotionVipLevelSeason   => new[] { TransactionType.PromotionVipLevelSeason },
+                AccountChangeType.PromotionVipLevelBirthday => new[] { TransactionType.PromotionVipLevelBirthday },
+                _                                           => null
             };
 
             GameActionType? gameActionType = request.AccountChangeType switch
@@ -145,14 +145,14 @@ namespace Tgs.Report.Core
                 _ => null
             };
 
-            var transType = (short?)transactionType;
+            var transTypes = transactionTypes?.Select(x => (short?)x);
             var gameType = (short?)gameActionType;
 
             var queryTransaction =
                 from t in _repository.Transactions
                 where t.RecordedOn >= request.From
                     && t.RecordedOn < request.To
-                    && t.PlayerCode == request.PlayerCode && (transType == null || t.Type == transType) &&
+                    && t.PlayerCode == request.PlayerCode && (transTypes == null || transTypes.Contains(t.Type)) &&
                     gameType == null
                 select new
                 {
@@ -165,7 +165,7 @@ namespace Tgs.Report.Core
                 where ga.RecordedOn >= request.From
                     && ga.RecordedOn < request.To
                     && ga.PlayerCode == request.PlayerCode && (gameType == null || ga.Type == gameType) &&
-                    transType == null
+                    transTypes == null
                 select new
                 {
                     ga.Amount,
