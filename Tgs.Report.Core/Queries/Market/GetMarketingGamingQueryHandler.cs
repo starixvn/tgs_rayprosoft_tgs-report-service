@@ -6,8 +6,8 @@ using Tgs.Report.ViewModel.Marketing;
 
 namespace Tgs.Report.Core.Queries.Market;
 
-public class GetMarketingGamingQueryHandler
-    : IRequestHandler<GetMarketingGamingDetailRequest, PagedResponse<MarketingGamingDetailModel>>
+public class GetMarketingGamingQueryHandler : IRequestHandler<GetMarketingGamingDetailRequest,
+    PagedResponse<MarketingGamingDetailModel>>
 {
     private readonly TgsContext _context;
 
@@ -45,7 +45,8 @@ public class GetMarketingGamingQueryHandler
         }
 
         return await _context.PlayerGameRebateAggregates
-            .Where(x => x.BrandId == request.BrandId && x.ReportDate == reportDate.ToUniversalTime() && x.AgentId == agent.Id)
+            .Where(x => x.BrandId == request.BrandId && x.ReportDate == reportDate.ToUniversalTime() &&
+                x.AgentId == agent.Id)
             .Join(_context.Players, aggregate => aggregate.PlayerCode, player => player.PlayerCode,
                 (aggregate, player) => new
                 {
@@ -55,6 +56,7 @@ public class GetMarketingGamingQueryHandler
                     aggregate.GameId,
                     aggregate.WinLoss
                 })
+            .Where(request.PlayerUsername, x => x.Username == request.PlayerUsername)
             .Join(_context.Games, aggregate => aggregate.GameId, game => game.Id,
                 (aggregate, game) => new
                 {
@@ -99,6 +101,6 @@ public class GetMarketingGamingQueryHandler
                 SubGameProviderName = player.SubGameProviderName,
                 WinLossAmount = group.Sum(x => x.WinLoss)
             })
-            .CreatePagedResponseAsync(request).ConfigureAwait(false);
+            .CreatePagedResponseAsync(request);
     }
 }

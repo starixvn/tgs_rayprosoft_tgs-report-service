@@ -57,7 +57,7 @@ namespace Tgs.Report.Core.Queries.Market
                     WithdrawalAmount = withdrawals.Sum(w => w.ActualAmount ?? w.Amount)
                 });
 
-            return await dates.GroupJoin(_context.PlayerAggregates
+            return dates.GroupJoin(_context.PlayerAggregates
                         .Where(x => x.BrandId == request.BrandId)
                         .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime()),
                     date => date,
@@ -109,7 +109,8 @@ namespace Tgs.Report.Core.Queries.Market
                                     m.market.PromotionAmount),
                             AdditionalExpenses = markets.Sum(m => m.market?.AllAgentRebateAmount ?? 0M)
                         })
-                .CreatePagedResponseAsync(dates.Length);
+                .AsQueryable()
+                .CreatePagedResponse(request);
         }
     }
 }

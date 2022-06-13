@@ -69,7 +69,7 @@ public class GetMarketingFirstDepositDetailQueryHandler : IRequestHandler<GetMar
             .GroupBy(x => x.Username, (username, group) => new { Username = username })
             .ToArrayAsync(cancellationToken).ConfigureAwait(false);
 
-        return await playerUsernames
+        return playerUsernames
             .Join(details.Items!, p => p.Username, y => y.Username,
                 (username, detail) => new MarketingFirstDepositDetailModel
                 {
@@ -80,6 +80,8 @@ public class GetMarketingFirstDepositDetailQueryHandler : IRequestHandler<GetMar
                     TotalWithdrawAmount = detail.TotalWithdrawAmount,
                     DepositSubtractWithdraw = detail.DepositSubtractWithdraw,
                     IpAddress = detail.IpAddress
-                }).CreatePagedResponseAsync(playerUsernames.Length);
+                })
+            .AsQueryable()
+            .CreatePagedResponse(request);
     }
 }
