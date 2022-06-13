@@ -4,7 +4,6 @@
     {
         Deposit = 0,
         Withdrawal = 1,
-
         CompanyAdjust = 2,
         Bonus = 3,
         Rebate = 4,
@@ -23,22 +22,26 @@
         /// 存款 1000~1999
         /// </summary>
         //Deposit = 1000,
+        Deposited = 1100,
         /// <summary>
         /// 提款 2000~2999
         /// </summary>
         //Withdraw = 2000,
+        WithdrawLock = 2100,
+        WithdrawCommit = 2200,
+        WithdrawRollback = 2300,
         /// <summary>
         /// 活動 3000~3999
         /// </summary>
         //Promotion = 3000,
 
         /// <summary>
-        ///     The promotion vip level upgrade
+        /// The promotion vip level upgrade
         /// </summary>
         PromotionVipLevelUpgrade = 3800,
 
         /// <summary>
-        ///     The promotion vip level season
+        /// The promotion vip level season
         /// </summary>
         PromotionVipLevelSeason = 3850,
         PromotionVipLevelBirthday = 3860,
@@ -48,12 +51,12 @@
         /// </summary>
         //Dividend = 4000,
         /// <summary>
-        ///     The dividend all agent rebate
+        /// The dividend all agent rebate
         /// </summary>
         DividendAllAgentRebate = 4100,
 
         /// <summary>
-        ///     調帳 5000~5999
+        /// 調帳 5000~5999
         /// </summary>
         //Adjust = 5000,
         AgentAdjust = 5100,
@@ -62,32 +65,22 @@
         BonusAdjust = 5400,
 
         /// <summary>
-        ///     已結算單再調整
+        /// 已結算單再調整
         /// </summary>
         AdjustResettledBetManual = 5010,
 
         /// <summary>
-        ///     遊戲 10000~10999
+        /// 遊戲 10000~10999
         /// </summary>
         Game = 10000,
-
-        GamePlaceBet = 11000,
-
-        // 結算 12000~12999
-
-        GameWinBet = 12100,
-        GameLoseBet = 12200,
-        GameFreeBet = 12300,
-        GameTieBet = 12400,
-        GameWinJackpot = 12500,
-
-        // 取消 13000~13999
-
-        GameCancelTransaction = 13100,
-
-        // 鎖定相關 14000~14999
-
-        GameLockAmount = 14100,
-        GameUnlockAmount = 14200
+        PlaceBet = 10100,
+        WinBet = 10200,
+        LoseBet = 10200,
+        FreeBet = 10300,
+        TieBet = 10400,
+        CancelTransaction = 10500,
+        LockAmount = 10600,
+        UnlockAmount = 10700,
+        WinJackpot = 10800
     }
 }
