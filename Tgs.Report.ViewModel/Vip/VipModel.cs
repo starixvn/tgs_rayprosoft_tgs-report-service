@@ -14,7 +14,7 @@ namespace Tgs.Report.ViewModel.Vip
 
         public decimal DepositAmount { get; init; }
 
-        public decimal WithdrawalAmount { get; init; }
+        public decimal WithdrawalAmount { get; set; }
 
         public decimal BonusAmount { get; init; }
 
