@@ -44,6 +44,12 @@ namespace Tgs.Report.Core.Queries.Market
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.UserType == 1 && x.Status == 9000)
                 .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
+                .Select(x => new
+                {
+                    x.CreatedOn,
+                    x.ActualAmount,
+                    x.Amount
+                })
                 .ToArrayAsync(cancellationToken)
                 .ConfigureAwait(false);
 
@@ -54,9 +60,29 @@ namespace Tgs.Report.Core.Queries.Market
                     WithdrawalAmount = withdrawals.Sum(w => w.ActualAmount ?? w.Amount)
                 });
 
-            return dates.GroupJoin(_repository.PlayerAggregates
-                        .Where(x => x.BrandId == request.BrandId)
-                        .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime()),
+            var playerAggregates = await _repository.PlayerAggregates
+                .Where(x => x.BrandId == request.BrandId)
+                .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
+                .GroupBy(x => x.ReportDate, (reportDate, group) => new
+                {
+                    ReportDate = reportDate,
+                    RegisteredCount = group.Sum(s => s.RegisteredCount),
+                    FirstFundInCount = group.Sum(s => s.FirstFundInCount),
+                    DepositAmount = group.Sum(s => s.DepositAmount),
+                    CompanyAdjustAmount = group.Sum(s => s.CompanyAdjustAmount),
+                    NoIncludeNetProfitCompanyAdjustAmount = group.Sum(s => s.NoIncludeNetProfitCompanyAdjustAmount),
+                    BonusAdjustAmount = group.Sum(s => s.BonusAdjustAmount),
+                    NoIncludeNetProfitBonusAdjustAmount = group.Sum(s => s.NoIncludeNetProfitBonusAdjustAmount),
+                    RebateAmount = group.Sum(s => s.RebateAmount),
+                    PromotionAmount = group.Sum(s => s.PromotionAmount),
+                    BetAmount = group.Sum(s => s.BetAmount),
+                    OriginalTurnover = group.Sum(s => s.OriginalTurnover),
+                    Turnover = group.Sum(s => s.Turnover),
+                    WinLossAmount = group.Sum(s => s.WinLossAmount),
+                    AllAgentRebateAmount = group.Sum(s => s.AllAgentRebateAmount)
+                }).ToArrayAsync(cancellationToken);
+
+            return dates.GroupJoin(playerAggregates,
                     date => date,
                     market => market.ReportDate,
                     (date, markets) => new
@@ -101,7 +127,7 @@ namespace Tgs.Report.Core.Queries.Market
                                 => m.market == null
                                     ? 0M
                                     : m.market.WinLossAmount -
-                                    (m.market.CompanyAdjustAmount - m.market.NoIncludeNetProfitCompanyAdjustAmount) -                                    
+                                    (m.market.CompanyAdjustAmount - m.market.NoIncludeNetProfitCompanyAdjustAmount) -
                                     m.market.RebateAmount -
                                     m.market.PromotionAmount),
                             AdditionalExpenses = markets.Sum(m => m.market?.AllAgentRebateAmount ?? 0M)
