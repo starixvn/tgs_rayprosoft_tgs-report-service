@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Agent;
 
@@ -10,25 +10,28 @@ namespace Tgs.Report.Core.Queries.Agent
         GetAgentDividendDetailQueryHandler : IRequestHandler<GetAgentDividendDetailsRequest,
             PagedResponse<AgentDividendDetailModel>>
     {
-        private readonly ITgsRepository _repository;
+        private readonly TgsContext _context;
 
-        public GetAgentDividendDetailQueryHandler(ITgsRepository repository) => _repository = repository;
+        public GetAgentDividendDetailQueryHandler(TgsContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
 
         public async Task<PagedResponse<AgentDividendDetailModel>> Handle(
             GetAgentDividendDetailsRequest request,
             CancellationToken cancellationToken)
         {
-            var agentDividends = await _repository.AgentDividends.Where(x => x.AgentId == request.AgentId)
+            var agentDividends = await _context.AgentDividends.Where(x => x.AgentId == request.AgentId)
                 .Where(x => x.From >= request.From.ToUniversalTime())
                 .Where(x => x.To < request.To.ToUniversalTime())
                 .GroupBy(x => new
-                    {
-                        x.AgentId,
-                        x.From,
-                        x.To,
-                        x.CreatedOn,
-                        x.AgentDividendPercentage
-                    },
+                {
+                    x.AgentId,
+                    x.From,
+                    x.To,
+                    x.CreatedOn,
+                    x.AgentDividendPercentage
+                },
                     (x, list) => new
                     {
                         x.AgentId,
@@ -49,7 +52,7 @@ namespace Tgs.Report.Core.Queries.Agent
                     }).ToArrayAsync(cancellationToken);
 
             var agentIds = agentDividends.Select(x => x.AgentId).ToArray();
-            var agents = await _repository.Agents.Where(x => agentIds.Contains(x.Id))
+            var agents = await _context.Agents.Where(x => agentIds.Contains(x.Id))
                 .ToArrayAsync(cancellationToken);
 
             var models = agentDividends.Join(agents, ad => ad.AgentId, a => a.Id,

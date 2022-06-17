@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.Round;
 using Tgs.Report.Enum;
-using Tgs.Report.Repository;
 using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.Round;
 
@@ -18,20 +17,20 @@ namespace Tgs.Report.UnitTest.Round
         public async Task Can_Get_Agent_Belong_Player_Rounds()
         {
             //Arrange
-            var dbContextOptionsBuilder = new DbContextOptionsBuilder<TgsRepository>();
+            var dbContextOptionsBuilder = new DbContextOptionsBuilder<TgsContext>();
 
             _ = dbContextOptionsBuilder
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
 
-            ITgsRepository repository = new TgsRepository(dbContextOptionsBuilder.Options);
+            var context = new TgsContext(dbContextOptionsBuilder.Options);
 
             var agentId = Guid.NewGuid();
 
             var playerCode1 = "playerCode";
             var playerCode2 = "playerCode2";
 
-            await repository.Rounds.AddRangeAsync(
+            await context.Rounds.AddRangeAsync(
                 new Repository.Entities.Round
                 {
                     Id = Guid.Parse("7284B324-7065-CDD8-87A4-69A17C5DF20D"),
@@ -55,16 +54,16 @@ namespace Tgs.Report.UnitTest.Round
                     ExternalCreatedOn = DateTime.UtcNow,
                     ExternalClosedOn = DateTime.UtcNow,
                     CreatedOn = DateTime.UtcNow,
-                    ClosedOn = DateTime.UtcNow                    
+                    ClosedOn = DateTime.UtcNow
                 });
 
-            _ = await repository.RoundDetails.AddAsync(new RoundDetail
+            _ = await context.RoundDetails.AddAsync(new RoundDetail
             {
                 RoundId = Guid.Parse("7284B324-7065-CDD8-87A4-69A17C5DF20D"),
                 AdditionalData = "additionalData"
             });
 
-            await repository.Players.AddRangeAsync(new Repository.Entities.Player
+            await context.Players.AddRangeAsync(new Repository.Entities.Player
             {
                 PlayerCode = playerCode1,
                 DefaultWalletCurrencyCode = "CNY",
@@ -86,7 +85,7 @@ namespace Tgs.Report.UnitTest.Round
                 AgentId = agentId
             });
 
-            _ = await repository.Games.AddAsync(new Game
+            _ = await context.Games.AddAsync(new Game
             {
                 AvailableCurrencies = "CNY",
                 Code = "TF",
@@ -96,9 +95,9 @@ namespace Tgs.Report.UnitTest.Round
                 UpdatedByUsername = "username"
             });
 
-            _ = await repository.SaveChangesAsync();
+            _ = await context.SaveChangesAsync();
 
-            var sut = new GetAgentPlayerRoundsQueryHandler(repository);
+            var sut = new GetAgentPlayerRoundsQueryHandler(context);
 
             var request = new GetAgentPlayerRoundsRequest
             {
@@ -116,18 +115,18 @@ namespace Tgs.Report.UnitTest.Round
         public async Task Can_Not_Get_Rounds_By_Other_Agent()
         {
             //Arrange
-            var dbContextOptionsBuilder = new DbContextOptionsBuilder<TgsRepository>();
+            var dbContextOptionsBuilder = new DbContextOptionsBuilder<TgsContext>();
 
             _ = dbContextOptionsBuilder
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
 
-            ITgsRepository repository = new TgsRepository(dbContextOptionsBuilder.Options);
+            var context = new TgsContext(dbContextOptionsBuilder.Options);
 
             var playerCode1 = "playerCode";
             var playerCode2 = "playerCode2";
 
-            await repository.Rounds.AddRangeAsync(
+            await context.Rounds.AddRangeAsync(
                 new Repository.Entities.Round
                 {
                     Id = Guid.Parse("7284B324-7065-CDD8-87A4-69A17C5DF20D"),
@@ -146,13 +145,13 @@ namespace Tgs.Report.UnitTest.Round
                     GameProviderId = Guid.Parse("3924FF4E-8ECA-A25F-ABDC-9B8606A46316")
                 });
 
-            _ = await repository.RoundDetails.AddAsync(new RoundDetail
+            _ = await context.RoundDetails.AddAsync(new RoundDetail
             {
                 RoundId = Guid.Parse("7284B324-7065-CDD8-87A4-69A17C5DF20D"),
                 AdditionalData = "additionalData"
             });
 
-            await repository.Players.AddRangeAsync(new Repository.Entities.Player
+            await context.Players.AddRangeAsync(new Repository.Entities.Player
             {
                 PlayerCode = playerCode1,
                 DefaultWalletCurrencyCode = "CNY",
@@ -174,7 +173,7 @@ namespace Tgs.Report.UnitTest.Round
                 AgentId = Guid.Parse("50DD70BE-38F8-6724-E446-BF1380E00B64")
             });
 
-            _ = await repository.Games.AddAsync(new Game
+            _ = await context.Games.AddAsync(new Game
             {
                 AvailableCurrencies = "CNY",
                 Code = "TF",
@@ -184,9 +183,9 @@ namespace Tgs.Report.UnitTest.Round
                 UpdatedByUsername = "username"
             });
 
-            _ = await repository.SaveChangesAsync();
+            _ = await context.SaveChangesAsync();
 
-            var sut = new GetAgentPlayerRoundsQueryHandler(repository);
+            var sut = new GetAgentPlayerRoundsQueryHandler(context);
 
             var request = new GetAgentPlayerRoundsRequest
             {

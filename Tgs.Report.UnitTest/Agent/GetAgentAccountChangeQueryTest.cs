@@ -6,7 +6,6 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.Agent;
 using Tgs.Report.Enum;
-using Tgs.Report.Repository;
 using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.Agent;
 
@@ -18,9 +17,9 @@ namespace Tgs.Report.UnitTest.Agent
         [Test]
         public async Task Can_Get_Agent_Account_Changes()
         {
-            var fakeRepository = Substitute.For<ITgsRepository>();
+            var fakeDbContext = Substitute.For<TgsContext>();
 
-            var sut = new GetAgentAccountChangeQueryHandler(fakeRepository);
+            var sut = new GetAgentAccountChangeQueryHandler(fakeDbContext);
 
             var agentTransactions = CreateAgentTransactionFixture().CreateMany<AgentTransaction>(1).AsQueryable()
                 .BuildMock();
@@ -37,7 +36,7 @@ namespace Tgs.Report.UnitTest.Agent
 
             var mockAgentTransactions = GetDbSet(agentTransactions);
 
-            fakeRepository.AgentTransactions.Returns(mockAgentTransactions.Object);
+            fakeDbContext.AgentTransactions.Returns(mockAgentTransactions.Object);
 
             var response = await sut.Handle(request, default);
 

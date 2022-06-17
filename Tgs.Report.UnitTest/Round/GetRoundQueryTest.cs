@@ -5,7 +5,7 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.GameProviders.Pluggable.Client;
 using Tgs.Report.Core.Queries.Round;
-using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.Round;
 
 namespace Tgs.Report.UnitTest.Round
@@ -16,7 +16,7 @@ namespace Tgs.Report.UnitTest.Round
         [Test]
         public async Task Can_Get_Round()
         {
-            var fakeRepository = Substitute.For<ITgsRepository>();
+            var fakeDbContext = Substitute.For<TgsContext>();
             var fakeClient = Substitute.For<IGameProvidersBackofficePluggableClient>();
 
             var sut = new GetRoundQueryHandler(fakeClient);

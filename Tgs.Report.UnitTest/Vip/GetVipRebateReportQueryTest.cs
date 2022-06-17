@@ -6,7 +6,6 @@ using MockQueryable.Moq;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.Vip;
-using Tgs.Report.Repository;
 using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.Vip;
 
@@ -18,9 +17,9 @@ namespace Tgs.Report.UnitTest.Vip
         [Test]
         public async Task Can_Get_vip_rebate_report()
         {
-            var fakeRepository = Substitute.For<ITgsRepository>();
+            var fakeDbContext = Substitute.For<TgsContext>();
 
-            var sut = new GetVipRebateReportQueryHandler(fakeRepository);
+            var sut = new GetVipRebateReportQueryHandler(fakeDbContext);
 
             var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
 
@@ -42,8 +41,8 @@ namespace Tgs.Report.UnitTest.Vip
             var mockAggregates = GetDbSet(aggregates);
             var mockPlayers = GetDbSet(players);
 
-            fakeRepository.PlayerGameRebateAggregates.Returns(mockAggregates.Object);
-            fakeRepository.Players.Returns(mockPlayers.Object);
+            fakeDbContext.PlayerGameRebateAggregates.Returns(mockAggregates.Object);
+            fakeDbContext.Players.Returns(mockPlayers.Object);
 
             var response = await sut.Handle(request, default);
 

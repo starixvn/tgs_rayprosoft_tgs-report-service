@@ -1,19 +1,21 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Tgs.Report.Enum;
-using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Player;
 
 namespace Tgs.Report.Core.Queries.Player
 {
-    public class
-        GetPlayerContributionsQueryHandler : IRequestHandler<GetPlayerContributionsRequest,
-            PagedResponse<PlayerContributionModel>>
+    public class GetPlayerContributionsQueryHandler
+        : IRequestHandler<GetPlayerContributionsRequest, PagedResponse<PlayerContributionModel>>
     {
-        private readonly ITgsRepository _repository;
+        private readonly TgsContext _context;
 
-        public GetPlayerContributionsQueryHandler(ITgsRepository repository) => _repository = repository;
+        public GetPlayerContributionsQueryHandler(TgsContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
 
         public async Task<PagedResponse<PlayerContributionModel>> Handle(
             GetPlayerContributionsRequest request,
@@ -39,8 +41,8 @@ namespace Tgs.Report.Core.Queries.Player
                 0,
                 requestTo.Offset);
 
-            var withdrawalByUserIds = await _repository.WithdrawForms
-                .Join(_repository.Players,
+            var withdrawalByUserIds = await _context.WithdrawForms
+                .Join(_context.Players,
                     wf => wf.UserId,
                     p => p.PlayerCode,
                     (wf, p) => new
@@ -71,7 +73,7 @@ namespace Tgs.Report.Core.Queries.Player
                     }).ToArrayAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            var reportPlayers = await _repository.PlayerAggregates
+            var reportPlayers = await _context.PlayerAggregates
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
                 .Where(request.HasUpperAgent == true, x => x.AgentId != null)
@@ -97,13 +99,13 @@ namespace Tgs.Report.Core.Queries.Player
                             (p.BonusAdjustAmount - p.NoIncludeNetProfitBonusAdjustAmount) -
                             p.RebateAmount - p.PromotionAmount)
                     })
-                .Join(_repository.Players.Include(x => x.Vip).Select(x => new
+                .Join(_context.Players.Include(x => x.Vip).Select(x => new
                 {
                     x.BrandId,
                     x.PlayerCode,
                     x.Username,
                     Level = x.VipId == null ? (int?)null : x.Vip.Level
-                }), agg => agg.PlayerCode, p => p.PlayerCode, (agg,player)=> new PlayerContributionModel
+                }), agg => agg.PlayerCode, p => p.PlayerCode, (agg, player) => new PlayerContributionModel
                 {
                     Username = player.Username,
                     PlayerCode = agg.PlayerCode,

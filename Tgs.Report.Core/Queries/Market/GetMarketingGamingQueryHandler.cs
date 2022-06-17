@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Marketing;
 
@@ -9,9 +9,12 @@ namespace Tgs.Report.Core.Queries.Market;
 public class GetMarketingGamingQueryHandler : IRequestHandler<GetMarketingGamingDetailRequest,
     PagedResponse<MarketingGamingDetailModel>>
 {
-    private readonly ITgsRepository _repository;
+    private readonly TgsContext _context;
 
-    public GetMarketingGamingQueryHandler(ITgsRepository repository) => _repository = repository;
+    public GetMarketingGamingQueryHandler(TgsContext context)
+    {
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+    }
 
     public async Task<PagedResponse<MarketingGamingDetailModel>> Handle(
         GetMarketingGamingDetailRequest request,
@@ -28,7 +31,7 @@ public class GetMarketingGamingQueryHandler : IRequestHandler<GetMarketingGaming
             0,
             requestDate.Offset);
 
-        var agent = await _repository.Agents
+        var agent = await _context.Agents
             .FirstOrDefaultAsync(x => x.BrandId == request.BrandId && x.Username == request.AgentUsername,
                 cancellationToken).ConfigureAwait(false);
 
@@ -41,10 +44,10 @@ public class GetMarketingGamingQueryHandler : IRequestHandler<GetMarketingGaming
             };
         }
 
-        return await _repository.PlayerGameRebateAggregates
+        return await _context.PlayerGameRebateAggregates
             .Where(x => x.BrandId == request.BrandId && x.ReportDate == reportDate.ToUniversalTime() &&
                 x.AgentId == agent.Id)
-            .Join(_repository.Players, aggregate => aggregate.PlayerCode, player => player.PlayerCode,
+            .Join(_context.Players, aggregate => aggregate.PlayerCode, player => player.PlayerCode,
                 (aggregate, player) => new
                 {
                     player.Username,
@@ -54,7 +57,7 @@ public class GetMarketingGamingQueryHandler : IRequestHandler<GetMarketingGaming
                     aggregate.WinLoss
                 })
             .Where(request.PlayerUsername, x => x.Username == request.PlayerUsername)
-            .Join(_repository.Games, aggregate => aggregate.GameId, game => game.Id,
+            .Join(_context.Games, aggregate => aggregate.GameId, game => game.Id,
                 (aggregate, game) => new
                 {
                     game.SubGameProviderCode,
@@ -64,7 +67,7 @@ public class GetMarketingGamingQueryHandler : IRequestHandler<GetMarketingGaming
                     aggregate.GameId,
                     aggregate.WinLoss
                 })
-            .Join(_repository.SubGameProviders, aggregate => aggregate.SubGameProviderCode, sub => sub.Code,
+            .Join(_context.SubGameProviders, aggregate => aggregate.SubGameProviderCode, sub => sub.Code,
                 (aggregate, sub) => new
                 {
                     aggregate.Username,
@@ -74,7 +77,7 @@ public class GetMarketingGamingQueryHandler : IRequestHandler<GetMarketingGaming
                     aggregate.WinLoss,
                     SubGameProviderName = sub.Name
                 })
-            .Join(_repository.GameProviders, aggregate => aggregate.GameProviderId, provider => provider.Id,
+            .Join(_context.GameProviders, aggregate => aggregate.GameProviderId, provider => provider.Id,
                 (aggregate, provider) => new
                 {
                     aggregate.Username,

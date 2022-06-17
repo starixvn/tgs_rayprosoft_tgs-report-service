@@ -1,15 +1,19 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.LicenseeMarket;
 
 namespace Tgs.Report.Core.Queries.LicenseeMarket
 {
     public class GetLicenseeMarketsQueryHandler : IRequestHandler<GetLicenseeMarketsRequest, LicenseeMarketsResponse>
     {
-        private readonly ITgsRepository _repository;
+        private readonly TgsContext _context;
 
-        public GetLicenseeMarketsQueryHandler(ITgsRepository repository) => _repository = repository;
+        public GetLicenseeMarketsQueryHandler(TgsContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
 
         public async Task<LicenseeMarketsResponse> Handle(
             GetLicenseeMarketsRequest request,
@@ -37,7 +41,7 @@ namespace Tgs.Report.Core.Queries.LicenseeMarket
                 0,
                 requestTo.Offset).ToUniversalTime();
 
-            var brands = await _repository.Brands
+            var brands = await _context.Brands
                 .Where(x => x.LicenseeId == request.LicenseeId)
                 .Where(!string.IsNullOrEmpty(request.CurrencyCode),
                     x => x.BrandCurrencies.Any(c => c.CurrencyCode == request.CurrencyCode))
@@ -53,7 +57,7 @@ namespace Tgs.Report.Core.Queries.LicenseeMarket
                 .ToArrayAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            var withdrawals = await _repository.WithdrawForms
+            var withdrawals = await _context.WithdrawForms
                 .Where(x => brands.Select(x => x.BrandId).Contains(x.BrandId))
                 .Where(x => x.UserType == 1 && x.Status == 9000)
                 .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
@@ -66,7 +70,7 @@ namespace Tgs.Report.Core.Queries.LicenseeMarket
                 .ToArrayAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            var playerAggregates = await _repository.PlayerAggregates
+            var playerAggregates = await _context.PlayerAggregates
                 .Where(x => brands.Select(x => x.BrandId).Contains(x.BrandId))
                 .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
                 .GroupBy(x => x.BrandId)

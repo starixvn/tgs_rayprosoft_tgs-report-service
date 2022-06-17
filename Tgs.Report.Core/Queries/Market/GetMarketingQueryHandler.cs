@@ -1,17 +1,19 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel;
-using Tgs.Report.ViewModel.Market;
 using Tgs.Report.ViewModel.Marketing;
 
 namespace Tgs.Report.Core.Queries.Market;
 
 public class GetMarketingQueryHandler : IRequestHandler<GetMarketingListRequest, PagedResponse<MarketingModel>>
 {
-    private readonly ITgsRepository _repository;
+    private readonly TgsContext _context;
 
-    public GetMarketingQueryHandler(ITgsRepository repository) => _repository = repository;
+    public GetMarketingQueryHandler(TgsContext context)
+    {
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+    }
 
     public async Task<PagedResponse<MarketingModel>> Handle(
         GetMarketingListRequest request,
@@ -37,7 +39,7 @@ public class GetMarketingQueryHandler : IRequestHandler<GetMarketingListRequest,
             0,
             requestTo.Offset);
 
-        var agent = await _repository.Agents
+        var agent = await _context.Agents
             .FirstOrDefaultAsync(x => x.BrandId == request.BrandId && x.Username == request.AgentUsername,
                 cancellationToken).ConfigureAwait(false);
 
@@ -53,8 +55,8 @@ public class GetMarketingQueryHandler : IRequestHandler<GetMarketingListRequest,
         var dates = Enumerable.Range(0, to.Subtract(from).Days)
             .Select(x => from.AddDays(x))
             .ToArray();
-        
-        var playerAggregates = await _repository.PlayerAggregates
+
+        var playerAggregates = await _context.PlayerAggregates
             .Where(x => x.BrandId == request.BrandId)
             .Where(x => x.AgentId == agent.Id)
             .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
@@ -75,7 +77,6 @@ public class GetMarketingQueryHandler : IRequestHandler<GetMarketingListRequest,
                 FirstDepositCount = group.Sum(x => x.FirstDepositCount),
                 GamingCount = group.Count(x => x.BetAmount > 0)
             });
-
 
         return dates.GroupJoin(dateAggregates,
                 date => date,

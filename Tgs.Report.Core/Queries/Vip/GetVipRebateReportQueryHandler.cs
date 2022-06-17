@@ -2,19 +2,20 @@
 using Microsoft.EntityFrameworkCore;
 using Tgs.Report.Enum;
 using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Vip;
 
 namespace Tgs.Report.Core.Queries.Vip
 {
-    public class
-        GetVipRebateReportQueryHandler : IRequestHandler<GetVipRebateReportRequest, PagedResponse<VipRebateModel>>
+    public class GetVipRebateReportQueryHandler
+        : IRequestHandler<GetVipRebateReportRequest, PagedResponse<VipRebateModel>>
     {
-        private readonly ITgsRepository _repository;
+        private readonly TgsContext _context;
 
-        public GetVipRebateReportQueryHandler(ITgsRepository repository)
+        public GetVipRebateReportQueryHandler(TgsContext context)
         {
-            _repository = repository;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public async Task<PagedResponse<VipRebateModel>> Handle(
@@ -30,10 +31,10 @@ namespace Tgs.Report.Core.Queries.Vip
                 requestTo.Offset);
 
             var tgsPlayer =
-                await _repository.Players.FirstOrDefaultAsync(x =>
+                await _context.Players.FirstOrDefaultAsync(x =>
                     x.BrandId == request.BrandId && x.Username == request.Username, cancellationToken);
 
-            return await _repository.PlayerGameRebateAggregates
+            return await _context.PlayerGameRebateAggregates
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
                 .Where(tgsPlayer != null, x => x.PlayerCode == tgsPlayer!.PlayerCode)
