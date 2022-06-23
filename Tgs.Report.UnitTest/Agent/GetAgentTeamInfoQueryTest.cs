@@ -6,7 +6,6 @@ using MockQueryable.Moq;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.Agent;
-using Tgs.Report.Repository;
 using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.Agent;
 
@@ -18,13 +17,12 @@ namespace Tgs.Report.UnitTest.Agent
         [Test]
         public async Task Can_Get_Agent_Team_Info()
         {
-            var fakeRepository = Substitute.For<ITgsRepository>();
+            var fakeDbContext = Substitute.For<TgsContext>();
 
-            var sut = new GetAgentTeamInfoQueryHandler(fakeRepository);
+            var sut = new GetAgentTeamInfoQueryHandler(fakeDbContext);
 
             var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
             var agentId = new Guid("aac22220-20f6-4f0d-6982-08d9dbdc0473");
-
 
             var players = CreatePlayerFixture(brandId, agentId).CreateMany<Repository.Entities.Player>(1)
                 .AsQueryable()
@@ -43,8 +41,8 @@ namespace Tgs.Report.UnitTest.Agent
             var mockPlayers = GetDbSet(players);
             var mockPlayerAggregates = GetDbSet(playerAggregates);
 
-            fakeRepository.Players.Returns(mockPlayers.Object);
-            fakeRepository.PlayerAggregates.Returns(mockPlayerAggregates.Object);
+            fakeDbContext.Players.Returns(mockPlayers.Object);
+            fakeDbContext.PlayerAggregates.Returns(mockPlayerAggregates.Object);
 
             var response = await sut.Handle(request, default);
 

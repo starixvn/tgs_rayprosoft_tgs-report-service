@@ -1,25 +1,26 @@
 ﻿using System.Data;
 using Dapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.Round;
 
 namespace Tgs.Report.Core
 {
     public class RoundFactory : IRoundFactory
     {
-        private readonly ITgsRepository _repository;
+        private readonly TgsContext _context;
 
-        public RoundFactory(ITgsRepository repository)
+        public RoundFactory(TgsContext context)
         {
-            _repository = repository;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public async Task<RoundAggregateModel[]> GenerateRoundAggregateAsync(DateTimeOffset start, DateTimeOffset end)
         {
             const string spName = "dbo.report_generate_round_aggregates";
-            var conn = _repository.GetDbConnection();
-            var transaction = _repository.CurrentTransaction?.GetDbTransaction();
+            var conn = _context.Database.GetDbConnection();
+            var transaction = _context.Database.CurrentTransaction?.GetDbTransaction();
             var result = await conn.QueryAsync<RoundAggregateModel>(spName,
                 new Dictionary<string, object>
                 {
@@ -41,8 +42,8 @@ namespace Tgs.Report.Core
             DateTimeOffset end)
         {
             const string spName = "dbo.report_get_round_and_set_game_setting_aggregates";
-            var conn = _repository.GetDbConnection();
-            var transaction = _repository.CurrentTransaction?.GetDbTransaction();
+            var conn = _context.Database.GetDbConnection();
+            var transaction = _context.Database.CurrentTransaction?.GetDbTransaction();
             var result = await conn.QueryAsync<RoundAggregateModel>(spName,
                 new Dictionary<string, object>
                 {

@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Resources;
@@ -17,7 +18,11 @@ builder.Configuration
 
 builder.Services
     .AddHttpClient()
-    .AddTgsRepository(builder.Configuration.GetConnectionString("Tgs"))
+    .AddReportRepository((sp, optionsBuilder) =>
+    {
+        var connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("Tgs");
+        _ = optionsBuilder.UseNpgsql(connectionString);
+    })
     .AddReportCore()
     .AddTgsLog()
     .AddGameProvidersPluggableServerClient((options, sp) =>

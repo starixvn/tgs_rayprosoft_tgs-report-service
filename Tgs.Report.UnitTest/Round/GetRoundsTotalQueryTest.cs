@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.Round;
 using Tgs.Report.Enum;
-using Tgs.Report.Repository;
 using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.Round;
 
@@ -16,11 +15,12 @@ namespace Tgs.Report.UnitTest.Round
         [Test]
         public async Task Can_Get_Rounds_Sum()
         {
-            var dbContextOptionsBuilder = new DbContextOptionsBuilder<TgsRepository>();
+            var dbContextOptionsBuilder = new DbContextOptionsBuilder<TgsContext>();
             dbContextOptionsBuilder
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
-            ITgsRepository repository = new TgsRepository(dbContextOptionsBuilder.Options);
+
+            var context = new TgsContext(dbContextOptionsBuilder.Options);
 
             var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
             var roundId = new Guid("aac02111-20f6-4f0d-6982-08d9dbdc0473");
@@ -28,7 +28,7 @@ namespace Tgs.Report.UnitTest.Round
             var gameId = 1;
             var playerCode = "PlayerCode";
 
-            _ = repository.Games.Add(new Game
+            _ = context.Games.Add(new Game
             {
                 Id = gameId,
                 GameProviderId = gameProviderId,
@@ -40,7 +40,7 @@ namespace Tgs.Report.UnitTest.Round
                 UpdatedByUsername = "username"
             });
 
-            _ = repository.Players.Add(new Repository.Entities.Player
+            _ = context.Players.Add(new Repository.Entities.Player
             {
                 BrandId = brandId,
                 PlayerCode = playerCode,
@@ -52,7 +52,7 @@ namespace Tgs.Report.UnitTest.Round
                 WithdrawSalt = Array.Empty<byte>()
             });
 
-            _ = repository.Rounds.Add(new Repository.Entities.Round
+            _ = context.Rounds.Add(new Repository.Entities.Round
             {
                 Id = roundId,
                 GameId = gameId,
@@ -68,11 +68,11 @@ namespace Tgs.Report.UnitTest.Round
                 ExternalRoundId = "externalRoundId"
             });
 
-            _ = repository.RoundDetails.Add(new RoundDetail { RoundId = roundId, AdditionalData = "{}" });
+            _ = context.RoundDetails.Add(new RoundDetail { RoundId = roundId, AdditionalData = "{}" });
 
-            _ = await repository.SaveChangesAsync();
+            _ = await context.SaveChangesAsync();
 
-            var sut = new GetRoundsTotalQueryHandler(repository);
+            var sut = new GetRoundsTotalQueryHandler(context);
 
             var request = new GetRoundsTotalRequest
             {

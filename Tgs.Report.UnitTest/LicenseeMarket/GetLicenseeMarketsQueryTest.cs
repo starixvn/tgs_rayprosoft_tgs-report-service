@@ -6,7 +6,6 @@ using MockQueryable.Moq;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.LicenseeMarket;
-using Tgs.Report.Repository;
 using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.LicenseeMarket;
 
@@ -18,9 +17,9 @@ namespace Tgs.Report.UnitTest.LicenseeMarket
         [Test]
         public async Task Can_Get_Licensee_Markets()
         {
-            var fakeRepository = Substitute.For<ITgsRepository>();
+            var fakeDbContext = Substitute.For<TgsContext>();
 
-            var sut = new GetLicenseeMarketsQueryHandler(fakeRepository);
+            var sut = new GetLicenseeMarketsQueryHandler(fakeDbContext);
 
             var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
             var licenseeId = new Guid("aac11120-20f6-4f0d-6982-08d9dbdc0473");
@@ -48,9 +47,9 @@ namespace Tgs.Report.UnitTest.LicenseeMarket
             var mockPlayerAggregates = GetDbSet(playerAggregates);
             var mockWithdrawForms = GetDbSet(withdrawForms);
 
-            fakeRepository.Brands.Returns(mockBrands.Object);
-            fakeRepository.PlayerAggregates.Returns(mockPlayerAggregates.Object);
-            fakeRepository.WithdrawForms.Returns(mockWithdrawForms.Object);
+            fakeDbContext.Brands.Returns(mockBrands.Object);
+            fakeDbContext.PlayerAggregates.Returns(mockPlayerAggregates.Object);
+            fakeDbContext.WithdrawForms.Returns(mockWithdrawForms.Object);
 
             var response = await sut.Handle(request, default);
 

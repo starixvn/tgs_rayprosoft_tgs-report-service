@@ -6,7 +6,6 @@ using MockQueryable.Moq;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.Market;
-using Tgs.Report.Repository;
 using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.Market;
 
@@ -18,9 +17,9 @@ namespace Tgs.Report.UnitTest.Market
         [Test]
         public async Task Can_Get_Markets()
         {
-            var fakeRepository = Substitute.For<ITgsRepository>();
+            var fakeDbContext = Substitute.For<TgsContext>();
 
-            var sut = new GetMarketsQueryHandler(fakeRepository);
+            var sut = new GetMarketsQueryHandler(fakeDbContext);
 
             var brandId = Guid.NewGuid();
             var reportDate = new DateTimeOffset(2022, 1, 21, 0, 0, 0, new TimeSpan(8, 0, 0));
@@ -42,8 +41,8 @@ namespace Tgs.Report.UnitTest.Market
             var mockPlayerAggregates = GetDbSet(playerAggregates);
             var mockWithdrawForms = GetDbSet(withdrawForms);
 
-            fakeRepository.WithdrawForms.Returns(mockWithdrawForms.Object);
-            fakeRepository.PlayerAggregates.Returns(mockPlayerAggregates.Object);
+            fakeDbContext.WithdrawForms.Returns(mockWithdrawForms.Object);
+            fakeDbContext.PlayerAggregates.Returns(mockPlayerAggregates.Object);
 
             var response = await sut.Handle(request, default);
 

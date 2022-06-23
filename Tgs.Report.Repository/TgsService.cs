@@ -1,49 +1,30 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Tgs.Report.Repository.Entities;
 
 namespace Tgs.Report.Repository
 {
     public interface ITgsService<T>
     {
-        ITgsRepository Repository { get; }
-
         IQueryable<T> GetQueries(
             Func<IQueryable<T>, IQueryable<T>>? preQuery = null,
             bool tracking = false);
-
-        ValueTask CreateEntitiesAsync(T[] entities);
-        ValueTask UpdateEntitiesAsync(T[] entities);
     }
 
     public class TgsService<T> : ITgsService<T> where T : class
     {
-        private ITgsRepository Repository { get; }
+        private readonly TgsContext _context;
 
-        public TgsService(ITgsRepository repository)
+        public TgsService(TgsContext context)
         {
-            Repository = repository;
-        }
-
-        ITgsRepository ITgsService<T>.Repository => Repository;
-
-        public async ValueTask CreateEntitiesAsync(T[] entities)
-        {
-            await Repository.Set<T>().AddRangeAsync(entities);
-            await Repository.SaveChangesAsync();
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public IQueryable<T> GetQueries(Func<IQueryable<T>, IQueryable<T>>? preQuery, bool tracking)
         {
             preQuery ??= c => c;
-            return tracking ? preQuery(Repository.Set<T>()) : preQuery(Repository.Set<T>()).AsNoTracking();
-        }
-
-        public async ValueTask UpdateEntitiesAsync(T[] entities)
-        {
-            Repository.Set<T>().UpdateRange(entities);
-            await Repository.SaveChangesAsync();
+            return tracking ? preQuery(_context.Set<T>()) : preQuery(_context.Set<T>()).AsNoTracking();
         }
     }
 }

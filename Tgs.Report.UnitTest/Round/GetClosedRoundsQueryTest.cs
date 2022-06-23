@@ -17,18 +17,19 @@ namespace Tgs.Report.UnitTest.Round
         [Test]
         public async Task Can_Get_Closed_Rounds()
         {
-            var dbContextOptionsBuilder = new DbContextOptionsBuilder<TgsRepository>();
+            var dbContextOptionsBuilder = new DbContextOptionsBuilder<TgsContext>();
 
             dbContextOptionsBuilder
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
-            ITgsRepository repository = new TgsRepository(dbContextOptionsBuilder.Options);
+
+            var context = new TgsContext(dbContextOptionsBuilder.Options);
 
             var gameProviderId = Guid.NewGuid();
             var roundId = Guid.NewGuid();
             var playerCode = "playerCode";
             var externalRoundId = "externalRoundId";
-            await repository.Rounds.AddAsync(new Repository.Entities.Round
+            await context.Rounds.AddAsync(new Repository.Entities.Round
             {
                 Id = roundId,
                 CurrencyCode = "CNY",
@@ -42,13 +43,13 @@ namespace Tgs.Report.UnitTest.Round
                 ClosedOn = DateTime.UtcNow
             });
 
-            await repository.RoundDetails.AddAsync(new RoundDetail
+            await context.RoundDetails.AddAsync(new RoundDetail
             {
                 RoundId = roundId,
                 AdditionalData = "additionalData"
             });
 
-            await repository.Players.AddAsync(new Repository.Entities.Player
+            await context.Players.AddAsync(new Repository.Entities.Player
             {
                 PlayerCode = playerCode,
                 DefaultWalletCurrencyCode = "CNY",
@@ -59,7 +60,7 @@ namespace Tgs.Report.UnitTest.Round
                 WithdrawSalt = Array.Empty<byte>()
             });
 
-            await repository.Games.AddAsync(new Game
+            await context.Games.AddAsync(new Game
             {
                 AvailableCurrencies = "CNY",
                 Code = "TF",
@@ -69,9 +70,9 @@ namespace Tgs.Report.UnitTest.Round
                 UpdatedByUsername = "username"
             });
 
-            await repository.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
-            var sut = new GetClosedRoundsQueryHandler(repository);
+            var sut = new GetClosedRoundsQueryHandler(context);
 
             var request = new GetClosedRoundsRequest
             {

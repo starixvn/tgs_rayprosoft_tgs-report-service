@@ -5,7 +5,7 @@ using MockQueryable.Moq;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.GameAction;
-using Tgs.Report.Repository;
+using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.GameAction;
 
 namespace Tgs.Report.UnitTest.GameAction
@@ -16,9 +16,9 @@ namespace Tgs.Report.UnitTest.GameAction
         [Test]
         public async Task Can_Get_Game_Actions()
         {
-            var fakeRepository = Substitute.For<ITgsRepository>();
+            var fakeDbContext = Substitute.For<TgsContext>();
 
-            var sut = new GetGameActionsQueryHandler(fakeRepository);
+            var sut = new GetGameActionsQueryHandler(fakeDbContext);
 
             var gameActions = CreateGameActionFixture().CreateMany<Repository.Entities.GameAction>(1)
                 .AsQueryable()
@@ -32,7 +32,7 @@ namespace Tgs.Report.UnitTest.GameAction
 
             var mockGameActions = GetDbSet(gameActions);
 
-            fakeRepository.GameActions.Returns(mockGameActions.Object);
+            fakeDbContext.GameActions.Returns(mockGameActions.Object);
 
             var response = await sut.Handle(request, default);
 
