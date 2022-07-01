@@ -9,7 +9,9 @@ namespace Tgs.Report.ViewModel.Market
         public int RegisteredCount { get; init; }
 
         public int FirstFundInCount { get; init; }
-
+        public int DepositCount { get; init; }
+        public int ActivePlayer { get; init; }
+        public int LoginPlayer { get; init; }
         public decimal DepositAmount { get; init; }
 
         public decimal WithdrawalAmount { get; init; }
