@@ -13,8 +13,8 @@ namespace Tgs.Report.Repository.Entities
         public short Status { get; set; }
         public short PlatformType { get; set; }
         public string? IpAddress { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public DateTime ExpiredOn { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
+        public DateTimeOffset ExpiredOn { get; set; }
 
         public virtual Brand Brand { get; set; } = null!;
         public virtual Player PlayerCodeNavigation { get; set; } = null!;

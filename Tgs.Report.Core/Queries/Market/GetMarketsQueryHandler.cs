@@ -74,7 +74,7 @@ namespace Tgs.Report.Core.Queries.Market
                 .ToArrayAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            var playerLoginRecordsByDates = playerLoginRecords.GroupBy(x => x.CreatedOn.Date,
+            var playerLoginRecordsByDates = playerLoginRecords.GroupBy(x => x.CreatedOn.ToOffset(offset).Date,
                 (date, playerLoginRecords) => new
                 {
                     Date = date,
