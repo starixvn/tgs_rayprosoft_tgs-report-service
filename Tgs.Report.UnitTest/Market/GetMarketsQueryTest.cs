@@ -31,6 +31,9 @@ namespace Tgs.Report.UnitTest.Market
             var withdrawForms = CreateWithdrawFormFixture(brandId).CreateMany<WithdrawForm>(1).AsQueryable()
                 .BuildMock();
 
+            var playerLoginReocrds = CreatePlayerLoginRecordsFixture(brandId).CreateMany<PlayerLoginRecord>(1).AsQueryable()
+                .BuildMock();
+
             var request = new GetMarketsRequest
             {
                 BrandId = brandId,
@@ -40,9 +43,11 @@ namespace Tgs.Report.UnitTest.Market
 
             var mockPlayerAggregates = GetDbSet(playerAggregates);
             var mockWithdrawForms = GetDbSet(withdrawForms);
+            var mockPlayerLoginRecords = GetDbSet(playerLoginReocrds);
 
             fakeDbContext.WithdrawForms.Returns(mockWithdrawForms.Object);
             fakeDbContext.PlayerAggregates.Returns(mockPlayerAggregates.Object);
+            fakeDbContext.PlayerLoginRecords.Returns(mockPlayerLoginRecords.Object);
 
             var response = await sut.Handle(request, default);
 
@@ -66,6 +71,18 @@ namespace Tgs.Report.UnitTest.Market
             fixture.Customize<WithdrawForm>(u => u
                 .With(s => s.BrandId, brandId)
                 .With(s => s.Brand, new Brand()));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            return fixture;
+        }
+
+        private static Fixture CreatePlayerLoginRecordsFixture(Guid brandId)
+        {
+            var fixture = new Fixture();
+            fixture.Customize<PlayerLoginRecord>(u => u
+            .With(s => s.BrandId, brandId)
+            .With(s => s.Brand, new Brand())
+            .With(s => s.PlayerCodeNavigation, new Repository.Entities.Player()));
+
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
