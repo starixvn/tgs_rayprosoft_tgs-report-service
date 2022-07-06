@@ -6,7 +6,8 @@ pipeline {
 	
 	environment {
 		BuildConfiguration="Debug"
-		ImageName ="harbor.rpgp.cc/tgs/report-api"
+		ImageName ="pgtgs/report-api"
+        dockerhub = credentials('dockerhub')
 	}
 
 	stages {
@@ -46,6 +47,7 @@ pipeline {
                     }
                 }
                 sh "echo tag: $TAG"
+                sh "docker login -u ${dockerhub_USR} -p ${dockerhub_PSW}"
             }
         }
 
