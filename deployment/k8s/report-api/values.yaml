@@ -5,13 +5,13 @@
 replicaCount: 1
 
 image:
-  repository: harbor.rpgp.cc/tgs/report-api
+  repository: pgtgs/tgs/report-api
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
 imagePullSecrets: 
-  - name: secret-tgs-harbor
+  - name: dockerhub
 nameOverride: "report-api"
 fullnameOverride: "report-api"
 
