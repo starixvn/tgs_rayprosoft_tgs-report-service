@@ -63,12 +63,33 @@ namespace Tgs.Report.Core.Queries.Market
                     WithdrawalAmount = withdrawals.Sum(w => w.ActualAmount ?? w.Amount)
                 });
 
+            var playerLoginRecords = await _context.PlayerLoginRecords
+                .Where(plr => plr.BrandId == request.BrandId)
+                .Where(plr => plr.CreatedOn >= from.ToUniversalTime() && plr.CreatedOn < to.ToUniversalTime())
+                .Select(plr => new 
+                {  
+                    plr.CreatedOn,
+                    plr.PlayerCode
+                })
+                .ToArrayAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            var playerLoginRecordsByDates = playerLoginRecords.GroupBy(x => x.CreatedOn.ToOffset(offset).Date,
+                (date, playerLoginRecords) => new
+                {
+                    Date = date,
+                    LoginPlayer = playerLoginRecords.GroupBy(x => x.PlayerCode).Sum(plr => 1)
+                });;
+
             var playerAggregates = await _context.PlayerAggregates
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
-                .GroupBy(x => x.ReportDate, (reportDate, group) => new
+                .GroupBy(x => new { x.ReportDate, x.PlayerCode }, ( x, group) => new
                 {
-                    ReportDate = reportDate,
+                    ReportDate = x.ReportDate,
+                    PlayerCode = x.PlayerCode,
+                    DepositCount = group.Sum(s => s.DepositAmount > 0 ? 1:0),
+                    ActivePlayer = group.Sum(s => s.BetAmount > 0 ? 1: 0),
                     RegisteredCount = group.Sum(s => s.RegisteredCount),
                     FirstFundInCount = group.Sum(s => s.FirstFundInCount),
                     DepositAmount = group.Sum(s => s.DepositAmount),
@@ -104,6 +125,10 @@ namespace Tgs.Report.Core.Queries.Market
                         new MarketModel
                         {
                             ReportDate = market.ReportDate,
+                            DepositCount = markets.Sum(m => m.market?.DepositCount ?? 0),
+                            ActivePlayer = markets.Sum(m => m.market?.ActivePlayer ?? 0),
+                            LoginPlayer = 
+                                playerLoginRecordsByDates.FirstOrDefault(plr => plr.Date == market.ReportDate.Date)?.LoginPlayer ?? 0,
                             RegisteredCount = markets.Sum(m => m.market?.RegisteredCount ?? 0),
                             FirstFundInCount = markets.Sum(m => m.market?.FirstFundInCount ?? 0),
                             DepositAmount = markets.Sum(m => m.market?.DepositAmount ?? 0M),
