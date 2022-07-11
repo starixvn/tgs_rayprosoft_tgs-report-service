@@ -70,17 +70,42 @@
         AdjustResettledBetManual = 5010,
 
         /// <summary>
-        /// 遊戲 10000~10999
+        /// The game
+        /// 遊戲 10000~15999
         /// </summary>
-        Game = 10000,
-        PlaceBet = 10100,
-        WinBet = 10200,
-        LoseBet = 10200,
-        FreeBet = 10300,
-        TieBet = 10400,
-        CancelTransaction = 10500,
-        LockAmount = 10600,
-        UnlockAmount = 10700,
-        WinJackpot = 10800
+        //Game = 10000
+
+        //Credit上分、Debit下分、Refund退款、Revision修正
+        GameDebit = 10100,
+        GameCredit = 10200,
+        GameRefund = 10300,
+        GameRevision = 10400,
+
+        // 下注11000~11999
+        GameBet = 11000,
+
+        // 結算 12000~12999
+
+        GameSettle = 12000,
+        GameSettleWin = 12100,
+        GameSettleLose = 12200,
+        GameSettleFree = 12300,
+        GameSettleTie = 12400,
+        GameWinJackpot = 12500,
+
+        // 取消 13000~13999
+
+        GameCancel = 13000,
+
+        // 鎖定相關 14000~14999
+
+        GameLock = 14100,
+        GameUnlock = 14200,
+
+        // 遊戲供應 15000~15999
+        GameProvider = 15000,
+
+        // 遊戲供應資金退款
+        GameProviderFundRefund = 15300,
     }
 }
