@@ -66,8 +66,8 @@ namespace Tgs.Report.Core.Queries.Market
             var playerLoginRecords = await _context.PlayerLoginRecords
                 .Where(plr => plr.BrandId == request.BrandId)
                 .Where(plr => plr.CreatedOn >= from.ToUniversalTime() && plr.CreatedOn < to.ToUniversalTime())
-                .Select(plr => new 
-                {  
+                .Select(plr => new
+                {
                     plr.CreatedOn,
                     plr.PlayerCode
                 })
@@ -79,17 +79,17 @@ namespace Tgs.Report.Core.Queries.Market
                 {
                     Date = date,
                     LoginPlayer = playerLoginRecords.GroupBy(x => x.PlayerCode).Sum(plr => 1)
-                });;
+                }); ;
 
             var playerAggregates = await _context.PlayerAggregates
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
-                .GroupBy(x => new { x.ReportDate, x.PlayerCode }, ( x, group) => new
+                .GroupBy(x => new { x.ReportDate, x.PlayerCode }, (x, group) => new
                 {
-                    ReportDate = x.ReportDate,
-                    PlayerCode = x.PlayerCode,
-                    DepositCount = group.Sum(s => s.DepositAmount > 0 ? 1:0),
-                    ActivePlayer = group.Sum(s => s.BetAmount > 0 ? 1: 0),
+                    x.ReportDate,
+                    x.PlayerCode,
+                    DepositCount = group.Sum(s => s.DepositAmount > 0 ? 1 : 0),
+                    //ActivePlayer = group.Sum(s => s.BetAmount > 0 ? 1: 0),
                     RegisteredCount = group.Sum(s => s.RegisteredCount),
                     FirstFundInCount = group.Sum(s => s.FirstFundInCount),
                     DepositAmount = group.Sum(s => s.DepositAmount),
@@ -104,7 +104,28 @@ namespace Tgs.Report.Core.Queries.Market
                     Turnover = group.Sum(s => s.Turnover),
                     WinLossAmount = group.Sum(s => s.WinLossAmount),
                     AllAgentRebateAmount = group.Sum(s => s.AllAgentRebateAmount)
-                }).ToArrayAsync(cancellationToken);
+                })
+                .GroupBy(x => x.ReportDate, (reportDate, group) => new
+                {
+                    ReportDate = reportDate,
+                    DepositCount = group.Sum(s => s.DepositAmount > 0 ? 1 : 0),
+                    ActivePlayer = group.Sum(s => s.BetAmount > 0 ? 1 : 0),
+                    RegisteredCount = group.Sum(s => s.RegisteredCount),
+                    FirstFundInCount = group.Sum(s => s.FirstFundInCount),
+                    DepositAmount = group.Sum(s => s.DepositAmount),
+                    CompanyAdjustAmount = group.Sum(s => s.CompanyAdjustAmount),
+                    NoIncludeNetProfitCompanyAdjustAmount = group.Sum(s => s.NoIncludeNetProfitCompanyAdjustAmount),
+                    BonusAdjustAmount = group.Sum(s => s.BonusAdjustAmount),
+                    NoIncludeNetProfitBonusAdjustAmount = group.Sum(s => s.NoIncludeNetProfitBonusAdjustAmount),
+                    RebateAmount = group.Sum(s => s.RebateAmount),
+                    PromotionAmount = group.Sum(s => s.PromotionAmount),
+                    BetAmount = group.Sum(s => s.BetAmount),
+                    OriginalTurnover = group.Sum(s => s.OriginalTurnover),
+                    Turnover = group.Sum(s => s.Turnover),
+                    WinLossAmount = group.Sum(s => s.WinLossAmount),
+                    AllAgentRebateAmount = group.Sum(s => s.AllAgentRebateAmount)
+                })
+                .ToArrayAsync(cancellationToken);
 
             return dates.GroupJoin(playerAggregates,
                     date => date,
@@ -127,7 +148,7 @@ namespace Tgs.Report.Core.Queries.Market
                             ReportDate = market.ReportDate,
                             DepositCount = markets.Sum(m => m.market?.DepositCount ?? 0),
                             ActivePlayer = markets.Sum(m => m.market?.ActivePlayer ?? 0),
-                            LoginPlayer = 
+                            LoginPlayer =
                                 playerLoginRecordsByDates.FirstOrDefault(plr => plr.Date == market.ReportDate.Date)?.LoginPlayer ?? 0,
                             RegisteredCount = markets.Sum(m => m.market?.RegisteredCount ?? 0),
                             FirstFundInCount = markets.Sum(m => m.market?.FirstFundInCount ?? 0),
