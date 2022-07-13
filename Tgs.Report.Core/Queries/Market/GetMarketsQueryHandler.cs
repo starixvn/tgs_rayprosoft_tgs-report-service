@@ -87,9 +87,7 @@ namespace Tgs.Report.Core.Queries.Market
                 .GroupBy(x => new { x.ReportDate, x.PlayerCode }, (x, group) => new
                 {
                     x.ReportDate,
-                    x.PlayerCode,
-                    DepositCount = group.Sum(s => s.DepositAmount > 0 ? 1 : 0),
-                    //ActivePlayer = group.Sum(s => s.BetAmount > 0 ? 1: 0),
+                    x.PlayerCode,                    
                     RegisteredCount = group.Sum(s => s.RegisteredCount),
                     FirstFundInCount = group.Sum(s => s.FirstFundInCount),
                     DepositAmount = group.Sum(s => s.DepositAmount),
