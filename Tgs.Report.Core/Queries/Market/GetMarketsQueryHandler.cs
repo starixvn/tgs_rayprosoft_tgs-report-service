@@ -79,7 +79,19 @@ namespace Tgs.Report.Core.Queries.Market
                 {
                     Date = date,
                     LoginPlayer = playerLoginRecords.GroupBy(x => x.PlayerCode).Sum(plr => 1)
-                }); ;
+                });
+
+            var fromDate = new DateOnly(from.Year, from.Month, from.Day);
+            var toDate = new DateOnly(to.Year, to.Month, to.Day);
+
+            var dailyFirstDeposits = _context.BrandDailyPaymentStatistics
+                .Where(x => x.BrandId == request.BrandId)
+                .Where(x => x.ReportDate >= fromDate && x.ReportDate < toDate)
+                .Select(x => new
+                {
+                    x.ReportDate,
+                    x.FirstDepositPlayers
+                });
 
             var playerAggregates = await _context.PlayerAggregates
                 .Where(x => x.BrandId == request.BrandId)
@@ -139,6 +151,22 @@ namespace Tgs.Report.Core.Queries.Market
                         ReportDate = x.date,
                         market
                     })
+                .GroupJoin(dailyFirstDeposits,
+                    market => new DateOnly(market.ReportDate.Year, market.ReportDate.Month, market.ReportDate.Day),
+                    deposit => deposit.ReportDate,
+                    (group, groupDeposits) => new
+                    {
+                        group.ReportDate,
+                        group.market,
+                        groupDeposits
+                    })
+                .SelectMany(x => x.groupDeposits.DefaultIfEmpty(),
+                    (x, deposit) => new
+                    {
+                        x.ReportDate,
+                        x.market,
+                        deposit
+                    })
                 .GroupBy(x => new { x.ReportDate },
                     (market, markets) =>
                         new MarketModel
@@ -149,7 +177,7 @@ namespace Tgs.Report.Core.Queries.Market
                             LoginPlayer =
                                 playerLoginRecordsByDates.FirstOrDefault(plr => plr.Date == market.ReportDate.Date)?.LoginPlayer ?? 0,
                             RegisteredCount = markets.Sum(m => m.market?.RegisteredCount ?? 0),
-                            FirstFundInCount = markets.Sum(m => m.market?.FirstFundInCount ?? 0),
+                            FirstFundInCount = markets.Sum(m => m.deposit?.FirstDepositPlayers ?? 0),
                             DepositAmount = markets.Sum(m => m.market?.DepositAmount ?? 0M),
                             WithdrawalAmount =
                                 -withdrawalByDates.FirstOrDefault(w => w.Date == market.ReportDate.Date)
