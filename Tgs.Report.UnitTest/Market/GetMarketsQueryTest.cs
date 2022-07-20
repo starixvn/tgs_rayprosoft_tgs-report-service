@@ -34,6 +34,9 @@ namespace Tgs.Report.UnitTest.Market
             var playerLoginReocrds = CreatePlayerLoginRecordsFixture(brandId).CreateMany<PlayerLoginRecord>(1).AsQueryable()
                 .BuildMock();
 
+            var dailyStatistic = CreateBrandDailyPaymentStatisticFixture(brandId, reportDate).CreateMany<BrandDailyPaymentStatistic>(1).AsQueryable()
+                .BuildMock();
+
             var request = new GetMarketsRequest
             {
                 BrandId = brandId,
@@ -44,10 +47,12 @@ namespace Tgs.Report.UnitTest.Market
             var mockPlayerAggregates = GetDbSet(playerAggregates);
             var mockWithdrawForms = GetDbSet(withdrawForms);
             var mockPlayerLoginRecords = GetDbSet(playerLoginReocrds);
+            var mockDailyStatistic = GetDbSet(dailyStatistic);
 
             fakeDbContext.WithdrawForms.Returns(mockWithdrawForms.Object);
             fakeDbContext.PlayerAggregates.Returns(mockPlayerAggregates.Object);
             fakeDbContext.PlayerLoginRecords.Returns(mockPlayerLoginRecords.Object);
+            fakeDbContext.BrandDailyPaymentStatistics.Returns(mockDailyStatistic.Object);
 
             var response = await sut.Handle(request, default);
 
@@ -86,5 +91,17 @@ namespace Tgs.Report.UnitTest.Market
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
+
+        private static Fixture CreateBrandDailyPaymentStatisticFixture(Guid brandId,DateTimeOffset reportDate)
+        {
+            var fixture = new Fixture();
+            fixture.Customize<BrandDailyPaymentStatistic>(u => u
+                .With(s => s.BrandId, brandId)
+                .With(s => s.ReportDate, new DateOnly(reportDate.Year, reportDate.Month, reportDate.Day)));
+
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            return fixture;
+        }
+
     }
 }
