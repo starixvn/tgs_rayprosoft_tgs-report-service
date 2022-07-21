@@ -76,6 +76,10 @@ namespace Tgs.Report.Repository.Entities.Configurations
 
             entity.Property(e => e.EnableAgentSms).HasColumnName("enable_agent_sms");
 
+            entity.Property(e => e.EnableBankInfoRegisterFlow).HasColumnName("enable_bank_info_register_flow");
+
+            entity.Property(e => e.EnableEmailRegisterFlow).HasColumnName("enable_email_register_flow");
+
             entity.Property(e => e.EnablePlayerIdentity).HasColumnName("enable_player_identity");
 
             entity.Property(e => e.EnableSms).HasColumnName("enable_sms");
@@ -107,6 +111,10 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.PlatformCharge)
                 .HasPrecision(9, 6)
                 .HasColumnName("platform_charge");
+
+            entity.Property(e => e.PlayerRegisterFlowSettings)
+                .HasColumnType("jsonb")
+                .HasColumnName("player_register_flow_settings");
 
             entity.Property(e => e.PreviousSettlementFrom)
                 .HasColumnName("previous_settlement_from")

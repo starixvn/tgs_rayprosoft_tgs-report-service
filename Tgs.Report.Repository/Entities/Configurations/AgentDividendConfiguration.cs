@@ -72,6 +72,10 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasPrecision(18, 6)
                 .HasColumnName("deposit_amount");
 
+            entity.Property(e => e.DepositHandlingFee)
+                .HasPrecision(18, 6)
+                .HasColumnName("deposit_handling_fee");
+
             entity.Property(e => e.ESportsWinLoss)
                 .HasPrecision(18, 6)
                 .HasColumnName("e_sports_win_loss");
@@ -151,6 +155,10 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.WinLossAmount)
                 .HasPrecision(18, 6)
                 .HasColumnName("win_loss_amount");
+
+            entity.Property(e => e.WithdrawHandlingFee)
+                .HasPrecision(18, 6)
+                .HasColumnName("withdraw_handling_fee");
 
             entity.Property(e => e.WithdrawalAmount)
                 .HasPrecision(18, 6)
