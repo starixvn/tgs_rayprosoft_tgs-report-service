@@ -27,6 +27,7 @@ namespace Tgs.Report.Repository.Entities
         public virtual DbSet<AgentTransaction> AgentTransactions { get; set; } = null!;
         public virtual DbSet<Brand> Brands { get; set; } = null!;
         public virtual DbSet<BrandCurrency> BrandCurrencies { get; set; } = null!;
+        public virtual DbSet<BrandDailyPaymentStatistic> BrandDailyPaymentStatistics { get; set; } = null!;
         public virtual DbSet<BrandGame> BrandGames { get; set; } = null!;
         public virtual DbSet<BrandGameProviderAggregate> BrandGameProviderAggregates { get; set; } = null!;
         public virtual DbSet<BrandGameProviderAggregateAuditLog> BrandGameProviderAggregateAuditLogs { get; set; } = null!;
@@ -76,6 +77,7 @@ namespace Tgs.Report.Repository.Entities
             modelBuilder.ApplyConfiguration(new Configurations.AgentTransactionConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.BrandConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.BrandCurrencyConfiguration());
+            modelBuilder.ApplyConfiguration(new Configurations.BrandDailyPaymentStatisticConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.BrandGameConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.BrandGameProviderAggregateConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.BrandGameProviderAggregateAuditLogConfiguration());

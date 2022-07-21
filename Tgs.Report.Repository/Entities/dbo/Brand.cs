@@ -32,18 +32,18 @@ namespace Tgs.Report.Repository.Entities
         public string SecretKey { get; set; } = null!;
         public string ApiKey { get; set; } = null!;
         public short SettlementIntervalType { get; set; }
-        public DateTime PreviousSettlementFrom { get; set; }
-        public DateTime PreviousSettlementTo { get; set; }
-        public DateTime CurrentSettlementFrom { get; set; }
-        public DateTime CurrentSettlementTo { get; set; }
-        public DateTime NextSettlementFrom { get; set; }
-        public DateTime NextSettlementTo { get; set; }
+        public DateTimeOffset PreviousSettlementFrom { get; set; }
+        public DateTimeOffset PreviousSettlementTo { get; set; }
+        public DateTimeOffset CurrentSettlementFrom { get; set; }
+        public DateTimeOffset CurrentSettlementTo { get; set; }
+        public DateTimeOffset NextSettlementFrom { get; set; }
+        public DateTimeOffset NextSettlementTo { get; set; }
         public bool AutoSentPlayerBonus { get; set; }
         public bool AutoSentAgentBonus { get; set; }
         public string Code { get; set; } = null!;
         public string Name { get; set; } = null!;
-        public DateTime CreatedOn { get; set; }
-        public DateTime UpdatedOn { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
+        public DateTimeOffset UpdatedOn { get; set; }
         public string CreatedByUsername { get; set; } = null!;
         public string UpdatedByUsername { get; set; } = null!;
         public int? SettlementDay { get; set; }
@@ -61,6 +61,9 @@ namespace Tgs.Report.Repository.Entities
         public decimal AutoClearWageringRequirementBalance { get; set; }
         public decimal DepositHandlingFeeRateTenPercentile { get; set; }
         public decimal WithdrawHandlingFeeRateTenPercentile { get; set; }
+        public bool EnableEmailRegisterFlow { get; set; }
+        public string? PlayerRegisterFlowSettings { get; set; }
+        public bool EnableBankInfoRegisterFlow { get; set; }
 
         public virtual Licensee Licensee { get; set; } = null!;
         public virtual ICollection<AgentTransaction> AgentTransactions { get; set; }
