@@ -11,5 +11,6 @@
         public DateTimeOffset RecordedOn { get; init; }
         public string? Description { get; init; }
         public bool IncludeInNetProfit { get; init; }
+        public string? ExternalTransactionId { get; init; }
     }
 }

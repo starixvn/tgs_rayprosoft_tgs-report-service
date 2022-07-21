@@ -13,7 +13,8 @@ namespace Tgs.Report.ViewModel.Player
         public GameActionType? GameActionType { get; init; }
         public DateTimeOffset RecordedOn { get; init; }
         public int TotalCount { get; init; }
-        public string? Description { get; init; }        
+        public string? Description { get; init; }
         public bool IncludeInNetProfit { get; init; }
+        public string? ExternalTransactionId { get; init; }
     }
 }
