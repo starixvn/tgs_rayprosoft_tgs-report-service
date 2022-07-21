@@ -116,7 +116,8 @@ namespace Tgs.Report.Core
                              RecordedOn = pac.RecordedOn,
                              TotalCount = pac.TotalCount,
                              TransactionId = pac.TransactionId,
-                             TransactionType = pac.TransactionType
+                             TransactionType = pac.TransactionType,
+                             ExternalTransactionId = pac.ExternalTransactionId
                          };
 
             return (result.ToArray(), result.Any() ? result.First().TotalCount : 0);
