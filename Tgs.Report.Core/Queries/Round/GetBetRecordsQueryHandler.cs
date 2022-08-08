@@ -36,7 +36,7 @@ namespace Tgs.Report.Core.Queries.Round
             GetBetRecordsRequest request,
             CancellationToken cancellationToken)
         {
-            var query = _roundService.GetQueries().Where(x => x.BrandId == request.BrandId)
+            var total = await _roundService.GetQueries().Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.CreatedOn >= request.From.ToUniversalTime() &&
                     x.CreatedOn <= request.To.ToUniversalTime())
                 .Where(request.GameProviderId, x => request.GameProviderId == x.GameProviderId)
@@ -46,23 +46,30 @@ namespace Tgs.Report.Core.Queries.Round
                     round => round.GameId, game => game.Id,
                     (round, game) => new
                     {
-                        round,
+                        round.PlayerCode,
+                        round.BetAmount,
+                        round.ValidBetAmount,
+                        round.SettleAmount,
+                        round.WinLoss,
                         game
                     })
                 .SelectMany(x => x.game.DefaultIfEmpty(), (x, game) => new
                 {
-                    x.round,
-                    game
+                    x.PlayerCode,
+                    x.BetAmount,
+                    x.ValidBetAmount,
+                    x.SettleAmount,
+                    x.WinLoss,
+                    GameType = game.Type
                 })
-                .Where(request.GameType, x => x.game!.Type == (short?)request.GameType);
-
-            var total = await query.GroupBy(q => q.round.PlayerCode,
+                .Where(request.GameType, x => x.GameType == (short?)request.GameType)
+                .GroupBy(q => q.PlayerCode,
                 (playerCode, rounds) => new
                 {
-                    BetAmount = rounds.Sum(r => r.round.BetAmount) ?? 0M,
-                    ValidBetAmount = rounds.Sum(r => r.round.ValidBetAmount) ?? 0M,
-                    SettleAmount = rounds.Sum(r => r.round.SettleAmount) ?? 0M,
-                    WinLoss = rounds.Sum(r => r.round.WinLoss) ?? 0M
+                    BetAmount = rounds.Sum(r => r.BetAmount) ?? 0M,
+                    ValidBetAmount = rounds.Sum(r => r.ValidBetAmount) ?? 0M,
+                    SettleAmount = rounds.Sum(r => r.SettleAmount) ?? 0M,
+                    WinLoss = rounds.Sum(r => r.WinLoss) ?? 0M
                 }).FirstOrDefaultAsync(cancellationToken) ?? new
             {
                 BetAmount = 0M,
@@ -71,61 +78,115 @@ namespace Tgs.Report.Core.Queries.Round
                 WinLoss = 0M
             };
 
-            var betRecords = await query
+            var betRecords = await _roundService.GetQueries().Where(x => x.BrandId == request.BrandId)
+                .Where(x => x.CreatedOn >= request.From.ToUniversalTime() &&
+                    x.CreatedOn <= request.To.ToUniversalTime())
+                .Where(request.GameProviderId, x => request.GameProviderId == x.GameProviderId)
+                .Where(request.Status, x => (short?)request.Status == x.ClientStatus)
+                .Where(x => x.PlayerCode == request.PlayerCode)
+                .GroupJoin(_gameService.GetQueries(),
+                    round => round.GameId, game => game.Id,
+                    (round, game) => new
+                    {
+                        round.Id,
+                        round.ClientStatus,
+                        round.BrandId,
+                        round.GameProviderId,
+                        round.GameId,
+                        round.PlayerCode,
+                        round.BetAmount,
+                        round.ValidBetAmount,
+                        round.SettleAmount,
+                        round.WinLoss,
+                        round.ExternalRoundId,
+                        round.ExternalCreatedOn,
+                        round.ExternalClosedOn,
+                        round.CreatedOn,
+                        round.ClosedOn,
+                        round.Turnover,
+                        round.EffectiveBettingPercentage,
+                        round.CurrencyCode,
+                        game
+                    })
+                .SelectMany(x => x.game.DefaultIfEmpty(), (x, game) => new
+                {
+                    RoundId = x.Id,
+                    x.ClientStatus,
+                    x.BrandId,
+                    x.GameProviderId,
+                    x.GameId,
+                    x.PlayerCode,
+                    x.BetAmount,
+                    x.ValidBetAmount,
+                    x.SettleAmount,
+                    x.WinLoss,
+                    x.ExternalRoundId,
+                    x.ExternalCreatedOn,
+                    x.ExternalClosedOn,
+                    x.CreatedOn,
+                    x.ClosedOn,
+                    x.Turnover,
+                    x.EffectiveBettingPercentage,
+                    x.CurrencyCode,
+                    GameName = game.Name,
+                    GameType = game.Type,
+                    SubGameProviderName = game.SubGameProviderCodeNavigation.Name
+                })
+                .Where(request.GameType, x => x.GameType == (short?)request.GameType)
                 .GroupJoin(
                     _playerService.GetQueries(),
-                    combine => combine.round.PlayerCode, player => player.PlayerCode,
+                    combine => combine.PlayerCode, player => player.PlayerCode,
                     (combine, player) => new
                     {
-                        combine.round,
-                        combine.game,
+                        combine,
                         player
                     })
                 .SelectMany(x => x.player.DefaultIfEmpty(), (x, player) => new
                 {
-                    x.round,
-                    x.game,
-                    player
+                    x.combine,
+                    player.PlayerCode,
+                    player.Username
                 })
-                .GroupJoin(_roundDetailService.GetQueries(), c => c.round.Id, detail => detail.RoundId,
+                .GroupJoin(_roundDetailService.GetQueries(), c => c.combine.RoundId, detail => detail.RoundId,
                     (combine, detail) => new
                     {
-                        combine.round,
-                        combine.player,
-                        combine.game,
+                        combine.combine,
+                        combine.PlayerCode,
+                        combine.Username,
                         detail
                     })
                 .SelectMany(x => x.detail.DefaultIfEmpty(), (x, detail) => new
                 {
-                    x.round,
-                    x.player,
-                    x.game,
-                    detail
+                    x.combine,
+                    x.PlayerCode,
+                    x.Username,
+                    detail.AdditionalData
                 })
-                .GroupJoin(_gameProviderService.GetQueries(), combine => combine.round.GameProviderId,
+                .GroupJoin(_gameProviderService.GetQueries(), c => c.combine.GameProviderId,
                     gameProvider => gameProvider.Id,
                     (combine, gameProvider) => new
                     {
-                        combine.round,
-                        combine.player,
-                        combine.game,
-                        combine.detail,
+                        combine.combine,
+                        combine.PlayerCode,
+                        combine.Username,
+                        combine.AdditionalData,
                         gameProvider
                     })
                 .SelectMany(x => x.gameProvider.DefaultIfEmpty(),
                     (x, gameProvider) => new
                     {
-                        x.round,
-                        x.player,
-                        x.game,
-                        x.detail,
-                        gameProvider
+                        x.combine,
+                        x.PlayerCode,
+                        x.Username,
+                        x.AdditionalData,
+                        GameProviderCode = gameProvider.Code,
+                        GameProviderName = gameProvider.Name,
                     })
                 .GroupJoin(_brandGameService.GetQueries(),
                     roundGroup => new
                     {
-                        roundGroup.round.BrandId,
-                        roundGroup.round.GameId
+                        roundGroup.combine.BrandId,
+                        roundGroup.combine.GameId
                     },
                     brandGame => new
                     {
@@ -134,51 +195,51 @@ namespace Tgs.Report.Core.Queries.Round
                     },
                     (roundGroup, brandGame) => new
                     {
-                        roundGroup.round,
-                        roundGroup.player,
-                        roundGroup.game,
-                        roundGroup.gameProvider,
-                        roundGroup.detail,
+                        roundGroup.combine,
+                        roundGroup.PlayerCode,
+                        roundGroup.Username,
+                        roundGroup.AdditionalData,
+                        roundGroup.GameProviderCode,
+                        roundGroup.GameProviderName,
                         brandGame
                     })
                 .SelectMany(x => x.brandGame.DefaultIfEmpty(),
                     (x, brandGame) => new
                     {
-                        x.round,
-                        x.player,
-                        x.game,
-                        x.gameProvider,
-                        x.detail,
+                        x.combine,
+                        x.PlayerCode,
+                        x.Username,
+                        x.AdditionalData,
+                        x.GameProviderCode,
+                        x.GameProviderName,
                         brandGame
                     })
                 .Select(combine => new BetRecordModel
                 {
-                    Id = combine.round.Id,
-                    Status = (ClientRoundStatus)combine.round.ClientStatus,
-                    PlayerCode = combine.player!.PlayerCode,
-                    ExternalPlayerCode = combine.player.PlayerCode,
-                    PlayerName = combine.player.Username,
-                    GameProviderId = combine.round.GameProviderId,
-                    GameProviderCode = combine.game == null ? "" : combine.game.GameProvider.Code,
-                    GameProviderName = combine.gameProvider == null ? "" : combine.gameProvider.Name,
-                    SubGameProviderName = combine.game == null || combine.game.SubGameProviderCodeNavigation == null
-                        ? ""
-                        : combine.game.SubGameProviderCodeNavigation.Name,
-                    GameId = combine.game == null ? 0 : combine.game.Id,
-                    GameName = combine.game == null ? "" : combine.game.Name,
-                    ExternalRoundId = combine.round.ExternalRoundId,
-                    ExternalCreatedOn = combine.round.ExternalCreatedOn,
-                    ExternalClosedOn = combine.round.ExternalClosedOn,
-                    CreatedOn = combine.round.CreatedOn,
-                    ClosedOn = combine.round.ClosedOn,
-                    CurrencyCode = combine.round.CurrencyCode,
-                    BetAmount = combine.round.BetAmount,
-                    ValidBetAmount = combine.round.Turnover,
-                    Turnover = combine.round.Turnover * (combine.round.EffectiveBettingPercentage ??
+                    Id = combine.combine.RoundId,
+                    Status = (ClientRoundStatus)combine.combine.ClientStatus,
+                    PlayerCode = combine.PlayerCode,
+                    ExternalPlayerCode = combine.PlayerCode,
+                    PlayerName = combine.Username,
+                    GameProviderId = combine.combine.GameProviderId,
+                    GameProviderCode = combine.GameProviderCode,
+                    GameProviderName = combine.GameProviderName,
+                    SubGameProviderName = combine.combine.SubGameProviderName,
+                    GameId = combine.combine.GameId,
+                    GameName = combine.combine.GameName,
+                    ExternalRoundId = combine.combine.ExternalRoundId,
+                    ExternalCreatedOn = combine.combine.ExternalCreatedOn,
+                    ExternalClosedOn = combine.combine.ExternalClosedOn,
+                    CreatedOn = combine.combine.CreatedOn,
+                    ClosedOn = combine.combine.ClosedOn,
+                    CurrencyCode = combine.combine.CurrencyCode,
+                    BetAmount = combine.combine.BetAmount,
+                    ValidBetAmount = combine.combine.Turnover,
+                    Turnover = combine.combine.Turnover * (combine.combine.EffectiveBettingPercentage ??
                         (combine.brandGame == null ? 100M : combine.brandGame.EffectiveBettingPercentage)) / 100M,
-                    SettleAmount = combine.round.SettleAmount,
-                    WinLoss = -combine.round.WinLoss,
-                    AdditionalData = combine.detail == null ? "" : combine.detail.AdditionalData
+                    SettleAmount = combine.combine.SettleAmount,
+                    WinLoss = -combine.combine.WinLoss,
+                    AdditionalData = combine.AdditionalData
                 })
                 .OrderByDescending(x => x.CreatedOn)
                 .CreatePagedResponseAsync(request);

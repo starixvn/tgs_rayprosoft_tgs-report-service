@@ -38,6 +38,9 @@ namespace Tgs.Report.UnitTest.Vip
                 .AsQueryable()
                 .BuildMock();
 
+            var playerBonusAggregates = CreatePlayerBonusAggregateFixture(brandId).CreateMany<PlayerBonusAggregate>(1).AsQueryable()
+                .BuildMock();
+
             var request = new GetVipReportRequest
             {
                 BrandId = brandId,
@@ -49,11 +52,13 @@ namespace Tgs.Report.UnitTest.Vip
             var mockPlayers = GetDbSet(players);
             var mockPlayerAggregates = GetDbSet(playerAggregates);
             var mockPlayerGameAggregates = GetDbSet(playerGameAggregates);
+            var mockPlayerBonusAggregates = GetDbSet(playerBonusAggregates);
 
             fakeDbContext.WithdrawForms.Returns(mockWithdrawForms.Object);
             fakeDbContext.Players.Returns(mockPlayers.Object);
             fakeDbContext.PlayerAggregates.Returns(mockPlayerAggregates.Object);
             fakeDbContext.PlayerGameRebateAggregates.Returns(mockPlayerGameAggregates.Object);
+            fakeDbContext.PlayerBonusAggregates.Returns(mockPlayerBonusAggregates.Object);
 
             var response = await sut.Handle(request, default);
 
@@ -100,6 +105,15 @@ namespace Tgs.Report.UnitTest.Vip
                 .With(s => s.BrandId, brandId)
                 .With(s => s.PlayerCode, "PlayerCode")
                 .With(s => s.ReportDate, DateTime.UtcNow));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            return fixture;
+        }
+
+        private static Fixture CreatePlayerBonusAggregateFixture(Guid brandId)
+        {
+            var fixture = new Fixture();
+            fixture.Customize<PlayerBonusAggregate>(u => u
+                .With(s => s.BrandId, brandId));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

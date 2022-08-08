@@ -23,6 +23,12 @@ namespace Tgs.Report.Service.Controllers
             [FromQuery] GetPlayerContributionsRequest request)
             => _mediator.Send(request);
 
+        [HttpGet("contributionTotalAmount", Name = "GetPlayerContributionsTotalAmount")]
+        [Description("Get player contribution total amount")]
+        public Task<PlayerContributionTotalAmountModel> GetPlayerContributionsTotalAmountAsync(
+            [FromQuery] GetPlayerContributionsTotalAmountRequest request)
+            => _mediator.Send(request);
+
         [HttpGet("accountChanges", Name = "GetPlayerAccountChanges")]
         [Description("Get player account changes")]
         public Task<PagedResponse<PlayerAccountChangeModel>> GetPlayerAccountChangesAsync(

@@ -46,8 +46,6 @@ namespace Tgs.Report.Client
         ValueTask<PagedResponse<PlayerContributionModel>> GetPlayerContributionsAsync(
             GetPlayerContributionsRequest request);
 
-        ValueTask<PagedResponse<TeamInfoModel>> GetAgentTeamInfoAsync(GetAgentTeamInfoRequest request);
-
         ValueTask<PagedResponse<AgentDividendModel>> GetAgentDividendsAsync(GetAgentDividendsRequest request);
 
         ValueTask<PagedResponse<AgentPlayerWinLossModel>> GetAgentPlayerWinLossAsync(
@@ -112,5 +110,10 @@ namespace Tgs.Report.Client
         ValueTask<PagedResponse<MarketingFirstDepositDetailModel>> GetMarketingFirstDepositDetailsAsync(GetMarketingFirstDepositDetailRequest request);
 
         ValueTask<PagedResponse<MarketingGamingDetailModel>> GetMarketingGamingDetailsAsync(GetMarketingGamingDetailRequest request);
+
+        ValueTask<PlayerContributionTotalAmountModel> GetPlayerContributionsTotalAmountAsync(
+            GetPlayerContributionsTotalAmountRequest request);
+
+        ValueTask<VipTotalAmountModel> GetVipRebateTotalAmountAsync(GetVipReportTotalAmountRequest request);
     }
 }

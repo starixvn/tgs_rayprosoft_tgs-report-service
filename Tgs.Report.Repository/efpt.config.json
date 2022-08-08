@@ -146,23 +146,15 @@
          "ObjectType": 0
       },
       {
-         "Name": "bet.game_actions",
-         "ObjectType": 0
-      },
-      {
-         "Name": "bet.round_details",
-         "ObjectType": 0
-      },
-      {
-         "Name": "bet.rounds",
-         "ObjectType": 0
-      },
-      {
          "Name": "report.round_aggregates",
          "ObjectType": 0
       },
       {
          "Name": "report.player_aggregates",
+         "ObjectType": 0
+      },
+      {
+         "Name": "report.player_bonus_aggregates",
          "ObjectType": 0
       },
       {
@@ -183,6 +175,18 @@
       },
       {
          "Name": "report.brand_game_provider_aggregate_records",
+         "ObjectType": 0
+      },
+      {
+         "Name": "bet.game_actions",
+         "ObjectType": 0
+      },
+      {
+         "Name": "bet.round_details",
+         "ObjectType": 0
+      },
+      {
+         "Name": "bet.rounds",
          "ObjectType": 0
       }
    ],

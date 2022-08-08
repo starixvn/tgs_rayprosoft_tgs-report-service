@@ -44,6 +44,7 @@ namespace Tgs.Report.Repository.Entities
         public virtual DbSet<Licensee> Licensees { get; set; } = null!;
         public virtual DbSet<Player> Players { get; set; } = null!;
         public virtual DbSet<PlayerAggregate> PlayerAggregates { get; set; } = null!;
+        public virtual DbSet<PlayerBonusAggregate> PlayerBonusAggregates { get; set; } = null!;
         public virtual DbSet<PlayerBucket> PlayerBuckets { get; set; } = null!;
         public virtual DbSet<PlayerBucketHistory> PlayerBucketHistories { get; set; } = null!;
         public virtual DbSet<PlayerGameRebateAggregate> PlayerGameRebateAggregates { get; set; } = null!;
@@ -94,6 +95,7 @@ namespace Tgs.Report.Repository.Entities
             modelBuilder.ApplyConfiguration(new Configurations.LicenseeConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.PlayerConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.PlayerAggregateConfiguration());
+            modelBuilder.ApplyConfiguration(new Configurations.PlayerBonusAggregateConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.PlayerBucketConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.PlayerBucketHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.PlayerGameRebateAggregateConfiguration());

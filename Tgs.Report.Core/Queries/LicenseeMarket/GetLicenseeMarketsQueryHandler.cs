@@ -70,6 +70,21 @@ namespace Tgs.Report.Core.Queries.LicenseeMarket
                 .ToArrayAsync(cancellationToken)
                 .ConfigureAwait(false);
 
+            var playerBonuses = await _context.PlayerBonusAggregates
+                .Where(x => brands.Select(x => x.BrandId).Contains(x.BrandId))
+                .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
+                .GroupBy(x => x.BrandId, (brandId, group) => new
+                {
+                    BrandId = brandId,
+                    RebateAmount = group.Sum(s => s.RebateAmount),
+                    PromotionAmount = group.Sum(s => s.PromotionAmount),
+                    UpgradeAmount = group.Sum(s => s.UpgradeAmount),
+                    SeasonAmount = group.Sum(s => s.SeasonAmount),
+                    BirthdayAmount = group.Sum(s => s.BirthdayAmount)
+                })
+                .ToArrayAsync(cancellationToken)
+                .ConfigureAwait(false);
+
             var playerAggregates = await _context.PlayerAggregates
                 .Where(x => brands.Select(x => x.BrandId).Contains(x.BrandId))
                 .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
@@ -113,6 +128,26 @@ namespace Tgs.Report.Core.Queries.LicenseeMarket
                         x.brand.CurrencyCode,
                         market
                     })
+                .GroupJoin(
+                    playerBonuses,
+                    brand => brand.BrandId,
+                    playerBonusAggregate => playerBonusAggregate.BrandId,
+                    (brand, playerBonusAggregate) => new
+                    {
+                        brand,
+                        playerBonusAggregate
+                    })
+                .SelectMany(
+                    x => x.playerBonusAggregate.DefaultIfEmpty(),
+                    (x, bonus) => new
+                    {
+                        x.brand.LicenseeId,
+                        x.brand.BrandId,
+                        x.brand.BrandCode,
+                        x.brand.CurrencyCode,
+                        x.brand.market,
+                        bonus
+                    })
                 .GroupBy(
                     x => new
                     {
@@ -137,7 +172,10 @@ namespace Tgs.Report.Core.Queries.LicenseeMarket
                             BetAmount = playerAggregates.Sum(m => m.market?.BetAmount ?? 0),
                             Turnover = playerAggregates.Sum(m => m.market?.Turnover ?? 0),
                             WinLossAmount = playerAggregates.Sum(m => m.market?.WinLossAmount ?? 0),
-                            NetProfit = playerAggregates.Sum(m => m.market?.NetProfit ?? 0)
+                            NetProfit = playerAggregates.Sum(m => m.market?.NetProfit ?? 0 -
+                                (m.bonus == null
+                                    ? 0
+                                    : m.bonus.UpgradeAmount + m.bonus.SeasonAmount + m.bonus.BirthdayAmount))
                         });
 
             var total = groupDatas

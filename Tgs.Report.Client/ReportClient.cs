@@ -173,20 +173,6 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async ValueTask<PagedResponse<TeamInfoModel>> GetAgentTeamInfoAsync(
-            GetAgentTeamInfoRequest request)
-        {
-            var path = ClientPath.AppendWithProperties($"/api/agentReport/{request.AgentId}/teamInfo?", request);
-
-            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
-            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
-
-            _ = response.EnsureSuccessStatusCode();
-
-            return JsonSerializer.Deserialize<PagedResponse<TeamInfoModel>>(await response.Content.ReadAsStringAsync(),
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
-        }
-
         public async ValueTask<PagedResponse<AgentDividendModel>> GetAgentDividendsAsync(
             GetAgentDividendsRequest request)
         {
@@ -701,6 +687,33 @@ namespace Tgs.Report.Client
 
             return JsonSerializer.Deserialize<decimal>(
                 await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+
+        public async ValueTask<PlayerContributionTotalAmountModel> GetPlayerContributionsTotalAmountAsync(
+            GetPlayerContributionsTotalAmountRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/playerReport/contributionTotalAmount?", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+            _ = response.EnsureSuccessStatusCode();
+
+            return JsonSerializer.Deserialize<PlayerContributionTotalAmountModel>(await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+
+        public async ValueTask<VipTotalAmountModel> GetVipRebateTotalAmountAsync(GetVipReportTotalAmountRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/vipReport/vipTotalAmount?", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+            _ = response.EnsureSuccessStatusCode();
+
+            return JsonSerializer.Deserialize<VipTotalAmountModel>(await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
     }

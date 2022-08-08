@@ -52,7 +52,13 @@ namespace Tgs.Report.Core.Queries.Agent
                     }).ToArrayAsync(cancellationToken);
 
             var agentIds = agentDividends.Select(x => x.AgentId).ToArray();
+
             var agents = await _context.Agents.Where(x => agentIds.Contains(x.Id))
+                .Select(x => new
+                {
+                    x.Id,
+                    x.Username
+                })
                 .ToArrayAsync(cancellationToken);
 
             var models = agentDividends.Join(agents, ad => ad.AgentId, a => a.Id,
