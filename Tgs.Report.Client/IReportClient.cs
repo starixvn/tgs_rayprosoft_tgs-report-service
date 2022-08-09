@@ -114,6 +114,6 @@ namespace Tgs.Report.Client
         ValueTask<PlayerContributionTotalAmountModel> GetPlayerContributionsTotalAmountAsync(
             GetPlayerContributionsTotalAmountRequest request);
 
-        ValueTask<VipTotalAmountModel> GetVipRebateTotalAmountAsync(GetVipReportTotalAmountRequest request);
+        ValueTask<VipTotalAmountModel> GetVipReportTotalAmountAsync(GetVipReportTotalAmountRequest request);
     }
 }

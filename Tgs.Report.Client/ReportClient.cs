@@ -704,7 +704,7 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async ValueTask<VipTotalAmountModel> GetVipRebateTotalAmountAsync(GetVipReportTotalAmountRequest request)
+        public async ValueTask<VipTotalAmountModel> GetVipReportTotalAmountAsync(GetVipReportTotalAmountRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/vipReport/vipTotalAmount?", request);
 
