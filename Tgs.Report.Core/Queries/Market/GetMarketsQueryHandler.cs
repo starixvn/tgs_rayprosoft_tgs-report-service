@@ -158,20 +158,20 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                 (x, playerAggregate) => new
                 {
                     x.ReportDate,
-                    RegisteredCount = playerAggregate == null ? 0 : playerAggregate.RegisteredCount,
-                    FirstFundInCount = playerAggregate == null ? 0 : playerAggregate.FirstFundInCount,
-                    DepositAmount = playerAggregate == null ? 0M : playerAggregate.DepositAmount,
-                    CompanyAdjustAmount = playerAggregate == null ? 0M : playerAggregate.CompanyAdjustAmount,
-                    NoIncludeNetProfitCompanyAdjustAmount = playerAggregate == null ? 0M : playerAggregate.NoIncludeNetProfitCompanyAdjustAmount,
-                    BonusAdjustAmount = playerAggregate == null ? 0M : playerAggregate.BonusAdjustAmount,
-                    NoIncludeNetProfitBonusAdjustAmount = playerAggregate == null ? 0M : playerAggregate.NoIncludeNetProfitBonusAdjustAmount,
-                    RebateAmount = playerAggregate == null ? 0M : playerAggregate.RebateAmount,
-                    PromotionAmount = playerAggregate == null ? 0M : playerAggregate.PromotionAmount,
-                    BetAmount = playerAggregate == null ? 0M : playerAggregate.BetAmount,
-                    OriginalTurnover = playerAggregate == null ? 0M : playerAggregate.OriginalTurnover,
-                    Turnover = playerAggregate == null ? 0M : playerAggregate.Turnover,
-                    WinLossAmount = playerAggregate == null ? 0M : playerAggregate.WinLossAmount,
-                    AllAgentRebateAmount = playerAggregate == null ? 0M : playerAggregate.AllAgentRebateAmount,
+                    playerAggregate.RegisteredCount,
+                    playerAggregate.FirstFundInCount,
+                    playerAggregate.DepositAmount,
+                    playerAggregate.CompanyAdjustAmount,
+                    playerAggregate.NoIncludeNetProfitCompanyAdjustAmount,
+                    playerAggregate.BonusAdjustAmount,
+                    playerAggregate.NoIncludeNetProfitBonusAdjustAmount,
+                    playerAggregate.RebateAmount,
+                    playerAggregate.PromotionAmount,
+                    playerAggregate.BetAmount,
+                    playerAggregate.OriginalTurnover,
+                    playerAggregate.Turnover,
+                    playerAggregate.WinLossAmount,
+                    playerAggregate.AllAgentRebateAmount,
                 })
             .GroupJoin(_context.PlayerBonusAggregates
                 .Where(x => x.BrandId == request.BrandId)
@@ -194,29 +194,45 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
             .SelectMany(x => x.markets.DefaultIfEmpty(),
                 (x, bonus) => new
                 {
-                    x.playerAggregate,
-                    bonus
+                    x.playerAggregate.ReportDate,
+                    x.playerAggregate.RegisteredCount,
+                    x.playerAggregate.FirstFundInCount,
+                    x.playerAggregate.DepositAmount,
+                    x.playerAggregate.CompanyAdjustAmount,
+                    x.playerAggregate.NoIncludeNetProfitCompanyAdjustAmount,
+                    x.playerAggregate.BonusAdjustAmount,
+                    x.playerAggregate.NoIncludeNetProfitBonusAdjustAmount,
+                    x.playerAggregate.RebateAmount,
+                    x.playerAggregate.PromotionAmount,
+                    x.playerAggregate.BetAmount,
+                    x.playerAggregate.OriginalTurnover,
+                    x.playerAggregate.Turnover,
+                    x.playerAggregate.WinLossAmount,
+                    x.playerAggregate.AllAgentRebateAmount,
+                    bonus.UpgradeAmount,
+                    bonus.SeasonAmount,
+                    bonus.BirthdayAmount
                 })
-            .GroupBy(x => x.playerAggregate.ReportDate, (date, group) => new
+            .GroupBy(x => x.ReportDate, (date, group) => new
             {
                 ReportDate = date,
-                RegisteredCount = group.Sum(g => g.playerAggregate.RegisteredCount),
-                FirstFundInCount = group.Sum(g => g.playerAggregate.FirstFundInCount),
-                DepositAmount = group.Sum(g => g.playerAggregate.DepositAmount),
-                CompanyAdjustAmount = group.Sum(g => g.playerAggregate.CompanyAdjustAmount),
-                NoIncludeNetProfitCompanyAdjustAmount = group.Sum(g => g.playerAggregate.NoIncludeNetProfitCompanyAdjustAmount),
-                BonusAdjustAmount = group.Sum(g => g.playerAggregate.BonusAdjustAmount),
-                NoIncludeNetProfitBonusAdjustAmount = group.Sum(g => g.playerAggregate.NoIncludeNetProfitBonusAdjustAmount),
-                RebateAmount = group.Sum(g => g.playerAggregate.RebateAmount),
-                PromotionAmount = group.Sum(g => g.playerAggregate.PromotionAmount),
-                BetAmount = group.Sum(g => g.playerAggregate.BetAmount),
-                OriginalTurnover = group.Sum(g => g.playerAggregate.OriginalTurnover),
-                Turnover = group.Sum(g => g.playerAggregate.Turnover),
-                WinLossAmount = group.Sum(g => g.playerAggregate.WinLossAmount),
-                AllAgentRebateAmount = group.Sum(g => g.playerAggregate.AllAgentRebateAmount),
-                UpgradeAmount = group.Sum(m => m.bonus == null ? 0M : m.bonus.UpgradeAmount),
-                SeasonAmount = group.Sum(m => m.bonus == null ? 0M : m.bonus.SeasonAmount),
-                BirthdayAmount = group.Sum(m => m.bonus == null ? 0M : m.bonus.BirthdayAmount)
+                RegisteredCount = group.Sum(g => g.RegisteredCount),
+                FirstFundInCount = group.Sum(g => g.FirstFundInCount),
+                DepositAmount = group.Sum(g => g.DepositAmount),
+                CompanyAdjustAmount = group.Sum(g => g.CompanyAdjustAmount),
+                NoIncludeNetProfitCompanyAdjustAmount = group.Sum(g => g.NoIncludeNetProfitCompanyAdjustAmount),
+                BonusAdjustAmount = group.Sum(g => g.BonusAdjustAmount),
+                NoIncludeNetProfitBonusAdjustAmount = group.Sum(g => g.NoIncludeNetProfitBonusAdjustAmount),
+                RebateAmount = group.Sum(g => g.RebateAmount),
+                PromotionAmount = group.Sum(g => g.PromotionAmount),
+                BetAmount = group.Sum(g => g.BetAmount),
+                OriginalTurnover = group.Sum(g => g.OriginalTurnover),
+                Turnover = group.Sum(g => g.Turnover),
+                WinLossAmount = group.Sum(g => g.WinLossAmount),
+                AllAgentRebateAmount = group.Sum(g => g.AllAgentRebateAmount),
+                UpgradeAmount = group.Sum(m => m.UpgradeAmount),
+                SeasonAmount = group.Sum(m => m.SeasonAmount),
+                BirthdayAmount = group.Sum(m => m.BirthdayAmount)
             })
             .ToArrayAsync(cancellationToken);
 

@@ -37,7 +37,7 @@ namespace Tgs.Report.UnitTest.Market
             var dailyStatistic = CreateBrandDailyPaymentStatisticFixture(brandId, reportDate).CreateMany<BrandDailyPaymentStatistic>(1).AsQueryable()
                 .BuildMock();
 
-            var playerBonusAggregates = CreatePlayerBonusAggregateFixture(brandId).CreateMany<PlayerBonusAggregate>(1).AsQueryable()
+            var playerBonusAggregates = CreatePlayerBonusAggregateFixture(brandId, reportDate).CreateMany<PlayerBonusAggregate>(1).AsQueryable()
                 .BuildMock();
 
             var request = new GetMarketsRequest
@@ -109,11 +109,12 @@ namespace Tgs.Report.UnitTest.Market
             return fixture;
         }
 
-        private static Fixture CreatePlayerBonusAggregateFixture(Guid brandId)
+        private static Fixture CreatePlayerBonusAggregateFixture(Guid brandId, DateTimeOffset reportDate)
         {
             var fixture = new Fixture();
             fixture.Customize<PlayerBonusAggregate>(u => u
-                .With(s => s.BrandId, brandId));
+                .With(s => s.BrandId, brandId)
+                .With(s => s.ReportDate, reportDate));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
