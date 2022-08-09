@@ -76,6 +76,7 @@ public class GetPlayerContributionsQueryHandler
             .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
             .Where(request.HasUpperAgent == true, x => x.AgentId != null)
             .Where(request.HasUpperAgent == false, x => x.AgentId == null)
+            .Where(x => x.CreatedOn >= from.ToUniversalTime())
             .Select(x => x.PlayerCode).Union(_context.PlayerBonusAggregates
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
@@ -88,6 +89,7 @@ public class GetPlayerContributionsQueryHandler
                     .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
                     .Where(request.HasUpperAgent == true, x => x.AgentId != null)
                     .Where(request.HasUpperAgent == false, x => x.AgentId == null)
+                    .Where(x => x.CreatedOn >= from.ToUniversalTime())
                     .GroupBy(x => x.PlayerCode, (playerCode, list) => new
                     {
                         PlayerCode = playerCode,
