@@ -118,16 +118,16 @@ public class GetVipReportQueryHandler : IRequestHandler<GetVipReportRequest, Pag
                 (x, playerAggregate) => new
                 {
                     x.PlayerCode,
-                    playerAggregate.DepositAmount,
-                    playerAggregate.CompanyAdjustAmount,
-                    playerAggregate.AgentAdjustAmount,
-                    playerAggregate.BonusAdjustAmount,
-                    playerAggregate.BonusAmount,
-                    playerAggregate.BetAmount,
-                    playerAggregate.ValidBetAmount,
-                    playerAggregate.Turnover,
-                    playerAggregate.WinLossAmount,
-                    playerAggregate.NetProfit
+                    DepositAmount = playerAggregate == null ? 0M : playerAggregate.DepositAmount,
+                    CompanyAdjustAmount = playerAggregate == null ? 0M : playerAggregate.CompanyAdjustAmount,
+                    AgentAdjustAmount = playerAggregate == null ? 0M : playerAggregate.AgentAdjustAmount,
+                    BonusAdjustAmount = playerAggregate == null ? 0M : playerAggregate.BonusAdjustAmount,
+                    BonusAmount = playerAggregate == null ? 0M : playerAggregate.BonusAmount,
+                    BetAmount = playerAggregate == null ? 0M : playerAggregate.BetAmount,
+                    ValidBetAmount = playerAggregate == null ? 0M : playerAggregate.ValidBetAmount,
+                    Turnover = playerAggregate == null ? 0M : playerAggregate.Turnover,
+                    WinLossAmount = playerAggregate == null ? 0M : playerAggregate.WinLossAmount,
+                    NetProfit = playerAggregate == null ? 0M : playerAggregate.NetProfit
                 })
             .GroupJoin(_context.PlayerBonusAggregates
                     .Where(x => x.BrandId == request.BrandId)
@@ -170,9 +170,9 @@ public class GetVipReportQueryHandler : IRequestHandler<GetVipReportRequest, Pag
                     x.Turnover,
                     x.WinLossAmount,
                     x.NetProfit,
-                    bonus.UpgradeAmount,
-                    bonus.SeasonAmount,
-                    bonus.BirthdayAmount
+                    UpgradeAmount = bonus == null ? 0M : bonus.UpgradeAmount,
+                    SeasonAmount = bonus == null ? 0M : bonus.SeasonAmount,
+                    BirthdayAmount = bonus == null ? 0M : bonus.BirthdayAmount
                 })
             .GroupJoin(_context.PlayerGameRebateAggregates
                     .Where(x => x.BrandId == request.BrandId)
