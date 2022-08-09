@@ -158,20 +158,20 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                 (x, playerAggregate) => new
                 {
                     x.ReportDate,
-                    playerAggregate.RegisteredCount,
-                    playerAggregate.FirstFundInCount,
-                    playerAggregate.DepositAmount,
-                    playerAggregate.CompanyAdjustAmount,
-                    playerAggregate.NoIncludeNetProfitCompanyAdjustAmount,
-                    playerAggregate.BonusAdjustAmount,
-                    playerAggregate.NoIncludeNetProfitBonusAdjustAmount,
-                    playerAggregate.RebateAmount,
-                    playerAggregate.PromotionAmount,
-                    playerAggregate.BetAmount,
-                    playerAggregate.OriginalTurnover,
-                    playerAggregate.Turnover,
-                    playerAggregate.WinLossAmount,
-                    playerAggregate.AllAgentRebateAmount,
+                    RegisteredCount = playerAggregate == null ? 0 : playerAggregate.RegisteredCount,
+                    FirstFundInCount = playerAggregate == null ? 0 : playerAggregate.FirstFundInCount,
+                    DepositAmount = playerAggregate == null ? 0M : playerAggregate.DepositAmount,
+                    CompanyAdjustAmount = playerAggregate == null ? 0M : playerAggregate.CompanyAdjustAmount,
+                    NoIncludeNetProfitCompanyAdjustAmount = playerAggregate == null ? 0M : playerAggregate.NoIncludeNetProfitCompanyAdjustAmount,
+                    BonusAdjustAmount = playerAggregate == null ? 0M : playerAggregate.BonusAdjustAmount,
+                    NoIncludeNetProfitBonusAdjustAmount = playerAggregate == null ? 0M : playerAggregate.NoIncludeNetProfitBonusAdjustAmount,
+                    RebateAmount = playerAggregate == null ? 0M : playerAggregate.RebateAmount,
+                    PromotionAmount = playerAggregate == null ? 0M : playerAggregate.PromotionAmount,
+                    BetAmount = playerAggregate == null ? 0M : playerAggregate.BetAmount,
+                    OriginalTurnover = playerAggregate == null ? 0M : playerAggregate.OriginalTurnover,
+                    Turnover = playerAggregate == null ? 0M : playerAggregate.Turnover,
+                    WinLossAmount = playerAggregate == null ? 0M : playerAggregate.WinLossAmount,
+                    AllAgentRebateAmount = playerAggregate == null ? 0M : playerAggregate.AllAgentRebateAmount,
                 })
             .GroupJoin(_context.PlayerBonusAggregates
                 .Where(x => x.BrandId == request.BrandId)
@@ -214,9 +214,9 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                 Turnover = group.Sum(g => g.playerAggregate.Turnover),
                 WinLossAmount = group.Sum(g => g.playerAggregate.WinLossAmount),
                 AllAgentRebateAmount = group.Sum(g => g.playerAggregate.AllAgentRebateAmount),
-                UpgradeAmount = group.Sum(m => m.bonus.UpgradeAmount),
-                SeasonAmount = group.Sum(m => m.bonus.SeasonAmount),
-                BirthdayAmount = group.Sum(m => m.bonus.BirthdayAmount)
+                UpgradeAmount = group.Sum(m => m.bonus == null ? 0M : m.bonus.UpgradeAmount),
+                SeasonAmount = group.Sum(m => m.bonus == null ? 0M : m.bonus.SeasonAmount),
+                BirthdayAmount = group.Sum(m => m.bonus == null ? 0M : m.bonus.BirthdayAmount)
             })
             .ToArrayAsync(cancellationToken);
 

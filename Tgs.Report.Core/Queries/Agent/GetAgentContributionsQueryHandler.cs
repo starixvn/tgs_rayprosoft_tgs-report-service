@@ -102,7 +102,7 @@ public class
                     .Where(x => x.ReportDate >= request.From.ToUniversalTime() &&
                         x.ReportDate < request.To.ToUniversalTime())
                     .Where(x => x.CreatedOn >= request.From.ToUniversalTime())
-                    .GroupBy(x => x.PlayerCode,(playerCode, list) => new
+                    .GroupBy(x => x.PlayerCode, (playerCode, list) => new
                     {
                         PlayerCode = playerCode,
                         DepositAmount = list.Sum(p => p.DepositAmount),
@@ -110,10 +110,10 @@ public class
                             p.NoIncludeNetProfitCompanyAdjustAmount),
                         AgentAdjustAmount = list.Sum(p
                             => p.AgentAdjustAmount -
-                                p.NoIncludeNetProfitAgentAdjustAmount),
+                            p.NoIncludeNetProfitAgentAdjustAmount),
                         BonusAdjustAmount = list.Sum(p
                             => p.BonusAdjustAmount -
-                                p.NoIncludeNetProfitBonusAdjustAmount),
+                            p.NoIncludeNetProfitBonusAdjustAmount),
                         BonusAmount =
                             list.Sum(p
                                 => p.RebateAmount + p.PromotionAmount),
@@ -198,7 +198,7 @@ public class
                     bonus.SeasonAmount,
                     bonus.BirthdayAmount
                 })
-            .Join(_playerService.GetQueries(),aggregate => aggregate.PlayerCode, player => player.PlayerCode,
+            .Join(_playerService.GetQueries(), aggregate => aggregate.PlayerCode, player => player.PlayerCode,
                 (agg, player) => new
                 {
                     agg.PlayerCode,
@@ -236,13 +236,12 @@ public class
                             => p.BonusAdjustAmount),
                         BonusAmount =
                             playerAggregate.Sum(p
-                                => (p.BonusAmount) +
-                                    (p.UpgradeAmount + p.SeasonAmount + p.BirthdayAmount)),
+                                => p.BonusAmount + p.UpgradeAmount + p.SeasonAmount + p.BirthdayAmount),
                         BetAmount = playerAggregate.Sum(p => p.BetAmount),
                         ValidBetAmount = playerAggregate.Sum(p => p.Turnover),
                         Turnover = playerAggregate.Sum(p => p.Turnover),
                         WinLossAmount = playerAggregate.Sum(p => p.WinLossAmount),
-                        NetProfit = playerAggregate.Sum(p => (p.NetProfit)
+                        NetProfit = playerAggregate.Sum(p => p.NetProfit
                             - (p.UpgradeAmount + p.SeasonAmount + p.BirthdayAmount))
                     })
             .CreatePagedResponseAsync(request);
