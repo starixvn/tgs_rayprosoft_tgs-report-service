@@ -21,7 +21,13 @@ namespace Tgs.Report.Core.Queries.Agent
         {
             var mainAgent = await _context.Agents.Where(x => x.BrandId == request.BrandId)
                 .Where(request.Username, x => request.Username == x.Username)
-                .Where(request.AgentId, x => x.Id == request.AgentId).FirstOrDefaultAsync(cancellationToken);
+                .Where(request.AgentId, x => x.Id == request.AgentId)
+                .Select(x => new
+                {
+                    x.Id,
+                    x.Username
+                })
+                .FirstOrDefaultAsync(cancellationToken);
 
             if (mainAgent is null)
             {
@@ -60,10 +66,14 @@ namespace Tgs.Report.Core.Queries.Agent
                 .ConfigureAwait(false);
 
             var subAgents = await _context.Agents.Where(x => x.ParentAgentId == mainAgent.Id)
+                .Select(x => new
+                {
+                    x.Id,
+                    x.Username
+                })
                 .ToListAsync(cancellationToken);
 
-            var agents = new List<Repository.Entities.Agent> { mainAgent };
-            agents.AddRange(subAgents);
+            var agents = subAgents.Union(new[]{mainAgent});
 
             var agentIds = agents.Select(x => x.Id).ToArray();
 

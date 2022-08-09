@@ -22,9 +22,10 @@ namespace Tgs.Report.UnitTest.Agent
             var fakeWithdrawForm = Substitute.For<ITgsService<WithdrawForm>>();
             var fakePlayer = Substitute.For<ITgsService<Repository.Entities.Player>>();
             var fakePlayerAggregate = Substitute.For<ITgsService<PlayerAggregate>>();
+            var fakePlayerBonusAggregate = Substitute.For<ITgsService<PlayerBonusAggregate>>();
 
             var sut = new GetAgentContributionsQueryHandler(fakeAgent, fakeWithdrawForm, fakePlayer,
-                fakePlayerAggregate);
+                fakePlayerAggregate, fakePlayerBonusAggregate);
 
             var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
             var agentUsername = "agentUsername";
@@ -40,6 +41,9 @@ namespace Tgs.Report.UnitTest.Agent
             var playerAggregates = CreatePlayerAggregateFixture(brandId).CreateMany<PlayerAggregate>(1).AsQueryable()
                 .BuildMock();
 
+            var playerBonusAggregates = CreatePlayerBonusAggregateFixture(brandId).CreateMany<PlayerBonusAggregate>(1).AsQueryable()
+                .BuildMock();
+
             var request = new GetAgentContributionsRequest
             {
                 BrandId = brandId,
@@ -52,6 +56,7 @@ namespace Tgs.Report.UnitTest.Agent
             fakeWithdrawForm.GetQueries().Returns(withdrawForms);
             fakePlayer.GetQueries().Returns(players);
             fakePlayerAggregate.GetQueries().Returns(playerAggregates);
+            fakePlayerBonusAggregate.GetQueries().Returns(playerBonusAggregates);
 
             var response = await sut.Handle(request, default);
 
@@ -85,6 +90,15 @@ namespace Tgs.Report.UnitTest.Agent
         {
             var fixture = new Fixture();
             fixture.Customize<PlayerAggregate>(u => u
+                .With(s => s.BrandId, brandId));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            return fixture;
+        }
+
+        private static Fixture CreatePlayerBonusAggregateFixture(Guid brandId)
+        {
+            var fixture = new Fixture();
+            fixture.Customize<PlayerBonusAggregate>(u => u
                 .With(s => s.BrandId, brandId));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;

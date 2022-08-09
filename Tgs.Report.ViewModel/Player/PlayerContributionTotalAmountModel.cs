@@ -1,0 +1,29 @@
+﻿using Tgs.Report.Enum;
+
+namespace Tgs.Report.ViewModel.Player
+{
+    public record PlayerContributionTotalAmountModel
+    {
+        public decimal DepositAmount { get; init; }
+
+        public decimal WithdrawalAmount { get; set; }
+
+        public decimal CompanyAdjustAmount { get; init; }
+
+        public decimal AgentAdjustAmount { get; init; }
+
+        public decimal BonusAdjustAmount { get; init; }
+
+        public decimal BonusAmount { get; init; }
+
+        public decimal BetAmount { get; init; }
+
+        public decimal ValidBetAmount { get; init; }
+
+        public decimal Turnover { get; init; }
+
+        public decimal WinLossAmount { get; init; }
+
+        public decimal NetProfit { get; init; }
+    }
+}

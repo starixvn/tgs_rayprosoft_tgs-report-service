@@ -70,6 +70,8 @@ namespace Tgs.Report.Repository.Entities.Configurations
 
             entity.Property(e => e.DepositHandlingFeeRateTenPercentile).HasColumnName("deposit_handling_fee_rate_ten_percentile");
 
+            entity.Property(e => e.DepositPaymentLockEnabled).HasColumnName("deposit_payment_lock_enabled");
+
             entity.Property(e => e.Description)
                 .HasMaxLength(256)
                 .HasColumnName("description");

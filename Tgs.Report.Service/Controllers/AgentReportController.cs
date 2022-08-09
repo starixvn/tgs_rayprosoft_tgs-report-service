@@ -23,17 +23,6 @@ namespace Tgs.Report.Service.Controllers
             [FromQuery] GetAgentContributionsRequest request) =>
             _mediator.Send(request);
 
-        [HttpGet("{id}/teamInfo")]
-        [Description("Get agent team Information")]
-        public Task<PagedResponse<TeamInfoModel>> GetAgentTeamInformationAsync(
-            Guid id,
-            [FromQuery] GetAgentTeamInfoRequest request)
-        {
-            request.AgentId = id;
-
-            return _mediator.Send(request);
-        }
-
         [HttpGet("dividends")]
         [Description("Get agent dividends report")]
         public Task<PagedResponse<AgentDividendModel>>
