@@ -79,36 +79,101 @@ public class GetVipReportQueryHandler : IRequestHandler<GetVipReportRequest, Pag
                 .Select(x => x.PlayerCode))
             .GroupBy(x => x, (x, y) => new { PlayerCode = x })
             .GroupJoin(_context.PlayerAggregates
+            .Where(x => x.BrandId == request.BrandId)
+            .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
+            .Where(x => x.CreatedOn >= from.ToUniversalTime())
+            .GroupBy(x => new
+            {
+                x.PlayerCode,
+                x.BrandId
+            },
+                (x, players) => new
+                {
+                    x.BrandId,
+                    x.PlayerCode,
+                    DepositAmount = players.Sum(m => m.DepositAmount),
+                    WithdrawalAmount = players.Sum(m => m.WithdrawalAmount),
+                    CompanyAdjustAmount =
+                        players.Sum(m => m.CompanyAdjustAmount - m.NoIncludeNetProfitCompanyAdjustAmount),
+                    BonusAdjustAmount =
+                        players.Sum(m => m.BonusAdjustAmount - m.NoIncludeNetProfitBonusAdjustAmount),
+                    BonusAmount = players.Sum(m => m.RebateAmount + m.PromotionAmount),
+                    BetAmount = players.Sum(m => m.BetAmount),
+                    ValidBetAmount = players.Sum(m => m.OriginalTurnover),
+                    Turnover = players.Sum(m => m.Turnover),
+                    WinLossAmount = players.Sum(m => m.WinLossAmount),
+                    NetProfit = players.Sum(m
+                        => m.WinLossAmount - (m.CompanyAdjustAmount - m.NoIncludeNetProfitCompanyAdjustAmount) -
+                        m.RebateAmount - m.PromotionAmount)
+                })
+            .GroupJoin(_context.PlayerGameRebateAggregates
                     .Where(x => x.BrandId == request.BrandId)
-                    .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
-                    .Where(x => x.CreatedOn >= from.ToUniversalTime())
-                    .GroupBy(x => x.PlayerCode, (playerCode, list) => new
-                    {
-                        PlayerCode = playerCode,
-                        DepositAmount = list.Sum(p => p.DepositAmount),
-                        CompanyAdjustAmount = list.Sum(p => p.CompanyAdjustAmount -
-                            p.NoIncludeNetProfitCompanyAdjustAmount),
-                        AgentAdjustAmount = list.Sum(p
-                            => p.AgentAdjustAmount -
-                            p.NoIncludeNetProfitAgentAdjustAmount),
-                        BonusAdjustAmount = list.Sum(p
-                            => p.BonusAdjustAmount -
-                            p.NoIncludeNetProfitBonusAdjustAmount),
-                        BonusAmount =
-                            list.Sum(p
-                                => p.RebateAmount + p.PromotionAmount),
-                        BetAmount = list.Sum(p => p.BetAmount),
-                        ValidBetAmount = list.Sum(p => p.Turnover),
-                        Turnover = list.Sum(p => p.Turnover),
-                        WinLossAmount = list.Sum(p => p.WinLossAmount),
-                        NetProfit = list.Sum(p => p.WinLossAmount
-                            - (p.AgentAdjustAmount -
-                                p.NoIncludeNetProfitAgentAdjustAmount)
-                            - (p.BonusAdjustAmount -
-                                p.NoIncludeNetProfitBonusAdjustAmount)
-                            - p.RebateAmount
-                            - p.PromotionAmount)
-                    }),
+                    .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime()),
+                p => new
+                {
+                    p.BrandId,
+                    p.PlayerCode
+                },
+                pg => new
+                {
+                    pg.BrandId,
+                    pg.PlayerCode
+                },
+                (p, pg) => new
+                {
+                    p,
+                    pg
+                })
+            .SelectMany(x => x.pg.DefaultIfEmpty(),
+                (x, pg) => new
+                {
+                    x.p.BrandId,
+                    x.p.PlayerCode,
+                    x.p.DepositAmount,
+                    x.p.WithdrawalAmount,
+                    x.p.CompanyAdjustAmount,
+                    x.p.BonusAdjustAmount,
+                    x.p.BonusAmount,
+                    x.p.BetAmount,
+                    x.p.ValidBetAmount,
+                    x.p.Turnover,
+                    x.p.WinLossAmount,
+                    x.p.NetProfit,
+                    pg
+                })
+            .GroupBy(x => new
+            {
+                x.BrandId,
+                x.PlayerCode,
+                x.DepositAmount,
+                x.WithdrawalAmount,
+                x.CompanyAdjustAmount,
+                x.BonusAdjustAmount,
+                x.BonusAmount,
+                x.BetAmount,
+                x.ValidBetAmount,
+                x.Turnover,
+                x.WinLossAmount,
+                x.NetProfit
+            },
+                (x, players) => new
+                {
+                    x.BrandId,
+                    x.PlayerCode,
+                    x.DepositAmount,
+                    x.WithdrawalAmount,
+                    x.CompanyAdjustAmount,
+                    x.BonusAdjustAmount,
+                    RebateAmount =
+                        players.Sum(m =>
+                            m.pg == null ? 0M : m.pg.VipRebateAmount),
+                    x.BonusAmount,
+                    x.BetAmount,
+                    x.ValidBetAmount,
+                    x.Turnover,
+                    x.WinLossAmount,
+                    x.NetProfit
+                }),
                 p => p.PlayerCode,
                 playerAggregate => playerAggregate.PlayerCode,
                 (player, players) => new
@@ -120,16 +185,7 @@ public class GetVipReportQueryHandler : IRequestHandler<GetVipReportRequest, Pag
                 (x, playerAggregate) => new
                 {
                     x.PlayerCode,
-                    DepositAmount = playerAggregate == null ? 0M : playerAggregate.DepositAmount,
-                    CompanyAdjustAmount = playerAggregate == null ? 0M : playerAggregate.CompanyAdjustAmount,
-                    AgentAdjustAmount = playerAggregate == null ? 0M : playerAggregate.AgentAdjustAmount,
-                    BonusAdjustAmount = playerAggregate == null ? 0M : playerAggregate.BonusAdjustAmount,
-                    BonusAmount = playerAggregate == null ? 0M : playerAggregate.BonusAmount,
-                    BetAmount = playerAggregate == null ? 0M : playerAggregate.BetAmount,
-                    ValidBetAmount = playerAggregate == null ? 0M : playerAggregate.ValidBetAmount,
-                    Turnover = playerAggregate == null ? 0M : playerAggregate.Turnover,
-                    WinLossAmount = playerAggregate == null ? 0M : playerAggregate.WinLossAmount,
-                    NetProfit = playerAggregate == null ? 0M : playerAggregate.NetProfit
+                    playerAggregate
                 })
             .GroupJoin(_context.PlayerBonusAggregates
                     .Where(x => x.BrandId == request.BrandId)
@@ -146,95 +202,29 @@ public class GetVipReportQueryHandler : IRequestHandler<GetVipReportRequest, Pag
                 (player, markets) => new
                 {
                     player.PlayerCode,
-                    player.DepositAmount,
-                    player.CompanyAdjustAmount,
-                    player.AgentAdjustAmount,
-                    player.BonusAdjustAmount,
-                    player.BonusAmount,
-                    player.BetAmount,
-                    player.ValidBetAmount,
-                    player.Turnover,
-                    player.WinLossAmount,
-                    player.NetProfit,
+                    player.playerAggregate,
                     markets
                 })
             .SelectMany(x => x.markets.DefaultIfEmpty(),
                 (x, bonus) => new
                 {
                     x.PlayerCode,
-                    x.DepositAmount,
-                    x.CompanyAdjustAmount,
-                    x.AgentAdjustAmount,
-                    x.BonusAdjustAmount,
-                    x.BonusAmount,
-                    x.BetAmount,
-                    x.ValidBetAmount,
-                    x.Turnover,
-                    x.WinLossAmount,
-                    x.NetProfit,
-                    UpgradeAmount = bonus == null ? 0M : bonus.UpgradeAmount,
-                    SeasonAmount = bonus == null ? 0M : bonus.SeasonAmount,
-                    BirthdayAmount = bonus == null ? 0M : bonus.BirthdayAmount
-                })
-            .GroupJoin(_context.PlayerGameRebateAggregates
-                    .Where(x => x.BrandId == request.BrandId)
-                    .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
-                    .GroupBy(x => x.PlayerCode,(playerCode, list) => new
-                    {
-                        PlayerCode = playerCode,
-                        RebateAmount = list.Sum(s => s.VipRebateAmount)
-                    }),
-                p => p.PlayerCode,
-                pg => pg.PlayerCode,
-                (player, pg) => new
-                {
-                    player.PlayerCode,
-                    player.DepositAmount,
-                    player.CompanyAdjustAmount,
-                    player.AgentAdjustAmount,
-                    player.BonusAdjustAmount,
-                    player.BonusAmount,
-                    player.BetAmount,
-                    player.ValidBetAmount,
-                    player.Turnover,
-                    player.WinLossAmount,
-                    player.NetProfit,
-                    player.UpgradeAmount,
-                    player.SeasonAmount,
-                    player.BirthdayAmount,
-                    pg
-                })
-            .SelectMany(x => x.pg.DefaultIfEmpty(),
-                (x, pg) => new
-                {
-                    x.PlayerCode,
-                    x.DepositAmount,
-                    x.CompanyAdjustAmount,
-                    x.BonusAdjustAmount,
-                    x.BonusAmount,
-                    x.BetAmount,
-                    x.ValidBetAmount,
-                    x.Turnover,
-                    x.WinLossAmount,
-                    x.NetProfit,
-                    x.UpgradeAmount,
-                    x.SeasonAmount,
-                    x.BirthdayAmount,
-                    pg.RebateAmount
+                    x.playerAggregate,
+                    bonus
                 })
             .GroupBy(x => x.PlayerCode,(playerCode,group) => new
             {
                 PlayerCode= playerCode,
-                DepositAmount = group.Sum(s => s.DepositAmount),
-                CompanyAdjustAmount = group.Sum(s => s.CompanyAdjustAmount),
-                BonusAdjustAmount = group.Sum(s => s.BonusAdjustAmount),
-                RebateAmount = group.Sum(s => s.BonusAdjustAmount),
-                BonusAmount = group.Sum(s => s.BonusAmount + s.UpgradeAmount + s.SeasonAmount + s.BirthdayAmount),
-                BetAmount = group.Sum(s => s.BetAmount),
-                ValidBetAmount = group.Sum(s => s.ValidBetAmount),
-                Turnover = group.Sum(s => s.Turnover),
-                WinLossAmount = group.Sum(s => s.WinLossAmount),
-                NetProfit = group.Sum(s => s.NetProfit - s.UpgradeAmount - s.SeasonAmount + s.BirthdayAmount)
+                DepositAmount = group.Sum(s => s.playerAggregate.DepositAmount),
+                CompanyAdjustAmount = group.Sum(s => s.playerAggregate.CompanyAdjustAmount),
+                BonusAdjustAmount = group.Sum(s => s.playerAggregate.BonusAdjustAmount),
+                RebateAmount = group.Sum(s => s.playerAggregate.RebateAmount),
+                BonusAmount = group.Sum(s => s.playerAggregate.BonusAmount + s.bonus.UpgradeAmount + s.bonus.SeasonAmount + s.bonus.BirthdayAmount),
+                BetAmount = group.Sum(s => s.playerAggregate.BetAmount),
+                ValidBetAmount = group.Sum(s => s.playerAggregate.ValidBetAmount),
+                Turnover = group.Sum(s => s.playerAggregate.Turnover),
+                WinLossAmount = group.Sum(s => s.playerAggregate.WinLossAmount),
+                NetProfit = group.Sum(s => s.playerAggregate.NetProfit - s.bonus.UpgradeAmount - s.bonus.SeasonAmount + s.bonus.BirthdayAmount)
                 
             })
             .Join(_context.Players.Include(x => x.Vip).Select(x => new

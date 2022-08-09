@@ -114,7 +114,9 @@ namespace Tgs.Report.UnitTest.Vip
         {
             var fixture = new Fixture();
             fixture.Customize<PlayerBonusAggregate>(u => u
-                .With(s => s.BrandId, brandId));
+                .With(s => s.BrandId, brandId)
+                .With(s => s.PlayerCode, "PlayerCode")
+                .With(s => s.ReportDate, DateTime.UtcNow));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

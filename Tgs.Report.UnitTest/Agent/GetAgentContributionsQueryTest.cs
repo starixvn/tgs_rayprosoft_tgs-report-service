@@ -43,7 +43,7 @@ namespace Tgs.Report.UnitTest.Agent
             var playerAggregates = CreatePlayerAggregateFixture(brandId, agents.First().Id, players.First().PlayerCode, reportDate).CreateMany<PlayerAggregate>(1).AsQueryable()
                 .BuildMock();
 
-            var playerBonusAggregates = CreatePlayerBonusAggregateFixture(brandId).CreateMany<PlayerBonusAggregate>(1).AsQueryable()
+            var playerBonusAggregates = CreatePlayerBonusAggregateFixture(brandId, agents.First().Id, players.First().PlayerCode, reportDate).CreateMany<PlayerBonusAggregate>(1).AsQueryable()
                 .BuildMock();
 
             var request = new GetAgentContributionsRequest
@@ -104,11 +104,14 @@ namespace Tgs.Report.UnitTest.Agent
             return fixture;
         }
 
-        private static Fixture CreatePlayerBonusAggregateFixture(Guid brandId)
+        private static Fixture CreatePlayerBonusAggregateFixture(Guid brandId, Guid agentId, string playerCode, DateTimeOffset reportDate)
         {
             var fixture = new Fixture();
             fixture.Customize<PlayerBonusAggregate>(u => u
-                .With(s => s.BrandId, brandId));
+                .With(s => s.BrandId, brandId)
+                .With(s => s.AgentId, agentId)
+                .With(s => s.PlayerCode, playerCode)
+                .With(s => s.ReportDate, reportDate));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
