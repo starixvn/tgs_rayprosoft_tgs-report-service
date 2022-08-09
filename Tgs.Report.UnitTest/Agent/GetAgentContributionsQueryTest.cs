@@ -29,6 +29,8 @@ namespace Tgs.Report.UnitTest.Agent
 
             var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
             var agentUsername = "agentUsername";
+            var reportDate = new DateTimeOffset(2022, 1, 21, 0, 0, 0, new TimeSpan(8, 0, 0));
+
             var agents = CreateAgentFixture(brandId, agentUsername).CreateMany<Repository.Entities.Agent>(1)
                 .AsQueryable()
                 .BuildMock();
@@ -38,7 +40,7 @@ namespace Tgs.Report.UnitTest.Agent
 
             var players = agents.SelectMany(x => x.Players);
 
-            var playerAggregates = CreatePlayerAggregateFixture(brandId).CreateMany<PlayerAggregate>(1).AsQueryable()
+            var playerAggregates = CreatePlayerAggregateFixture(brandId, agents.First().Id, players.First().PlayerCode, reportDate).CreateMany<PlayerAggregate>(1).AsQueryable()
                 .BuildMock();
 
             var playerBonusAggregates = CreatePlayerBonusAggregateFixture(brandId).CreateMany<PlayerBonusAggregate>(1).AsQueryable()
@@ -49,7 +51,9 @@ namespace Tgs.Report.UnitTest.Agent
                 BrandId = brandId,
                 AgentId = null,
                 Username = agentUsername,
-                SortBy = null
+                SortBy = null,
+                From = reportDate,
+                To = reportDate.AddDays(1)
             };
 
             fakeAgent.GetQueries().Returns(agents);
@@ -71,7 +75,7 @@ namespace Tgs.Report.UnitTest.Agent
                 .With(s => s.BrandId, brandId)
                 .With(s => s.Username, username)
                 .With(s => s.Brand, new Brand())
-                .With(s => s.Players, new Repository.Entities.Player[]{}));
+                .With(s => s.Players, new Repository.Entities.Player[]{new Repository.Entities.Player { PlayerCode = "playerCode"}}));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
@@ -86,11 +90,16 @@ namespace Tgs.Report.UnitTest.Agent
             return fixture;
         }
 
-        private static Fixture CreatePlayerAggregateFixture(Guid brandId)
+        private static Fixture CreatePlayerAggregateFixture(Guid brandId, Guid agentId,string playerCode, DateTimeOffset reportDate)
         {
             var fixture = new Fixture();
             fixture.Customize<PlayerAggregate>(u => u
-                .With(s => s.BrandId, brandId));
+                .With(s => s.BrandId, brandId)
+                .With(s => s.AgentId, agentId)
+                .With(s => s.PlayerCode, playerCode)
+                .With(s => s.ReportDate, reportDate)
+                .With(s => s.CreatedOn, reportDate));
+
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

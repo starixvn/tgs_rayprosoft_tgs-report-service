@@ -72,6 +72,7 @@ public class GetVipReportQueryHandler : IRequestHandler<GetVipReportRequest, Pag
         var vips = await _context.PlayerAggregates
             .Where(x => x.BrandId == request.BrandId)
             .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
+            .Where(x => x.CreatedOn >= from.ToUniversalTime())
             .Select(x => x.PlayerCode).Union(_context.PlayerBonusAggregates
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
@@ -80,6 +81,7 @@ public class GetVipReportQueryHandler : IRequestHandler<GetVipReportRequest, Pag
             .GroupJoin(_context.PlayerAggregates
                     .Where(x => x.BrandId == request.BrandId)
                     .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
+                    .Where(x => x.CreatedOn >= from.ToUniversalTime())
                     .GroupBy(x => x.PlayerCode, (playerCode, list) => new
                     {
                         PlayerCode = playerCode,
