@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Tgs.Report.Repository;
 using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Agent;
@@ -19,21 +18,23 @@ namespace Tgs.Report.Core.Queries.Agent
             GetAgentTeamInfoRequest request,
             CancellationToken cancellationToken) =>
             _context.Players.Where(x => x.AgentId == request.AgentId)
-                .Where(x => x.RegisteredOn != null).GroupJoin(
+                .Where(x => x.RegisteredOn != null)
+                .GroupJoin(
                     _context.PlayerAggregates.Where(x => x.AgentId == request.AgentId),
                     p => p.PlayerCode,
                     a => a.PlayerCode,
                     (player, playerAggregate) => new
                     {
-                        player,
+                        player.Username,
+                        player.RegisteredOn,
                         playerAggregate
                     })
                 .SelectMany(x => x.playerAggregate.DefaultIfEmpty(),
                     (x, playerAggregate) => new
                     {
-                        x.player.Username,
-                        x.player.RegisteredOn,
-                        playerAggregate
+                        x.Username,
+                        x.RegisteredOn,
+                        WinLossAmount = playerAggregate == null ? 0M : playerAggregate.WinLossAmount
                     })
                 .GroupBy(x => new
                 {
@@ -45,8 +46,7 @@ namespace Tgs.Report.Core.Queries.Agent
                         {
                             Username = player.Username,
                             RegisteredOn = player.RegisteredOn,
-                            Contribution = playerAggregate.Sum(x
-                                => x.playerAggregate == null ? 0M : x.playerAggregate.WinLossAmount)
+                            Contribution = playerAggregate.Sum(x => x.WinLossAmount)
                         }).CreatePagedResponseAsync(request);
     }
 }
