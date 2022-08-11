@@ -118,7 +118,7 @@ public class
                             list.Sum(p
                                 => p.RebateAmount + p.PromotionAmount),
                         BetAmount = list.Sum(p => p.BetAmount),
-                        ValidBetAmount = list.Sum(p => p.Turnover),
+                        ValidBetAmount = list.Sum(p => p.OriginalTurnover),
                         Turnover = list.Sum(p => p.Turnover),
                         WinLossAmount = list.Sum(p => p.WinLossAmount),
                         NetProfit = list.Sum(p => p.WinLossAmount
@@ -198,11 +198,34 @@ public class
                     bonus.SeasonAmount,
                     bonus.BirthdayAmount
                 })
+            .GroupBy(x => new
+                {
+                    x.PlayerCode
+                },
+                (player, playerAggregate) =>
+                    new
+                    {
+                        player.PlayerCode,
+                        DepositAmount = playerAggregate.Sum(p => p.DepositAmount),
+                        CompanyAdjustAmount = playerAggregate.Sum(p => p.CompanyAdjustAmount),
+                        AgentAdjustAmount = playerAggregate.Sum(p => p.AgentAdjustAmount),
+                        BonusAdjustAmount = playerAggregate.Sum(p => p.BonusAdjustAmount),
+                        BonusAmount = playerAggregate.Sum(p => p.BonusAmount),
+                        BetAmount = playerAggregate.Sum(p => p.BetAmount),
+                        ValidBetAmount = playerAggregate.Sum(p => p.Turnover),
+                        Turnover = playerAggregate.Sum(p => p.Turnover),
+                        WinLossAmount = playerAggregate.Sum(p => p.WinLossAmount),
+                        NetProfit = playerAggregate.Sum(p => p.NetProfit),
+                        UpgradeAmount = playerAggregate.Sum(p => p.UpgradeAmount),
+                        SeasonAmount = playerAggregate.Sum(p => p.SeasonAmount),
+                        BirthdayAmount = playerAggregate.Sum(p => p.BirthdayAmount)
+                    })
             .Join(_playerService.GetQueries(), aggregate => aggregate.PlayerCode, player => player.PlayerCode,
                 (agg, player) => new
                 {
                     agg.PlayerCode,
                     player.Username,
+                    Type = AccountType.Player,
                     agg.DepositAmount,
                     agg.CompanyAdjustAmount,
                     agg.AgentAdjustAmount,
@@ -217,33 +240,6 @@ public class
                     agg.SeasonAmount,
                     agg.BirthdayAmount
                 })
-            .GroupBy(x => new
-                {
-                    x.Username,
-                    x.PlayerCode
-                },
-                (player, playerAggregate) =>
-                    new
-                    {
-                        player.Username,
-                        player.PlayerCode,
-                        Type = AccountType.Player,
-                        DepositAmount = playerAggregate.Sum(p => p.DepositAmount),
-                        CompanyAdjustAmount = playerAggregate.Sum(p => p.CompanyAdjustAmount),
-                        AgentAdjustAmount = playerAggregate.Sum(p
-                            => p.AgentAdjustAmount),
-                        BonusAdjustAmount = playerAggregate.Sum(p
-                            => p.BonusAdjustAmount),
-                        BonusAmount =
-                            playerAggregate.Sum(p
-                                => p.BonusAmount + p.UpgradeAmount + p.SeasonAmount + p.BirthdayAmount),
-                        BetAmount = playerAggregate.Sum(p => p.BetAmount),
-                        ValidBetAmount = playerAggregate.Sum(p => p.Turnover),
-                        Turnover = playerAggregate.Sum(p => p.Turnover),
-                        WinLossAmount = playerAggregate.Sum(p => p.WinLossAmount),
-                        NetProfit = playerAggregate.Sum(p => p.NetProfit
-                            - (p.UpgradeAmount + p.SeasonAmount + p.BirthdayAmount))
-                    })
             .CreatePagedResponseAsync(request);
 
         var players = new PagedResponse<AgentContributionModel>
@@ -262,12 +258,12 @@ public class
                 CompanyAdjustAmount = x.CompanyAdjustAmount,
                 AgentAdjustAmount = x.AgentAdjustAmount,
                 BonusAdjustAmount = x.BonusAdjustAmount,
-                BonusAmount = x.BonusAmount,
+                BonusAmount = x.BonusAmount + x.UpgradeAmount + x.SeasonAmount + x.BirthdayAmount,
                 BetAmount = x.BetAmount,
                 ValidBetAmount = x.ValidBetAmount,
                 Turnover = x.Turnover,
                 WinLossAmount = x.WinLossAmount,
-                NetProfit = x.NetProfit
+                NetProfit = x.NetProfit - (x.UpgradeAmount + x.SeasonAmount + x.BirthdayAmount)
             }).ToArray()
         };
 
