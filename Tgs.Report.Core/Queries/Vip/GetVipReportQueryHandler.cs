@@ -219,12 +219,15 @@ public class GetVipReportQueryHandler : IRequestHandler<GetVipReportRequest, Pag
                 CompanyAdjustAmount = group.Sum(s => s.playerAggregate.CompanyAdjustAmount),
                 BonusAdjustAmount = group.Sum(s => s.playerAggregate.BonusAdjustAmount),
                 RebateAmount = group.Sum(s => s.playerAggregate.RebateAmount),
-                BonusAmount = group.Sum(s => s.playerAggregate.BonusAmount + s.bonus.UpgradeAmount + s.bonus.SeasonAmount + s.bonus.BirthdayAmount),
+                BonusAmount = group.Sum(s => s.playerAggregate.BonusAmount),
                 BetAmount = group.Sum(s => s.playerAggregate.BetAmount),
                 ValidBetAmount = group.Sum(s => s.playerAggregate.ValidBetAmount),
                 Turnover = group.Sum(s => s.playerAggregate.Turnover),
                 WinLossAmount = group.Sum(s => s.playerAggregate.WinLossAmount),
-                NetProfit = group.Sum(s => s.playerAggregate.NetProfit - s.bonus.UpgradeAmount - s.bonus.SeasonAmount + s.bonus.BirthdayAmount)
+                NetProfit = group.Sum(s => s.playerAggregate.NetProfit),
+                UpgradeAmount = group.Sum(p => p.bonus.UpgradeAmount),
+                SeasonAmount = group.Sum(p => p.bonus.SeasonAmount),
+                BirthdayAmount = group.Sum(p => p.bonus.BirthdayAmount)
                 
             })
             .Join(_context.Players.Include(x => x.Vip).Select(x => new
@@ -243,12 +246,12 @@ public class GetVipReportQueryHandler : IRequestHandler<GetVipReportRequest, Pag
                 CompanyAdjustAmount = agg.CompanyAdjustAmount,
                 BonusAdjustAmount = agg.BonusAdjustAmount,
                 RebateAmount = agg.RebateAmount,
-                BonusAmount = agg.BonusAmount,
+                BonusAmount = agg.BonusAmount + agg.UpgradeAmount + agg.SeasonAmount + agg.BirthdayAmount,
                 BetAmount = agg.BetAmount,
                 ValidBetAmount = agg.ValidBetAmount,
                 Turnover = agg.Turnover,
                 WinLossAmount = agg.WinLossAmount,
-                NetProfit = agg.NetProfit
+                NetProfit = agg.NetProfit - (agg.UpgradeAmount + agg.SeasonAmount + agg.BirthdayAmount)
             })
             .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
             .Where(request.Level, x => x.Level == request.Level)
