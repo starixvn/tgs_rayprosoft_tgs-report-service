@@ -78,7 +78,7 @@ namespace Tgs.Report.Core.Queries.Round
                 .Select(g => new RoundTotalModel
                 {
                     BetAmount = g.Sum(x => x.round.BetAmount),
-                    ValidBetAmount = g.Sum(r => r.round.Turnover),
+                    ValidBetAmount = g.Sum(r => r.round.ValidBetAmount),
                     WinLoss = g.Sum(r => -r.round.WinLoss)
                 });
 
