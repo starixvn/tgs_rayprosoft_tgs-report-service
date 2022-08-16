@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 using Tgs.Report.Client.Models;
 using Tgs.Report.Client.Models.Agent;
 using Tgs.Report.Client.Models.BrandGameProvider;
@@ -24,7 +22,14 @@ namespace Tgs.Report.Client
         ValueTask<PagedResponse<VipRebateModel>> GetVipRebateReportAsync(GetVipRebateReportRequest request);
 
         ValueTask<PagedResponse<RoundModel>> GetRoundsAsync(GetRoundsRequest request);
+
+        ValueTask<PagedResponse<SystemRoundModel>> GetSystemRoundsAsync(GetSystemRoundsRequest request);
+
+        ValueTask<Stream> ExportSystemRoundsAsync(ExportSystemRoundsRequest request);
+
         ValueTask<RoundTotalModel> GetRoundsTotalAsync(GetRoundsTotalRequest request);
+
+        ValueTask<SystemRoundTotalModel> GetSystemRoundsTotalAsync(GetSystemRoundsTotalRequest request);
 
         ValueTask<GetBetRecordsResponse> GetBetRecordsAsync(GetBetRecordsRequest request);
 
@@ -95,6 +100,7 @@ namespace Tgs.Report.Client
         ValueTask<Stream> ExportLicenseeMarketsAsync(ExportLicenseeMarketsRequest request);
 
         ValueTask<ResellerMarketsResponse> GetResellerMarketsAsync(GetResellerMarketsRequest request);
+
         ValueTask<Stream> ExportResellerMarketsAsync(ExportResellerMarketsRequest request);
 
         ValueTask<PagedResponse<PlayerDepositModel>> GetPlayerDepositsAsync(GetPlayerDepositsRequest request);
