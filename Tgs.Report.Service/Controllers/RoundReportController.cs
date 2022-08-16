@@ -27,7 +27,7 @@ namespace Tgs.Report.Service.Controllers
 
         [HttpGet("exportSystemRounds")]
         [Description("export rounds")]
-        public async Task<IActionResult> ExportMarketsAsync([FromQuery] ExportSystemRoundsRequest request) => File(
+        public async Task<IActionResult> ExportSystemRoundsAsync([FromQuery] ExportSystemRoundsRequest request) => File(
             await _mediator.Send(request).ConfigureAwait(false),
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 
