@@ -47,6 +47,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>LicenseeMarket.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Round.Designer.cs">
+      <DependentUpon>Round.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Resources\Market.Designer.cs">
       <Generator></Generator>
       <DesignTime>True</DesignTime>
@@ -91,6 +96,10 @@
     <EmbeddedResource Update="Resources\LicenseeMarket.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>LicenseeMarket.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Round.resx">
+      <LastGenOutput>Round.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Market.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
