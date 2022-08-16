@@ -25,5 +25,6 @@ namespace Tgs.Report.ViewModel.Round
         public decimal? WinLoss { get; init; }
         public string? AdditionalData { get; init; }
         public string? GameProviderCode { get; init; }
+        public int GameId { get; init; }
     }
 }
