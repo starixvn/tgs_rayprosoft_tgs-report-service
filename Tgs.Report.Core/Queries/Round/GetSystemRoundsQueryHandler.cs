@@ -156,7 +156,8 @@ namespace Tgs.Report.Core.Queries.Round
                     SettleAmount = combine.round.SettleAmount,
                     WinLoss = -combine.round.WinLoss,
                     AdditionalData = combine.detail == null ? "" : combine.detail.AdditionalData,
-                    GameProviderCode = combine.game == null ? "" : combine.game.GameProvider.Code
+                    GameProviderCode = combine.game == null ? "" : combine.game.GameProvider.Code,
+                    GameId = combine.game == null ? 0 : combine.game.Id,
                 })
                 .OrderByDescending(x => x.CreatedOn)
                 .CreatePagedResponseAsync(request);
