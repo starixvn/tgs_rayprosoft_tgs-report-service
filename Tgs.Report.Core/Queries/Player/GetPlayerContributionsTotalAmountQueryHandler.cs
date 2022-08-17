@@ -83,7 +83,28 @@ namespace Tgs.Report.Core.Queries.Player
                     .Where(x => x.BrandId == request.BrandId)
                     .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
                     .Where(request.HasUpperAgent == true, x => x.AgentId != null)
-                    .Where(request.HasUpperAgent == false, x => x.AgentId == null),
+                    .Where(request.HasUpperAgent == false, x => x.AgentId == null)
+                    .GroupBy(x => x.PlayerCode, (playerCode, list) => new
+                    {
+                        PlayerCode = playerCode,
+                        DepositAmount = list.Sum(p => p.DepositAmount),
+                        CompanyAdjustAmount =
+                            list.Sum(p => p.CompanyAdjustAmount - p.NoIncludeNetProfitCompanyAdjustAmount),
+                        AgentAdjustAmount = list.Sum(p => p.AgentAdjustAmount - p.NoIncludeNetProfitAgentAdjustAmount),
+                        BonusAdjustAmount = list.Sum(p => p.BonusAdjustAmount - p.NoIncludeNetProfitBonusAdjustAmount),
+                        BonusAmount = list.Sum(p => p.RebateAmount + p.PromotionAmount),
+                        BetAmount = list.Sum(p => p.BetAmount),
+                        ValidBetAmount = list.Sum(p => p.OriginalTurnover),
+                        Turnover = list.Sum(p => p.Turnover),
+                        WinLossAmount = list.Sum(p => p.WinLossAmount),
+                        NetProfit = list.Sum(p => p.WinLossAmount
+                            - (p.AgentAdjustAmount -
+                                p.NoIncludeNetProfitAgentAdjustAmount)
+                            - (p.BonusAdjustAmount -
+                                p.NoIncludeNetProfitBonusAdjustAmount)
+                            - p.RebateAmount
+                            - p.PromotionAmount)
+                    }),
                     player => player.PlayerCode, aggregate => aggregate.PlayerCode,
                     (player, list) => new
                     {
@@ -91,56 +112,86 @@ namespace Tgs.Report.Core.Queries.Player
                         list
                     })
                 .SelectMany(x => x.list.DefaultIfEmpty(),
-                    (group, aggegate) => new
+                    (group, playerAggregate) => new
                     {
-                        PlayerCode = group.PlayerCode,
-                        aggegate
+                        group.PlayerCode,
+                        playerAggregate.DepositAmount,
+                        playerAggregate.CompanyAdjustAmount,
+                        playerAggregate.AgentAdjustAmount,
+                        playerAggregate.BonusAdjustAmount,
+                        playerAggregate.BonusAmount,
+                        playerAggregate.BetAmount,
+                        playerAggregate.ValidBetAmount,
+                        playerAggregate.Turnover,
+                        playerAggregate.WinLossAmount,
+                        playerAggregate.NetProfit
                     })
                 .GroupJoin(_context.PlayerBonusAggregates
                         .Where(x => x.BrandId == request.BrandId)
                         .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
                         .Where(request.HasUpperAgent == true, x => x.AgentId != null)
-                        .Where(request.HasUpperAgent == false, x => x.AgentId == null),
+                        .Where(request.HasUpperAgent == false, x => x.AgentId == null)
+                        .GroupBy(x => x.PlayerCode, (playerCode, list) => new
+                        {
+                            PlayerCode = playerCode,
+                            UpgradeAmount = list.Sum(p => p.UpgradeAmount),
+                            SeasonAmount = list.Sum(p => p.SeasonAmount),
+                            BirthdayAmount = list.Sum(p => p.BirthdayAmount)
+                        }),
                     player => player.PlayerCode, aggregate => aggregate.PlayerCode,
                     (player, bonusList) => new
                     {
                         player.PlayerCode,
-                        player.aggegate,
+                        player.DepositAmount,
+                        player.CompanyAdjustAmount,
+                        player.AgentAdjustAmount,
+                        player.BonusAdjustAmount,
+                        player.BonusAmount,
+                        player.BetAmount,
+                        player.ValidBetAmount,
+                        player.Turnover,
+                        player.WinLossAmount,
+                        player.NetProfit,
                         bonusList
                     })
                 .SelectMany(x => x.bonusList.DefaultIfEmpty(),
-                    (player, bonus) => new
+                    (x, bonus) => new
                     {
-                        player.PlayerCode,
-                        player.aggegate,
-                        bonus
+                        x.PlayerCode,
+                        x.DepositAmount,
+                        x.CompanyAdjustAmount,
+                        x.AgentAdjustAmount,
+                        x.BonusAdjustAmount,
+                        x.BonusAmount,
+                        x.BetAmount,
+                        x.ValidBetAmount,
+                        x.Turnover,
+                        x.WinLossAmount,
+                        x.NetProfit,
+                        bonus.UpgradeAmount,
+                        bonus.SeasonAmount,
+                        bonus.BirthdayAmount
                     })
                 .GroupBy(x => x.PlayerCode,
                     (playerCode, playerAggregates) => new
                     {
                         PlayerCode = playerCode,
-                        DepositAmount = playerAggregates.Sum(p => p.aggegate == null ? 0M : p.aggegate.DepositAmount),
+                        DepositAmount = playerAggregates.Sum(p => p.DepositAmount),
                         CompanyAdjustAmount =
-                            playerAggregates.Sum(p => p.aggegate == null ? 0M : p.aggegate.CompanyAdjustAmount - p.aggegate.NoIncludeNetProfitCompanyAdjustAmount),
+                            playerAggregates.Sum(p => p.CompanyAdjustAmount),
                         BonusAdjustAmount =
-                            playerAggregates.Sum(p => p.aggegate == null ? 0M : p.aggegate.BonusAdjustAmount - p.aggegate.NoIncludeNetProfitBonusAdjustAmount),
+                            playerAggregates.Sum(p => p.BonusAdjustAmount),
                         AgentAdjustAmount =
-                            playerAggregates.Sum(p => p.aggegate == null ? 0M : p.aggegate.AgentAdjustAmount - p.aggegate.NoIncludeNetProfitAgentAdjustAmount),
-                        BonusAmount = playerAggregates.Sum(p => (p.aggegate == null ? 0M : p.aggegate.RebateAmount + p.aggegate.PromotionAmount) +
-                            (p.bonus == null
-                                ? 0M
-                                : p.bonus.UpgradeAmount + p.bonus.SeasonAmount + p.bonus.BirthdayAmount)),
-                        BetAmount = playerAggregates.Sum(p => p.aggegate == null ? 0M : p.aggegate.BetAmount),
-                        ValidBetAmount = playerAggregates.Sum(p => p.aggegate == null ? 0M : p.aggegate.OriginalTurnover),
-                        Turnover = playerAggregates.Sum(p => p.aggegate == null ? 0M : p.aggegate.Turnover),
-                        WinLossAmount = playerAggregates.Sum(p => p.aggegate == null ? 0M : p.aggegate.WinLossAmount),
-                        NetProfit = playerAggregates.Sum(p
-                            => (p.aggegate == null ? 0M : p.aggegate.WinLossAmount - (p.aggegate.AgentAdjustAmount - p.aggegate.NoIncludeNetProfitAgentAdjustAmount) -
-                            (p.aggegate.BonusAdjustAmount - p.aggegate.NoIncludeNetProfitBonusAdjustAmount) -
-                            p.aggegate.RebateAmount - p.aggegate.PromotionAmount) -
-                            (p.bonus == null
-                                ? 0M
-                                : p.bonus.UpgradeAmount + p.bonus.SeasonAmount + p.bonus.BirthdayAmount))
+                            playerAggregates.Sum(p => p.AgentAdjustAmount),
+                        BonusAmount = playerAggregates.Sum(p => p.BonusAmount),
+                        BetAmount = playerAggregates.Sum(p => p.BetAmount),
+                        ValidBetAmount = playerAggregates.Sum(p => p.ValidBetAmount),
+                        Turnover = playerAggregates.Sum(p => p.Turnover),
+                        WinLossAmount = playerAggregates.Sum(p => p.WinLossAmount),
+                        NetProfit = playerAggregates.Sum(p => p.NetProfit),
+                        UpgradeAmount = playerAggregates.Sum(p => p.UpgradeAmount),
+                        SeasonAmount = playerAggregates.Sum(p => p.SeasonAmount),
+                        BirthdayAmount = playerAggregates.Sum(p => p.BirthdayAmount)
                     })
                 .Join(_context.Players.Include(x => x.Vip).Select(x => new
                 {
@@ -163,7 +214,10 @@ namespace Tgs.Report.Core.Queries.Player
                     ValidBetAmount = agg.ValidBetAmount,
                     Turnover = agg.Turnover,
                     WinLossAmount = agg.WinLossAmount,
-                    NetProfit = agg.NetProfit
+                    NetProfit = agg.NetProfit,
+                    agg.UpgradeAmount,
+                    agg.SeasonAmount,
+                    agg.BirthdayAmount
                 })
                 .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
                 .Where(request.Level, x => x.Level == request.Level)
@@ -175,12 +229,12 @@ namespace Tgs.Report.Core.Queries.Player
                     CompanyAdjustAmount = x.Sum(p => p.CompanyAdjustAmount),
                     BonusAdjustAmount = x.Sum(p => p.BonusAdjustAmount),
                     AgentAdjustAmount = x.Sum(p => p.AgentAdjustAmount),
-                    BonusAmount = x.Sum(p => p.BonusAmount),
+                    BonusAmount = x.Sum(p => p.BonusAmount + p.UpgradeAmount + p.SeasonAmount + p.BirthdayAmount),
                     BetAmount = x.Sum(p => p.BetAmount),
                     ValidBetAmount = x.Sum(p => p.ValidBetAmount),
                     Turnover = x.Sum(p => p.Turnover),
                     WinLossAmount = x.Sum(p => p.WinLossAmount),
-                    NetProfit = x.Sum(p => p.NetProfit)
+                    NetProfit = x.Sum(p => p.NetProfit - (p.UpgradeAmount + p.SeasonAmount + p.BirthdayAmount))
                 }).FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false) ?? new PlayerContributionTotalAmountModel();
         }
     }

@@ -86,16 +86,11 @@ public class GetVipReportTotalAmountQueryHandler : IRequestHandler<GetVipReportT
                             list.Sum(p
                                 => p.RebateAmount + p.PromotionAmount),
                         BetAmount = list.Sum(p => p.BetAmount),
-                        ValidBetAmount = list.Sum(p => p.Turnover),
+                        ValidBetAmount = list.Sum(p => p.OriginalTurnover),
                         Turnover = list.Sum(p => p.Turnover),
                         WinLossAmount = list.Sum(p => p.WinLossAmount),
-                        NetProfit = list.Sum(p => p.WinLossAmount
-                            - (p.AgentAdjustAmount -
-                                p.NoIncludeNetProfitAgentAdjustAmount)
-                            - (p.BonusAdjustAmount -
-                                p.NoIncludeNetProfitBonusAdjustAmount)
-                            - p.RebateAmount
-                            - p.PromotionAmount)
+                        NetProfit = list.Sum(p => p.WinLossAmount - (p.CompanyAdjustAmount - p.NoIncludeNetProfitCompanyAdjustAmount) -
+                            p.RebateAmount - p.PromotionAmount)
                     }),
                 p => p.PlayerCode,
                 playerAggregate => playerAggregate.PlayerCode,
@@ -171,13 +166,15 @@ public class GetVipReportTotalAmountQueryHandler : IRequestHandler<GetVipReportT
                 CompanyAdjustAmount = group.Sum(s => s.CompanyAdjustAmount),
                 BonusAdjustAmount = group.Sum(s => s.BonusAdjustAmount),
                 RebateAmount = group.Sum(s => s.BonusAdjustAmount),
-                BonusAmount = group.Sum(s => s.BonusAmount + s.UpgradeAmount + s.SeasonAmount + s.BirthdayAmount),
+                BonusAmount = group.Sum(s => s.BonusAmount),
                 BetAmount = group.Sum(s => s.BetAmount),
                 ValidBetAmount = group.Sum(s => s.ValidBetAmount),
                 Turnover = group.Sum(s => s.Turnover),
                 WinLossAmount = group.Sum(s => s.WinLossAmount),
-                NetProfit = group.Sum(s => s.NetProfit - s.UpgradeAmount - s.SeasonAmount + s.BirthdayAmount)
-
+                NetProfit = group.Sum(s => s.NetProfit),
+                UpgradeAmount = group.Sum(s => s.UpgradeAmount),
+                SeasonAmount = group.Sum(s => s.SeasonAmount),
+                BirthdayAmount = group.Sum(s => s.BirthdayAmount)
             })
             .Join(_context.Players.Include(x => x.Vip).Select(x => new
             {
@@ -199,7 +196,10 @@ public class GetVipReportTotalAmountQueryHandler : IRequestHandler<GetVipReportT
                 ValidBetAmount = agg.ValidBetAmount,
                 Turnover = agg.Turnover,
                 WinLossAmount = agg.WinLossAmount,
-                NetProfit = agg.NetProfit
+                NetProfit = agg.NetProfit,
+                agg.UpgradeAmount,
+                agg.SeasonAmount,
+                agg.BirthdayAmount
             })
             .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
             .Where(request.Level, x => x.Level == request.Level)
@@ -210,11 +210,11 @@ public class GetVipReportTotalAmountQueryHandler : IRequestHandler<GetVipReportT
                 CompanyAdjustAmount = x.Sum(s => s.CompanyAdjustAmount),
                 BonusAdjustAmount = x.Sum(s => s.BonusAdjustAmount),
                 BonusAmount = x.Sum(s => s.BonusAmount),
-                BetAmount = x.Sum(s => s.BetAmount),
+                BetAmount = x.Sum(s => s.BetAmount + s.UpgradeAmount + s.SeasonAmount + s.BirthdayAmount),
                 ValidBetAmount = x.Sum(s => s.ValidBetAmount),
                 Turnover = x.Sum(s => s.Turnover),
                 WinLossAmount = x.Sum(s => s.WinLossAmount),
-                NetProfit = x.Sum(s => s.NetProfit)
+                NetProfit = x.Sum(s => s.NetProfit - (s.UpgradeAmount + s.SeasonAmount + s.BirthdayAmount))
             })
             .FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
 
