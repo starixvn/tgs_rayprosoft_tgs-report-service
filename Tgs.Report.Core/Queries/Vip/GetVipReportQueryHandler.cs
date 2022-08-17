@@ -228,7 +228,6 @@ public class GetVipReportQueryHandler : IRequestHandler<GetVipReportRequest, Pag
                 UpgradeAmount = group.Sum(p => p.bonus.UpgradeAmount),
                 SeasonAmount = group.Sum(p => p.bonus.SeasonAmount),
                 BirthdayAmount = group.Sum(p => p.bonus.BirthdayAmount)
-                
             })
             .Join(_context.Players.Include(x => x.Vip).Select(x => new
             {
