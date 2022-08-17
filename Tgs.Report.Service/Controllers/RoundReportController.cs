@@ -20,9 +20,26 @@ namespace Tgs.Report.Service.Controllers
         public Task<PagedResponse<RoundModel>> GetRoundsAsync([FromQuery] GetRoundsRequest request) =>
             _mediator.Send(request);
 
+        [HttpGet("system", Name = "GetSystemRounds")]
+        [Description("Get rounds")]
+        public Task<PagedResponse<SystemRoundModel>> GetSystemRoundsAsync([FromQuery] GetSystemRoundsRequest request) =>
+            _mediator.Send(request);
+
+        [HttpGet("exportSystemRounds")]
+        [Description("export rounds")]
+        public async Task<IActionResult> ExportSystemRoundsAsync([FromQuery] ExportSystemRoundsRequest request) => File(
+            await _mediator.Send(request).ConfigureAwait(false),
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+
         [HttpGet("roundsTotal", Name = "GetRoundsTotal")]
         [Description("Get rounds Total BetAmount & ValidBetAmount & WinLoss")]
         public Task<RoundTotalModel> GetRoundsTotalAsync([FromQuery] GetRoundsTotalRequest request) =>
+            _mediator.Send(request);
+
+        [HttpGet("systemRoundsTotal", Name = "GetSystemRoundsTotal")]
+        [Description("Get rounds Total BetAmount & ValidBetAmount & Turnover & SettleAmount & WinLoss")]
+        public Task<SystemRoundTotalModel> GetSystemRoundsTotalAsync([FromQuery] GetSystemRoundsTotalRequest request) =>
             _mediator.Send(request);
 
         [HttpGet("betRecords", Name = "GetBetRecords")]

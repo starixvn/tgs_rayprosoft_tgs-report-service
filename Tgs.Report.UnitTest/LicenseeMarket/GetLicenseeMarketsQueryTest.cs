@@ -35,6 +35,9 @@ namespace Tgs.Report.UnitTest.LicenseeMarket
                 .AsQueryable()
                 .BuildMock();
 
+            var playerBonusAggregates = CreatePlayerBonusAggregateFixture(brandId).CreateMany<PlayerBonusAggregate>(1).AsQueryable()
+                .BuildMock();
+
             var request = new GetLicenseeMarketsRequest
             {
                 LicenseeId = licenseeId,
@@ -46,10 +49,12 @@ namespace Tgs.Report.UnitTest.LicenseeMarket
             var mockBrands = GetDbSet(brands);
             var mockPlayerAggregates = GetDbSet(playerAggregates);
             var mockWithdrawForms = GetDbSet(withdrawForms);
+            var mockPlayerBonusAggregates = GetDbSet(playerBonusAggregates);
 
             fakeDbContext.Brands.Returns(mockBrands.Object);
             fakeDbContext.PlayerAggregates.Returns(mockPlayerAggregates.Object);
             fakeDbContext.WithdrawForms.Returns(mockWithdrawForms.Object);
+            fakeDbContext.PlayerBonusAggregates.Returns(mockPlayerBonusAggregates.Object);
 
             var response = await sut.Handle(request, default);
 
@@ -90,6 +95,15 @@ namespace Tgs.Report.UnitTest.LicenseeMarket
             fixture.Customize<PlayerAggregate>(u => u
                 .With(s => s.BrandId, brandId)
                 .With(s => s.ReportDate, DateTime.UtcNow));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            return fixture;
+        }
+
+        private static Fixture CreatePlayerBonusAggregateFixture(Guid brandId)
+        {
+            var fixture = new Fixture();
+            fixture.Customize<PlayerBonusAggregate>(u => u
+                .With(s => s.BrandId, brandId));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

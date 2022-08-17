@@ -59,6 +59,7 @@ namespace Tgs.Report.UnitTest.Round
                 BrandId = brandId,
                 GameProviderId = gameProviderId,
                 BetAmount = 10m,
+                ValidBetAmount = 10m,
                 Turnover = 10m,
                 WinLoss = -15m,
                 CreatedOn = DateTime.UtcNow,

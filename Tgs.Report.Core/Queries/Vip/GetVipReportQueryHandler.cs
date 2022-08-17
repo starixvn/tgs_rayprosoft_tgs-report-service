@@ -57,7 +57,7 @@ public class GetVipReportQueryHandler : IRequestHandler<GetVipReportRequest, Pag
                     wf.Amount,
                     p.AgentId,
                     p.Username,
-                    Level = p.VipId == null ? (int?)null : p.Vip.Level
+                    Level = p.Vip == null ? (int?)null : p.Vip.Level
                 })
             .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
             .Where(request.Level, x => x.Level == request.Level)
@@ -72,6 +72,16 @@ public class GetVipReportQueryHandler : IRequestHandler<GetVipReportRequest, Pag
         var vips = await _context.PlayerAggregates
             .Where(x => x.BrandId == request.BrandId)
             .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
+            .Where(x => x.CreatedOn >= from.ToUniversalTime())
+            .Select(x => x.PlayerCode).Union(_context.PlayerBonusAggregates
+                .Where(x => x.BrandId == request.BrandId)
+                .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
+                .Select(x => x.PlayerCode))
+            .GroupBy(x => x, (x, y) => new { PlayerCode = x })
+            .GroupJoin(_context.PlayerAggregates
+            .Where(x => x.BrandId == request.BrandId)
+            .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
+            .Where(x => x.CreatedOn >= from.ToUniversalTime())
             .GroupBy(x => new
             {
                 x.PlayerCode,
@@ -163,30 +173,85 @@ public class GetVipReportQueryHandler : IRequestHandler<GetVipReportRequest, Pag
                     x.Turnover,
                     x.WinLossAmount,
                     x.NetProfit
+                }),
+                p => p.PlayerCode,
+                playerAggregate => playerAggregate.PlayerCode,
+                (player, players) => new
+                {
+                    player.PlayerCode,
+                    players
                 })
+            .SelectMany(x => x.players.DefaultIfEmpty(),
+                (x, playerAggregate) => new
+                {
+                    x.PlayerCode,
+                    playerAggregate
+                })
+            .GroupJoin(_context.PlayerBonusAggregates
+                    .Where(x => x.BrandId == request.BrandId)
+                    .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
+                    .GroupBy(x => x.PlayerCode, (playerCode, list) => new
+                    {
+                        PlayerCode = playerCode,
+                        UpgradeAmount = list.Sum(p => p.UpgradeAmount),
+                        SeasonAmount = list.Sum(p => p.SeasonAmount),
+                        BirthdayAmount = list.Sum(p
+                            => p.BirthdayAmount)
+                    })
+                , player => player.PlayerCode, bonus => bonus.PlayerCode,
+                (player, markets) => new
+                {
+                    player.PlayerCode,
+                    player.playerAggregate,
+                    markets
+                })
+            .SelectMany(x => x.markets.DefaultIfEmpty(),
+                (x, bonus) => new
+                {
+                    x.PlayerCode,
+                    x.playerAggregate,
+                    bonus
+                })
+            .GroupBy(x => x.PlayerCode,(playerCode,group) => new
+            {
+                PlayerCode= playerCode,
+                DepositAmount = group.Sum(s => s.playerAggregate.DepositAmount),
+                CompanyAdjustAmount = group.Sum(s => s.playerAggregate.CompanyAdjustAmount),
+                BonusAdjustAmount = group.Sum(s => s.playerAggregate.BonusAdjustAmount),
+                RebateAmount = group.Sum(s => s.playerAggregate.RebateAmount),
+                BonusAmount = group.Sum(s => s.playerAggregate.BonusAmount),
+                BetAmount = group.Sum(s => s.playerAggregate.BetAmount),
+                ValidBetAmount = group.Sum(s => s.playerAggregate.ValidBetAmount),
+                Turnover = group.Sum(s => s.playerAggregate.Turnover),
+                WinLossAmount = group.Sum(s => s.playerAggregate.WinLossAmount),
+                NetProfit = group.Sum(s => s.playerAggregate.NetProfit),
+                UpgradeAmount = group.Sum(p => p.bonus.UpgradeAmount),
+                SeasonAmount = group.Sum(p => p.bonus.SeasonAmount),
+                BirthdayAmount = group.Sum(p => p.bonus.BirthdayAmount)
+                
+            })
             .Join(_context.Players.Include(x => x.Vip).Select(x => new
             {
                 x.BrandId,
                 x.PlayerCode,
                 x.Username,
-                Level = x.VipId == null ? (int?)null : x.Vip.Level
+                Level = x.Vip == null ? (int?)null : x.Vip.Level
             }), agg => agg.PlayerCode, p => p.PlayerCode, (agg, player) => new VipModel
             {
                 Username = player.Username,
                 Level = player.Level,
-                BrandId = agg.BrandId,
+                BrandId = player.BrandId,
                 PlayerCode = agg.PlayerCode,
                 DepositAmount = agg.DepositAmount,
-                WithdrawalAmount = agg.WithdrawalAmount,
                 CompanyAdjustAmount = agg.CompanyAdjustAmount,
                 BonusAdjustAmount = agg.BonusAdjustAmount,
                 RebateAmount = agg.RebateAmount,
-                BonusAmount = agg.BonusAmount,
+                BonusAmount = agg.BonusAmount + agg.UpgradeAmount + agg.SeasonAmount + agg.BirthdayAmount,
                 BetAmount = agg.BetAmount,
                 ValidBetAmount = agg.ValidBetAmount,
                 Turnover = agg.Turnover,
                 WinLossAmount = agg.WinLossAmount,
-                NetProfit = agg.NetProfit
+                NetProfit = agg.NetProfit - (agg.UpgradeAmount + agg.SeasonAmount + agg.BirthdayAmount)
             })
             .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
             .Where(request.Level, x => x.Level == request.Level)

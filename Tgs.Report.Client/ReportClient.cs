@@ -64,6 +64,36 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
+        public async ValueTask<PagedResponse<SystemRoundModel>> GetSystemRoundsAsync(GetSystemRoundsRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/roundReport/system?", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+            _ = response.EnsureSuccessStatusCode();
+
+            return JsonSerializer.Deserialize<PagedResponse<SystemRoundModel>>(await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+
+        public async ValueTask<Stream> ExportSystemRoundsAsync(ExportSystemRoundsRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/roundReport/exportSystemRounds?", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+
+            httpRequest.Headers.Add("Accept-Language", CultureInfo.CurrentCulture.Name);
+
+            var response = await _client.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead);
+
+            _ = response.EnsureSuccessStatusCode();
+
+            var stream = await response.Content.ReadAsStreamAsync();
+
+            return stream;
+        }
+
         public async ValueTask<RoundTotalModel> GetRoundsTotalAsync(GetRoundsTotalRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/roundReport/roundsTotal?", request);
@@ -74,6 +104,19 @@ namespace Tgs.Report.Client
             _ = response.EnsureSuccessStatusCode();
 
             return JsonSerializer.Deserialize<RoundTotalModel>(await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+
+        public async ValueTask<SystemRoundTotalModel> GetSystemRoundsTotalAsync(GetSystemRoundsTotalRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/roundReport/systemRoundsTotal?", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+            _ = response.EnsureSuccessStatusCode();
+
+            return JsonSerializer.Deserialize<SystemRoundTotalModel>(await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
@@ -170,20 +213,6 @@ namespace Tgs.Report.Client
 
             return JsonSerializer.Deserialize<PagedResponse<PlayerContributionModel>>(
                 await response.Content.ReadAsStringAsync(),
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
-        }
-
-        public async ValueTask<PagedResponse<TeamInfoModel>> GetAgentTeamInfoAsync(
-            GetAgentTeamInfoRequest request)
-        {
-            var path = ClientPath.AppendWithProperties($"/api/agentReport/{request.AgentId}/teamInfo?", request);
-
-            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
-            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
-
-            _ = response.EnsureSuccessStatusCode();
-
-            return JsonSerializer.Deserialize<PagedResponse<TeamInfoModel>>(await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
@@ -549,7 +578,7 @@ namespace Tgs.Report.Client
             return JsonSerializer.Deserialize<PagedResponse<PlayerNoSecondDepositDetailModel>>(await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
-        
+
         public async ValueTask<PagedResponse<MarketingModel>> GetMarketingListAsync(GetMarketingListRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/marketingReport?", request);
@@ -571,7 +600,7 @@ namespace Tgs.Report.Client
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
             _ = response.EnsureSuccessStatusCode();
-            
+
             return JsonSerializer.Deserialize<PagedResponse<MarketingRegisterDetailModel>>(await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
@@ -592,7 +621,7 @@ namespace Tgs.Report.Client
         public async ValueTask<PagedResponse<MarketingGamingDetailModel>> GetMarketingGamingDetailsAsync(GetMarketingGamingDetailRequest request)
         {
             var path = ClientPath.AppendWithProperties("/api/marketingReport/GamingDetail?", request);
-            
+
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
             var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
@@ -701,6 +730,33 @@ namespace Tgs.Report.Client
 
             return JsonSerializer.Deserialize<decimal>(
                 await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+
+        public async ValueTask<PlayerContributionTotalAmountModel> GetPlayerContributionsTotalAmountAsync(
+            GetPlayerContributionsTotalAmountRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/playerReport/contributionTotalAmount?", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+            _ = response.EnsureSuccessStatusCode();
+
+            return JsonSerializer.Deserialize<PlayerContributionTotalAmountModel>(await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+
+        public async ValueTask<VipTotalAmountModel> GetVipReportTotalAmountAsync(GetVipReportTotalAmountRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/vipReport/vipTotalAmount?", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+            _ = response.EnsureSuccessStatusCode();
+
+            return JsonSerializer.Deserialize<VipTotalAmountModel>(await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
     }

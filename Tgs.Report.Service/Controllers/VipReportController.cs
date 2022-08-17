@@ -22,6 +22,11 @@ namespace Tgs.Report.Service.Controllers
         public Task<PagedResponse<VipModel>> GetVipsAsync([FromQuery] GetVipReportRequest request) =>
             _mediator.Send(request);
 
+        [HttpGet("vipTotalAmount")]
+        [Description("Get vip total amount")]
+        public Task<VipTotalAmountModel> GetVipTotalAmountAsync([FromQuery] GetVipReportTotalAmountRequest request) =>
+            _mediator.Send(request);
+
         [HttpGet("{username}")]
         [Description("Get vip rebates")]
         public Task<PagedResponse<VipRebateModel>> GetVipRebatesAsync(string username,

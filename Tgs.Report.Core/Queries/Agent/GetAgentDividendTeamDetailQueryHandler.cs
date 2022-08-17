@@ -30,6 +30,20 @@ namespace Tgs.Report.Core.Queries.Agent
                 .Where(x => x.From >= request.From.ToUniversalTime())
                 .Where(x => x.To < request.To.ToUniversalTime())
                 .Include(x => x.AgentDividendMultipleLayers)
+                .Select(x => new
+                {
+                    x.AgentId,
+                    x.From,
+                    x.To,
+                    x.AgentDividendPercentage,
+                    AgentDividendMultipleLayers = x.AgentDividendMultipleLayers.Select(a => new
+                    {
+                        a.AgentId,
+                        a.Dividend,
+                        a.DividendProviderAgentId,
+                        a.Layer
+                    })
+                })
                 .ToArrayAsync(cancellationToken).ConfigureAwait(false);
 
             var dividendProviderAgents = mainAgentDividends.SelectMany(x => x.AgentDividendMultipleLayers)
@@ -51,11 +65,41 @@ namespace Tgs.Report.Core.Queries.Agent
                 .Where(x => firstLayerGroupAgentIds.Contains(x.AgentId))
                 .Where(x => x.From >= request.From.ToUniversalTime())
                 .Where(x => x.To < request.To.ToUniversalTime())
+                .Select(x => new
+                {
+                    x.AgentId,
+                    x.From,
+                    x.To,
+                    x.AgentDividendPercentage
+                })
                 .ToArrayAsync(cancellationToken).ConfigureAwait(false);
 
             var allAgentDividends = await _agentDividendService.GetQueries()
                 .Where(x => firstLayerAgentDividendIds.Contains(x.AgentId))
                 .Where(x => x.From >= request.From.ToUniversalTime())
+                .Select(x => new
+                {
+                    x.Id,
+                    x.AgentId,
+                    x.From,
+                    x.To,
+                    x.NetProfit,
+                    x.LiveDealerWinLoss,
+                    x.SlotWinLoss,
+                    x.FishingWinLoss,
+                    x.ArcadeWinLoss,
+                    x.TableGameWinLoss,
+                    x.LotteryWinLoss,
+                    x.CardGameWinLoss,
+                    x.SportsWinLoss,
+                    x.ESportsWinLoss,
+                    x.VirtualSportsWinLoss,
+                    x.WinLossAmount,
+                    x.PromotionAmount,
+                    x.RebateAmount,
+                    x.AgentAdjustAmount,
+                    x.CreatedOn
+                })
                 .Where(x => x.To < request.To.ToUniversalTime()).ToArrayAsync(cancellationToken).ConfigureAwait(false);
 
             var agentDividends = allAgentDividends
@@ -103,6 +147,11 @@ namespace Tgs.Report.Core.Queries.Agent
             var agentIds = agentDividends.Select(x => x.AgentId).ToArray();
 
             var agents = await _agentService.GetQueries().Where(x => agentIds.Contains(x.Id))
+                .Select(x => new
+                {
+                    x.Id,
+                    x.Username
+                })
                 .ToArrayAsync(cancellationToken).ConfigureAwait(false);
 
             var models = agentDividends.Join(agents,

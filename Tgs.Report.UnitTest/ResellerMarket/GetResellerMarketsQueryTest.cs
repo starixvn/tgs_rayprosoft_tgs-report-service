@@ -20,8 +20,9 @@ namespace Tgs.Report.UnitTest.ResellerMarket
             var fakeBrand = Substitute.For<ITgsService<Brand>>();
             var fakeWithdrawForm = Substitute.For<ITgsService<WithdrawForm>>();
             var fakePlayerAggregate = Substitute.For<ITgsService<PlayerAggregate>>();
+            var fakePlayerBonusAggregate = Substitute.For<ITgsService<PlayerBonusAggregate>>();
 
-            var sut = new GetResellerMarketsQueryHandler(fakeBrand, fakeWithdrawForm, fakePlayerAggregate);
+            var sut = new GetResellerMarketsQueryHandler(fakeBrand, fakeWithdrawForm, fakePlayerAggregate, fakePlayerBonusAggregate);
 
             var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
             var resellerId = new Guid("aac11120-20f6-4f0d-6982-08d9dbdc0473");
@@ -37,9 +38,13 @@ namespace Tgs.Report.UnitTest.ResellerMarket
                 .AsQueryable()
                 .BuildMock();
 
+            var playerBonusAggregates = CreatePlayerBonusAggregateFixture(brandId).CreateMany<PlayerBonusAggregate>(1).AsQueryable()
+                .BuildMock();
+
             fakeBrand.GetQueries().Returns(brands);
             fakeWithdrawForm.GetQueries().Returns(withdrawForms);
             fakePlayerAggregate.GetQueries().Returns(playerAggregates);
+            fakePlayerBonusAggregate.GetQueries().Returns(playerBonusAggregates);
 
             var request = new GetResellerMarketsRequest
             {
@@ -88,6 +93,15 @@ namespace Tgs.Report.UnitTest.ResellerMarket
             fixture.Customize<PlayerAggregate>(u => u
                 .With(s => s.BrandId, brandId)
                 .With(s => s.ReportDate, DateTime.UtcNow));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            return fixture;
+        }
+
+        private static Fixture CreatePlayerBonusAggregateFixture(Guid brandId)
+        {
+            var fixture = new Fixture();
+            fixture.Customize<PlayerBonusAggregate>(u => u
+                .With(s => s.BrandId, brandId));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

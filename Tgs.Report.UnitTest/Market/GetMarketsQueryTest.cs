@@ -37,6 +37,9 @@ namespace Tgs.Report.UnitTest.Market
             var dailyStatistic = CreateBrandDailyPaymentStatisticFixture(brandId, reportDate).CreateMany<BrandDailyPaymentStatistic>(1).AsQueryable()
                 .BuildMock();
 
+            var playerBonusAggregates = CreatePlayerBonusAggregateFixture(brandId, reportDate).CreateMany<PlayerBonusAggregate>(1).AsQueryable()
+                .BuildMock();
+
             var request = new GetMarketsRequest
             {
                 BrandId = brandId,
@@ -48,11 +51,13 @@ namespace Tgs.Report.UnitTest.Market
             var mockWithdrawForms = GetDbSet(withdrawForms);
             var mockPlayerLoginRecords = GetDbSet(playerLoginReocrds);
             var mockDailyStatistic = GetDbSet(dailyStatistic);
+            var mockPlayerBonusAggregates = GetDbSet(playerBonusAggregates);
 
             fakeDbContext.WithdrawForms.Returns(mockWithdrawForms.Object);
             fakeDbContext.PlayerAggregates.Returns(mockPlayerAggregates.Object);
             fakeDbContext.PlayerLoginRecords.Returns(mockPlayerLoginRecords.Object);
             fakeDbContext.BrandDailyPaymentStatistics.Returns(mockDailyStatistic.Object);
+            fakeDbContext.PlayerBonusAggregates.Returns(mockPlayerBonusAggregates.Object);
 
             var response = await sut.Handle(request, default);
 
@@ -65,7 +70,8 @@ namespace Tgs.Report.UnitTest.Market
             var fixture = new Fixture();
             fixture.Customize<PlayerAggregate>(u => u
                 .With(s => s.BrandId, brandId)
-                .With(s => s.ReportDate, reportDate));
+                .With(s => s.ReportDate, reportDate)
+                .With(s => s.CreatedOn, reportDate));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
@@ -103,5 +109,14 @@ namespace Tgs.Report.UnitTest.Market
             return fixture;
         }
 
+        private static Fixture CreatePlayerBonusAggregateFixture(Guid brandId, DateTimeOffset reportDate)
+        {
+            var fixture = new Fixture();
+            fixture.Customize<PlayerBonusAggregate>(u => u
+                .With(s => s.BrandId, brandId)
+                .With(s => s.ReportDate, reportDate));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            return fixture;
+        }
     }
 }

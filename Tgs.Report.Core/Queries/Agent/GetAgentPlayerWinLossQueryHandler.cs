@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Tgs.Report.Enum;
-using Tgs.Report.Repository;
 using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Agent;
@@ -23,6 +22,10 @@ namespace Tgs.Report.Core.Queries.Agent
             CancellationToken cancellationToken)
         {
             var agent = await _context.Agents
+                .Select(x => new
+                {
+                    x.Id
+                })
                 .FirstOrDefaultAsync(x => x.Id == request.AgentId, cancellationToken);
 
             if (agent == null)
@@ -38,6 +41,11 @@ namespace Tgs.Report.Core.Queries.Agent
                 .Where(x => x.AgentId == request.AgentId)
                 .Where(x => x.From >= request.From.ToUniversalTime())
                 .Where(x => x.To < request.To.ToUniversalTime())
+                .Select(x => new
+                {
+                    x.From,
+                    x.To
+                })
                 .ToArrayAsync(cancellationToken);
 
             if (!agentDividends.Any())
@@ -81,7 +89,13 @@ namespace Tgs.Report.Core.Queries.Agent
 
             var players = await _context.Players
                 .Where(x => playerAggregate.Select(p => p.playerCode).Contains(x.PlayerCode))
+                .Select(x => new
+                {
+                    x.PlayerCode,
+                    x.Username
+                })
                 .ToArrayAsync(cancellationToken);
+
             return players.Join(
                 playerAggregate,
                 p => p.PlayerCode,
