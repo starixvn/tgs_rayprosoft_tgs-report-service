@@ -20,7 +20,7 @@ namespace Tgs.Report.Core.Queries.Round
                 Username = request.Username,
                 PlayerCode = request.PlayerCode,
                 ExternalRoundId = request.ExternalRoundId,
-                RoundId = request.RoundId,                
+                RoundId = request.RoundId,
                 ExternalFrom = request.ExternalFrom,
                 ExternalTo = request.ExternalTo,
                 ExternalClosedFrom = request.ExternalClosedFrom,
@@ -39,17 +39,17 @@ namespace Tgs.Report.Core.Queries.Round
             };
 
             var rounds = await _mediator.Send(getSystemRoundsRequest, cancellationToken).ConfigureAwait(false);
-            
+
             var exportData = rounds.Items?.Select(x => new ExportSystemRoundsModel
             {
                 PlayerName = x.PlayerName,
                 PlayerCode = x.PlayerCode,
                 ExternalRoundId = x.ExternalRoundId,
-                ExternalCreatedOn = x.ExternalCreatedOn?.ToString("o"),
-                ExternalClosedOn = x.ExternalClosedOn?.ToString("o"),
+                ExternalCreatedOn = x.ExternalCreatedOn?.ToLocalTime(),
+                ExternalClosedOn = x.ExternalClosedOn?.ToLocalTime(),
                 Id = x.Id,
-                CreatedOn = x.CreatedOn.ToString("o"),
-                ClosedOn = x.ClosedOn?.ToString("o"),
+                CreatedOn = x.CreatedOn.ToLocalTime(),
+                ClosedOn = x.ClosedOn?.ToLocalTime(),
                 BetAmount = x.BetAmount,
                 WinLoss = x.WinLoss
             });
