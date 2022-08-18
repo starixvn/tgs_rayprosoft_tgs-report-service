@@ -317,17 +317,10 @@ public class
                 AgentId = player.AgentId.Value,
                 PlayerCode = player.PlayerCode,
                 DepositAmount = list.Sum(p => p.DepositAmount),
-                CompanyAdjustAmount = list.Sum(p => p.CompanyAdjustAmount -
-                    p.NoIncludeNetProfitCompanyAdjustAmount),
-                AgentAdjustAmount = list.Sum(p
-                    => p.AgentAdjustAmount -
-                    p.NoIncludeNetProfitAgentAdjustAmount),
-                BonusAdjustAmount = list.Sum(p
-                    => p.BonusAdjustAmount -
-                    p.NoIncludeNetProfitBonusAdjustAmount),
-                BonusAmount =
-                    list.Sum(p
-                        => p.RebateAmount + p.PromotionAmount),
+                CompanyAdjustAmount = list.Sum(p => p.CompanyAdjustAmount - p.NoIncludeNetProfitCompanyAdjustAmount),
+                AgentAdjustAmount = list.Sum(p => p.AgentAdjustAmount - p.NoIncludeNetProfitAgentAdjustAmount),
+                BonusAdjustAmount = list.Sum(p => p.BonusAdjustAmount - p.NoIncludeNetProfitBonusAdjustAmount),
+                BonusAmount = list.Sum(p => p.RebateAmount + p.PromotionAmount),
                 BetAmount = list.Sum(p => p.BetAmount),
                 ValidBetAmount = list.Sum(p => p.Turnover),
                 Turnover = list.Sum(p => p.Turnover),
@@ -442,11 +435,11 @@ public class
                                     || w.AgentId != null && playerAggregate.Select(p => p.groupAgent.Id)
                                         .Contains(w.AgentId.Value))
                                 .Sum(w => w.WithdrawalAmount),
-                        CompanyAdjustAmount = playerAggregate.Sum(p => p.playerAggregate.CompanyAdjustAmount),
-                        AgentAdjustAmount = playerAggregate.Sum(p => p.playerAggregate.AgentAdjustAmount),
+                        CompanyAdjustAmount = playerAggregate.Sum(p => p.playerAggregate?.CompanyAdjustAmount ?? 0),
+                        AgentAdjustAmount = playerAggregate.Sum(p => p.playerAggregate?.AgentAdjustAmount ?? 0),
                         BonusAmount =
                             playerAggregate.Sum(p
-                                => p.playerAggregate.BonusAmount +
+                                => p.playerAggregate == null ? 0 : p.playerAggregate.BonusAmount +
                                     p.playerAggregate.UpgradeAmount + p.playerAggregate.SeasonAmount +
                                     p.playerAggregate.BirthdayAmount),
                         BetAmount = playerAggregate.Sum(p => p.playerAggregate?.BetAmount ?? 0),
