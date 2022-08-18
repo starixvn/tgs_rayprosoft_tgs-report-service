@@ -342,7 +342,7 @@ public class
                 UpgradeAmount = 0,
                 SeasonAmount = 0,
                 BirthdayAmount = 0
-            }).ToArrayAsync();
+            }).ToArrayAsync(cancellationToken);
 
         var playerBonusAggregate = await _playerBonusAggregate.GetQueries()
             .Where(x => x.BrandId == request.BrandId)
@@ -370,7 +370,7 @@ public class
                 SeasonAmount = list.Sum(p => p.SeasonAmount),
                 BirthdayAmount = list.Sum(p
                     => p.BirthdayAmount)
-            }).ToArrayAsync();
+            }).ToArrayAsync(cancellationToken);
 
         var agentPlayerAggregate = allSubAgents
             .GroupJoin(playerAggregate.Concat<AgentContributionDataModel>(playerBonusAggregate), agent => agent.AgentId, bonus => bonus.AgentId,
@@ -386,7 +386,6 @@ public class
                 agent.MainAgentId,
                 bonus
             })
-            .Distinct()
             .GroupBy(x => new
             {
                 x.MainAgentId,
