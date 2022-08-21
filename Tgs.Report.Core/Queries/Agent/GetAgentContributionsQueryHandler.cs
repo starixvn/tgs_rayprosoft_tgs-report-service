@@ -36,7 +36,7 @@ public class
         GetAgentContributionsRequest request,
         CancellationToken cancellationToken)
     {
-        var agent = await _agentService.GetQueries().Include(x => x.Players)
+        var agent = await _agentService.GetQueries()
             .Where(x => x.BrandId == request.BrandId)
             .Where(request.AgentId, a => a.Id == request.AgentId)
             .Where(request.Username, a => a.Username == request.Username)
@@ -83,19 +83,10 @@ public class
             .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        var playersPaged = await _playerAggregateService.GetQueries()
+        var playersPaged = await _playerService.GetQueries()
             .Where(x => x.BrandId == request.BrandId)
             .Where(x => x.AgentId == agent.Id)
-            .Where(x => x.ReportDate >= request.From.ToUniversalTime() &&
-                x.ReportDate < request.To.ToUniversalTime())
-            .Where(x => x.CreatedOn >= request.From.ToUniversalTime())
-            .Select(x => x.PlayerCode).Union(_playerBonusAggregate.GetQueries()
-                .Where(x => x.BrandId == request.BrandId)
-                .Where(x => x.AgentId == agent.Id)
-                .Where(x => x.ReportDate >= request.From.ToUniversalTime() &&
-                    x.ReportDate < request.To.ToUniversalTime())
-                .Select(x => x.PlayerCode))
-            .GroupBy(x => x, (x, y) => new { PlayerCode = x })
+            .Select(x => x.PlayerCode)
             .GroupJoin(_playerAggregateService.GetQueries()
                     .Where(x => x.BrandId == request.BrandId)
                     .Where(x => x.AgentId == agent.Id)
@@ -129,11 +120,11 @@ public class
                             - p.RebateAmount
                             - p.PromotionAmount)
                     }),
-                p => p.PlayerCode,
+                playerCode => playerCode,
                 playerAggregate => playerAggregate.PlayerCode,
-                (player, players) => new
+                (playerCode, players) => new
                 {
-                    player.PlayerCode,
+                    PlayerCode = playerCode,
                     players
                 })
             .SelectMany(x => x.players.DefaultIfEmpty(),
