@@ -70,12 +70,14 @@ namespace Tgs.Report.UnitTest.Agent
 
         private static Fixture CreateAgentFixture(Guid brandId, string username)
         {
+            var agentId = Guid.NewGuid();
             var fixture = new Fixture();
             fixture.Customize<Repository.Entities.Agent>(u => u
+                .With(s => s.Id, agentId)
                 .With(s => s.BrandId, brandId)
                 .With(s => s.Username, username)
                 .With(s => s.Brand, new Brand())
-                .With(s => s.Players, new Repository.Entities.Player[]{new Repository.Entities.Player { PlayerCode = "playerCode"}}));
+                .With(s => s.Players, new Repository.Entities.Player[]{new Repository.Entities.Player { PlayerCode = "playerCode",AgentId=agentId,BrandId=brandId}}));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
