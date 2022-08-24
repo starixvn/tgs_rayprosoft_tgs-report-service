@@ -56,7 +56,7 @@ namespace Tgs.Report.Core.Queries.Round
 
             var resource = new ResourceManager(typeof(Resources.Round));
 
-            var xlsx = exportData?.ExportWithLocalization("rounds", resource);
+            var xlsx = exportData?.ExportSystemRoundsWithLocalization("rounds", resource);
 
             await using var stream = new MemoryStream();
 
