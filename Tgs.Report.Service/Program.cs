@@ -88,7 +88,7 @@ builder.Services
         {
             return !httpContext.Request.Path.HasValue
                 || !httpContext.Request.Path.StartsWithSegments("/swagger")
-                && !httpContext.Request.Path.StartsWithSegments("/health")
+                && !httpContext.Request.Path.StartsWithSegments("/healthz")
                 && !httpContext.Request.Path.StartsWithSegments("/profiler/")
                 && !new[]
                 {

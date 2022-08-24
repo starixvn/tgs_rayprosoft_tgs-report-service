@@ -142,6 +142,7 @@ namespace Tgs.Report.Core.Queries.Agent
                                     .AgentDividendPercentage,
                             AgentDividendAmount = group.Dividend
                         })
+                .Where(x => x.AgentDividendAmount > 0)
                 .ToArray();
 
             var agentIds = agentDividends.Select(x => x.AgentId).ToArray();
@@ -157,7 +158,7 @@ namespace Tgs.Report.Core.Queries.Agent
             var models = agentDividends.Join(agents,
                 ad => ad.AgentId,
                 a => a.Id,
-                (ad, a) => new AgentDividendTeamDetailModel
+                (ad, a) => new 
                 {
                     Id = ad.AgentId,
                     Username = a.Username,
@@ -174,7 +175,47 @@ namespace Tgs.Report.Core.Queries.Agent
                     AgentDividendAmount = ad.AgentDividendAmount,
                     AgentDividendPercentage = ad.AgentDividendPercentage,
                     ExpenditureAmount = ad.ExpenditureAmount,
-                    BonusAmount = ad.BonusAmount
+                    BonusAmount = ad.BonusAmount,
+                    ad.NetProfit
+                })
+                .GroupBy(x => new
+                {
+                    x.Id,
+                    x.Username,
+                    x.SettlementDate,
+                    x.SettlementDateFrom,
+                    x.SettlementDateTo,
+                    x.LiveDealerWinLoss,
+                    x.SlotWinLoss,
+                    x.LotteryWinLoss,
+                    x.CardGameWinLoss,
+                    x.SportsWinLoss,
+                    x.VirtualSportsWinLoss,
+                    x.WinLossAmount,
+                    x.ExpenditureAmount,
+                    x.AgentDividendPercentage,
+                    x.BonusAmount,
+                    x.NetProfit
+                },(x,list)=> new AgentDividendTeamDetailModel
+                {
+                    Id = x.Id,
+                    Username = x.Username,
+                    SettlementDate = x.SettlementDate,
+                    SettlementDateFrom = x.SettlementDateFrom,
+                    SettlementDateTo = x.SettlementDateTo,
+                    LiveDealerWinLoss = x.LiveDealerWinLoss,
+                    SlotWinLoss = x.SlotWinLoss,
+                    LotteryWinLoss = x.LotteryWinLoss,
+                    CardGameWinLoss = x.CardGameWinLoss,
+                    SportsWinLoss = x.SportsWinLoss,
+                    VirtualSportsWinLoss = x.VirtualSportsWinLoss,
+                    WinLossAmount = x.WinLossAmount,
+                    AgentDividendAmount = list.Sum(l => l.AgentDividendAmount),
+                    AgentDividendPercentage = x.AgentDividendPercentage,
+                    ExpenditureAmount = x.ExpenditureAmount,
+                    BonusAmount = x.BonusAmount,
+                    NetProfit = x.NetProfit,
+                    CompanyWinLossTotalAmount = x.LiveDealerWinLoss + x.SlotWinLoss + x.LotteryWinLoss + x.CardGameWinLoss + x.SportsWinLoss + x.VirtualSportsWinLoss
                 }).ToArray();
 
             return models.AsQueryable().CreatePagedResponse(request);
