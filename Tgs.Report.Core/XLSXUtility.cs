@@ -204,10 +204,6 @@ namespace Tgs.Report.Core
                     {
                         value = value?.ToString();
                     }
-                    else if (propertyInfo.PropertyType == typeof(DateTimeOffset))
-                    {
-                        value = ((DateTimeOffset)value!).ToOffset(TimeSpan.FromHours(8));
-                    }
 
                     if (columnIndex == 1 || columnIndex == 3)
                         sheet.Cell(rowIdx, columnIndex).Value = $"'{value}";
