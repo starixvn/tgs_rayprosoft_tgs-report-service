@@ -161,7 +161,7 @@ namespace Tgs.Report.Core
                         value = value?.ToString();
                     }
 
-                    sheet.Cell(rowIdx, columnIndex).Value = value;                    
+                    sheet.Cell(rowIdx, columnIndex).Value = value;
                     columnIndex++;
                 }
 
@@ -170,6 +170,7 @@ namespace Tgs.Report.Core
 
             return workbook;
         }
+
         public static XLWorkbook ExportSystemRoundsWithLocalization<T>(this IEnumerable<T>? models, string sheetName,
             ResourceManager resourceManager)
         {
@@ -203,12 +204,12 @@ namespace Tgs.Report.Core
                     {
                         value = value?.ToString();
                     }
-                    else if(propertyInfo.PropertyType == typeof(DateTimeOffset))
+                    else if (propertyInfo.PropertyType == typeof(DateTimeOffset))
                     {
                         value = ((DateTimeOffset)value!).ToString("o");
                     }
 
-                    if(columnIndex == 1 || columnIndex == 3)
+                    if (columnIndex == 1 || columnIndex == 3)
                         sheet.Cell(rowIdx, columnIndex).Value = $"'{value}";
                     else
                         sheet.Cell(rowIdx, columnIndex).Value = value;
