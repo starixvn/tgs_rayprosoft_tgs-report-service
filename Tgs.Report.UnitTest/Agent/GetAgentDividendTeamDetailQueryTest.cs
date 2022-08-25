@@ -93,7 +93,8 @@ namespace Tgs.Report.UnitTest.Agent
                     {
                         AgentId = agentId,
                         Layer = $"{agentId},{childAgentId}",
-                        DividendProviderAgentId = childAgentId
+                        DividendProviderAgentId = childAgentId,
+                        Dividend = 100
                     }
                 }));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
