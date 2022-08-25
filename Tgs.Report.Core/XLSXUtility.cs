@@ -203,6 +203,10 @@ namespace Tgs.Report.Core
                     {
                         value = value?.ToString();
                     }
+                    else if(propertyInfo.PropertyType == typeof(DateTimeOffset))
+                    {
+                        value = ((DateTimeOffset)value!).ToString("o");
+                    }
 
                     if(columnIndex == 1 || columnIndex == 3)
                         sheet.Cell(rowIdx, columnIndex).Value = $"'{value}";
