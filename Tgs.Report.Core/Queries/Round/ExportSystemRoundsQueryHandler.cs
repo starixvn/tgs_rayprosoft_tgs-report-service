@@ -45,11 +45,11 @@ namespace Tgs.Report.Core.Queries.Round
                 PlayerName = x.PlayerName,
                 PlayerCode = x.PlayerCode,
                 ExternalRoundId = x.ExternalRoundId,
-                ExternalCreatedOn = x.ExternalCreatedOn?.ToString("o"),
-                ExternalClosedOn = x.ExternalClosedOn?.ToString("o"),
+                ExternalCreatedOn = x.ExternalCreatedOn,
+                ExternalClosedOn = x.ExternalClosedOn,
                 Id = x.Id,
-                CreatedOn = x.CreatedOn.ToString("o"),
-                ClosedOn = x.ClosedOn?.ToString("o"),
+                CreatedOn = x.CreatedOn,
+                ClosedOn = x.ClosedOn,
                 BetAmount = x.BetAmount,
                 WinLoss = x.WinLoss
             });
