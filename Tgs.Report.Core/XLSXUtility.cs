@@ -206,7 +206,7 @@ namespace Tgs.Report.Core
                     }
                     else if (propertyInfo.PropertyType == typeof(DateTimeOffset))
                     {
-                        value = ((DateTimeOffset)value!).ToString("o");
+                        value = ((DateTimeOffset)value!).ToLocalTime();
                     }
 
                     if (columnIndex == 1 || columnIndex == 3)
