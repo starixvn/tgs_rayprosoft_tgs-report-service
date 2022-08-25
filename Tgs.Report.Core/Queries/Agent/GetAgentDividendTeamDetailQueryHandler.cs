@@ -142,7 +142,7 @@ namespace Tgs.Report.Core.Queries.Agent
                                     .AgentDividendPercentage,
                             AgentDividendAmount = group.Dividend
                         })
-                .Where(x => x.AgentDividendAmount > 0)
+                .Where(x => x.AgentDividendAmount != 0)
                 .ToArray();
 
             var agentIds = agentDividends.Select(x => x.AgentId).ToArray();
