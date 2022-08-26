@@ -37,32 +37,9 @@ namespace Tgs.Report.Core.Queries.Agent
                 };
             }
 
-            var agentDividends = await _context.AgentDividends
-                .Where(x => x.AgentId == request.AgentId)
-                .Where(x => x.From >= request.From.ToUniversalTime())
-                .Where(x => x.To < request.To.ToUniversalTime())
-                .Select(x => new
-                {
-                    x.From,
-                    x.To
-                })
-                .ToArrayAsync(cancellationToken);
-
-            if (!agentDividends.Any())
-            {
-                return new PagedResponse<AgentPlayerWinLossModel>
-                {
-                    Valid = true,
-                    Items = Array.Empty<AgentPlayerWinLossModel>()
-                };
-            }
-
-            var from = agentDividends.Min(x => x.From);
-            var to = agentDividends.Max(x => x.To);
-
             var playerAggregate = await _context.PlayerGameRebateAggregates
                 .Where(x => x.AgentId == request.AgentId)
-                .Where(x => x.ReportDate >= from && x.ReportDate < to)
+                .Where(x => x.ReportDate >= request.From.ToUniversalTime() && x.ReportDate < request.To.ToUniversalTime())
                 .GroupBy(g => g.PlayerCode,
                     (playerCode, aggregate) => new
                     {
