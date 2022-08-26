@@ -62,7 +62,7 @@ namespace Tgs.Report.Core.Queries.Agent
 
             var playerAggregate = await _context.PlayerGameRebateAggregates
                 .Where(x => x.AgentId == request.AgentId)
-                .Where(x => x.ReportDate >= from && x.ReportDate <= to)
+                .Where(x => x.ReportDate >= from && x.ReportDate < to)
                 .GroupBy(g => g.PlayerCode,
                     (playerCode, aggregate) => new
                     {

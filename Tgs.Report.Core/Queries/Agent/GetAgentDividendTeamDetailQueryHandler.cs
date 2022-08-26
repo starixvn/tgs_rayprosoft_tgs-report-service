@@ -46,14 +46,16 @@ namespace Tgs.Report.Core.Queries.Agent
                 })
                 .ToArrayAsync(cancellationToken).ConfigureAwait(false);
 
-            var dividendProviderAgents = mainAgentDividends.SelectMany(x => x.AgentDividendMultipleLayers)
-                .Where(x => x.AgentId == request.AgentId)
-                .Select(x => new
+            var dividendProviderAgents = mainAgentDividends
+                .SelectMany(x => x.AgentDividendMultipleLayers.Select(s => new
                 {
-                    x.DividendProviderAgentId,
-                    x.Dividend,
-                    GroupAgentId = x.Layer.Split(',').Where((s, i) => i == 1).FirstOrDefault()?.ToString()
-                }).Distinct().ToArray();
+                    x.From,
+                    x.To,
+                    s.DividendProviderAgentId,
+                    s.Dividend,
+                    GroupAgentId = s.Layer.Split(',').Where((s, i) => i == 1).FirstOrDefault()?.ToString()
+                }))
+                .Distinct().ToArray();
 
             var firstLayerAgentDividendIds = dividendProviderAgents.Where(x => x.GroupAgentId != null)
                 .Select(x => x.DividendProviderAgentId).ToArray();
@@ -77,6 +79,7 @@ namespace Tgs.Report.Core.Queries.Agent
             var allAgentDividends = await _agentDividendService.GetQueries()
                 .Where(x => firstLayerAgentDividendIds.Contains(x.AgentId))
                 .Where(x => x.From >= request.From.ToUniversalTime())
+                .Where(x => x.To < request.To.ToUniversalTime())
                 .Select(x => new
                 {
                     x.Id,
@@ -100,49 +103,53 @@ namespace Tgs.Report.Core.Queries.Agent
                     x.AgentAdjustAmount,
                     x.CreatedOn
                 })
-                .Where(x => x.To < request.To.ToUniversalTime()).ToArrayAsync(cancellationToken).ConfigureAwait(false);
+                .ToArrayAsync(cancellationToken).ConfigureAwait(false);
+
+            var allAgentDividendIds = allAgentDividends.Select(m => m.AgentId).Distinct().ToArray();
 
             var agentDividends = allAgentDividends
-                .Join(dividendProviderAgents.Where(x => x.GroupAgentId != null), ad => ad.AgentId,
-                    da => da.DividendProviderAgentId, (agentDividend, group)
-                        => new
-                        {
-                            agentDividend.Id,
-                            agentDividend.AgentId,
-                            group.DividendProviderAgentId,
-                            agentDividend.From,
-                            agentDividend.To,
-                            agentDividend.NetProfit,
-                            agentDividend.LiveDealerWinLoss,
-                            SlotWinLoss =
-                                agentDividend.SlotWinLoss + agentDividend.FishingWinLoss + agentDividend.ArcadeWinLoss +
-                                agentDividend.TableGameWinLoss,
-                            agentDividend.LotteryWinLoss,
-                            agentDividend.CardGameWinLoss,
-                            SportsWinLoss = agentDividend.SportsWinLoss + agentDividend.ESportsWinLoss,
-                            agentDividend.VirtualSportsWinLoss,
-                            agentDividend.WinLossAmount,
-                            ExpenditureAmount =
-                                agentDividend.PromotionAmount + agentDividend.RebateAmount +
-                                agentDividend.AgentAdjustAmount,
-                            BonusAmount = agentDividend.RebateAmount + agentDividend.PromotionAmount,
-                            agentDividend.AgentAdjustAmount,
-                            agentDividend.CreatedOn,
-                            group.GroupAgentId,
-                            AgentDividendPercentage = group.GroupAgentId == null
-                                ? mainAgentDividends
-                                    .First(m => m.From == agentDividend.From && m.To == agentDividend.To)
-                                    .AgentDividendPercentage
-                                : mainAgentDividends
-                                    .First(m => m.From == agentDividend.From && m.To == agentDividend.To)
-                                    .AgentDividendPercentage -
-                                fistLayerAgentDividends
-                                    .First(m => m.AgentId.ToString() == group.GroupAgentId &&
-                                        m.From == agentDividend.From && m.To == agentDividend.To)
-                                    .AgentDividendPercentage,
-                            AgentDividendAmount = group.Dividend
-                        })
-                .Where(x => x.AgentDividendAmount != 0)
+                .GroupJoin(dividendProviderAgents.Where(x => x.GroupAgentId != null), ad => new { AgentId = ad.AgentId, From = ad.From, To = ad.To },
+                    da => new { AgentId = da.DividendProviderAgentId, From = da.From, To = da.To }, (agentDividend, group)
+                              => new
+                              {
+                                  agentDividend,
+                                  group
+                              })
+                .SelectMany(x => x.group.DefaultIfEmpty(),
+                    (x, provider) => new
+                    {
+                        x.agentDividend.Id,
+                        x.agentDividend.AgentId,
+                        provider?.DividendProviderAgentId,
+                        x.agentDividend.From,
+                        x.agentDividend.To,
+                        x.agentDividend.NetProfit,
+                        x.agentDividend.LiveDealerWinLoss,
+                        SlotWinLoss =
+                                x.agentDividend.SlotWinLoss + x.agentDividend.FishingWinLoss + x.agentDividend.ArcadeWinLoss +
+                                x.agentDividend.TableGameWinLoss,
+                        x.agentDividend.LotteryWinLoss,
+                        x.agentDividend.CardGameWinLoss,
+                        SportsWinLoss = x.agentDividend.SportsWinLoss + x.agentDividend.ESportsWinLoss,
+                        x.agentDividend.VirtualSportsWinLoss,
+                        x.agentDividend.WinLossAmount,
+                        ExpenditureAmount =
+                                x.agentDividend.PromotionAmount + x.agentDividend.RebateAmount +
+                                x.agentDividend.AgentAdjustAmount,
+                        BonusAmount = x.agentDividend.RebateAmount + x.agentDividend.PromotionAmount,
+                        x.agentDividend.AgentAdjustAmount,
+                        x.agentDividend.CreatedOn,
+                        provider?.GroupAgentId,
+                        AgentDividendPercentage = 
+                            mainAgentDividends
+                                .First(m => m.From == x.agentDividend.From && m.To == x.agentDividend.To)
+                                .AgentDividendPercentage -
+                            fistLayerAgentDividends
+                                .First(m => (m.AgentId.ToString() == provider?.GroupAgentId || dividendProviderAgents.Any(a => a.DividendProviderAgentId == x.agentDividend.AgentId && a?.GroupAgentId == m.AgentId.ToString())) &&
+                                    m.From == x.agentDividend.From && m.To == x.agentDividend.To)
+                                .AgentDividendPercentage,
+                        AgentDividendAmount = provider?.Dividend ?? 0
+                    })
                 .ToArray();
 
             var agentIds = agentDividends.Select(x => x.AgentId).ToArray();
