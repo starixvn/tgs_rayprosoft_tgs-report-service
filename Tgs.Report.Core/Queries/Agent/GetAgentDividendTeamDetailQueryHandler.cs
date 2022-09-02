@@ -55,7 +55,7 @@ namespace Tgs.Report.Core.Queries.Agent
                     s.Dividend,
                     GroupAgentId = s.Layer.Split(',').Where((s, i) => i == 1).FirstOrDefault()?.ToString()
                 }))
-                .Distinct().ToArray();
+                .ToArray();
 
             var firstLayerAgentDividendIds = dividendProviderAgents.Where(x => x.GroupAgentId != null)
                 .Select(x => x.DividendProviderAgentId).ToArray();
