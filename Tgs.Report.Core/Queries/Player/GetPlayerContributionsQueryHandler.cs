@@ -39,36 +39,108 @@ public class GetPlayerContributionsQueryHandler
             0,
             requestTo.Offset);
 
-        var withdrawalByUserIds = await _context.WithdrawForms
-            .Join(_context.Players,
-                wf => wf.UserId,
-                p => p.PlayerCode,
-                (wf, p) => new
-                {
-                    wf.BrandId,
-                    wf.UserType,
-                    wf.Status,
-                    wf.CreatedOn,
-                    wf.UserId,
-                    wf.ActualAmount,
-                    wf.Amount,
-                    p.AgentId,
-                    p.Username,
-                    Level = p.Vip == null ? (int?)null : p.Vip.Level
-                })
-            .Where(x => x.BrandId == request.BrandId)
-            .Where(x => x.UserType == 1 && x.Status == 9000)
-            .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
+        var now = DateTimeOffset.Now.ToOffset(offset);
+        var today = new DateTimeOffset(now.Year,
+            now.Month,
+            now.Day,
+            0,
+            0,
+            0,
+            offset);
+
+        var fromDate = new DateOnly(from.Year, from.Month, from.Day);
+        var toDate = new DateOnly(to.Year, to.Month, to.Day);
+
+        var withdrawalByUserIds = to > today
+            ? await _context.WithdrawForms
+                .Join(_context.Players,
+                    wf => wf.UserId,
+                    p => p.PlayerCode,
+                    (wf, p) => new
+                    {
+                        wf.BrandId,
+                        wf.UserType,
+                        wf.Status,
+                        wf.CreatedOn,
+                        wf.UserId,
+                        wf.ActualAmount,
+                        wf.Amount,
+                        p.AgentId,
+                        p.Username,
+                        Level = p.Vip == null ? (int?)null : p.Vip.Level
+                    })
+                .Where(x => x.BrandId == request.BrandId)
+                .Where(x => x.UserType == 1 && x.Status == 9000)
+                .Where(x => x.CreatedOn >= today.ToUniversalTime() && x.CreatedOn < today.AddDays(1).ToUniversalTime())
+                .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
+                .Where(request.HasUpperAgent == true, x => x.AgentId != null)
+                .Where(request.HasUpperAgent == false, x => x.AgentId == null)
+                .Where(request.Level, x => x.Level == request.Level)
+                .GroupBy(x => x.UserId,
+                    (userId, withdrawals) => new
+                    {
+                        UserId = userId,
+                        WithdrawalAmount = withdrawals.Sum(w => w.ActualAmount ?? w.Amount)
+                    }).ToArrayAsync(cancellationToken)
+                .ConfigureAwait(false)
+            : null;
+
+        var depositByUserIds = to > today
+            ? await _context.DepositForms
+                .Join(_context.Players,
+                    wf => wf.PlayerCode,
+                    p => p.PlayerCode,
+                    (wf, p) => new
+                    {
+                        wf.BrandId,
+                        wf.Status,
+                        wf.CreatedOn,
+                        wf.PlayerCode,
+                        wf.ActualAmount,
+                        wf.Amount,
+                        p.AgentId,
+                        p.Username,
+                        Level = p.Vip == null ? (int?)null : p.Vip.Level
+                    })
+                .Where(x => x.BrandId == request.BrandId)
+                .Where(x => x.Status == 8000)
+                .Where(x => x.CreatedOn >= today.ToUniversalTime() && x.CreatedOn < today.AddDays(1).ToUniversalTime())
+                .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
+                .Where(request.HasUpperAgent == true, x => x.AgentId != null)
+                .Where(request.HasUpperAgent == false, x => x.AgentId == null)
+                .Where(request.Level, x => x.Level == request.Level)
+                .GroupBy(x => x.PlayerCode,
+                    (userId, deposits) => new
+                    {
+                        UserId = userId,
+                        DepositAmount = deposits.Sum(w => w.ActualAmount ?? w.Amount)
+                    }).ToArrayAsync(cancellationToken)
+                .ConfigureAwait(false)
+            : null;
+
+        var dailyDepositWithdraws = await _context.PlayerDailyPaymentStatistics
+            .Join(_context.Players.Where(x => x.BrandId == request.BrandId), pp => pp.PlayerCode, p => p.PlayerCode,(pp,p)=>new
+            {
+                pp.ReportDate,
+                p.AgentId,
+                p.PlayerCode,
+                p.Username,
+                Level = p.Vip == null ? (int?)null : p.Vip.Level,
+                pp.DailyDepositAmount,
+                pp.DailyWithdrawAmount
+            })
+            .Where(x => x.ReportDate >= fromDate && x.ReportDate < toDate)
             .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
             .Where(request.HasUpperAgent == true, x => x.AgentId != null)
             .Where(request.HasUpperAgent == false, x => x.AgentId == null)
             .Where(request.Level, x => x.Level == request.Level)
-            .GroupBy(x => x.UserId,
-                (userId, withdrawals) => new
-                {
-                    UserId = userId,
-                    WithdrawalAmount = withdrawals.Sum(w => w.ActualAmount ?? w.Amount)
-                }).ToArrayAsync(cancellationToken)
+            .GroupBy(x => x.PlayerCode,(playerCode,group)=> new
+            {
+                PlayerCode = playerCode,
+                DailyDepositAmount = group.Sum(s => s.DailyDepositAmount),
+                DailyWithdrawAmount = group.Sum(s => s.DailyWithdrawAmount),
+            })
+            .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
 
         var reportPlayers = await _context.PlayerAggregates
@@ -182,7 +254,6 @@ public class GetPlayerContributionsQueryHandler
                 (playerCode, playerAggregates) => new
                 {
                     PlayerCode = playerCode,
-                    DepositAmount = playerAggregates.Sum(p => p.DepositAmount),
                     CompanyAdjustAmount = playerAggregates.Sum(p => p.CompanyAdjustAmount),
                     BonusAdjustAmount = playerAggregates.Sum(p => p.BonusAdjustAmount),
                     AgentAdjustAmount = playerAggregates.Sum(p => p.AgentAdjustAmount),
@@ -209,7 +280,7 @@ public class GetPlayerContributionsQueryHandler
                     PlayerCode = agg.PlayerCode,
                     Level = player.Level,
                     Type = AccountType.Player,
-                    DepositAmount = agg.DepositAmount,
+                    //DepositAmount = agg.DepositAmount,
                     CompanyAdjustAmount = agg.CompanyAdjustAmount,
                     AgentAdjustAmount = agg.AgentAdjustAmount,
                     BonusAdjustAmount = agg.BonusAdjustAmount,
@@ -234,8 +305,15 @@ public class GetPlayerContributionsQueryHandler
         }
 
         foreach (var item in reportPlayers.Items)
-            item.WithdrawalAmount =
-                withdrawalByUserIds.FirstOrDefault(w => w.UserId == item.PlayerCode)?.WithdrawalAmount ?? 0;
+        {
+            item.DepositAmount = (dailyDepositWithdraws.FirstOrDefault(x => x.PlayerCode == item.PlayerCode)
+                    ?.DailyDepositAmount ?? 0M)
+                + (depositByUserIds?.FirstOrDefault(x => x.UserId == item.PlayerCode)?.DepositAmount ?? 0M);
+
+            item.WithdrawalAmount =(dailyDepositWithdraws.FirstOrDefault(x => x.PlayerCode == item.PlayerCode)
+                    ?.DailyWithdrawAmount ?? 0M)
+                + (withdrawalByUserIds?.FirstOrDefault(w => w.UserId == item.PlayerCode)?.WithdrawalAmount ?? 0);
+        }
 
         return reportPlayers;
     }

@@ -12,7 +12,7 @@ namespace Tgs.Report.ViewModel.Vip
 
         public int? Level { get; init; }
 
-        public decimal DepositAmount { get; init; }
+        public decimal DepositAmount { get; set; }
 
         public decimal WithdrawalAmount { get; set; }
 

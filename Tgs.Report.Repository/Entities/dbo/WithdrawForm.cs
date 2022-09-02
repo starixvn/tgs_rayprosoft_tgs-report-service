@@ -32,6 +32,7 @@ namespace Tgs.Report.Repository.Entities
         public string? PaidUserName { get; set; }
         public string? OrderNo { get; set; }
         public string? Note { get; set; }
+        public decimal HandlingFee { get; set; }
 
         public virtual Brand Brand { get; set; } = null!;
     }
