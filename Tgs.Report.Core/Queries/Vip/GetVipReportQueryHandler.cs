@@ -327,6 +327,7 @@ public class GetVipReportQueryHandler : IRequestHandler<GetVipReportRequest, Pag
         }
 
         foreach (var item in vips.Items)
+        {
             item.DepositAmount = (dailyDepositWithdraws.FirstOrDefault(x => x.PlayerCode == item.PlayerCode)
                     ?.DailyDepositAmount ?? 0M)
                 + (depositByUserIds?.FirstOrDefault(x => x.PlayerCode == item.PlayerCode)?.DepositAmount ?? 0M);
@@ -334,6 +335,7 @@ public class GetVipReportQueryHandler : IRequestHandler<GetVipReportRequest, Pag
         item.WithdrawalAmount =(dailyDepositWithdraws.FirstOrDefault(x => x.PlayerCode == item.PlayerCode)
                 ?.DailyWithdrawAmount ?? 0M)
             + (withdrawalByUserIds?.FirstOrDefault(w => w.UserId == item.PlayerCode)?.WithdrawalAmount ?? 0);
+        }
 
         return vips;
     }

@@ -21,8 +21,9 @@ namespace Tgs.Report.UnitTest.ResellerMarket
             var fakeWithdrawForm = Substitute.For<ITgsService<WithdrawForm>>();
             var fakePlayerAggregate = Substitute.For<ITgsService<PlayerAggregate>>();
             var fakePlayerBonusAggregate = Substitute.For<ITgsService<PlayerBonusAggregate>>();
+            var fakeContext = Substitute.For<TgsContext>();
 
-            var sut = new GetResellerMarketsQueryHandler(fakeBrand, fakeWithdrawForm, fakePlayerAggregate, fakePlayerBonusAggregate);
+            var sut = new GetResellerMarketsQueryHandler(fakeContext, fakeBrand, fakeWithdrawForm, fakePlayerAggregate, fakePlayerBonusAggregate);
 
             var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
             var resellerId = new Guid("aac11120-20f6-4f0d-6982-08d9dbdc0473");
