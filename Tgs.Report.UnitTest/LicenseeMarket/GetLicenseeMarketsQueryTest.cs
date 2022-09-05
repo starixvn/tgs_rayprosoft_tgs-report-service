@@ -46,15 +46,32 @@ namespace Tgs.Report.UnitTest.LicenseeMarket
                 SortBy = null
             };
 
+            var playerDailyPaymentStatistics = 
+                CreatePlayerDailyPaymentStatisticsFixture().CreateMany<PlayerDailyPaymentStatistic>(5).AsQueryable()
+                    .BuildMock();
+
+            var deposits = CreateDepositFormFixture(brandId).CreateMany<DepositForm>(5).AsQueryable()
+                    .BuildMock();
+
+            var players = CreatePlayerFixture(brandId).CreateMany<Repository.Entities.Player>(1).AsQueryable()
+                .BuildMock();
+
+            var mockPlayerDailyPaymentStatistics = GetDbSet(playerDailyPaymentStatistics);
+
             var mockBrands = GetDbSet(brands);
             var mockPlayerAggregates = GetDbSet(playerAggregates);
             var mockWithdrawForms = GetDbSet(withdrawForms);
             var mockPlayerBonusAggregates = GetDbSet(playerBonusAggregates);
+            var mockDepositForms = GetDbSet(deposits);
+            var mockPlayers = GetDbSet(players);
 
             fakeDbContext.Brands.Returns(mockBrands.Object);
             fakeDbContext.PlayerAggregates.Returns(mockPlayerAggregates.Object);
             fakeDbContext.WithdrawForms.Returns(mockWithdrawForms.Object);
             fakeDbContext.PlayerBonusAggregates.Returns(mockPlayerBonusAggregates.Object);
+            fakeDbContext.PlayerDailyPaymentStatistics.Returns(mockPlayerDailyPaymentStatistics.Object);
+            fakeDbContext.DepositForms.Returns(mockDepositForms.Object);
+            fakeDbContext.Players.Returns(mockPlayers.Object);
 
             var response = await sut.Handle(request, default);
 
@@ -89,6 +106,17 @@ namespace Tgs.Report.UnitTest.LicenseeMarket
             return fixture;
         }
 
+        private static Fixture CreateDepositFormFixture(Guid brandId)
+        {
+            var fixture = new Fixture();
+            fixture.Customize<DepositForm>(u => u
+                .With(s => s.BrandId, brandId)
+                .With(s => s.Brand, new Brand())
+                .With(s => s.PlayerCodeNavigation, new Repository.Entities.Player()));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            return fixture;
+        }
+
         private static Fixture CreatePlayerAggregateFixture(Guid brandId)
         {
             var fixture = new Fixture();
@@ -104,6 +132,27 @@ namespace Tgs.Report.UnitTest.LicenseeMarket
             var fixture = new Fixture();
             fixture.Customize<PlayerBonusAggregate>(u => u
                 .With(s => s.BrandId, brandId));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            return fixture;
+        }
+
+        private static Fixture CreatePlayerDailyPaymentStatisticsFixture()
+        {
+            var fixture = new Fixture();
+            fixture.Customize<PlayerDailyPaymentStatistic>(u => u
+                .With(s => s.ReportDate, 
+                    new DateOnly(DateTimeOffset.UtcNow.Year,DateTimeOffset.UtcNow.Month,DateTimeOffset.UtcNow.Day)));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            return fixture;
+        }
+        
+        private static Fixture CreatePlayerFixture(Guid brandId)
+        {
+            var fixture = new Fixture();
+            fixture.Customize<Repository.Entities.Player>(u => u
+                .With(s => s.BrandId, brandId)
+                .With(s => s.Brand, new Brand())
+                .With(s => s.Birthdate, DateOnly.Parse("2022/05/04")));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
