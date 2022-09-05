@@ -39,7 +39,19 @@ public class GetVipReportTotalAmountQueryHandler : IRequestHandler<GetVipReportT
             0,
             requestTo.Offset);
 
-        var withdrawalAmount = await _context.WithdrawForms
+        var now = DateTimeOffset.Now.ToOffset(offset);
+        var today = new DateTimeOffset(now.Year,
+            now.Month,
+            now.Day,
+            0,
+            0,
+            0,
+            requestTo.Offset);
+
+        var fromDate = new DateOnly(from.Year, from.Month, from.Day);
+        var toDate = new DateOnly(to.Year, to.Month, to.Day);
+
+        var totalWithdrawal = to > today ? await _context.WithdrawForms
             .Where(x => x.BrandId == request.BrandId)
             .Where(x => x.UserType == 1 && x.Status == 9000)
             .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
@@ -57,6 +69,51 @@ public class GetVipReportTotalAmountQueryHandler : IRequestHandler<GetVipReportT
             .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
             .Where(request.Level, x => x.Level == request.Level)
             .SumAsync(x => x.ActualAmount ?? x.Amount, cancellationToken)
+            .ConfigureAwait(false)
+            : 0M;
+
+        var totalDeposit = to > today ? await _context.DepositForms
+                .Where(x => x.BrandId == request.BrandId)
+                .Where(x => x.Status == 8000)
+                .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
+                .Join(_context.Players,
+                    wf => wf.PlayerCode,
+                    p => p.PlayerCode,
+                    (df, p) => new
+                    {
+                        df.PlayerCode,
+                        df.ActualAmount,
+                        df.Amount,
+                        p.Username,
+                        Level = p.Vip == null ? (int?)null : p.Vip.Level
+                    })
+                .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
+                .Where(request.Level, x => x.Level == request.Level)
+                .SumAsync(x => x.ActualAmount ?? x.Amount, cancellationToken)
+                .ConfigureAwait(false)
+            : 0M;
+
+        var dailyDepositWithdraws = await _context.PlayerDailyPaymentStatistics
+            .Join(_context.Players.Where(x => x.BrandId == request.BrandId), pp => pp.PlayerCode, p => p.PlayerCode,(pp,p)=>new
+            {
+                pp.ReportDate,
+                p.AgentId,
+                p.PlayerCode,
+                p.Username,
+                Level = p.Vip == null ? (int?)null : p.Vip.Level,
+                pp.DailyDepositAmount,
+                pp.DailyWithdrawAmount
+            })
+            .Where(x => x.ReportDate >= fromDate && x.ReportDate < toDate)
+            .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
+            .Where(request.Level, x => x.Level == request.Level)
+            .GroupBy(x => true)
+            .Select(group=> new
+            {
+                DailyDepositAmount = group.Sum(s => s.DailyDepositAmount),
+                DailyWithdrawAmount = group.Sum(s => s.DailyWithdrawAmount),
+            })
+            .FirstOrDefaultAsync(cancellationToken)
             .ConfigureAwait(false);
 
         var vipTotalAmount = await _context.PlayerAggregates
@@ -254,8 +311,8 @@ public class GetVipReportTotalAmountQueryHandler : IRequestHandler<GetVipReportT
 
             return new VipTotalAmountModel
             {
-                DepositAmount = vipTotalAmount?.DepositAmount ?? 0M,
-                WithdrawalAmount = withdrawalAmount,
+                DepositAmount = dailyDepositWithdraws.DailyDepositAmount ?? 0M + totalDeposit,
+                WithdrawalAmount = dailyDepositWithdraws.DailyWithdrawAmount ?? 0M + totalWithdrawal,
                 CompanyAdjustAmount = vipTotalAmount?.CompanyAdjustAmount ?? 0M,
                 BonusAdjustAmount = vipTotalAmount?.BonusAdjustAmount ?? 0M,
                 BonusAmount = vipTotalAmount?.BonusAmount ?? 0M,

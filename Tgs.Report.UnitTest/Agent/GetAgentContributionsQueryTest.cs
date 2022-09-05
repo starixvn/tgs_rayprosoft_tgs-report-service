@@ -23,9 +23,10 @@ namespace Tgs.Report.UnitTest.Agent
             var fakePlayer = Substitute.For<ITgsService<Repository.Entities.Player>>();
             var fakePlayerAggregate = Substitute.For<ITgsService<PlayerAggregate>>();
             var fakePlayerBonusAggregate = Substitute.For<ITgsService<PlayerBonusAggregate>>();
+            var fakeContext = Substitute.For<TgsContext>();
 
             var sut = new GetAgentContributionsQueryHandler(fakeAgent, fakeWithdrawForm, fakePlayer,
-                fakePlayerAggregate, fakePlayerBonusAggregate);
+                fakePlayerAggregate, fakePlayerBonusAggregate, fakeContext);
 
             var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
             var agentUsername = "agentUsername";

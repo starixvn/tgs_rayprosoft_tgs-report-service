@@ -37,14 +37,24 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
             0,
             requestTo.Offset);
 
+        var now = DateTimeOffset.Now.ToOffset(offset);
+        var today = new DateTimeOffset(now.Year,
+            now.Month,
+            now.Day,
+            0,
+            0,
+            0,
+            requestTo.Offset);
+
         var dates = Enumerable.Range(0, to.Subtract(from).Days)
             .Select(x => from.AddDays(x))
             .ToArray();
 
-        var withdrawals = await _context.WithdrawForms
+        var withdrawals = to > today ?
+            await _context.WithdrawForms
             .Where(x => x.BrandId == request.BrandId)
             .Where(x => x.UserType == 1 && x.Status == 9000)
-            .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
+            .Where(x => x.CreatedOn >= today.ToUniversalTime() && x.CreatedOn < today.AddDays(1).ToUniversalTime())
             .Select(x => new
             {
                 x.CreatedOn,
@@ -52,13 +62,34 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                 x.Amount
             })
             .ToArrayAsync(cancellationToken)
-            .ConfigureAwait(false);
+            .ConfigureAwait(false) : null;
 
-        var withdrawalByDates = withdrawals.GroupBy(x => x.CreatedOn.ToOffset(offset).Date,
+        var withdrawalByDates = withdrawals?.GroupBy(x => x.CreatedOn.ToOffset(offset).Date,
             (date, withdrawals) => new
             {
                 Date = date,
                 WithdrawalAmount = withdrawals.Sum(w => w.ActualAmount ?? w.Amount)
+            });
+
+        var deposits = to > today ?
+            await _context.DepositForms
+                .Where(x => x.BrandId == request.BrandId)
+                .Where(x => x.Status == 8000)
+                .Where(x => x.CreatedOn >= today.ToUniversalTime() && x.CreatedOn < today.AddDays(1).ToUniversalTime())
+                .Select(x => new
+                {
+                    x.CreatedOn,
+                    x.ActualAmount,
+                    x.Amount
+                })
+                .ToArrayAsync(cancellationToken)
+                .ConfigureAwait(false) : null;
+
+        var depositByDates = deposits?.GroupBy(x => x.CreatedOn.ToOffset(offset).Date,
+            (date, deposits) => new
+            {
+                Date = date,
+                DepositAmount = deposits.Sum(w => w.ActualAmount ?? w.Amount)
             });
 
         var playerLoginRecords = await _context.PlayerLoginRecords
@@ -88,7 +119,24 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
             .Select(x => new
             {
                 x.ReportDate,
-                x.FirstDepositPlayers
+                x.FirstDepositPlayers,
+            })
+            .ToArrayAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        var dailyDepositWithdraws = await _context.PlayerDailyPaymentStatistics
+            .Join(_context.Players.Where(x => x.BrandId == request.BrandId), pp => pp.PlayerCode, p => p.PlayerCode,(pp,p)=>new
+            {
+                pp.ReportDate,
+                pp.DailyDepositAmount,
+                pp.DailyWithdrawAmount
+            })
+            .Where(x => x.ReportDate >= fromDate && x.ReportDate < toDate)
+            .GroupBy(x => x.ReportDate,(reportDate,group)=> new
+            {
+                ReportDate = reportDate,
+                DailyDepositAmount = group.Sum(s => s.DailyDepositAmount),
+                DailyWithdrawAmount = group.Sum(s => s.DailyWithdrawAmount),
             })
             .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
@@ -133,7 +181,6 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                     ReportDate = reportDate,
                     RegisteredCount = group.Sum(s => s.RegisteredCount),
                     FirstFundInCount = group.Sum(s => s.FirstFundInCount),
-                    DepositAmount = group.Sum(s => s.DepositAmount),
                     CompanyAdjustAmount = group.Sum(s => s.CompanyAdjustAmount),
                     NoIncludeNetProfitCompanyAdjustAmount = group.Sum(s => s.NoIncludeNetProfitCompanyAdjustAmount),
                     BonusAdjustAmount = group.Sum(s => s.BonusAdjustAmount),
@@ -160,7 +207,6 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                     x.ReportDate,
                     playerAggregate.RegisteredCount,
                     playerAggregate.FirstFundInCount,
-                    playerAggregate.DepositAmount,
                     playerAggregate.CompanyAdjustAmount,
                     playerAggregate.NoIncludeNetProfitCompanyAdjustAmount,
                     playerAggregate.BonusAdjustAmount,
@@ -197,7 +243,6 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                     x.playerAggregate.ReportDate,
                     x.playerAggregate.RegisteredCount,
                     x.playerAggregate.FirstFundInCount,
-                    x.playerAggregate.DepositAmount,
                     x.playerAggregate.CompanyAdjustAmount,
                     x.playerAggregate.NoIncludeNetProfitCompanyAdjustAmount,
                     x.playerAggregate.BonusAdjustAmount,
@@ -218,7 +263,6 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                 ReportDate = date,
                 RegisteredCount = group.Sum(g => g.RegisteredCount),
                 FirstFundInCount = group.Sum(g => g.FirstFundInCount),
-                DepositAmount = group.Sum(g => g.DepositAmount),
                 CompanyAdjustAmount = group.Sum(g => g.CompanyAdjustAmount),
                 NoIncludeNetProfitCompanyAdjustAmount = group.Sum(g => g.NoIncludeNetProfitCompanyAdjustAmount),
                 BonusAdjustAmount = group.Sum(g => g.BonusAdjustAmount),
@@ -260,11 +304,29 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                     groupDeposits
                 })
             .SelectMany(x => x.groupDeposits.DefaultIfEmpty(),
-                (x, deposit) => new
+                (x, firstDeposit) => new
                 {
                     x.ReportDate,
                     x.market,
-                    deposit
+                    firstDeposit
+                })
+            .GroupJoin(dailyDepositWithdraws,
+                market => new(market.ReportDate.Year, market.ReportDate.Month, market.ReportDate.Day),
+                deposit => deposit.ReportDate,
+                (group, groupDepositWithdraws) => new
+                {
+                    group.ReportDate,
+                    group.market,
+                    group.firstDeposit,
+                    groupDepositWithdraws
+                })
+            .SelectMany(x => x.groupDepositWithdraws.DefaultIfEmpty(),
+                (x, depositWithdraw) => new
+                {
+                    x.ReportDate,
+                    x.market,
+                    x.firstDeposit,
+                    depositWithdraw
                 })
             .GroupJoin(active,
                 market => market.ReportDate,
@@ -273,7 +335,8 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                 {
                     x.ReportDate,
                     x.market,
-                    x.deposit,
+                    x.firstDeposit,
+                    x.depositWithdraw,
                     acts
                 })
             .SelectMany(x => x.acts.DefaultIfEmpty(),
@@ -281,7 +344,8 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                 {
                     x.ReportDate,
                     x.market,
-                    x.deposit,
+                    x.firstDeposit,
+                    x.depositWithdraw,
                     x.acts,
                     act
                 })
@@ -296,12 +360,14 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                             playerLoginRecordsByDates.FirstOrDefault(plr => plr.Date == market.ReportDate.Date)
                                 ?.LoginPlayer ?? 0,
                         RegisteredCount = markets.Sum(m => m.market?.RegisteredCount ?? 0),
-                        FirstFundInCount = markets.Sum(m => m.deposit?.FirstDepositPlayers ?? 0),
-                        DepositAmount = markets.Sum(m => m.market?.DepositAmount ?? 0M),
+                        FirstFundInCount = markets.Sum(m => m.firstDeposit?.FirstDepositPlayers ?? 0),
+                        DepositAmount = markets.Sum(m => m.depositWithdraw?.DailyDepositAmount ?? 0M)
+                        + (depositByDates?.FirstOrDefault(w => w.Date == market.ReportDate.Date)
+                            ?.DepositAmount ?? 0M),
                         WithdrawalAmount =
-                            -withdrawalByDates.FirstOrDefault(w => w.Date == market.ReportDate.Date)
-                                ?.WithdrawalAmount ??
-                            0M,
+                            -(markets.Sum(m => m.depositWithdraw?.DailyWithdrawAmount ?? 0M)
+                                + (withdrawalByDates?.FirstOrDefault(w => w.Date == market.ReportDate.Date)
+                                    ?.WithdrawalAmount ?? 0M)),
                         CompanyAdjustAmount = markets.Sum(m
                             => m.market == null
                                 ? 0M

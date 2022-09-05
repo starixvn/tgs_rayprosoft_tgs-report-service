@@ -30,7 +30,8 @@ builder.Services
         var config = sp.GetRequiredService<IConfiguration>();
 
         options.BaseUrl = config.GetValue<Uri>("Report:GameProvidersPluggableBaseUrl");
-    });
+    })
+    .AddMemoryCache();
 
 builder.Services.AddHealthChecks();
 
