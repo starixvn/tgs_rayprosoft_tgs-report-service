@@ -43,31 +43,31 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddBackOfficeApplicationServices();
 
-//builder.Logging
-//    .AddOpenTelemetry(options =>
-//    {
-//        options.IncludeFormattedMessage = true;
-//        options.ParseStateValues = true;
-//        _ = options.AddFluentdForwardExporter(fluentOptions =>
-//        {
-//            var nodeIp = builder.Configuration.GetValue<string>("NODE_IP");
-//            fluentOptions.Host = nodeIp;
-//            fluentOptions.Tag = builder.Configuration.GetValue<string>("OTEL_SERVICE_NAME");
-//            fluentOptions.UseMessagePack();
-//        });
-//    });
+builder.Logging
+    .AddOpenTelemetry(options =>
+    {
+        options.IncludeFormattedMessage = true;
+        options.ParseStateValues = true;
+        _ = options.AddFluentdForwardExporter(fluentOptions =>
+        {
+            var nodeIp = builder.Configuration.GetValue<string>("NODE_IP");
+            fluentOptions.Host = nodeIp;
+            fluentOptions.Tag = builder.Configuration.GetValue<string>("OTEL_SERVICE_NAME");
+            fluentOptions.UseMessagePack();
+        });
+    });
 
-//builder.Services
-//    .AddOptions<OtlpExporterOptions>()
-//    .Configure<IConfiguration>((options, conifg) =>
-//    {
-//        var nodeIp = conifg.GetValue<string>("NODE_IP");
+builder.Services
+    .AddOptions<OtlpExporterOptions>()
+    .Configure<IConfiguration>((options, conifg) =>
+    {
+        var nodeIp = conifg.GetValue<string>("NODE_IP");
 
-//        if (!string.IsNullOrWhiteSpace(nodeIp))
-//            options.Endpoint = new Uri($"http://{nodeIp}:4317");
+        if (!string.IsNullOrWhiteSpace(nodeIp))
+            options.Endpoint = new Uri($"http://{nodeIp}:4317");
 
-//        conifg.GetSection("Opentelemetry:Tracing").Bind(options);
-//    });
+        conifg.GetSection("Opentelemetry:Tracing").Bind(options);
+    });
 
 builder.Services
     .AddOpenTelemetryTracing(builder => builder
