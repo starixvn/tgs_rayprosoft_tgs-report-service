@@ -311,8 +311,8 @@ public class GetVipReportTotalAmountQueryHandler : IRequestHandler<GetVipReportT
 
             return new VipTotalAmountModel
             {
-                DepositAmount = dailyDepositWithdraws?.DailyDepositAmount ?? 0M + totalDeposit,
-                WithdrawalAmount = dailyDepositWithdraws?.DailyWithdrawAmount ?? 0M + totalWithdrawal,
+                DepositAmount = (dailyDepositWithdraws?.DailyDepositAmount ?? 0M) + totalDeposit,
+                WithdrawalAmount = (dailyDepositWithdraws?.DailyWithdrawAmount ?? 0M) + totalWithdrawal,
                 CompanyAdjustAmount = vipTotalAmount?.CompanyAdjustAmount ?? 0M,
                 BonusAdjustAmount = vipTotalAmount?.BonusAdjustAmount ?? 0M,
                 BonusAmount = vipTotalAmount?.BonusAmount ?? 0M,
