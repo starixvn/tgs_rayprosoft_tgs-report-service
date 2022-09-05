@@ -46,17 +46,23 @@ namespace Tgs.Report.UnitTest.Agent
                 SortBy = null
             };
 
+            var playerDailyPaymentStatistics = 
+                CreatePlayerDailyPaymentStatisticsFixture().CreateMany<PlayerDailyPaymentStatistic>(5).AsQueryable()
+                .BuildMock();
+
             var mockAgents = GetDbSet(agents);
             var mockWithdrawForms = GetDbSet(withdrawForms);
             var mockAgentDividends = GetDbSet(agentDividends);
             var mockPlayers = GetDbSet(players);
             var mockAgentDividendMultipleLayers = GetDbSet(agentDividendMultipleLayers);
+            var mockPlayerDailyPaymentStatistics = GetDbSet(playerDailyPaymentStatistics);
 
             fakeDbContext.Agents.Returns(mockAgents.Object);
             fakeDbContext.WithdrawForms.Returns(mockWithdrawForms.Object);
             fakeDbContext.AgentDividends.Returns(mockAgentDividends.Object);
             fakeDbContext.Players.Returns(mockPlayers.Object);
             fakeDbContext.AgentDividendMultipleLayers.Returns(mockAgentDividendMultipleLayers.Object);
+            fakeDbContext.PlayerDailyPaymentStatistics.Returns(mockPlayerDailyPaymentStatistics.Object);
 
             var response = await sut.Handle(request, default);
 
@@ -94,6 +100,16 @@ namespace Tgs.Report.UnitTest.Agent
                 .With(s => s.AgentId, agentId)
                 .With(s => s.From, DateTime.UtcNow)
                 .With(s => s.To, DateTime.UtcNow));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            return fixture;
+        }
+
+        private static Fixture CreatePlayerDailyPaymentStatisticsFixture()
+        {
+            var fixture = new Fixture();
+            fixture.Customize<PlayerDailyPaymentStatistic>(u => u
+                .With(s => s.ReportDate, 
+                    new DateOnly(DateTimeOffset.UtcNow.Year,DateTimeOffset.UtcNow.Month,DateTimeOffset.UtcNow.Day)));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

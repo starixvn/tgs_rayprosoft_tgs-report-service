@@ -12,7 +12,7 @@ using Tgs.Report.ViewModel.ResellerMarket;
 
 namespace Tgs.Report.UnitTest.ResellerMarket
 {
-    public sealed class GetResellerMarketsQueryTest
+    public sealed class GetResellerMarketsQueryTest : BaseTest
     {
         [Test]
         public async Task Can_Get_Reseller_Markets()
@@ -42,10 +42,27 @@ namespace Tgs.Report.UnitTest.ResellerMarket
             var playerBonusAggregates = CreatePlayerBonusAggregateFixture(brandId).CreateMany<PlayerBonusAggregate>(1).AsQueryable()
                 .BuildMock();
 
+            var playerDailyPaymentStatistics = 
+                CreatePlayerDailyPaymentStatisticsFixture().CreateMany<PlayerDailyPaymentStatistic>(5).AsQueryable()
+                    .BuildMock();
+
+            var deposits = CreateDepositFormFixture(brandId).CreateMany<DepositForm>(5).AsQueryable()
+                .BuildMock();
+
+            var players = CreatePlayerFixture(brandId).CreateMany<Repository.Entities.Player>(1).AsQueryable()
+                .BuildMock();
+
+            var mockPlayerDailyPaymentStatistics = GetDbSet(playerDailyPaymentStatistics);
+            var mockDepositForms = GetDbSet(deposits);
+            var mockPlayers = GetDbSet(players);
+
             fakeBrand.GetQueries().Returns(brands);
             fakeWithdrawForm.GetQueries().Returns(withdrawForms);
             fakePlayerAggregate.GetQueries().Returns(playerAggregates);
             fakePlayerBonusAggregate.GetQueries().Returns(playerBonusAggregates);
+            fakeContext.PlayerDailyPaymentStatistics.Returns(mockPlayerDailyPaymentStatistics.Object);
+            fakeContext.DepositForms.Returns(mockDepositForms.Object);
+            fakeContext.Players.Returns(mockPlayers.Object);
 
             var request = new GetResellerMarketsRequest
             {
@@ -88,6 +105,17 @@ namespace Tgs.Report.UnitTest.ResellerMarket
             return fixture;
         }
 
+        private static Fixture CreateDepositFormFixture(Guid brandId)
+        {
+            var fixture = new Fixture();
+            fixture.Customize<DepositForm>(u => u
+                .With(s => s.BrandId, brandId)
+                .With(s => s.Brand, new Brand())
+                .With(s => s.PlayerCodeNavigation, new Repository.Entities.Player()));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            return fixture;
+        }
+
         private static Fixture CreatePlayerAggregateFixture(Guid brandId)
         {
             var fixture = new Fixture();
@@ -103,6 +131,27 @@ namespace Tgs.Report.UnitTest.ResellerMarket
             var fixture = new Fixture();
             fixture.Customize<PlayerBonusAggregate>(u => u
                 .With(s => s.BrandId, brandId));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            return fixture;
+        }
+
+        private static Fixture CreatePlayerDailyPaymentStatisticsFixture()
+        {
+            var fixture = new Fixture();
+            fixture.Customize<PlayerDailyPaymentStatistic>(u => u
+                .With(s => s.ReportDate, 
+                    new DateOnly(DateTimeOffset.UtcNow.Year,DateTimeOffset.UtcNow.Month,DateTimeOffset.UtcNow.Day)));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            return fixture;
+        }
+        
+        private static Fixture CreatePlayerFixture(Guid brandId)
+        {
+            var fixture = new Fixture();
+            fixture.Customize<Repository.Entities.Player>(u => u
+                .With(s => s.BrandId, brandId)
+                .With(s => s.Brand, new Brand())
+                .With(s => s.Birthdate, DateOnly.Parse("2022/05/04")));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
