@@ -539,24 +539,6 @@ public class
                 agent.MainAgentId,
                 bonus
             })
-            //.GroupJoin(dailyDepositWithdraws,
-            //    market => market.bonus?.PlayerCode,
-            //    deposit => deposit.PlayerCode,
-            //    (group, groupDepositWithdraws) => new
-            //    {
-            //        group.AgentId,
-            //        group.MainAgentId,
-            //        group.bonus,
-            //        groupDepositWithdraws
-            //    })
-            //.SelectMany(x => x.groupDepositWithdraws.DefaultIfEmpty(),
-            //    (x, depositWithdraw) => new
-            //    {
-            //        x.AgentId,
-            //        x.MainAgentId,
-            //        x.bonus,
-            //        depositWithdraw
-            //    })
             .GroupBy(x => new
             {
                 x.MainAgentId,
