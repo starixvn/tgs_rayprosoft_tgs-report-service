@@ -293,8 +293,8 @@ namespace Tgs.Report.Core.Queries.Player
                 .GroupBy(x => true)
                 .Select(x => new PlayerContributionTotalAmountModel
                 {
-                    DepositAmount = dailyDepositWithdraws.DailyDepositAmount ?? 0M + totalDeposit,
-                    WithdrawalAmount = dailyDepositWithdraws.DailyWithdrawAmount ?? 0M + totalWithdrawal,
+                    DepositAmount = (dailyDepositWithdraws == null ? 0M : dailyDepositWithdraws.DailyDepositAmount ?? 0M) + totalDeposit,
+                    WithdrawalAmount = (dailyDepositWithdraws == null ? 0M : dailyDepositWithdraws.DailyWithdrawAmount ?? 0M) + totalWithdrawal,
                     CompanyAdjustAmount = x.Sum(p => p.CompanyAdjustAmount),
                     BonusAdjustAmount = x.Sum(p => p.BonusAdjustAmount),
                     AgentAdjustAmount = x.Sum(p => p.AgentAdjustAmount),
