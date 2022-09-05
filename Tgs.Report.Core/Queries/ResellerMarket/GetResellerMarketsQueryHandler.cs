@@ -12,11 +12,13 @@ namespace Tgs.Report.Core.Queries.ResellerMarket
         private readonly ITgsService<PlayerAggregate> _playerAggregateService;
         private readonly ITgsService<WithdrawForm> _withdrawFormService;
         private readonly ITgsService<PlayerBonusAggregate> _playerBonusAggregateService;
+        private readonly TgsContext _context;
 
-        public GetResellerMarketsQueryHandler(ITgsService<Brand> brandService,
+        public GetResellerMarketsQueryHandler(TgsContext context,ITgsService<Brand> brandService,
             ITgsService<WithdrawForm> withdrawFormService, ITgsService<PlayerAggregate> playerAggregateService,
             ITgsService<PlayerBonusAggregate> playerBonusAggregateService)
         {
+            _context = context;
             _brandService = brandService;
             _withdrawFormService = withdrawFormService;
             _playerAggregateService = playerAggregateService;
@@ -49,6 +51,19 @@ namespace Tgs.Report.Core.Queries.ResellerMarket
                 0,
                 requestTo.Offset).ToUniversalTime();
 
+            var now = DateTimeOffset.Now.ToOffset(offset);
+
+            var today = new DateTimeOffset(now.Year,
+                now.Month,
+                now.Day,
+                0,
+                0,
+                0,
+                requestTo.Offset);
+
+            var fromDate = new DateOnly(from.Year, from.Month, from.Day);
+            var toDate = new DateOnly(to.Year, to.Month, to.Day);
+
             var brands = await _brandService.GetQueries()
                 .Where(x => x.Licensee.ResellerId == request.ResellerId)
                 .Where(!string.IsNullOrEmpty(request.CurrencyCode),
@@ -65,15 +80,49 @@ namespace Tgs.Report.Core.Queries.ResellerMarket
                 .ToArrayAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            var withdrawals = await _withdrawFormService.GetQueries()
+            var withdrawals = to > today ?
+                await _withdrawFormService.GetQueries()
                 .Where(x => brands.Select(x => x.BrandId).Contains(x.BrandId))
                 .Where(x => x.UserType == 1 && x.Status == 9000)
-                .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
+                .Where(x => x.CreatedOn >= today.ToUniversalTime() && x.CreatedOn < today.AddDays(1).ToUniversalTime())
                 .GroupBy(x => x.BrandId)
                 .Select(withdrawal => new
                 {
                     BrandId = withdrawal.Key,
                     WithdrawalAmount = -withdrawal.Sum(w => w.ActualAmount ?? w.Amount)
+                })
+                .ToArrayAsync(cancellationToken)
+                .ConfigureAwait(false)
+                : null;
+
+            var deposits = to > today ?
+                await _context.DepositForms
+                    .Where(x => brands.Select(x => x.BrandId).Contains(x.BrandId))
+                    .Where(x => x.Status == 8000)
+                    .Where(x => x.CreatedOn >= today.ToUniversalTime() && x.CreatedOn < today.AddDays(1).ToUniversalTime())
+                    .GroupBy(x => x.BrandId)
+                    .Select(deposit => new
+                    {
+                        BrandId = deposit.Key,
+                        DepositAmount = deposit.Sum(w => w.ActualAmount ?? w.Amount)
+                    })
+                    .ToArrayAsync(cancellationToken)
+                    .ConfigureAwait(false) : null;
+
+            var dailyDepositWithdraws = await _context.PlayerDailyPaymentStatistics
+                .Join(_context.Players.Where(x => brands.Select(x => x.BrandId).Contains(x.BrandId)), pp => pp.PlayerCode, p => p.PlayerCode,(pp,p)=>new
+                {
+                    pp.ReportDate,
+                    p.BrandId,
+                    pp.DailyDepositAmount,
+                    pp.DailyWithdrawAmount
+                })
+                .Where(x => x.ReportDate >= fromDate && x.ReportDate < toDate)
+                .GroupBy(x => x.BrandId,(brandId,group)=> new
+                {
+                    BrandId = brandId,
+                    DailyDepositAmount = group.Sum(s => s.DailyDepositAmount),
+                    DailyWithdrawAmount = group.Sum(s => s.DailyWithdrawAmount),
                 })
                 .ToArrayAsync(cancellationToken)
                 .ConfigureAwait(false);
@@ -156,6 +205,30 @@ namespace Tgs.Report.Core.Queries.ResellerMarket
                         x.brand.market,
                         bonus
                     })
+                .GroupJoin(dailyDepositWithdraws,
+                    market => market.BrandId,
+                    deposit => deposit.BrandId,
+                    (group, groupDepositWithdraws) => new
+                    {
+                        group.LicenseeId,
+                        group.BrandId,
+                        group.BrandCode,
+                        group.CurrencyCode,
+                        group.market,
+                        group.bonus,
+                        groupDepositWithdraws
+                    })
+                .SelectMany(x => x.groupDepositWithdraws.DefaultIfEmpty(),
+                    (x, depositWithdraw) => new
+                    {
+                        x.LicenseeId,
+                        x.BrandId,
+                        x.BrandCode,
+                        x.CurrencyCode,
+                        x.market,
+                        x.bonus,
+                        depositWithdraw
+                    })
                 .GroupBy(
                     x => new
                     {
@@ -172,9 +245,13 @@ namespace Tgs.Report.Core.Queries.ResellerMarket
                             CurrencyCode = market.CurrencyCode,
                             RegisteredCount = playerAggregates.Sum(m => m.market?.RegisteredCount ?? 0),
                             FirstFundInCount = playerAggregates.Sum(m => m.market?.FirstFundInCount ?? 0),
-                            DepositAmount = playerAggregates.Sum(m => m.market?.DepositAmount ?? 0),
+                            DepositAmount = playerAggregates.Sum(m => m.depositWithdraw?.DailyDepositAmount ?? 0M)
+                                + (deposits?.FirstOrDefault(w => w.BrandId == market.BrandId)
+                                    ?.DepositAmount ?? 0M),
                             WithdrawalAmount =
-                                withdrawals.FirstOrDefault(x => x.BrandId == market.BrandId)?.WithdrawalAmount ?? 0,
+                                -(playerAggregates.Sum(m => m.depositWithdraw?.DailyWithdrawAmount ?? 0M)
+                                    + (withdrawals?.FirstOrDefault(w => w.BrandId == market.BrandId)
+                                        ?.WithdrawalAmount ?? 0M)),
                             CompanyAdjustAmount = playerAggregates.Sum(m => m.market?.CompanyAdjustAmount ?? 0),
                             BonusAmount = playerAggregates.Sum(m => m.market?.BonusAmount ?? 0),
                             BetAmount = playerAggregates.Sum(m => m.market?.BetAmount ?? 0),

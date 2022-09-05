@@ -5,6 +5,7 @@
         public Guid? AgentId { get; set; }
         public string PlayerCode { get; set; } = default!;
         public decimal DepositAmount { get; set; }
+        public decimal WithdrawalAmount {get; set; }
         public decimal CompanyAdjustAmount { get; set; }
         public decimal AgentAdjustAmount { get; set; }
         public decimal BonusAdjustAmount { get; set; }

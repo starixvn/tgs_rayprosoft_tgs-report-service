@@ -47,17 +47,28 @@ namespace Tgs.Report.UnitTest.Market
                 To = reportDate.AddDays(1)
             };
 
+            var playerDailyPaymentStatistics = 
+                CreatePlayerDailyPaymentStatisticsFixture().CreateMany<PlayerDailyPaymentStatistic>(5).AsQueryable()
+                    .BuildMock();
+
+            var players = CreatePlayerFixture(brandId).CreateMany<Repository.Entities.Player>(1).AsQueryable()
+                .BuildMock();
+
             var mockPlayerAggregates = GetDbSet(playerAggregates);
             var mockWithdrawForms = GetDbSet(withdrawForms);
             var mockPlayerLoginRecords = GetDbSet(playerLoginReocrds);
             var mockDailyStatistic = GetDbSet(dailyStatistic);
             var mockPlayerBonusAggregates = GetDbSet(playerBonusAggregates);
+            var mockPlayerDailyPaymentStatistics = GetDbSet(playerDailyPaymentStatistics);
+            var mockPlayers = GetDbSet(players);
 
             fakeDbContext.WithdrawForms.Returns(mockWithdrawForms.Object);
             fakeDbContext.PlayerAggregates.Returns(mockPlayerAggregates.Object);
             fakeDbContext.PlayerLoginRecords.Returns(mockPlayerLoginRecords.Object);
             fakeDbContext.BrandDailyPaymentStatistics.Returns(mockDailyStatistic.Object);
             fakeDbContext.PlayerBonusAggregates.Returns(mockPlayerBonusAggregates.Object);
+            fakeDbContext.PlayerDailyPaymentStatistics.Returns(mockPlayerDailyPaymentStatistics.Object);
+            fakeDbContext.Players.Returns(mockPlayers.Object);
 
             var response = await sut.Handle(request, default);
 
@@ -115,6 +126,27 @@ namespace Tgs.Report.UnitTest.Market
             fixture.Customize<PlayerBonusAggregate>(u => u
                 .With(s => s.BrandId, brandId)
                 .With(s => s.ReportDate, reportDate));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            return fixture;
+        }
+
+        private static Fixture CreatePlayerDailyPaymentStatisticsFixture()
+        {
+            var fixture = new Fixture();
+            fixture.Customize<PlayerDailyPaymentStatistic>(u => u
+                .With(s => s.ReportDate, 
+                    new DateOnly(DateTimeOffset.UtcNow.Year,DateTimeOffset.UtcNow.Month,DateTimeOffset.UtcNow.Day)));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            return fixture;
+        }
+
+        private static Fixture CreatePlayerFixture(Guid brandId)
+        {
+            var fixture = new Fixture();
+            fixture.Customize<Repository.Entities.Player>(u => u
+                .With(s => s.BrandId, brandId)
+                .With(s => s.Brand, new Brand())
+                .With(s => s.Birthdate, DateOnly.Parse("2022/05/04")));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

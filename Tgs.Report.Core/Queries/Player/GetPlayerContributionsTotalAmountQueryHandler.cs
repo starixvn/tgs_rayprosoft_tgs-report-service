@@ -40,31 +40,100 @@ namespace Tgs.Report.Core.Queries.Player
                 0,
                 requestTo.Offset);
 
-            var totalWithdrawal = await _context.WithdrawForms
-                .Join(_context.Players,
-                    wf => wf.UserId,
-                    p => p.PlayerCode,
-                    (wf, p) => new
-                    {
-                        wf.BrandId,
-                        wf.UserType,
-                        wf.Status,
-                        wf.CreatedOn,
-                        wf.UserId,
-                        wf.ActualAmount,
-                        wf.Amount,
-                        p.AgentId,
-                        p.Username,
-                        Level = p.Vip == null ? (int?)null : p.Vip.Level
-                    })
-                .Where(x => x.BrandId == request.BrandId)
-                .Where(x => x.UserType == 1 && x.Status == 9000)
-                .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
+            var now = DateTimeOffset.Now.ToOffset(offset);
+            var today = new DateTimeOffset(now.Year,
+                now.Month,
+                now.Day,
+                0,
+                0,
+                0,
+                requestTo.Offset);
+
+            var fromDate = new DateOnly(from.Year, from.Month, from.Day);
+            var toDate = new DateOnly(to.Year, to.Month, to.Day);
+
+            var totalWithdrawal = to > today
+                ? await _context.WithdrawForms
+                    .Join(_context.Players,
+                        wf => wf.UserId,
+                        p => p.PlayerCode,
+                        (wf, p) => new
+                        {
+                            wf.BrandId,
+                            wf.UserType,
+                            wf.Status,
+                            wf.CreatedOn,
+                            wf.UserId,
+                            wf.ActualAmount,
+                            wf.Amount,
+                            p.AgentId,
+                            p.Username,
+                            Level = p.Vip == null ? (int?)null : p.Vip.Level
+                        })
+                    .Where(x => x.BrandId == request.BrandId)
+                    .Where(x => x.UserType == 1 && x.Status == 9000)
+                    .Where(x => x.CreatedOn >= today.ToUniversalTime() &&
+                        x.CreatedOn < today.AddDays(1).ToUniversalTime())
+                    .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
+                    .Where(request.HasUpperAgent == true, x => x.AgentId != null)
+                    .Where(request.HasUpperAgent == false, x => x.AgentId == null)
+                    .Where(request.Level, x => x.Level == request.Level)
+                    .SumAsync(x => x.ActualAmount ?? x.Amount, cancellationToken)
+                    .ConfigureAwait(false)
+                : 0M;
+
+            var totalDeposit = to > today
+                ? await _context.DepositForms
+                    .Join(_context.Players,
+                        wf => wf.PlayerCode,
+                        p => p.PlayerCode,
+                        (wf, p) => new
+                        {
+                            wf.BrandId,
+                            wf.Status,
+                            wf.CreatedOn,
+                            wf.PlayerCode,
+                            wf.ActualAmount,
+                            wf.Amount,
+                            p.AgentId,
+                            p.Username,
+                            Level = p.Vip == null ? (int?)null : p.Vip.Level
+                        })
+                    .Where(x => x.BrandId == request.BrandId)
+                    .Where(x => x.Status == 8000)
+                    .Where(x => x.CreatedOn >= today.ToUniversalTime() &&
+                        x.CreatedOn < today.AddDays(1).ToUniversalTime())
+                    .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
+                    .Where(request.HasUpperAgent == true, x => x.AgentId != null)
+                    .Where(request.HasUpperAgent == false, x => x.AgentId == null)
+                    .Where(request.Level, x => x.Level == request.Level)
+                    .SumAsync(x => x.ActualAmount ?? x.Amount, cancellationToken)
+                    .ConfigureAwait(false)
+                : 0M;
+
+            var dailyDepositWithdraws = await _context.PlayerDailyPaymentStatistics
+                .Join(_context.Players.Where(x => x.BrandId == request.BrandId), pp => pp.PlayerCode, p => p.PlayerCode,(pp,p)=>new
+                {
+                    pp.ReportDate,
+                    p.AgentId,
+                    p.PlayerCode,
+                    p.Username,
+                    Level = p.Vip == null ? (int?)null : p.Vip.Level,
+                    pp.DailyDepositAmount,
+                    pp.DailyWithdrawAmount
+                })
+                .Where(x => x.ReportDate >= fromDate && x.ReportDate < toDate)
                 .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
                 .Where(request.HasUpperAgent == true, x => x.AgentId != null)
                 .Where(request.HasUpperAgent == false, x => x.AgentId == null)
                 .Where(request.Level, x => x.Level == request.Level)
-                .SumAsync(x => x.ActualAmount ?? x.Amount, cancellationToken)
+                .GroupBy(x => true)
+                .Select(group=> new
+                {
+                    DailyDepositAmount = group.Sum(s => s.DailyDepositAmount),
+                    DailyWithdrawAmount = group.Sum(s => s.DailyWithdrawAmount),
+                })
+                .FirstOrDefaultAsync(cancellationToken)
                 .ConfigureAwait(false);
 
             return await _context.PlayerAggregates
@@ -224,8 +293,8 @@ namespace Tgs.Report.Core.Queries.Player
                 .GroupBy(x => true)
                 .Select(x => new PlayerContributionTotalAmountModel
                 {
-                    DepositAmount = x.Sum(p => p.DepositAmount),
-                    WithdrawalAmount = totalWithdrawal,
+                    DepositAmount = (dailyDepositWithdraws == null ? 0M : dailyDepositWithdraws.DailyDepositAmount ?? 0M) + totalDeposit,
+                    WithdrawalAmount = (dailyDepositWithdraws == null ? 0M : dailyDepositWithdraws.DailyWithdrawAmount ?? 0M) + totalWithdrawal,
                     CompanyAdjustAmount = x.Sum(p => p.CompanyAdjustAmount),
                     BonusAdjustAmount = x.Sum(p => p.BonusAdjustAmount),
                     AgentAdjustAmount = x.Sum(p => p.AgentAdjustAmount),

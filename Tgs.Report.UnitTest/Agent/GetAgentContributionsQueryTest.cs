@@ -13,7 +13,7 @@ using Tgs.Report.ViewModel.Agent;
 namespace Tgs.Report.UnitTest.Agent
 {
     [TestFixture]
-    public sealed class GetAgentContributionsQueryTest
+    public sealed class GetAgentContributionsQueryTest : BaseTest
     {
         [Test]
         public async Task Can_Get_Agent_Contributions()
@@ -23,9 +23,10 @@ namespace Tgs.Report.UnitTest.Agent
             var fakePlayer = Substitute.For<ITgsService<Repository.Entities.Player>>();
             var fakePlayerAggregate = Substitute.For<ITgsService<PlayerAggregate>>();
             var fakePlayerBonusAggregate = Substitute.For<ITgsService<PlayerBonusAggregate>>();
+            var fakeContext = Substitute.For<TgsContext>();
 
             var sut = new GetAgentContributionsQueryHandler(fakeAgent, fakeWithdrawForm, fakePlayer,
-                fakePlayerAggregate, fakePlayerBonusAggregate);
+                fakePlayerAggregate, fakePlayerBonusAggregate, fakeContext);
 
             var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
             var agentUsername = "agentUsername";
@@ -55,6 +56,15 @@ namespace Tgs.Report.UnitTest.Agent
                 From = reportDate,
                 To = reportDate.AddDays(1)
             };
+            var playerDailyPaymentStatistics = 
+                CreatePlayerDailyPaymentStatisticsFixture().CreateMany<PlayerDailyPaymentStatistic>(5).AsQueryable()
+                    .BuildMock();
+
+            var mockPlayerDailyPaymentStatistics = GetDbSet(playerDailyPaymentStatistics);
+            var mockPlayers = GetDbSet(players);
+
+            fakeContext.PlayerDailyPaymentStatistics.Returns(mockPlayerDailyPaymentStatistics.Object);
+            fakeContext.Players.Returns(mockPlayers.Object);
 
             fakeAgent.GetQueries().Returns(agents);
             fakeWithdrawForm.GetQueries().Returns(withdrawForms);
@@ -114,6 +124,16 @@ namespace Tgs.Report.UnitTest.Agent
                 .With(s => s.AgentId, agentId)
                 .With(s => s.PlayerCode, playerCode)
                 .With(s => s.ReportDate, reportDate));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            return fixture;
+        }
+
+        private static Fixture CreatePlayerDailyPaymentStatisticsFixture()
+        {
+            var fixture = new Fixture();
+            fixture.Customize<PlayerDailyPaymentStatistic>(u => u
+                .With(s => s.ReportDate, 
+                    new DateOnly(DateTimeOffset.UtcNow.Year,DateTimeOffset.UtcNow.Month,DateTimeOffset.UtcNow.Day)));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

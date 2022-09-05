@@ -50,6 +50,10 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("created_on")
                 .HasDefaultValueSql("now()");
 
+            entity.Property(e => e.HandlingFee)
+                .HasPrecision(18, 6)
+                .HasColumnName("handling_fee");
+
             entity.Property(e => e.Note).HasColumnName("note");
 
             entity.Property(e => e.OrderNo)

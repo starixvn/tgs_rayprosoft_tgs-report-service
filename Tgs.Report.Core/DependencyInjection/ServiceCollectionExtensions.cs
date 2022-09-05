@@ -3,6 +3,11 @@
 using System.Reflection;
 using MediatR;
 using Tgs.Report.Core;
+using Tgs.Report.Core.Queries.Agent;
+using Tgs.Report.Core.Queries.Market;
+using Tgs.Report.ViewModel;
+using Tgs.Report.ViewModel.Agent;
+using Tgs.Report.ViewModel.Market;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -15,6 +20,11 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IPlayerFactory, PlayerFactory>();
         services.AddTransient<IPlayerDepositFactory, PlayerDepositFactory>();
 
+        services
+            .AddTransient<IRequestHandler<GetMarketsRequest, PagedResponse<MarketModel>>, GetMarketsQueryHandler>()
+            .Decorate<IRequestHandler<GetMarketsRequest, PagedResponse<MarketModel>>, GetMarketsCacheHandler>()
+            .AddTransient<IRequestHandler<GetAgentContributionsRequest, PagedResponse<AgentContributionModel>>, GetAgentContributionsQueryHandler>()
+            .Decorate<IRequestHandler<GetAgentContributionsRequest, PagedResponse<AgentContributionModel>>, GetAgentContributionsCacheHandler>();
         return services;
     }
 }

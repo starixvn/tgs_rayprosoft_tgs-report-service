@@ -38,30 +38,53 @@ namespace Tgs.Report.Core.Queries.Agent
                 };
             }
 
-            var playerWithdrawals = await _context.WithdrawForms
-                .Where(x => x.BrandId == request.BrandId)
-                .Where(x => x.UserType == 1 && x.Status == 9000)
-                .Where(x => x.CreatedOn >= request.From.ToUniversalTime() && x.CreatedOn < request.To.ToUniversalTime())
-                .Join(_context.Players,
-                    withdrawForm => withdrawForm.UserId,
-                    player => player.PlayerCode,
-                    (withdrawForm, player) => new
-                    {
-                        player.AgentId,
-                        player.PlayerCode,
-                        WithdrawalAmount = withdrawForm.ActualAmount ?? withdrawForm.Amount
-                    })
-                .GroupBy(x => new
+            var offset = new TimeSpan(8, 0, 0);
+            var requestFrom = request.From.ToOffset(offset);
+            var requestTo = request.To.ToOffset(offset);
+
+            var from = new DateTimeOffset(requestFrom.Year,
+                requestFrom.Month,
+                requestFrom.Day,
+                0,
+                0,
+                0,
+                requestFrom.Offset);
+
+            var to = new DateTimeOffset(requestTo.Year,
+                requestTo.Month,
+                requestTo.Day,
+                0,
+                0,
+                0,
+                requestTo.Offset);
+
+            var now = DateTimeOffset.Now.ToOffset(offset);
+            var today = new DateTimeOffset(now.Year,
+                now.Month,
+                now.Day,
+                0,
+                0,
+                0,
+                offset);
+
+            var fromDate = new DateOnly(from.Year, from.Month, from.Day);
+            var toDate = new DateOnly(to.Year, to.Month, to.Day);
+
+            var dailyDepositWithdraws = await _context.PlayerDailyPaymentStatistics
+                .Join(_context.Players.Where(x => x.BrandId == request.BrandId), pp => pp.PlayerCode, p => p.PlayerCode,(pp,p)=>new
                 {
-                    x.AgentId,
-                    x.PlayerCode
-                },
-                    (x, withdrawals) => new
-                    {
-                        x.AgentId,
-                        x.PlayerCode,
-                        WithdrawalAmount = withdrawals.Sum(w => w.WithdrawalAmount)
-                    })
+                    pp.ReportDate,
+                    p.AgentId,
+                    pp.DailyDepositAmount,
+                    pp.DailyWithdrawAmount
+                })
+                .Where(x => x.ReportDate >= fromDate && x.ReportDate < toDate)
+                .GroupBy(x => x.AgentId,(agentId,group)=> new
+                {
+                    AgentId = agentId,
+                    DailyDepositAmount = group.Sum(s => s.DailyDepositAmount),
+                    DailyWithdrawAmount = group.Sum(s => s.DailyWithdrawAmount),
+                })
                 .ToArrayAsync(cancellationToken)
                 .ConfigureAwait(false);
 
@@ -110,8 +133,6 @@ namespace Tgs.Report.Core.Queries.Agent
                 (agentId, list) => new
                 {
                     AgentId = agentId,
-                    DepositAmount = list.Sum(l => l.DepositAmount),
-                    WithdrawalAmount = list.Sum(l => l.WithdrawalAmount),
                     CompanyAdjustAmount = list.Sum(l => l.CompanyAdjustAmount),
                     AgentAdjustAmount = list.Sum(l => l.AgentAdjustAmount),
                     BonusAdjustAmount = list.Sum(l => l.BonusAdjustAmount),
@@ -137,9 +158,8 @@ namespace Tgs.Report.Core.Queries.Agent
                 {
                     Id = ad.AgentId,
                     Username = a.Username,
-                    DepositAmount = ad.DepositAmount,
-                    WithdrawalAmount = playerWithdrawals.Where(w => w.AgentId == ad.AgentId)
-                        .Sum(w => w.WithdrawalAmount),
+                    DepositAmount = dailyDepositWithdraws.FirstOrDefault(a => a.AgentId == ad.AgentId)?.DailyDepositAmount ?? 0M,
+                    WithdrawalAmount = dailyDepositWithdraws.FirstOrDefault(a => a.AgentId == ad.AgentId)?.DailyWithdrawAmount ?? 0M,
                     CompanyAdjustAmount = ad.CompanyAdjustAmount,
                     AgentAdjustAmount = ad.AgentAdjustAmount - ad.NoIncludeNetProfitAgentAdjustAmount,
                     BonusAdjustAmount = ad.BonusAdjustAmount - ad.NoIncludeNetProfitBonusAdjustAmount,
