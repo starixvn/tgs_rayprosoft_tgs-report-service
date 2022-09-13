@@ -30,7 +30,7 @@ namespace Tgs.Report.Core.Queries.LicenseeMarket
                 0,
                 0,
                 0,
-                requestFrom.Offset).ToUniversalTime();
+                requestFrom.Offset);
 
             var to = new DateTimeOffset(
                 requestTo.Year,
@@ -39,7 +39,7 @@ namespace Tgs.Report.Core.Queries.LicenseeMarket
                 0,
                 0,
                 0,
-                requestTo.Offset).ToUniversalTime();
+                requestTo.Offset);
 
             var now = DateTimeOffset.Now.ToOffset(offset);
 
