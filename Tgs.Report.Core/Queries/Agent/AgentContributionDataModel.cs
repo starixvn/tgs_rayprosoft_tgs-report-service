@@ -11,7 +11,7 @@
         public decimal BonusAdjustAmount { get; set; }
         public decimal BonusAmount { get; set; }
         public decimal BetAmount { get; set; }
-        public decimal ValidBetAmount { get; set; }
+        public decimal OriginalTurnover { get; set; }
         public decimal Turnover { get; set; }
         public decimal WinLossAmount { get; set; }
         public decimal NetProfit { get; set; }
