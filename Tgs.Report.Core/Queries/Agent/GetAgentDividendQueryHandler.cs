@@ -52,34 +52,11 @@ public class GetAgentDividendQueryHandler : IRequestHandler<GetAgentDividendsReq
         var agentIds = agents.Select(x => x.Id).ToArray();
 
         var agentDividends = await _context.AgentDividends
+            .Include(x => x.AgentDividendMultipleLayers)
             .Where(x => x.BrandId == request.BrandId)
             .Where(x => x.From >= request.From.ToUniversalTime())
             .Where(x => x.To < request.To.ToUniversalTime())
             .Where(x => agentIds.Contains(x.AgentId))
-            .Select(x => new
-            {
-                x.AgentId,
-                x.DepositAmount,
-                x.WithdrawalAmount,
-                x.CompanyAdjustAmount,
-                x.AgentAdjustAmount,
-                x.BonusAmount,
-                x.BetAmount,
-                x.ValidBetAmount,
-                x.OriginalTurnover,
-                x.Turnover,
-                x.WinLossAmount,
-                x.NetProfit,
-                x.AgentDividendAmount,
-                x.BeforeDividendAmount,
-                x.NoIncludeNetProfitAgentAdjustAmount,
-                x.ReferencedAgentDividendId,
-                x.SentOn,
-                x.AgentDividendMultipleLayers,
-                x.BonusAdjustAmount,
-                x.NoIncludeNetProfitBonusAdjustAmount,
-                x.AgentDividendPercentage
-            })
             .GroupBy(x => new
                 {
                     x.AgentId,
@@ -108,6 +85,22 @@ public class GetAgentDividendQueryHandler : IRequestHandler<GetAgentDividendsReq
                 })
             .ToArrayAsync(cancellationToken);
 
+        var agentCovered = await _context.AgentDividendMultipleLayers
+            .Include(x => x.AgentDividend)
+            .Where(x => x.AgentDividend.BrandId == request.BrandId)
+            .Where(x => x.AgentDividend.From >= request.From.ToUniversalTime())
+            .Where(x => x.AgentDividend.To < request.To.ToUniversalTime())
+            .Where(x => agentIds.Contains(x.AgentId))
+            .Where(x => x.AgentCoveredBonus != null || x.AgentCoveredBonusAdjust != null)
+            .GroupBy(x => x.AgentId, (agentId, list) => new
+            {
+                AgentId = agentId,
+                AgentCoveredBonus = list.Sum(l => l.AgentCoveredBonus),
+                AgentCoveredBonusAdjust = list.Sum(l => l.AgentCoveredBonusAdjust)
+            })
+            .ToArrayAsync(cancellationToken)
+            .ConfigureAwait(false);
+
         var models = agentDividends.Join(agents,
             ad => ad.AgentId,
             a => a.Id,
@@ -125,10 +118,40 @@ public class GetAgentDividendQueryHandler : IRequestHandler<GetAgentDividendsReq
                 AgentDividendAmount = ad.AgentDividendAmount,
                 FromPlayerAgentDividendAmount = ad.FromPlayerAgentDividendAmount,
                 FromTeamAgentDividendAmount = ad.FromTeamAgentDividendAmount,
-                AgentDividendPercentage = ad.AgentDividendPercentage,
-                AgentCoveredBonus = ad.BonusAmount * ad.AgentDividendPercentage,
-                AgentCoveredBonusAdjust = ad.BonusAdjustAmount * ad.AgentDividendPercentage
-            }).ToArray();
+                AgentDividendPercentage = ad.AgentDividendPercentage
+            })
+            .GroupJoin(agentCovered, 
+                x => x.Id, 
+                c => c.AgentId,
+                (ad, list) => new
+                {
+                    ad,
+                    list
+                })
+            .SelectMany(x => x.list.DefaultIfEmpty(),(x,covered)=> new
+            {
+                x.ad,
+                covered
+            })
+            .Select(x => new AgentDividendModel
+            {
+                Id = x.ad.Id,
+                Username = x.ad.Username,
+                AgentAdjustAmount = x.ad.AgentAdjustAmount,
+                BonusAdjustAmount = x.ad.BonusAdjustAmount,
+                BonusAmount = x.ad.BonusAmount,
+                BetAmount = x.ad.BetAmount,
+                ValidBetAmount = x.ad.ValidBetAmount,
+                WinLossAmount = x.ad.WinLossAmount,
+                NetProfit = x.ad.NetProfit,
+                AgentDividendAmount = x.ad.AgentDividendAmount,
+                FromPlayerAgentDividendAmount = x.ad.FromPlayerAgentDividendAmount,
+                FromTeamAgentDividendAmount = x.ad.FromTeamAgentDividendAmount,
+                AgentDividendPercentage = x.ad.AgentDividendPercentage,
+                AgentCoveredBonus = x.covered?.AgentCoveredBonus,
+                AgentCoveredBonusAdjust = x.covered?.AgentCoveredBonusAdjust
+            })
+            .ToArray();
 
         return models.AsQueryable().CreatePagedResponse(request);
     }
