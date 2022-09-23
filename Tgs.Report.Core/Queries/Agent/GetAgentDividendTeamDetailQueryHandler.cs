@@ -137,10 +137,7 @@ public class
                     ExpenditureAmount =
                         x.agentDividend.PromotionAmount + x.agentDividend.RebateAmount +
                         x.agentDividend.AgentAdjustAmount,
-                    BonusAmount =
-                        provider?.AgentCoveredBonusAdjust == null || provider.AgentCoveredBonus == null
-                            ? x.agentDividend.RebateAmount + x.agentDividend.PromotionAmount
-                            : (provider.AgentCoveredBonusAdjust ?? 0M) + (provider.AgentCoveredBonus ?? 0M),
+                    BonusAmount = x.agentDividend.RebateAmount + x.agentDividend.PromotionAmount,
                     x.agentDividend.AgentAdjustAmount,
                     x.agentDividend.CreatedOn,
                     provider?.GroupAgentId,

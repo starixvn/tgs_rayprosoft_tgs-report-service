@@ -32,10 +32,7 @@ namespace Tgs.Report.Core.Queries.Agent
             var exportData = agentDividends.Items?.Select(x => new ExportAgentDividendModel
             {
                 Username = x.Username,
-                DepositAmount = x.DepositAmount,
-                WithdrawalAmount = x.WithdrawalAmount,
                 BonusAmount = x.BonusAmount,
-                CompanyAdjustAmount = x.CompanyAdjustAmount,
                 AgentAdjustAmount = x.AgentAdjustAmount,
                 BetAmount = x.BetAmount,
                 ValidBetAmount = x.ValidBetAmount,
