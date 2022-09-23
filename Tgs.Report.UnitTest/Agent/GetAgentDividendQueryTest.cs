@@ -99,7 +99,8 @@ namespace Tgs.Report.UnitTest.Agent
                 .With(s => s.BrandId, brandId)
                 .With(s => s.AgentId, agentId)
                 .With(s => s.From, DateTime.UtcNow)
-                .With(s => s.To, DateTime.UtcNow));
+                .With(s => s.To, DateTime.UtcNow)
+                .With(s => s.AgentDividendMultipleLayers, new AgentDividendMultipleLayer[]{}));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
