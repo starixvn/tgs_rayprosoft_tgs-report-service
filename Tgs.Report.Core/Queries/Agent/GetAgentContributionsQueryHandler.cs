@@ -373,7 +373,7 @@ public class
                     + (playerDeposits?.FirstOrDefault(w => w.PlayerCode == x.PlayerCode)
                         ?.DepositAmount ?? 0M),
                 WithdrawalAmount =
-                    -(x.depositWithdraw?.DailyWithdrawAmount ?? 0M
+                    (x.depositWithdraw?.DailyWithdrawAmount ?? 0M
                         + (playerWithdrawals?.FirstOrDefault(w => w.PlayerCode == x.PlayerCode)
                             ?.WithdrawalAmount ?? 0M)),
                 CompanyAdjustAmount = x.CompanyAdjustAmount,
