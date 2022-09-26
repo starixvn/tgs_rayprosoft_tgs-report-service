@@ -369,13 +369,13 @@ public class
             {
                 Username = x.Username,
                 Type = AccountType.Player,
-                DepositAmount = x.depositWithdraw?.DailyDepositAmount ?? 0M
+                DepositAmount = (x.depositWithdraw?.DailyDepositAmount ?? 0M)
                     + (playerDeposits?.FirstOrDefault(w => w.PlayerCode == x.PlayerCode)
                         ?.DepositAmount ?? 0M),
                 WithdrawalAmount =
-                    -(x.depositWithdraw?.DailyWithdrawAmount ?? 0M
+                    (x.depositWithdraw?.DailyWithdrawAmount ?? 0M)
                         + (playerWithdrawals?.FirstOrDefault(w => w.PlayerCode == x.PlayerCode)
-                            ?.WithdrawalAmount ?? 0M)),
+                            ?.WithdrawalAmount ?? 0M),
                 CompanyAdjustAmount = x.CompanyAdjustAmount,
                 AgentAdjustAmount = x.AgentAdjustAmount,
                 BonusAdjustAmount = x.BonusAdjustAmount,

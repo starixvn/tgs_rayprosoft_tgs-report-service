@@ -22,9 +22,7 @@ public static class ServiceCollectionExtensions
 
         services
             .AddTransient<IRequestHandler<GetMarketsRequest, PagedResponse<MarketModel>>, GetMarketsQueryHandler>()
-            .Decorate<IRequestHandler<GetMarketsRequest, PagedResponse<MarketModel>>, GetMarketsCacheHandler>()
-            .AddTransient<IRequestHandler<GetAgentContributionsRequest, PagedResponse<AgentContributionModel>>, GetAgentContributionsQueryHandler>()
-            .Decorate<IRequestHandler<GetAgentContributionsRequest, PagedResponse<AgentContributionModel>>, GetAgentContributionsCacheHandler>();
+            .Decorate<IRequestHandler<GetMarketsRequest, PagedResponse<MarketModel>>, GetMarketsCacheHandler>();
         return services;
     }
 }
