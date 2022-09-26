@@ -36,6 +36,56 @@ public class GetAgentDividendQueryHandler : IRequestHandler<GetAgentDividendsReq
             };
         }
 
+        var offset = new TimeSpan(8, 0, 0);
+        var requestFrom = request.From.ToOffset(offset);
+        var requestTo = request.To.ToOffset(offset);
+
+        var from = new DateTimeOffset(requestFrom.Year,
+            requestFrom.Month,
+            requestFrom.Day,
+            0,
+            0,
+            0,
+            requestFrom.Offset);
+
+        var to = new DateTimeOffset(requestTo.Year,
+            requestTo.Month,
+            requestTo.Day,
+            0,
+            0,
+            0,
+            requestTo.Offset);
+
+        var now = DateTimeOffset.Now.ToOffset(offset);
+        var today = new DateTimeOffset(now.Year,
+            now.Month,
+            now.Day,
+            0,
+            0,
+            0,
+            offset);
+
+        var fromDate = new DateOnly(from.Year, from.Month, from.Day);
+        var toDate = new DateOnly(to.Year, to.Month, to.Day);
+
+        var dailyDepositWithdraws = await _context.PlayerDailyPaymentStatistics
+            .Join(_context.Players.Where(x => x.BrandId == request.BrandId), pp => pp.PlayerCode, p => p.PlayerCode,(pp,p)=>new
+            {
+                pp.ReportDate,
+                p.AgentId,
+                pp.DailyDepositAmount,
+                pp.DailyWithdrawAmount
+            })
+            .Where(x => x.ReportDate >= fromDate && x.ReportDate < toDate)
+            .GroupBy(x => x.AgentId,(agentId,group)=> new
+            {
+                AgentId = agentId,
+                DailyDepositAmount = group.Sum(s => s.DailyDepositAmount),
+                DailyWithdrawAmount = group.Sum(s => s.DailyWithdrawAmount),
+            })
+            .ToArrayAsync(cancellationToken)
+            .ConfigureAwait(false);
+
         var subAgents = await _context.Agents.Where(x => x.ParentAgentId == mainAgent.Id)
             .Select(x => new
             {
@@ -66,6 +116,7 @@ public class GetAgentDividendQueryHandler : IRequestHandler<GetAgentDividendsReq
                 {
                     x.AgentId,
                     x.AgentDividendPercentage,
+                    CompanyAdjustAmount = list.Sum(l => l.CompanyAdjustAmount),
                     AgentAdjustAmount = list.Sum(l => l.AgentAdjustAmount),
                     BonusAdjustAmount = list.Sum(l => l.BonusAdjustAmount),
                     BonusAmount = list.Sum(l => l.BonusAmount),
@@ -108,6 +159,7 @@ public class GetAgentDividendQueryHandler : IRequestHandler<GetAgentDividendsReq
             {
                 Id = ad.AgentId,
                 Username = a.Username,
+                CompanyAdjustAmount = ad.CompanyAdjustAmount,
                 AgentAdjustAmount = ad.AgentAdjustAmount - ad.NoIncludeNetProfitAgentAdjustAmount,
                 BonusAdjustAmount = ad.BonusAdjustAmount - ad.NoIncludeNetProfitBonusAdjustAmount,
                 BonusAmount = ad.BonusAmount,
@@ -137,6 +189,9 @@ public class GetAgentDividendQueryHandler : IRequestHandler<GetAgentDividendsReq
             {
                 Id = x.ad.Id,
                 Username = x.ad.Username,
+                DepositAmount = dailyDepositWithdraws.FirstOrDefault(a => a.AgentId == x.ad.Id)?.DailyDepositAmount ?? 0M,
+                WithdrawalAmount = dailyDepositWithdraws.FirstOrDefault(a => a.AgentId == x.ad.Id)?.DailyWithdrawAmount ?? 0M,
+                CompanyAdjustAmount = x.ad.CompanyAdjustAmount,
                 AgentAdjustAmount = x.ad.AgentAdjustAmount,
                 BonusAdjustAmount = x.ad.BonusAdjustAmount,
                 BonusAmount = x.ad.BonusAmount,
