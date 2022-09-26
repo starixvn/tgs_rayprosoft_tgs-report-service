@@ -8,6 +8,12 @@ namespace Tgs.Report.ViewModel.Agent
 
         public string Username { get; init; } = default!;
 
+        public decimal DepositAmount { get; init; }
+
+        public decimal WithdrawalAmount { get; init; }
+
+        public decimal CompanyAdjustAmount { get; init; }
+
         public decimal AgentAdjustAmount { get; init; }
 
         public decimal BonusAdjustAmount { get; init; }
