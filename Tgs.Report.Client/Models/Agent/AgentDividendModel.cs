@@ -30,8 +30,8 @@
 
         public decimal AgentDividendPercentage { get; init; }
 
-        public decimal AgentCoveredBonus { get; init; }
+        public decimal? AgentCoveredBonus { get; init; }
 
-        public decimal AgentCoveredBonusAdjust { get; init; }
+        public decimal? AgentCoveredBonusAdjust { get; init; }
     }
 }
