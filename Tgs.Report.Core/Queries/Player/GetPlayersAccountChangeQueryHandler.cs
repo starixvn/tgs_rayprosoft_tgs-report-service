@@ -1,5 +1,4 @@
-﻿using System.Text;
-using System.Text.Json;
+﻿using System.Text.Json;
 using MediatR;
 using Tgs.Report.Enum;
 using Tgs.Report.Repository.Entities;
