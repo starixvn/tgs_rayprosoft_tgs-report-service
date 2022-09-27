@@ -21,10 +21,10 @@ namespace Tgs.Report.Core.Queries.Round
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(request.From.HasValue && request.To.HasValue,
                     x => x.CreatedOn >= request.From!.Value.ToUniversalTime() &&
-                        x.CreatedOn <= request.To!.Value.ToUniversalTime())
+                        x.CreatedOn < request.To!.Value.ToUniversalTime())
                 .Where(request.ClosedFrom.HasValue && request.ClosedTo.HasValue,
                     x => x.ClosedOn >= request.ClosedFrom!.Value.ToUniversalTime() &&
-                        x.ClosedOn <= request.ClosedTo!.Value.ToUniversalTime())
+                        x.ClosedOn < request.ClosedTo!.Value.ToUniversalTime())
                 .Where(request.GameProviderId, x => request.GameProviderId == x.GameProviderId)
                 .Where(request.Status, x => (short?)request.Status == x.ClientStatus)
                 .Where(request.RoundId, x => x.Id == request.RoundId)
@@ -78,7 +78,7 @@ namespace Tgs.Report.Core.Queries.Round
                 .Select(g => new RoundTotalModel
                 {
                     BetAmount = g.Sum(x => x.round.BetAmount),
-                    ValidBetAmount = g.Sum(r => r.round.ValidBetAmount),
+                    ValidBetAmount = g.Sum(r => r.round.Turnover),
                     WinLoss = g.Sum(r => -r.round.WinLoss)
                 });
 

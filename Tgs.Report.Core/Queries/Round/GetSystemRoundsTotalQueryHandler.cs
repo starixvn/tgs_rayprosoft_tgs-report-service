@@ -24,16 +24,16 @@ namespace Tgs.Report.Core.Queries.Round
                 .Where(request.RoundId, x => x.Id == request.RoundId)
                 .Where(request.ExternalFrom.HasValue && request.ExternalTo.HasValue,
                     x => x.ExternalCreatedOn >= request.ExternalFrom!.Value.ToUniversalTime() &&
-                        x.ExternalCreatedOn <= request.ExternalTo!.Value.ToUniversalTime())
+                        x.ExternalCreatedOn < request.ExternalTo!.Value.ToUniversalTime())
                 .Where(request.ExternalClosedFrom.HasValue && request.ExternalClosedTo.HasValue,
                     x => x.ExternalClosedOn >= request.ExternalClosedFrom!.Value.ToUniversalTime() &&
-                        x.ExternalClosedOn <= request.ExternalClosedTo!.Value.ToUniversalTime())
+                        x.ExternalClosedOn < request.ExternalClosedTo!.Value.ToUniversalTime())
                 .Where(request.From.HasValue && request.To.HasValue,
                     x => x.CreatedOn >= request.From!.Value.ToUniversalTime() &&
-                        x.CreatedOn <= request.To!.Value.ToUniversalTime())
+                        x.CreatedOn < request.To!.Value.ToUniversalTime())
                 .Where(request.ClosedFrom.HasValue && request.ClosedTo.HasValue,
                     x => x.ClosedOn >= request.ClosedFrom!.Value.ToUniversalTime() &&
-                        x.ClosedOn <= request.ClosedTo!.Value.ToUniversalTime())
+                        x.ClosedOn < request.ClosedTo!.Value.ToUniversalTime())
                 .Where(request.Status, x => (short?)request.Status == x.ClientStatus)
                 .Where(request.BrandId, x => x.BrandId == request.BrandId)
                 .Where(request.CurrencyCode, x => x.CurrencyCode == request.CurrencyCode)
@@ -79,6 +79,34 @@ namespace Tgs.Report.Core.Queries.Round
                     x.game,
                     detail
                 })
+                .GroupJoin(_context.BrandGames,
+                    roundGroup => new
+                    {
+                        roundGroup.round.BrandId,
+                        roundGroup.round.GameId
+                    },
+                    brandGame => new
+                    {
+                        brandGame.BrandId,
+                        brandGame.GameId
+                    },
+                    (roundGroup, brandGame) => new
+                    {
+                        roundGroup.round,
+                        roundGroup.player,
+                        roundGroup.game,
+                        roundGroup.detail,
+                        brandGame
+                    })
+                .SelectMany(x => x.brandGame.DefaultIfEmpty(),
+                    (x, brandGame) => new
+                    {
+                        x.round,
+                        x.player,
+                        x.game,
+                        x.detail,
+                        brandGame
+                    })
                 .Where(request.Username, x => request.Username == x.player!.Username)
                 .Where(request.SubGameProviderCode, x => x.game!.SubGameProviderCode == request.SubGameProviderCode)
                 .Where(request.GameType, x => x.game!.Type == (short?)request.GameType)
@@ -86,8 +114,9 @@ namespace Tgs.Report.Core.Queries.Round
                 .Select(g => new SystemRoundTotalModel
                 {
                     BetAmount = g.Sum(r => r.round.BetAmount),
-                    ValidBetAmount = g.Sum(r => r.round.ValidBetAmount),
-                    Turnover = g.Sum(r => r.round.Turnover),
+                    ValidBetAmount = g.Sum(r => r.round.Turnover),
+                    Turnover = g.Sum(r => r.round.Turnover * (r.round.EffectiveBettingPercentage ??
+                        (r.brandGame == null ? 100M : r.brandGame.EffectiveBettingPercentage)) / 100M),
                     SettleAmount = g.Sum(r => r.round.SettleAmount),
                     WinLoss = g.Sum(r => -r.round.WinLoss)
                 });

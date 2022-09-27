@@ -24,8 +24,6 @@ namespace Tgs.Report.ViewModel.Agent
 
         public decimal ValidBetAmount { get; init; }
 
-        public decimal Turnover { get; init; }
-
         public decimal WinLossAmount { get; init; }
 
         public decimal NetProfit { get; init; }
@@ -35,5 +33,11 @@ namespace Tgs.Report.ViewModel.Agent
         public decimal FromPlayerAgentDividendAmount { get; init; }
 
         public decimal FromTeamAgentDividendAmount { get; init; }
+
+        public decimal AgentDividendPercentage { get; init; }
+
+        public decimal? AgentCoveredBonus { get; init; }
+
+        public decimal? AgentCoveredBonusAdjust { get; init; }
     }
 }
