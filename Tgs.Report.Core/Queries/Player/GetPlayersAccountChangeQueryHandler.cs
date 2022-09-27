@@ -83,9 +83,22 @@ namespace Tgs.Report.Core.Queries.Player
                     continue;
                 }
 
-                item.Description = item.Description is null
-                    ? ""
-                    : JsonSerializer.Deserialize<AdjustRemarkModel>(item.Description)?.Remark;
+                if (item.Description is null)
+                {
+                    item.Description = "";
+                }
+                else
+                {
+                    try
+                    {
+                        item.Description = JsonSerializer.Deserialize<AdjustRemarkModel>(item.Description)?.Remark;
+                    }
+                    catch (Exception)
+                    {
+                        // ignored
+                    }
+                }
+                
             }
 
             return playersAccountChanges;
