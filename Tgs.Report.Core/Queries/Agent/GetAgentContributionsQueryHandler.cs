@@ -197,8 +197,6 @@ public class
                         Turnover = list.Sum(p => p.Turnover),
                         WinLossAmount = list.Sum(p => p.WinLossAmount),
                         NetProfit = list.Sum(p => p.WinLossAmount
-                            - (p.AgentAdjustAmount -
-                                p.NoIncludeNetProfitAgentAdjustAmount)
                             - (p.BonusAdjustAmount -
                                 p.NoIncludeNetProfitBonusAdjustAmount)
                             - p.RebateAmount
@@ -447,8 +445,6 @@ public class
                 Turnover = list.Sum(p => p.Turnover),
                 WinLossAmount = list.Sum(p => p.WinLossAmount),
                 NetProfit = list.Sum(p => p.WinLossAmount
-                    - (p.AgentAdjustAmount -
-                        p.NoIncludeNetProfitAgentAdjustAmount)
                     - (p.BonusAdjustAmount -
                         p.NoIncludeNetProfitBonusAdjustAmount)
                     - p.RebateAmount
