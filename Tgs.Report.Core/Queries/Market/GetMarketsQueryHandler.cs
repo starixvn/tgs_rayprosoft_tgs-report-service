@@ -197,7 +197,7 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
             .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        var bonus = await _context.PlayerBonusAggregates
+        var agentBonusAggregate = await _context.PlayerBonusAggregates
             .Where(x => x.BrandId == request.BrandId)
             .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
             .GroupBy(x => new {
@@ -231,7 +231,7 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
             .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        var aggregate = agentAggregate.Concat(bonus)
+        var aggregate = agentAggregate.Concat(agentBonusAggregate)
             .GroupBy(x => new {x.ReportDate,x.ChiefAgentDividendPercentage}, (x, group) => new
             {
                 ReportDate = x.ReportDate,
