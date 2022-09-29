@@ -222,8 +222,8 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                 Turnover = 0M,
                 WinLossAmount = 0M,
                 AllAgentRebateAmount = 0M,
-                RebateAmount = group.Sum(s => s.RebateAmount),
-                PromotionAmount = group.Sum(s => s.PromotionAmount),
+                RebateAmount = 0M,
+                PromotionAmount = 0M,
                 UpgradeAmount = group.Sum(s => s.UpgradeAmount),
                 SeasonAmount = group.Sum(s => s.SeasonAmount),
                 BirthdayAmount = group.Sum(s => s.BirthdayAmount)
@@ -252,24 +252,9 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                 UpgradeAmount = group.Sum(m => m.UpgradeAmount),
                 SeasonAmount = group.Sum(m => m.SeasonAmount),
                 BirthdayAmount = group.Sum(m => m.BirthdayAmount),
-                NetProfit = group.Sum(m
-                    => m.WinLossAmount -
-                        (m.CompanyAdjustAmount - m.NoIncludeNetProfitCompanyAdjustAmount) -
-                        (m.ChiefAgentDividendPercentage == null
-                            ? 0M
-                            :
-                            (m.RebateAmount + m.PromotionAmount +
-                                m.UpgradeAmount + m.SeasonAmount + m.BirthdayAmount +
-                                m.BonusAdjustAmount + m.NoIncludeNetProfitBonusAdjustAmount) * m.ChiefAgentDividendPercentage.Value)),
-                AgentCoveredBonus =
-                    group.Sum(
-                        m => m.ChiefAgentDividendPercentage == null
-                            ? 0M
-                            : (m.RebateAmount + m.PromotionAmount + m.UpgradeAmount + m.SeasonAmount + m.BirthdayAmount) * m.ChiefAgentDividendPercentage.Value),
-                AgentCoveredBonusAdjust =
-                    group.Sum(m => m.ChiefAgentDividendPercentage == null
-                        ? 0M
-                        : (m.BonusAdjustAmount - m.NoIncludeNetProfitBonusAdjustAmount) * m.ChiefAgentDividendPercentage.Value)
+                BonusAmount = group.Sum(m => m.RebateAmount + m.PromotionAmount +
+                    m.UpgradeAmount + m.SeasonAmount + m.BirthdayAmount +
+                    m.BonusAdjustAmount + m.NoIncludeNetProfitBonusAdjustAmount),
             })
             .GroupBy(x => x.ReportDate, (reportDate, group) => new
             {
@@ -290,9 +275,24 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                 UpgradeAmount = group.Sum(m => m.UpgradeAmount),
                 SeasonAmount = group.Sum(m => m.SeasonAmount),
                 BirthdayAmount = group.Sum(m => m.BirthdayAmount),
-                NetProfit = group.Sum(m => m.NetProfit),
-                AgentCoveredBonus = group.Sum(m => m.AgentCoveredBonus),
-                AgentCoveredBonusAdjust = group.Sum(m => m.AgentCoveredBonusAdjust)
+                NetProfit = group.Sum(m
+                    => m.WinLossAmount -
+                    (m.CompanyAdjustAmount - m.NoIncludeNetProfitCompanyAdjustAmount) -
+                    (m.ChiefAgentDividendPercentage == null
+                        ? 0M
+                        :
+                        (m.RebateAmount + m.PromotionAmount +
+                            m.UpgradeAmount + m.SeasonAmount + m.BirthdayAmount +
+                            m.BonusAdjustAmount + m.NoIncludeNetProfitBonusAdjustAmount) * ((100 - m.ChiefAgentDividendPercentage.Value) / 100))),
+                AgentCoveredBonus =
+                    group.Sum(
+                        m => m.ChiefAgentDividendPercentage == null
+                            ? 0M
+                            : (m.RebateAmount + m.PromotionAmount + m.UpgradeAmount + m.SeasonAmount + m.BirthdayAmount) * ((100 - m.ChiefAgentDividendPercentage.Value) / 100)),
+                AgentCoveredBonusAdjust =
+                    group.Sum(m => m.ChiefAgentDividendPercentage == null
+                        ? 0M
+                        : (m.BonusAdjustAmount - m.NoIncludeNetProfitBonusAdjustAmount) * ((100 - m.ChiefAgentDividendPercentage.Value) / 100))
             })
             .ToArray();
 
