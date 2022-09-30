@@ -142,6 +142,7 @@ public class GetAgentDividendQueryHandler : IRequestHandler<GetAgentDividendsReq
             .Where(x => x.AgentDividend.From >= request.From.ToUniversalTime())
             .Where(x => x.AgentDividend.To < request.To.ToUniversalTime())
             .Where(x => agentIds.Contains(x.AgentId))
+            .Where(x => x.AgentId == x.DividendProviderAgentId)
             .Where(x => x.AgentCoveredBonus != null || x.AgentCoveredBonusAdjust != null)
             .GroupBy(x => x.AgentId, (agentId, list) => new
             {
