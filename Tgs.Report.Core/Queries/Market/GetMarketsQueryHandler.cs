@@ -284,12 +284,12 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                         (m.RebateAmount + m.PromotionAmount +
                             m.UpgradeAmount + m.SeasonAmount + m.BirthdayAmount +
                             m.BonusAdjustAmount + m.NoIncludeNetProfitBonusAdjustAmount) * ((100 - m.ChiefAgentDividendPercentage.Value) / 100))),
-                AgentCoveredBonus =
+                PlatformCoveredBonus =
                     group.Sum(
                         m => m.ChiefAgentDividendPercentage == null
                             ? 0M
                             : (m.RebateAmount + m.PromotionAmount + m.UpgradeAmount + m.SeasonAmount + m.BirthdayAmount) * ((100 - m.ChiefAgentDividendPercentage.Value) / 100)),
-                AgentCoveredBonusAdjust =
+                PlatformCoveredBonusAdjust =
                     group.Sum(m => m.ChiefAgentDividendPercentage == null
                         ? 0M
                         : (m.BonusAdjustAmount - m.NoIncludeNetProfitBonusAdjustAmount) * ((100 - m.ChiefAgentDividendPercentage.Value) / 100))
@@ -405,8 +405,8 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                         WinLossAmount = markets.Sum(m => m.market?.WinLossAmount ?? 0M),
                         NetProfit = markets.Sum(m => m.market?.NetProfit ?? 0M),
                         AdditionalExpenses = markets.Sum(m => m.market?.AllAgentRebateAmount ?? 0M),
-                        AgentCoveredBonus = markets.Sum(m => m.market?.AgentCoveredBonus ?? 0M),
-                        AgentCoveredBonusAdjust = markets.Sum(m => m.market?.AgentCoveredBonusAdjust ?? 0M)
+                        PlatformCoveredBonus = markets.Sum(m => m.market?.PlatformCoveredBonus ?? 0M),
+                        PlatformCoveredBonusAdjust = markets.Sum(m => m.market?.PlatformCoveredBonusAdjust ?? 0M)
                     })
             .AsQueryable()
             .CreatePagedResponse(request);
