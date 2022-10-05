@@ -48,7 +48,7 @@ namespace Tgs.Report.Core.Queries.Round
                     {
                         round.PlayerCode,
                         round.BetAmount,
-                        round.ValidBetAmount,
+                        round.Turnover,
                         round.SettleAmount,
                         round.WinLoss,
                         game
@@ -57,7 +57,7 @@ namespace Tgs.Report.Core.Queries.Round
                 {
                     x.PlayerCode,
                     x.BetAmount,
-                    x.ValidBetAmount,
+                    x.Turnover,
                     x.SettleAmount,
                     x.WinLoss,
                     GameType = game.Type
@@ -67,9 +67,9 @@ namespace Tgs.Report.Core.Queries.Round
                 (playerCode, rounds) => new
                 {
                     BetAmount = rounds.Sum(r => r.BetAmount) ?? 0M,
-                    ValidBetAmount = rounds.Sum(r => r.ValidBetAmount) ?? 0M,
+                    ValidBetAmount = rounds.Sum(r => r.Turnover) ?? 0M,
                     SettleAmount = rounds.Sum(r => r.SettleAmount) ?? 0M,
-                    WinLoss = rounds.Sum(r => r.WinLoss) ?? 0M
+                    WinLoss = -rounds.Sum(r => r.WinLoss) ?? 0M
                 }).FirstOrDefaultAsync(cancellationToken) ?? new
             {
                 BetAmount = 0M,
