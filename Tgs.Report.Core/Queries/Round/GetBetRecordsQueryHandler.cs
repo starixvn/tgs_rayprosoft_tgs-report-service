@@ -69,7 +69,7 @@ namespace Tgs.Report.Core.Queries.Round
                     BetAmount = rounds.Sum(r => r.BetAmount) ?? 0M,
                     ValidBetAmount = rounds.Sum(r => r.Turnover) ?? 0M,
                     SettleAmount = rounds.Sum(r => r.SettleAmount) ?? 0M,
-                    WinLoss = rounds.Sum(r => r.WinLoss) ?? 0M
+                    WinLoss = -rounds.Sum(r => r.WinLoss) ?? 0M
                 }).FirstOrDefaultAsync(cancellationToken) ?? new
             {
                 BetAmount = 0M,
@@ -249,7 +249,7 @@ namespace Tgs.Report.Core.Queries.Round
                 TotalCount = betRecords.TotalCount,
                 Datas = betRecords.Items ?? Array.Empty<BetRecordModel>(),
                 Total = new BetRecordTotalModel(total.BetAmount, total.ValidBetAmount, total.SettleAmount,
-                    -total.WinLoss)
+                    total.WinLoss)
             };
         }
     }
