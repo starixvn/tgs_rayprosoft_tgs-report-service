@@ -32,8 +32,8 @@ namespace Tgs.Report.ViewModel.Market
 
         public decimal AdditionalExpenses { get; init; }
 
-        public decimal AgentCoveredBonus { get; init; }
+        public decimal PlatformCoveredBonus { get; init; }
 
-        public decimal AgentCoveredBonusAdjust { get; init; }
+        public decimal PlatformCoveredBonusAdjust { get; init; }
     }
 }
