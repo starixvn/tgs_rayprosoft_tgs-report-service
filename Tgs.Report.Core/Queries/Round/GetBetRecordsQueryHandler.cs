@@ -249,7 +249,7 @@ namespace Tgs.Report.Core.Queries.Round
                 TotalCount = betRecords.TotalCount,
                 Datas = betRecords.Items ?? Array.Empty<BetRecordModel>(),
                 Total = new BetRecordTotalModel(total.BetAmount, total.ValidBetAmount, total.SettleAmount,
-                    total.WinLoss)
+                    -total.WinLoss)
             };
         }
     }
