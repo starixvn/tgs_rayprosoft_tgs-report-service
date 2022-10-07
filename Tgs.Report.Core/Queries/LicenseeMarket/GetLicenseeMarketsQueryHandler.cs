@@ -173,28 +173,6 @@ public class GetLicenseeMarketsQueryHandler : IRequestHandler<GetLicenseeMarkets
                     x.brand.CurrencyCode,
                     market
                 })
-            .GroupJoin(dailyDepositWithdraws,
-                market => market.BrandId,
-                deposit => deposit.BrandId,
-                (group, groupDepositWithdraws) => new
-                {
-                    group.LicenseeId,
-                    group.BrandId,
-                    group.BrandCode,
-                    group.CurrencyCode,
-                    group.market,
-                    groupDepositWithdraws
-                })
-            .SelectMany(x => x.groupDepositWithdraws.DefaultIfEmpty(),
-                (x, depositWithdraw) => new
-                {
-                    x.LicenseeId,
-                    x.BrandId,
-                    x.BrandCode,
-                    x.CurrencyCode,
-                    x.market,
-                    depositWithdraw
-                })
             .GroupBy(
                 x => new
                 {
@@ -211,11 +189,11 @@ public class GetLicenseeMarketsQueryHandler : IRequestHandler<GetLicenseeMarkets
                         CurrencyCode = market.CurrencyCode,
                         RegisteredCount = playerAggregates.Sum(m => m.market?.RegisteredCount ?? 0),
                         FirstFundInCount = playerAggregates.Sum(m => m.market?.FirstFundInCount ?? 0),
-                        DepositAmount = playerAggregates.Sum(m => m.depositWithdraw?.DailyDepositAmount ?? 0M)
+                        DepositAmount = dailyDepositWithdraws.Where(x => x.BrandId ==market.BrandId).Sum(m => m.DailyDepositAmount ?? 0M)
                             + (deposits?.FirstOrDefault(w => w.BrandId == market.BrandId)
                                 ?.DepositAmount ?? 0M),
                         WithdrawalAmount =
-                            -(playerAggregates.Sum(m => m.depositWithdraw?.DailyWithdrawAmount ?? 0M)
+                            -(dailyDepositWithdraws.Where(x => x.BrandId ==market.BrandId).Sum(m => m.DailyWithdrawAmount ?? 0M)
                                 + (withdrawals?.FirstOrDefault(w => w.BrandId == market.BrandId)
                                     ?.WithdrawalAmount ?? 0M)),
                         CompanyAdjustAmount = playerAggregates.Sum(m => m.market?.CompanyAdjustAmount ?? 0),
@@ -223,7 +201,7 @@ public class GetLicenseeMarketsQueryHandler : IRequestHandler<GetLicenseeMarkets
                         BetAmount = playerAggregates.Sum(m => m.market?.BetAmount ?? 0),
                         Turnover = playerAggregates.Sum(m => m.market?.Turnover ?? 0),
                         WinLossAmount = playerAggregates.Sum(m => m.market?.WinLossAmount ?? 0),
-                        NetProfit = playerAggregates.Sum(m => m.market?.NetProfit ?? 0 -
+                        NetProfit = playerAggregates.Sum(m => (m.market?.NetProfit ?? 0) -
                             (m.market == null
                                 ? 0
                                 : m.market.UpgradeAmount + m.market.SeasonAmount + m.market.BirthdayAmount))
