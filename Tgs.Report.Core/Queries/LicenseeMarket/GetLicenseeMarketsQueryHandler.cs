@@ -201,7 +201,7 @@ public class GetLicenseeMarketsQueryHandler : IRequestHandler<GetLicenseeMarkets
                         BetAmount = playerAggregates.Sum(m => m.market?.BetAmount ?? 0),
                         Turnover = playerAggregates.Sum(m => m.market?.Turnover ?? 0),
                         WinLossAmount = playerAggregates.Sum(m => m.market?.WinLossAmount ?? 0),
-                        NetProfit = playerAggregates.Sum(m => m.market?.NetProfit ?? 0 -
+                        NetProfit = playerAggregates.Sum(m => (m.market?.NetProfit ?? 0) -
                             (m.market == null
                                 ? 0
                                 : m.market.UpgradeAmount + m.market.SeasonAmount + m.market.BirthdayAmount))
