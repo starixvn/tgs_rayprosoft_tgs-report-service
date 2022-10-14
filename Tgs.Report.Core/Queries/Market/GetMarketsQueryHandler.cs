@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Vml.Spreadsheet;
+﻿using System.Linq;
+using DocumentFormat.OpenXml.Vml.Spreadsheet;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Tgs.Report.Repository.Entities;
@@ -210,7 +211,6 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                 ReportDate = x.ReportDate,
                 Hour = x.Hour,
                 AgentId = x.AgentId,
-                ChiefAgentDividendPercentage = 0M,
                 RegisteredCount = 0,
                 FirstFundInCount = 0,
                 CompanyAdjustAmount = 0M,
@@ -231,30 +231,49 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
             .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        var aggregate = agentAggregate.Concat(agentBonusAggregate)
-            .GroupBy(x => new {x.ReportDate,x.ChiefAgentDividendPercentage}, (x, group) => new
+        var aggregate = agentAggregate
+            .GroupJoin(agentBonusAggregate,
+                a => new { a.ReportDate, a.Hour, a.AgentId },
+                ab => new { ab.ReportDate, ab.Hour, ab.AgentId },
+                (agg, list) => new
+                {
+                    agg,
+                    list
+                })
+            .SelectMany(x => x.list.DefaultIfEmpty(),
+                (x, bonusAgg) => new
+                {
+                    x.agg,
+                    bonusAgg
+                })
+            .GroupBy(x => new
             {
-                ReportDate = x.ReportDate,
-                x.ChiefAgentDividendPercentage,
-                RegisteredCount = group.Sum(g => g.RegisteredCount),
-                FirstFundInCount = group.Sum(g => g.FirstFundInCount),
-                CompanyAdjustAmount = group.Sum(g => g.CompanyAdjustAmount),
-                NoIncludeNetProfitCompanyAdjustAmount = group.Sum(g => g.NoIncludeNetProfitCompanyAdjustAmount),
-                BonusAdjustAmount = group.Sum(g => g.BonusAdjustAmount),
-                NoIncludeNetProfitBonusAdjustAmount = group.Sum(g => g.NoIncludeNetProfitBonusAdjustAmount),
-                RebateAmount = group.Sum(g => g.RebateAmount),
-                PromotionAmount = group.Sum(g => g.PromotionAmount),
-                BetAmount = group.Sum(g => g.BetAmount),
-                OriginalTurnover = group.Sum(g => g.OriginalTurnover),
-                Turnover = group.Sum(g => g.Turnover),
-                WinLossAmount = group.Sum(g => g.WinLossAmount),
-                AllAgentRebateAmount = group.Sum(g => g.AllAgentRebateAmount),
-                UpgradeAmount = group.Sum(m => m.UpgradeAmount),
-                SeasonAmount = group.Sum(m => m.SeasonAmount),
-                BirthdayAmount = group.Sum(m => m.BirthdayAmount),
-                BonusAmount = group.Sum(m => m.RebateAmount + m.PromotionAmount +
-                    m.UpgradeAmount + m.SeasonAmount + m.BirthdayAmount +
-                    m.BonusAdjustAmount + m.NoIncludeNetProfitBonusAdjustAmount),
+                x.agg.ReportDate,
+                x.agg.Hour,
+                x.agg.AgentId,
+                x.agg.ChiefAgentDividendPercentage
+            },(groupItem, list) => new
+            {
+                groupItem.ReportDate,
+                groupItem.Hour,
+                groupItem.AgentId,
+                groupItem.ChiefAgentDividendPercentage,
+                RegisteredCount = list.Sum(g => g.agg.RegisteredCount),
+                FirstFundInCount = list.Sum(g => g.agg.FirstFundInCount),
+                CompanyAdjustAmount = list.Sum(g => g.agg.CompanyAdjustAmount),
+                NoIncludeNetProfitCompanyAdjustAmount = list.Sum(g => g.agg.NoIncludeNetProfitCompanyAdjustAmount),
+                BonusAdjustAmount = list.Sum(g => g.agg.BonusAdjustAmount),
+                NoIncludeNetProfitBonusAdjustAmount = list.Sum(g => g.agg.NoIncludeNetProfitBonusAdjustAmount),
+                RebateAmount = list.Sum(g => g.agg.RebateAmount),
+                PromotionAmount = list.Sum(g => g.agg.PromotionAmount),
+                BetAmount = list.Sum(g => g.agg.BetAmount),
+                OriginalTurnover = list.Sum(g => g.agg.OriginalTurnover),
+                Turnover = list.Sum(g => g.agg.Turnover),
+                WinLossAmount = list.Sum(g => g.agg.WinLossAmount),
+                AllAgentRebateAmount = list.Sum(g => g.agg.AllAgentRebateAmount),
+                UpgradeAmount = list.Sum(m => m.bonusAgg?.UpgradeAmount ?? 0M),
+                SeasonAmount = list.Sum(m => m.bonusAgg?.SeasonAmount ?? 0M),
+                BirthdayAmount = list.Sum(m => m.bonusAgg?.BirthdayAmount ?? 0M),
             })
             .GroupBy(x => x.ReportDate, (reportDate, group) => new
             {
@@ -283,7 +302,7 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                         :
                         (m.RebateAmount + m.PromotionAmount +
                             m.UpgradeAmount + m.SeasonAmount + m.BirthdayAmount +
-                            m.BonusAdjustAmount + m.NoIncludeNetProfitBonusAdjustAmount) * ((100 - m.ChiefAgentDividendPercentage.Value) / 100))),
+                            m.BonusAdjustAmount - m.NoIncludeNetProfitBonusAdjustAmount) * ((100 - m.ChiefAgentDividendPercentage.Value) / 100))),
                 PlatformCoveredBonus =
                     group.Sum(
                         m => m.ChiefAgentDividendPercentage == null
