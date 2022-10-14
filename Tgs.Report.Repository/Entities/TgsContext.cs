@@ -21,6 +21,7 @@ namespace Tgs.Report.Repository.Entities
 
         public virtual DbSet<AdjustPlayerRecord> AdjustPlayerRecords { get; set; } = null!;
         public virtual DbSet<Agent> Agents { get; set; } = null!;
+        public virtual DbSet<AgentDailyPaymentStatistic> AgentDailyPaymentStatistics { get; set; } = null!;
         public virtual DbSet<AgentDividend> AgentDividends { get; set; } = null!;
         public virtual DbSet<AgentDividendCondition> AgentDividendConditions { get; set; } = null!;
         public virtual DbSet<AgentDividendMultipleLayer> AgentDividendMultipleLayers { get; set; } = null!;
@@ -73,6 +74,7 @@ namespace Tgs.Report.Repository.Entities
 
             modelBuilder.ApplyConfiguration(new Configurations.AdjustPlayerRecordConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.AgentConfiguration());
+            modelBuilder.ApplyConfiguration(new Configurations.AgentDailyPaymentStatisticConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.AgentDividendConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.AgentDividendConditionConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.AgentDividendMultipleLayerConfiguration());
