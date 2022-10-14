@@ -31,5 +31,9 @@ namespace Tgs.Report.ViewModel.Market
         public decimal NetProfit { get; init; }
 
         public decimal AdditionalExpenses { get; init; }
+
+        public decimal PlatformCoveredBonus { get; init; }
+
+        public decimal PlatformCoveredBonusAdjust { get; init; }
     }
 }
