@@ -144,7 +144,7 @@ public class GetLicenseeMarketsQueryHandler : IRequestHandler<GetLicenseeMarkets
                 (brandId, aggregates) => new LicenseeMarketModel
                 {
                     BrandId = brandId,
-                    CompanyAdjustAmount = aggregates.Sum(m => 
+                    CompanyAdjustAmount = aggregates.Sum(m =>
                         m.CompanyAdjustAmount - m.NoIncludeNetProfitCompanyAdjustAmount),
                     BonusAmount = aggregates.Sum(m => m.RebateAmount + m.PromotionAmount),
                     BetAmount = aggregates.Sum(m => m.BetAmount),
@@ -215,12 +215,12 @@ public class GetLicenseeMarketsQueryHandler : IRequestHandler<GetLicenseeMarkets
                         BetAmount = aggregates.Sum(m => m.PlayerAggregate?.BetAmount ?? 0),
                         Turnover = aggregates.Sum(m => m.PlayerAggregate?.Turnover ?? 0),
                         WinLossAmount = aggregates.Sum(m => m.PlayerAggregate?.WinLossAmount ?? 0),
-                        NetProfit = aggregates.Sum(m => (m.PlayerAggregate?.NetProfit ?? 0) -
-                                                        (m.PlayerAggregate == null
-                                                            ? 0
-                                                            : m.PlayerAggregate.UpgradeAmount
-                                                              + m.PlayerAggregate.SeasonAmount
-                                                              + m.PlayerAggregate.BirthdayAmount))
+                        NetProfit = aggregates.Sum(m => m.PlayerAggregate == null
+                                ? 0
+                                : m.PlayerAggregate.NetProfit
+                                  - m.PlayerAggregate.UpgradeAmount
+                                  - m.PlayerAggregate.SeasonAmount
+                                  - m.PlayerAggregate.BirthdayAmount)
                     };
                 });
 
