@@ -12,44 +12,38 @@ public class
     GetAgentContributionsQueryHandler : IRequestHandler<GetAgentContributionsRequest,
         PagedResponse<AgentContributionModel>>
 {
-    private readonly ITgsService<Repository.Entities.Agent> _agentService;
+    private readonly IAgentRepository _agentRepository;
+    private readonly ITgsService<WithdrawForm> _withdrawFormsService;
+    private readonly ITgsService<Repository.Entities.Player> _playerService;
     private readonly ITgsService<PlayerAggregate> _playerAggregateService;
     private readonly ITgsService<PlayerBonusAggregate> _playerBonusAggregate;
-    private readonly ITgsService<Repository.Entities.Player> _playerService;
-    private readonly ITgsService<WithdrawForm> _withdrawFormsService;
     private readonly TgsContext _context;
 
     public GetAgentContributionsQueryHandler(
-        ITgsService<Repository.Entities.Agent> agentService,
+        IAgentRepository agentRepository,
         ITgsService<WithdrawForm> withdrawFormsService,
         ITgsService<Repository.Entities.Player> playerService,
         ITgsService<PlayerAggregate> playerAggregateService,
         ITgsService<PlayerBonusAggregate> playerBonusAggregate,
         TgsContext context)
     {
-        _context = context;
-        _agentService = agentService;
-        _withdrawFormsService = withdrawFormsService;
-        _playerService = playerService;
-        _playerAggregateService = playerAggregateService;
-        _playerBonusAggregate = playerBonusAggregate;
+        _agentRepository = agentRepository ?? throw new ArgumentNullException(nameof(agentRepository));
+        _withdrawFormsService = withdrawFormsService ?? throw new ArgumentNullException(nameof(withdrawFormsService));
+        _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
+        _playerAggregateService = playerAggregateService ?? throw new ArgumentNullException(nameof(playerAggregateService));
+        _playerBonusAggregate = playerBonusAggregate ?? throw new ArgumentNullException(nameof(playerBonusAggregate));
+        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
     public async Task<PagedResponse<AgentContributionModel>> Handle(
         GetAgentContributionsRequest request,
         CancellationToken cancellationToken)
     {
-        var agent = await _agentService.GetQueries()
-            .Where(x => x.BrandId == request.BrandId)
-            .Where(request.AgentId, a => a.Id == request.AgentId)
-            .Where(request.Username, a => a.Username == request.Username)
-            .Select(x => new
-            {
-                x.Id,
-                x.Path,
-                NLevel = x.Path.NLevel
-            })
-            .FirstOrDefaultAsync(cancellationToken);
+        var agent = await _agentRepository.GetAgentWithNLevelAsync(
+            request.BrandId,
+            request.AgentId,
+            request.Username,
+            cancellationToken).ConfigureAwait(false);
 
         if (agent == null)
         {
@@ -397,28 +391,13 @@ public class
             return players;
         }
 
-        var nLevel = agent.NLevel;
+        var firstLayerAgents = await _agentRepository
+            .GetFirstLayerAgentsAsync(request.BrandId, agent.Id)
+            .ToArrayAsync(cancellationToken)
+            .ConfigureAwait(false);
 
-        var firstLayerAgents = await _agentService.GetQueries()
-            .Where(x => x.ParentAgentId == agent.Id)
-            .Where(x => x.BrandId == request.BrandId)
-            .Select(x => new
-            {
-                x.Id,
-                x.Username
-            })
-            .ToArrayAsync(cancellationToken);
-
-        var allSubAgents = await _agentService
-            .GetQueries()
-            .Where(x => x.BrandId == request.BrandId)
-            .Where(x => x.Path.IsDescendantOf(new(agent.Path)))
-            .Where(x => x.Id != agent.Id)
-            .Select(x => new
-            {
-                AgentId = x.Id,
-                FirstLayerAgentId = Guid.Parse(x.Path.Subtree(nLevel, nLevel + 1))
-            })
+        var allSubAgents = await _agentRepository
+            .GetChildAgentsAsync(request.BrandId, agent)
             .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
 
@@ -574,7 +553,7 @@ public class
                 })
             .GroupBy(x => new
             {
-                x.FirstLayerAgent.Username,
+                x.FirstLayerAgent.UserName,
                 x.FirstLayerAgent.Id
             },
                 (firstLayerAgent, aggregates) =>
@@ -596,7 +575,7 @@ public class
 
                     return new AgentContributionModel
                     {
-                        Username = firstLayerAgent.Username,
+                        Username = firstLayerAgent.UserName,
                         Type = AccountType.Agent,
                         DepositAmount = aggregates.Sum(p
                                             => p.AgentPlayerAggregate?.DepositAmount ?? 0M)
