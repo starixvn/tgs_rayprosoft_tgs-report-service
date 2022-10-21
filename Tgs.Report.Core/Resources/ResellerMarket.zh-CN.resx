@@ -135,6 +135,9 @@
   <data name="DepositAmount" xml:space="preserve">
     <value>存款金额</value>
   </data>
+  <data name="DepositHandlingFee" xml:space="preserve">
+    <value>存款手续费</value>
+  </data>
   <data name="NetProfit" xml:space="preserve">
     <value>净盈利</value>
   </data>
