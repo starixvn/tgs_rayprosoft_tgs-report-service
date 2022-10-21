@@ -147,7 +147,7 @@ public class GetPlayerContributionsQueryHandler
             .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        var reportPlayers = await _context.Players
+        var playerContributions = await _context.Players
             .Include(x => x.Vip)
             .Where(x => x.BrandId == request.BrandId)
             .Where(request.HasUpperAgent == true, x => x.AgentId != null)
@@ -295,22 +295,9 @@ public class GetPlayerContributionsQueryHandler
                 WinLossAmount = x.WinLossAmount,
                 NetProfit = x.NetProfit - (x.UpgradeAmount + x.SeasonAmount + x.BirthdayAmount)
             })
-            .Where(x => playerDailyPaymentStatistics.Select(s => s.PlayerCode).Contains(x.PlayerCode) ||
-                x.CompanyAdjustAmount != 0 || x.AgentAdjustAmount != 0 || x.BonusAdjustAmount != 0
-                || x.BonusAmount != 0 || x.BetAmount != 0 || x.ValidBetAmount != 0 || x.Turnover != 0
-                || x.WinLossAmount != 0 || x.NetProfit != 0)
-            .CreatePagedResponseAsync(request);
+            .ToArrayAsync(cancellationToken);
 
-        if (reportPlayers.Items == null)
-        {
-            return new PagedResponse<PlayerContributionModel>
-            {
-                Valid = true,
-                Items = Array.Empty<PlayerContributionModel>()
-            };
-        }
-
-        foreach (var item in reportPlayers.Items)
+        foreach (var item in playerContributions)
         {
             var statistics = playerDailyPaymentStatistics
                 .FirstOrDefault(x => x.PlayerCode == item.PlayerCode);
@@ -327,6 +314,29 @@ public class GetPlayerContributionsQueryHandler
             item.WithdrawalAmount = (statistics?.DailyWithdrawAmount ?? 0M) + (withdrawItem?.WithdrawalAmount ?? 0);
         }
 
-        return reportPlayers;
+        var reportPlayers = playerContributions
+            .Where(x =>
+                x.DepositAmount != 0
+                || x.DepositHandlingFee != 0
+                || x.WithdrawalAmount != 0
+                || x.CompanyAdjustAmount != 0
+                || x.AgentAdjustAmount != 0
+                || x.BonusAdjustAmount != 0
+                || x.BonusAmount != 0
+                || x.BetAmount != 0
+                || x.ValidBetAmount != 0
+                || x.Turnover != 0
+                || x.WinLossAmount != 0
+                || x.NetProfit != 0)
+            .AsQueryable()
+            .CreatePagedResponse(request);
+
+        return reportPlayers.Items == null
+            ? new PagedResponse<PlayerContributionModel>
+            {
+                Valid = true,
+                Items = Array.Empty<PlayerContributionModel>()
+            }
+            : reportPlayers;
     }
 }
