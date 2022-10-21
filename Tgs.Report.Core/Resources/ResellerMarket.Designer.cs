@@ -61,7 +61,7 @@ namespace Tgs.Report.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bet Amount.
+        ///   Looks up a localized string similar to BET AMOUNT.
         /// </summary>
         internal static string BetAmount {
             get {
@@ -70,7 +70,7 @@ namespace Tgs.Report.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bonus Amount.
+        ///   Looks up a localized string similar to BONUS AMOUNT.
         /// </summary>
         internal static string BonusAmount {
             get {
@@ -79,7 +79,7 @@ namespace Tgs.Report.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Brand.
+        ///   Looks up a localized string similar to BRAND.
         /// </summary>
         internal static string BrandCode {
             get {
@@ -97,7 +97,7 @@ namespace Tgs.Report.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Currency.
+        ///   Looks up a localized string similar to CURRENCY.
         /// </summary>
         internal static string CurrencyCode {
             get {
@@ -106,7 +106,7 @@ namespace Tgs.Report.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deposit Amount.
+        ///   Looks up a localized string similar to DEPOSIT AMOUNT.
         /// </summary>
         internal static string DepositAmount {
             get {
@@ -115,7 +115,16 @@ namespace Tgs.Report.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to NetProfit.
+        ///   Looks up a localized string similar to DEPOSIT TRANSFER FEE.
+        /// </summary>
+        internal static string DepositHandlingFee {
+            get {
+                return ResourceManager.GetString("DepositHandlingFee", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NETPROFIT.
         /// </summary>
         internal static string NetProfit {
             get {
@@ -124,7 +133,7 @@ namespace Tgs.Report.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ValidBetAmount.
+        ///   Looks up a localized string similar to TURNOVER.
         /// </summary>
         internal static string Turnover {
             get {
@@ -133,7 +142,7 @@ namespace Tgs.Report.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Win Loss Amount.
+        ///   Looks up a localized string similar to WIN LOSS AMOUNT.
         /// </summary>
         internal static string WinLossAmount {
             get {
@@ -142,7 +151,7 @@ namespace Tgs.Report.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Withdrawal Amount.
+        ///   Looks up a localized string similar to WITHDRAWAL AMOUNT.
         /// </summary>
         internal static string WithdrawalAmount {
             get {

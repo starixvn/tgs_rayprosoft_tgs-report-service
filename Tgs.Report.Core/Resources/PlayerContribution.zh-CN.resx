@@ -156,4 +156,7 @@
   <data name="BonusAdjustAmount" xml:space="preserve">
     <value>优惠调帐</value>
   </data>
+  <data name="DepositHandlingFee" xml:space="preserve">
+    <value>存款手续费</value>
+  </data>
 </root>
