@@ -107,6 +107,8 @@ pipeline {
                         def node_selector = getTgsSettings(env.k8s_config, env.kube_ns, "node-selector")
 
                         println resources
+                        println dedicated
+                        println node_selector
 
                         withCredentials([string(credentialsId: "tgs-${kube_ns}-connectionstring", variable: "tgs_tgs")]) {
                             sh """
