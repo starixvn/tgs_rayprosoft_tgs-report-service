@@ -58,7 +58,7 @@ internal class AgentRepository : IAgentRepository
             .Where(a => a.Id != parentAgentInfo.Id)
             .Select(a => new ChildAgentInfo(
                 a.Id,
-                Guid.Parse(a.Path.Subpath(nlevel, nlevel + 1))))
+                Guid.Parse(a.Path.Subtree(nlevel, nlevel + 1))))
             .AsAsyncEnumerable();
     }
 }
