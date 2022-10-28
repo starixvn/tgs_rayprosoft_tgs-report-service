@@ -153,4 +153,7 @@
   <data name="BonusAdjustAmount" xml:space="preserve">
     <value>BONUS ADJUST AMOUNT</value>
   </data>
+  <data name="DepositHandlingFee" xml:space="preserve">
+    <value>DEPOSIT TRANSFER FEE</value>
+  </data>
 </root>

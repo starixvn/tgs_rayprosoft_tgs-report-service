@@ -27,14 +27,14 @@ namespace Tgs.Report.Repository.Entities
         public string ExternalGameActionGroupId { get; set; } = null!;
         public Guid? ReferencedGameActionId { get; set; }
         public Guid? GameActionBatchId { get; set; }
-        public DateTimeOffset RecordedOn { get; set; }
-        public DateTimeOffset? SentOn { get; set; }
+        public DateTime RecordedOn { get; set; }
+        public DateTime? SentOn { get; set; }
         public bool IsClosingRound { get; set; }
         public bool? ClosingRoundExplicitRequest { get; set; }
         public string PlayerIp { get; set; } = null!;
         public string? ExtraData { get; set; }
         public string? JackpotContribution { get; set; }
-        public DateTimeOffset StoredOn { get; set; }
+        public DateTime StoredOn { get; set; }
 
         public virtual GameAction? ReferencedGameAction { get; set; }
         public virtual Round Round { get; set; } = null!;

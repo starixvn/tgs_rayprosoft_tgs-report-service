@@ -31,7 +31,7 @@ namespace Tgs.Report.UnitTest.Market
             var withdrawForms = CreateWithdrawFormFixture(brandId).CreateMany<WithdrawForm>(1).AsQueryable()
                 .BuildMock();
 
-            var playerLoginReocrds = CreatePlayerLoginRecordsFixture(brandId).CreateMany<PlayerLoginRecord>(1).AsQueryable()
+            var playerLoginRecords = CreatePlayerLoginRecordsFixture(brandId).CreateMany<PlayerLoginRecord>(1).AsQueryable()
                 .BuildMock();
 
             var dailyStatistic = CreateBrandDailyPaymentStatisticFixture(brandId, reportDate).CreateMany<BrandDailyPaymentStatistic>(1).AsQueryable()
@@ -47,7 +47,7 @@ namespace Tgs.Report.UnitTest.Market
                 To = reportDate.AddDays(1)
             };
 
-            var playerDailyPaymentStatistics = 
+            var playerDailyPaymentStatistics =
                 CreatePlayerDailyPaymentStatisticsFixture().CreateMany<PlayerDailyPaymentStatistic>(5).AsQueryable()
                     .BuildMock();
 
@@ -56,7 +56,7 @@ namespace Tgs.Report.UnitTest.Market
 
             var mockPlayerAggregates = GetDbSet(playerAggregates);
             var mockWithdrawForms = GetDbSet(withdrawForms);
-            var mockPlayerLoginRecords = GetDbSet(playerLoginReocrds);
+            var mockPlayerLoginRecords = GetDbSet(playerLoginRecords);
             var mockDailyStatistic = GetDbSet(dailyStatistic);
             var mockPlayerBonusAggregates = GetDbSet(playerBonusAggregates);
             var mockPlayerDailyPaymentStatistics = GetDbSet(playerDailyPaymentStatistics);
@@ -109,12 +109,12 @@ namespace Tgs.Report.UnitTest.Market
             return fixture;
         }
 
-        private static Fixture CreateBrandDailyPaymentStatisticFixture(Guid brandId,DateTimeOffset reportDate)
+        private static Fixture CreateBrandDailyPaymentStatisticFixture(Guid brandId, DateTimeOffset reportDate)
         {
             var fixture = new Fixture();
             fixture.Customize<BrandDailyPaymentStatistic>(u => u
                 .With(s => s.BrandId, brandId)
-                .With(s => s.ReportDate, new DateOnly(reportDate.Year, reportDate.Month, reportDate.Day)));
+                .With(s => s.ReportDate, new DateOnly(reportDate.Year, reportDate.Month, reportDate.Day - 1)));
 
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
@@ -134,8 +134,8 @@ namespace Tgs.Report.UnitTest.Market
         {
             var fixture = new Fixture();
             fixture.Customize<PlayerDailyPaymentStatistic>(u => u
-                .With(s => s.ReportDate, 
-                    new DateOnly(DateTimeOffset.UtcNow.Year,DateTimeOffset.UtcNow.Month,DateTimeOffset.UtcNow.Day)));
+                .With(s => s.ReportDate,
+                    new DateOnly(DateTimeOffset.UtcNow.Year, DateTimeOffset.UtcNow.Month, DateTimeOffset.UtcNow.Day)));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }

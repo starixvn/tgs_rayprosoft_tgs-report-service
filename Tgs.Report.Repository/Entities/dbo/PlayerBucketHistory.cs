@@ -10,9 +10,9 @@ namespace Tgs.Report.Repository.Entities
         public int Id { get; set; }
         public string PlayerCode { get; set; } = null!;
         public decimal Turnover { get; set; }
-        public DateTimeOffset From { get; set; }
-        public DateTimeOffset To { get; set; }
-        public DateTimeOffset CreatedOn { get; set; }
+        public DateTime From { get; set; }
+        public DateTime To { get; set; }
+        public DateTime CreatedOn { get; set; }
         public Guid PlayerBucketId { get; set; }
         public string RoundData { get; set; } = null!;
     }

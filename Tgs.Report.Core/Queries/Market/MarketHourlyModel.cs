@@ -1,25 +1,24 @@
 ﻿namespace Tgs.Report.Core.Queries.Market;
 
-public class MarketHourlyModel
+internal class MarketHourlyModel
 {
-    public DateTimeOffset ReportDate { get; set; }
-    public int Hour { get; set; }
-    public Guid? AgentId { get; set; }
-    public decimal? ChiefAgentDividendPercentage { get; set; }
-    public int RegisteredCount { get; set; }
-    public int FirstFundInCount { get; set; }
-    public decimal CompanyAdjustAmount { get; set; }
-    public decimal NoIncludeNetProfitCompanyAdjustAmount { get; set; }
-    public decimal BonusAdjustAmount { get; set; }
-    public decimal NoIncludeNetProfitBonusAdjustAmount { get; set; }
-    public decimal BetAmount { get; set; }
-    public decimal OriginalTurnover { get; set; }
-    public decimal Turnover { get; set; }
-    public decimal WinLossAmount { get; set; }
-    public decimal AllAgentRebateAmount { get; set; }
-    public decimal RebateAmount { get; set; }
-    public decimal PromotionAmount { get; set; }
-    public decimal UpgradeAmount { get; set; }
-    public decimal SeasonAmount { get; set; }
-    public decimal BirthdayAmount { get; set; }
+    public DateTimeOffset ReportDate { get; init; }
+    public int Hour { get; init; }
+    public Guid? AgentId { get; init; }
+    public decimal? ChiefAgentDividendPercentage { get; init; }
+    public int RegisteredCount { get; init; }
+    public decimal CompanyAdjustAmount { get; init; }
+    public decimal NoIncludeNetProfitCompanyAdjustAmount { get; init; }
+    public decimal BonusAdjustAmount { get; init; }
+    public decimal NoIncludeNetProfitBonusAdjustAmount { get; init; }
+    public decimal BetAmount { get; init; }
+    public decimal OriginalTurnover { get; init; }
+    public decimal Turnover { get; init; }
+    public decimal WinLossAmount { get; init; }
+    public decimal AllAgentRebateAmount { get; init; }
+    public decimal RebateAmount { get; init; }
+    public decimal PromotionAmount { get; init; }
+    public decimal UpgradeAmount { get; init; }
+    public decimal SeasonAmount { get; init; }
+    public decimal BirthdayAmount { get; init; }
 }

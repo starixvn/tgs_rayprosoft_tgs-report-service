@@ -13,5 +13,6 @@ public static class ServiceCollectionExtensions
         Action<IServiceProvider, DbContextOptionsBuilder> dbContextConfigure)
         => services
             .AddDbContext<TgsContext>(dbContextConfigure)
-            .AddTransient(typeof(ITgsService<>), typeof(TgsService<>));
+            .AddTransient(typeof(ITgsService<>), typeof(TgsService<>))
+            .AddTransient<IAgentRepository, AgentRepository>();
 }
