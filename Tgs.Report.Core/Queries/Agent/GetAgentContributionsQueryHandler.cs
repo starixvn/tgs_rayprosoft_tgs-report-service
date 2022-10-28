@@ -488,50 +488,36 @@ public class
                     agent.FirstLayerAgentId,
                     Contribution = contribution
                 })
-            .GroupJoin(brandAgentsPaymentStatistics,
-                agent => agent.AgentId,
-                paymentStatistics => paymentStatistics.AgentId,
-                (agent, statistics) => new
-                {
-                    agent.AgentId,
-                    agent.FirstLayerAgentId,
-                    Contribution = agent.Contribution,
-                    PaymentStatistics = statistics
-                })
-            .SelectMany(x => x.PaymentStatistics.DefaultIfEmpty(),
-                (agent, statistics) => new
-                {
-                    agent.AgentId,
-                    agent.FirstLayerAgentId,
-                    Contribution = agent.Contribution,
-                    DepositAmount = statistics?.DepositAmount,
-                    DepositHandlingFee = statistics?.DepositHandlingFee,
-                    WithdrawAmount = statistics?.WithdrawAmount
-                })
             .GroupBy(x => new
 
             {
                 x.FirstLayerAgentId,
                 x.AgentId
-            }, (group, markets) => new
+            }, (group, markets) =>
             {
-                group.FirstLayerAgentId,
-                group.AgentId,
-                DepositAmount = markets.Sum(m => m.DepositAmount ?? 0M),
-                DepositHandlingFee = markets.Sum(m => m.DepositHandlingFee ?? 0M),
-                WithdrawAmount = markets.Sum(m => m.WithdrawAmount ?? 0M),
-                CompanyAdjustAmount = markets.Sum(m => m.Contribution?.CompanyAdjustAmount ?? 0M),
-                BonusAdjustAmount = markets.Sum(m => m.Contribution?.BonusAdjustAmount ?? 0M),
-                AgentAdjustAmount = markets.Sum(m => m.Contribution?.AgentAdjustAmount ?? 0M),
-                BonusAmount = markets.Sum(m => m.Contribution?.BonusAmount ?? 0M),
-                BetAmount = markets.Sum(m => m.Contribution?.BetAmount ?? 0M),
-                OriginalTurnover = markets.Sum(m => m.Contribution?.OriginalTurnover ?? 0M),
-                Turnover = markets.Sum(m => m.Contribution?.Turnover ?? 0M),
-                WinLossAmount = markets.Sum(m => m.Contribution?.WinLossAmount ?? 0M),
-                UpgradeAmount = markets.Sum(m => m.Contribution?.UpgradeAmount ?? 0M),
-                SeasonAmount = markets.Sum(m => m.Contribution?.SeasonAmount ?? 0M),
-                BirthdayAmount = markets.Sum(m => m.Contribution?.BirthdayAmount ?? 0M),
-                NetProfit = markets.Sum(m => m.Contribution?.NetProfit ?? 0M),
+                var paymentStatistics = brandAgentsPaymentStatistics
+                    .FirstOrDefault(bap => bap.AgentId == group.AgentId);
+
+                return new
+                {
+                    group.FirstLayerAgentId,
+                    group.AgentId,
+                    DepositAmount = paymentStatistics?.DepositAmount ?? 0M,
+                    DepositHandlingFee = paymentStatistics?.DepositHandlingFee ?? 0M,
+                    WithdrawAmount = paymentStatistics?.WithdrawAmount ?? 0M,
+                    CompanyAdjustAmount = markets.Sum(m => m.Contribution?.CompanyAdjustAmount ?? 0M),
+                    BonusAdjustAmount = markets.Sum(m => m.Contribution?.BonusAdjustAmount ?? 0M),
+                    AgentAdjustAmount = markets.Sum(m => m.Contribution?.AgentAdjustAmount ?? 0M),
+                    BonusAmount = markets.Sum(m => m.Contribution?.BonusAmount ?? 0M),
+                    BetAmount = markets.Sum(m => m.Contribution?.BetAmount ?? 0M),
+                    OriginalTurnover = markets.Sum(m => m.Contribution?.OriginalTurnover ?? 0M),
+                    Turnover = markets.Sum(m => m.Contribution?.Turnover ?? 0M),
+                    WinLossAmount = markets.Sum(m => m.Contribution?.WinLossAmount ?? 0M),
+                    UpgradeAmount = markets.Sum(m => m.Contribution?.UpgradeAmount ?? 0M),
+                    SeasonAmount = markets.Sum(m => m.Contribution?.SeasonAmount ?? 0M),
+                    BirthdayAmount = markets.Sum(m => m.Contribution?.BirthdayAmount ?? 0M),
+                    NetProfit = markets.Sum(m => m.Contribution?.NetProfit ?? 0M),
+                };
             });
 
         var childAgentPlayers = firstLayerAgents
