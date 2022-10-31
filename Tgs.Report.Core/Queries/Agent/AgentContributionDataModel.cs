@@ -1,22 +1,19 @@
-﻿namespace Tgs.Report.Core.Queries.Agent
+﻿namespace Tgs.Report.Core.Queries.Agent;
+
+internal class AgentContributionDataModel
 {
-    internal class AgentContributionDataModel
-    {
-        public Guid? AgentId { get; set; }
-        public string PlayerCode { get; set; } = default!;
-        public decimal DepositAmount { get; set; }
-        public decimal WithdrawalAmount {get; set; }
-        public decimal CompanyAdjustAmount { get; set; }
-        public decimal AgentAdjustAmount { get; set; }
-        public decimal BonusAdjustAmount { get; set; }
-        public decimal BonusAmount { get; set; }
-        public decimal BetAmount { get; set; }
-        public decimal OriginalTurnover { get; set; }
-        public decimal Turnover { get; set; }
-        public decimal WinLossAmount { get; set; }
-        public decimal NetProfit { get; set; }
-        public decimal UpgradeAmount { get; set; }
-        public decimal SeasonAmount { get; set; }
-        public decimal BirthdayAmount { get; set; }
-    }
+    public Guid AgentId { get; init; }
+    public string PlayerCode { get; init; } = default!;
+    public decimal CompanyAdjustAmount { get; init; }
+    public decimal AgentAdjustAmount { get; init; }
+    public decimal BonusAdjustAmount { get; init; }
+    public decimal BonusAmount { get; init; }
+    public decimal BetAmount { get; init; }
+    public decimal OriginalTurnover { get; init; }
+    public decimal Turnover { get; init; }
+    public decimal WinLossAmount { get; init; }
+    public decimal NetProfit { get; init; }
+    public decimal UpgradeAmount { get; init; }
+    public decimal SeasonAmount { get; init; }
+    public decimal BirthdayAmount { get; init; }
 }

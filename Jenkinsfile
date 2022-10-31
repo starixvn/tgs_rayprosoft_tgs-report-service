@@ -107,6 +107,8 @@ pipeline {
                         def node_selector = getTgsSettings(env.k8s_config, env.kube_ns, "node-selector")
 
                         println resources
+                        println dedicated
+                        println node_selector
 
                         withCredentials([string(credentialsId: "tgs-${kube_ns}-connectionstring", variable: "tgs_tgs")]) {
                             sh """
@@ -115,7 +117,7 @@ pipeline {
                                     --set image.tag=${TAG} \
                                     --set autoscaling.enabled=${tgs_autoscaling} \
                                     --set connectionStrings.redis="$tgs_redis" \
-                                    --set nats.urls="$tgs_nats"
+                                    --set nats.urls="$tgs_nats" \
                                     -f -
                                 {
                                     "nodeSelector": $node_selector,
@@ -130,6 +132,7 @@ pipeline {
                                     --set autoscaling.enabled=${tgs_autoscaling} \
                                     --set connectionStrings.redis="$tgs_redis" \
                                     --set nats.urls="$tgs_nats"  \
+                                    -f -\
                                     | kubectl -n ${kube_ns} apply -f -
                                 {
                                     "nodeSelector": $node_selector,
