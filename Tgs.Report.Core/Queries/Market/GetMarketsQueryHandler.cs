@@ -124,7 +124,6 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
             {
                 x.ReportDate,
                 x.FirstDepositPlayers,
-                x.DepositPlayers,
                 x.DailyDepositAmount,
                 x.DailyDepositHandlingFee,
                 x.DailyWithdrawAmount
@@ -144,11 +143,13 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
             {
                 x.ReportDate,
                 x.PlayerCode,
-                BetAmount = group.Sum(s => s.BetAmount),
+                DepositAmount = group.Sum(s => s.DepositAmount),
+                BetAmount = group.Sum(s => s.BetAmount)
             })
             .GroupBy(x => x.ReportDate, (reportDate, group) => new
             {
                 ReportDate = reportDate,
+                DepositCount = group.Sum(s => s.DepositAmount > 0 ? 1 : 0),
                 ActivePlayer = group.Sum(s => s.BetAmount > 0 ? 1 : 0)
             }).ToArrayAsync(cancellationToken);
 
@@ -345,6 +346,7 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                     x.ReportDate,
                     x.MarketAggregate,
                     x.PaymentStatistic,
+                    activePlayer?.DepositCount,
                     activePlayer?.ActivePlayer
                 })
             .GroupBy(x => x.ReportDate,
@@ -356,7 +358,7 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                     return new MarketModel
                     {
                         ReportDate = reportDate,
-                        DepositCount = aggregates.Sum(m => m.PaymentStatistic?.DepositPlayers ?? 0),
+                        DepositCount = aggregates.Sum(m => m.DepositCount ?? 0),
                         ActivePlayer = aggregates.Sum(m => m.ActivePlayer ?? 0),
                         LoginPlayer =
                             playerLoginRecordsByDates.FirstOrDefault(plr => plr.Date == reportDate.Date)
