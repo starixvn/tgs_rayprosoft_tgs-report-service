@@ -148,7 +148,7 @@ public sealed class GetLicenseeMarketsQueryTest : BaseTest
         var fixture = new Fixture();
         fixture.Customize<PlayerDailyPaymentStatistic>(u => u
             .With(s => s.ReportDate,
-                new DateOnly(DateTimeOffset.UtcNow.Year, DateTimeOffset.UtcNow.Month, DateTimeOffset.UtcNow.Day)));
+                DateOnly.FromDateTime(DateTimeOffset.UtcNow.DateTime)));
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         return fixture;
     }
@@ -169,7 +169,7 @@ public sealed class GetLicenseeMarketsQueryTest : BaseTest
         var fixture = new Fixture();
         fixture.Customize<BrandDailyPaymentStatistic>(u => u
             .With(s => s.ReportDate,
-                new DateOnly(DateTimeOffset.UtcNow.Year, DateTimeOffset.UtcNow.Month, DateTimeOffset.UtcNow.Day - 1)));
+                DateOnly.FromDateTime(DateTimeOffset.UtcNow.AddDays(-1).DateTime)));
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         return fixture;
     }
