@@ -359,7 +359,7 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                         DepositCount = aggregates.Sum(m => m.PaymentStatistic?.DepositPlayers ?? 0),
                         ActivePlayer = aggregates.Sum(m => m.ActivePlayer ?? 0),
                         LoginPlayer =
-                            playerLoginRecordsByDates.FirstOrDefault(plr => plr.Date == reportDate)
+                            playerLoginRecordsByDates.FirstOrDefault(plr => plr.Date == reportDate.Date)
                                 ?.LoginPlayer ?? 0,
                         RegisteredCount = aggregates.Sum(m => m.MarketAggregate?.RegisteredCount ?? 0),
                         FirstFundInCount = aggregates.Sum(m => m.PaymentStatistic?.FirstDepositPlayers ?? 0),
