@@ -40,6 +40,9 @@ namespace Tgs.Report.UnitTest.Market
             var playerBonusAggregates = CreatePlayerBonusAggregateFixture(brandId, reportDate).CreateMany<PlayerBonusAggregate>(1).AsQueryable()
                 .BuildMock();
 
+            var dailyRegisterStatistic = CreatePlayerDailyRegisterStatisticsFixture(brandId, reportDate).CreateMany<PlayerDailyRegisterStatistic>(1).AsQueryable()
+                .BuildMock();
+
             var request = new GetMarketsRequest
             {
                 BrandId = brandId,
@@ -51,8 +54,13 @@ namespace Tgs.Report.UnitTest.Market
                 CreatePlayerDailyPaymentStatisticsFixture().CreateMany<PlayerDailyPaymentStatistic>(5).AsQueryable()
                     .BuildMock();
 
-            var players = CreatePlayerFixture(brandId).CreateMany<Repository.Entities.Player>(1).AsQueryable()
+            var players = CreatePlayerFixture(brandId, reportDate).CreateMany<Repository.Entities.Player>(1).AsQueryable()
                 .BuildMock();
+
+            foreach (var item in dailyRegisterStatistic)
+            {
+                item.PlayerCode = players.First().PlayerCode;
+            }
 
             var mockPlayerAggregates = GetDbSet(playerAggregates);
             var mockWithdrawForms = GetDbSet(withdrawForms);
@@ -61,6 +69,7 @@ namespace Tgs.Report.UnitTest.Market
             var mockPlayerBonusAggregates = GetDbSet(playerBonusAggregates);
             var mockPlayerDailyPaymentStatistics = GetDbSet(playerDailyPaymentStatistics);
             var mockPlayers = GetDbSet(players);
+            var dailyRegisterStatistics = GetDbSet(dailyRegisterStatistic);
 
             fakeDbContext.WithdrawForms.Returns(mockWithdrawForms.Object);
             fakeDbContext.PlayerAggregates.Returns(mockPlayerAggregates.Object);
@@ -68,11 +77,12 @@ namespace Tgs.Report.UnitTest.Market
             fakeDbContext.BrandDailyPaymentStatistics.Returns(mockDailyStatistic.Object);
             fakeDbContext.PlayerBonusAggregates.Returns(mockPlayerBonusAggregates.Object);
             fakeDbContext.PlayerDailyPaymentStatistics.Returns(mockPlayerDailyPaymentStatistics.Object);
+            fakeDbContext.PlayerDailyRegisterStatistics.Returns(dailyRegisterStatistics.Object);
             fakeDbContext.Players.Returns(mockPlayers.Object);
 
             var response = await sut.Handle(request, default);
 
-            Assert.AreEqual(playerAggregates.First().RegisteredCount,
+            Assert.AreEqual(dailyRegisterStatistic.Count(),
                 response.Items?.First().RegisteredCount);
         }
 
@@ -140,15 +150,26 @@ namespace Tgs.Report.UnitTest.Market
             return fixture;
         }
 
-        private static Fixture CreatePlayerFixture(Guid brandId)
+        private static Fixture CreatePlayerFixture(Guid brandId, DateTimeOffset reportDate)
         {
             var fixture = new Fixture();
             fixture.Customize<Repository.Entities.Player>(u => u
                 .With(s => s.BrandId, brandId)
                 .With(s => s.Brand, new Brand())
+                .With(s => s.RegisteredOn, reportDate)
                 .With(s => s.Birthdate, DateOnly.Parse("2022/05/04")));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
+
+        private static Fixture CreatePlayerDailyRegisterStatisticsFixture(Guid brandId, DateTimeOffset reportDate)
+        {
+            var fixture = new Fixture();
+            fixture.Customize<PlayerDailyRegisterStatistic>(u => u
+                .With(s => s.ReportDate, new DateOnly(reportDate.Year, reportDate.Month, reportDate.Day)));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            return fixture;
+        }
+
     }
 }
