@@ -14,6 +14,7 @@ namespace Tgs.Report.Repository.Entities
         public bool IsFull { get; set; }
         public DateTime CreatedOn { get; set; }
         public decimal CurrentBucketAmount { get; set; }
+        public Guid? SnapshotId { get; set; }
 
         public virtual Player PlayerCodeNavigation { get; set; } = null!;
     }
