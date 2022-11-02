@@ -49,6 +49,7 @@ namespace Tgs.Report.Repository.Entities
         public virtual DbSet<PlayerBucket> PlayerBuckets { get; set; } = null!;
         public virtual DbSet<PlayerBucketHistory> PlayerBucketHistories { get; set; } = null!;
         public virtual DbSet<PlayerDailyPaymentStatistic> PlayerDailyPaymentStatistics { get; set; } = null!;
+        public virtual DbSet<PlayerDailyRegisterStatistic> PlayerDailyRegisterStatistics { get; set; } = null!;
         public virtual DbSet<PlayerGameRebateAggregate> PlayerGameRebateAggregates { get; set; } = null!;
         public virtual DbSet<PlayerIpRecord> PlayerIpRecords { get; set; } = null!;
         public virtual DbSet<PlayerLoginRecord> PlayerLoginRecords { get; set; } = null!;
@@ -102,6 +103,7 @@ namespace Tgs.Report.Repository.Entities
             modelBuilder.ApplyConfiguration(new Configurations.PlayerBucketConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.PlayerBucketHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.PlayerDailyPaymentStatisticConfiguration());
+            modelBuilder.ApplyConfiguration(new Configurations.PlayerDailyRegisterStatisticConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.PlayerGameRebateAggregateConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.PlayerIpRecordConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.PlayerLoginRecordConfiguration());

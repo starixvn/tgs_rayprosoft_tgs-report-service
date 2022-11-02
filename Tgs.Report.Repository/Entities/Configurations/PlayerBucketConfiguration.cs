@@ -41,6 +41,8 @@ namespace Tgs.Report.Repository.Entities.Configurations
                 .HasColumnName("player_code")
                 .HasDefaultValueSql("''::character varying");
 
+            entity.Property(e => e.SnapshotId).HasColumnName("snapshot_id");
+
             entity.HasOne(d => d.PlayerCodeNavigation)
                 .WithMany(p => p.PlayerBuckets)
                 .HasForeignKey(d => d.PlayerCode)
