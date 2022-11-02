@@ -115,6 +115,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "dbo.player_daily_register_statistics",
+         "ObjectType": 0
+      },
+      {
          "Name": "dbo.player_ip_records",
          "ObjectType": 0
       },
@@ -199,7 +203,7 @@
          "ObjectType": 0
       }
    ],
-   "UiHint": "Tgs",
+   "UiHint": "tgs",
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,
    "UseDbContextSplitting": true,

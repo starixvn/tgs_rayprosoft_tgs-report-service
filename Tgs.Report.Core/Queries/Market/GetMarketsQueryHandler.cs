@@ -117,6 +117,36 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
         var fromDate = new DateOnly(from.Year, from.Month, from.Day);
         var toDate = new DateOnly(to.Year, to.Month, to.Day);
 
+        var playerRegisterCount = to > today ? await _context.Players
+            .Where(x => x.BrandId == request.BrandId)
+            .Where(x => x.RegisteredOn >= today.ToUniversalTime()
+                && x.RegisteredOn < today.AddDays(1).ToUniversalTime())
+            .CountAsync(cancellationToken)
+            .ConfigureAwait(false) : 0;
+
+        var playerDailyRegisterStatistics = await _context.PlayerDailyRegisterStatistics
+            .Join(_context.Players,
+                pdp => pdp.PlayerCode,
+                p => p.PlayerCode, (agg, p) => new
+                {
+                    agg,
+                    p
+                })
+            .Where(x => x.p.BrandId == request.BrandId)
+            .Where(x => x.agg.ReportDate >= fromDate && x.agg.ReportDate < toDate)
+            .Select(x => new
+            {
+                x.agg.ReportDate,
+                x.agg.PlayerCode
+            })
+            .GroupBy(x => x.ReportDate, (reportDate, players) => new
+            {
+                ReportDate = reportDate,
+                PlayerCount = players.Count()
+            })
+            .ToArrayAsync(cancellationToken)
+            .ConfigureAwait(false);
+
         var brandPaymentStatistics = await _context.BrandDailyPaymentStatistics
             .Where(x => x.BrandId == request.BrandId)
             .Where(x => x.ReportDate >= fromDate && x.ReportDate < toDate)
@@ -363,7 +393,8 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                         LoginPlayer =
                             playerLoginRecordsByDates.FirstOrDefault(plr => plr.Date == reportDate.Date)
                                 ?.LoginPlayer ?? 0,
-                        RegisteredCount = aggregates.Sum(m => m.MarketAggregate?.RegisteredCount ?? 0),
+                        RegisteredCount = (playerDailyRegisterStatistics?.FirstOrDefault(pdr => pdr.ReportDate == new DateOnly(reportDate.Year, reportDate.Month, reportDate.Day))?.PlayerCount ?? 0)
+                        + playerRegisterCount,
                         FirstFundInCount = aggregates.Sum(m => m.PaymentStatistic?.FirstDepositPlayers ?? 0),
                         DepositAmount = aggregates.Sum(m => m.PaymentStatistic?.DailyDepositAmount ?? 0M)
                                         + (realTimeDeposit?.DepositAmount ?? 0M),
