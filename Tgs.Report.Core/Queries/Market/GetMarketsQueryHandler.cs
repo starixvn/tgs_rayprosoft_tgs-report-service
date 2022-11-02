@@ -141,8 +141,8 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
             })
             .GroupBy(x => x.ReportDate, (reportDate, players) => new
             {
-                reportDate,
-                playerCount = players.Count()
+                ReportDate = reportDate,
+                PlayerCount = players.Count()
             })
             .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
@@ -391,7 +391,7 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                         LoginPlayer =
                             playerLoginRecordsByDates.FirstOrDefault(plr => plr.Date == reportDate)
                                 ?.LoginPlayer ?? 0,
-                        RegisteredCount = (playerDailyRegisterStatistics?.FirstOrDefault(pdr => pdr.reportDate == new DateOnly(reportDate.Year, reportDate.Month, reportDate.Day))?.playerCount ?? 0)
+                        RegisteredCount = (playerDailyRegisterStatistics?.FirstOrDefault(pdr => pdr.ReportDate == new DateOnly(reportDate.Year, reportDate.Month, reportDate.Day))?.PlayerCount ?? 0)
                         + playerRegisterCount,
                         FirstFundInCount = aggregates.Sum(m => m.PaymentStatistic?.FirstDepositPlayers ?? 0),
                         DepositAmount = aggregates.Sum(m => m.PaymentStatistic?.DailyDepositAmount ?? 0M)

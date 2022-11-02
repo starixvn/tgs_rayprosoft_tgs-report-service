@@ -166,7 +166,7 @@ namespace Tgs.Report.UnitTest.Market
         {
             var fixture = new Fixture();
             fixture.Customize<PlayerDailyRegisterStatistic>(u => u
-                .With(s => s.ReportDate, new DateOnly(reportDate.Year, reportDate.Month, reportDate.Day)));
+                .With(s => s.ReportDate, DateOnly.FromDateTime(reportDate.DateTime)));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
