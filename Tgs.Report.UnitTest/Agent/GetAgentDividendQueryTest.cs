@@ -15,6 +15,119 @@ namespace Tgs.Report.UnitTest.Agent
     public sealed class GetAgentDividendQueryTest : BaseTest
     {
         [Test]
+        public async Task Can_Get_Agent_Dividends()
+        {
+            var fakeDbContext = Substitute.For<TgsContext>();
+
+            var sut = new GetAgentDividendQueryHandler(fakeDbContext);
+
+            var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
+            var agentId = new Guid("aac11120-20f6-4f0d-6982-08d9dbdc0473");
+            var agents = CreateAgentFixture(brandId, agentId).CreateMany<Repository.Entities.Agent>(1)
+                .AsQueryable()
+                .BuildMock();
+
+            var withdrawForms = CreateWithdrawFormFixture(brandId).CreateMany<WithdrawForm>(1).AsQueryable()
+                .BuildMock();
+
+            var agentDividends = CreateAgentDividendFixture(brandId, agentId).CreateMany<AgentDividend>(1).AsQueryable()
+                .BuildMock();
+
+            var agentDividendMultipleLayers = agentDividends.SelectMany(x => x.AgentDividendMultipleLayers);
+
+            var players = agents.SelectMany(x => x.Players);
+
+            var request = new GetAgentDividendsRequest
+            {
+                BrandId = brandId,
+                AgentId = agentId,
+                From = DateTimeOffset.UtcNow.AddDays(-1),
+                To = DateTimeOffset.UtcNow.AddDays(1),
+                SortBy = null
+            };
+
+            var playerDailyPaymentStatistics =
+                CreatePlayerDailyPaymentStatisticsFixture().CreateMany<PlayerDailyPaymentStatistic>(5).AsQueryable()
+                .BuildMock();
+
+            var mockAgents = GetDbSet(agents);
+            var mockWithdrawForms = GetDbSet(withdrawForms);
+            var mockAgentDividends = GetDbSet(agentDividends);
+            var mockPlayers = GetDbSet(players);
+            var mockAgentDividendMultipleLayers = GetDbSet(agentDividendMultipleLayers);
+            var mockPlayerDailyPaymentStatistics = GetDbSet(playerDailyPaymentStatistics);
+
+            fakeDbContext.Agents.Returns(mockAgents.Object);
+            fakeDbContext.WithdrawForms.Returns(mockWithdrawForms.Object);
+            fakeDbContext.AgentDividends.Returns(mockAgentDividends.Object);
+            fakeDbContext.Players.Returns(mockPlayers.Object);
+            fakeDbContext.AgentDividendMultipleLayers.Returns(mockAgentDividendMultipleLayers.Object);
+            fakeDbContext.PlayerDailyPaymentStatistics.Returns(mockPlayerDailyPaymentStatistics.Object);
+
+            var response = await sut.Handle(request, default);
+
+            Assert.IsTrue(response.Valid);
+            Assert.AreEqual(1, response.Items?.Length);
+        }
+
+        [Test]
+        public async Task Can_Get_Single_Agent_Dividends()
+        {
+            var fakeDbContext = Substitute.For<TgsContext>();
+
+            var sut = new GetAgentDividendQueryHandler(fakeDbContext);
+
+            var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
+            var agentId = new Guid("aac11120-20f6-4f0d-6982-08d9dbdc0473");
+
+            var agent1 = CreateAgentFixture(brandId, agentId)
+                .Create<Repository.Entities.Agent>();
+
+            var agents = new Repository.Entities.Agent[]
+            {
+                agent1
+            }.AsQueryable()
+                .BuildMock();
+
+            var agentDividends = CreateAgentDividendFixture(brandId, agentId).CreateMany<AgentDividend>(1).AsQueryable()
+                .BuildMock();
+
+            var agentDividendMultipleLayers = agentDividends.SelectMany(x => x.AgentDividendMultipleLayers);
+
+            var players = agents.SelectMany(x => x.Players);
+
+            var request = new GetAgentDividendsRequest
+            {
+                BrandId = brandId,
+                AgentId = agentId,
+                From = DateTimeOffset.UtcNow.AddDays(-1),
+                To = DateTimeOffset.UtcNow.AddDays(1),
+                SortBy = null
+            };
+
+            var playerDailyPaymentStatistics =
+                CreatePlayerDailyPaymentStatisticsFixture().CreateMany<PlayerDailyPaymentStatistic>(5).AsQueryable()
+                .BuildMock();
+
+            var mockAgents = GetDbSet(agents);
+            var mockAgentDividends = GetDbSet(agentDividends);
+            var mockPlayers = GetDbSet(players);
+            var mockAgentDividendMultipleLayers = GetDbSet(agentDividendMultipleLayers);
+            var mockPlayerDailyPaymentStatistics = GetDbSet(playerDailyPaymentStatistics);
+
+            fakeDbContext.Agents.Returns(mockAgents.Object);
+            fakeDbContext.AgentDividends.Returns(mockAgentDividends.Object);
+            fakeDbContext.Players.Returns(mockPlayers.Object);
+            fakeDbContext.AgentDividendMultipleLayers.Returns(mockAgentDividendMultipleLayers.Object);
+            fakeDbContext.PlayerDailyPaymentStatistics.Returns(mockPlayerDailyPaymentStatistics.Object);
+
+            var response = await sut.Handle(request, default);
+
+            Assert.IsTrue(response.Valid);
+            Assert.AreEqual(1, response.Items?.Length);
+        }
+
+        [Test]
         public async Task Can_Get_Sub_Agent_Dividends()
         {
             var fakeDbContext = Substitute.For<TgsContext>();
@@ -86,6 +199,16 @@ namespace Tgs.Report.UnitTest.Agent
                 .With(s => s.Id, agentId)
                 .With(s => s.Brand, new Brand())
                 .With(s => s.Players, new Repository.Entities.Player[] { }));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            return fixture;
+        }
+
+        private static Fixture CreateWithdrawFormFixture(Guid brandId)
+        {
+            var fixture = new Fixture();
+            fixture.Customize<WithdrawForm>(u => u
+                .With(s => s.BrandId, brandId)
+                .With(s => s.Brand, new Brand()));
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             return fixture;
         }
