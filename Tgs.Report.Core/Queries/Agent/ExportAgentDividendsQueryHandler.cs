@@ -15,7 +15,21 @@ namespace Tgs.Report.Core.Queries.Agent
             ExportAgentDividendsRequest request,
             CancellationToken cancellationToken)
         {
-            var getAgentDividendsRequest = new GetAgentDividendsRequest
+            var singleAgentDividendsRequest = new GetSingleAgentDividendsRequest
+            {
+                BrandId = request.BrandId,
+                AgentId = request.AgentId,
+                Username = request.Username,
+                Type = request.Type,
+                From = request.From,
+                To = request.To,
+                ShowAll = true
+            };
+
+            var mainAgentDividends =
+                await _mediator.Send(singleAgentDividendsRequest, cancellationToken).ConfigureAwait(false);
+
+            var subAgentDividendsRequest = new GetSubAgentDividendsRequest
             {
                 BrandId = request.BrandId,
                 AgentId = request.AgentId,
@@ -27,9 +41,13 @@ namespace Tgs.Report.Core.Queries.Agent
             };
 
             var agentDividends =
-                await _mediator.Send(getAgentDividendsRequest, cancellationToken).ConfigureAwait(false);
+                await _mediator.Send(subAgentDividendsRequest, cancellationToken).ConfigureAwait(false);
 
-            var exportData = agentDividends.Items?.Select(x => new ExportAgentDividendModel
+            var dividends = agentDividends.Items != null 
+                ? mainAgentDividends.Items?.Concat(agentDividends.Items) 
+                : mainAgentDividends.Items;
+
+            var exportData = dividends?.Select(x => new ExportAgentDividendModel
             {
                 Username = x.Username,
                 BonusAmount = x.BonusAmount,
@@ -43,7 +61,7 @@ namespace Tgs.Report.Core.Queries.Agent
 
             var resource = new ResourceManager(typeof(AgentDividend));
 
-            var xlsx = exportData?.ExportWithLocalization("agentContributions", resource);
+            var xlsx = exportData?.ExportWithLocalization("agentDividends", resource);
 
             await using var stream = new MemoryStream();
 

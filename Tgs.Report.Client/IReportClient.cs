@@ -53,6 +53,10 @@ public interface IReportClient
 
     ValueTask<PagedResponse<AgentDividendModel>> GetAgentDividendsAsync(GetAgentDividendsRequest request);
 
+    ValueTask<PagedResponse<AgentDividendModel>> GetSingleAgentDividendsAsync(GetSingleAgentDividendsRequest request);
+
+    ValueTask<PagedResponse<AgentDividendModel>> GetSubAgentDividendsAsync(GetSubAgentDividendsRequest request);
+
     ValueTask<PagedResponse<AgentPlayerWinLossModel>> GetAgentPlayerWinLossAsync(
         GetAgentPlayerWinLossRequest request);
 

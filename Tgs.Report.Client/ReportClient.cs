@@ -231,6 +231,34 @@ namespace Tgs.Report.Client
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
+        public async ValueTask<PagedResponse<AgentDividendModel>> GetSingleAgentDividendsAsync(GetSingleAgentDividendsRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/agentReport/singleAgentDividends?", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+            _ = response.EnsureSuccessStatusCode();
+
+            return JsonSerializer.Deserialize<PagedResponse<AgentDividendModel>>(
+                await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+
+        public async ValueTask<PagedResponse<AgentDividendModel>> GetSubAgentDividendsAsync(GetSubAgentDividendsRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/agentReport/subAgentDividends?", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+            _ = response.EnsureSuccessStatusCode();
+
+            return JsonSerializer.Deserialize<PagedResponse<AgentDividendModel>>(
+                await response.Content.ReadAsStringAsync(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+
         public async ValueTask<PagedResponse<AgentPlayerWinLossModel>> GetAgentPlayerWinLossAsync(
             GetAgentPlayerWinLossRequest request)
         {
