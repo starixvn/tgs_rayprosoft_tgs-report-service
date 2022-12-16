@@ -21,4 +21,5 @@ internal class MarketHourlyModel
     public decimal UpgradeAmount { get; init; }
     public decimal SeasonAmount { get; init; }
     public decimal BirthdayAmount { get; init; }
+    public int FirstFundInCount { get; init; }
 }
