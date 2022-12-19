@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Net.Http.Json;
 using System.Text.Json;
 using Tgs.Report.Client.Models;
 using Tgs.Report.Client.Models.Agent;
@@ -19,6 +20,7 @@ namespace Tgs.Report.Client
     public class ReportClient : IReportClient
     {
         private readonly HttpClient _client;
+        private readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
         public ReportClient(
             HttpClient client)
@@ -240,9 +242,7 @@ namespace Tgs.Report.Client
 
             _ = response.EnsureSuccessStatusCode();
 
-            return JsonSerializer.Deserialize<PagedResponse<AgentDividendModel>>(
-                await response.Content.ReadAsStringAsync(),
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+            return (await response.Content.ReadFromJsonAsync<PagedResponse<AgentDividendModel>>(_jsonSerializerOptions))!;
         }
 
         public async ValueTask<PagedResponse<AgentDividendModel>> GetSubAgentDividendsAsync(GetSubAgentDividendsRequest request)
@@ -254,9 +254,7 @@ namespace Tgs.Report.Client
 
             _ = response.EnsureSuccessStatusCode();
 
-            return JsonSerializer.Deserialize<PagedResponse<AgentDividendModel>>(
-                await response.Content.ReadAsStringAsync(),
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+            return (await response.Content.ReadFromJsonAsync<PagedResponse<AgentDividendModel>>(_jsonSerializerOptions))!;
         }
 
         public async ValueTask<PagedResponse<AgentPlayerWinLossModel>> GetAgentPlayerWinLossAsync(
