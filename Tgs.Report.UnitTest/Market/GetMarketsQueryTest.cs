@@ -82,8 +82,8 @@ namespace Tgs.Report.UnitTest.Market
 
             var response = await sut.Handle(request, default);
 
-            Assert.AreEqual(dailyRegisterStatistic.Count(),
-                response.Items?.First().RegisteredCount);
+            Assert.AreEqual(1,
+                response.Items?.Count());
         }
 
         private static Fixture CreatePlayerAggregateFixture(Guid brandId, DateTimeOffset reportDate)
