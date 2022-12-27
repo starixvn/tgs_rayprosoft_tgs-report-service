@@ -92,7 +92,9 @@ public class
                 x.WinLossAmount,
                 x.PromotionAmount,
                 x.RebateAmount,
-                x.AgentAdjustAmount,
+                x.BonusAmount,
+                x.BonusAdjustAmount,
+                x.NoIncludeNetProfitBonusAdjustAmount,
                 x.CreatedOn,
                 x.AgentDividendPercentage
             })
@@ -135,10 +137,9 @@ public class
                     x.agentDividend.VirtualSportsWinLoss,
                     x.agentDividend.WinLossAmount,
                     ExpenditureAmount =
-                        x.agentDividend.PromotionAmount + x.agentDividend.RebateAmount +
-                        x.agentDividend.AgentAdjustAmount,
+                        x.agentDividend.BonusAmount +
+                        (x.agentDividend.BonusAdjustAmount - x.agentDividend.NoIncludeNetProfitBonusAdjustAmount),
                     BonusAmount = x.agentDividend.RebateAmount + x.agentDividend.PromotionAmount,
-                    x.agentDividend.AgentAdjustAmount,
                     x.agentDividend.CreatedOn,
                     provider?.GroupAgentId,
                     AgentDividendPercentage = provider?.ActualDividendPercentage ?? 0M,
