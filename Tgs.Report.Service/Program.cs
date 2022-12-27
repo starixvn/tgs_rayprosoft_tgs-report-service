@@ -7,7 +7,6 @@ using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Tgs.MessageQueue;
-using Tgs.Report.Core;
 using Tgs.Report.ViewModel;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -147,5 +146,17 @@ app.MapControllers();
 app.MapSwagger();
 app.MapHealthChecks("/healthz");
 app.MapProfileViewer();
+
+app.UseRequestLocalization(option =>
+{
+    var supportedCultures = new[] { "en-US", "zh-CN" };
+
+    option
+        .SetDefaultCulture(supportedCultures[0])
+        .AddSupportedCultures(supportedCultures)
+        .AddSupportedUICultures(supportedCultures);
+
+    option.ApplyCurrentCultureToResponseHeaders = true;
+});
 
 app.Run();
