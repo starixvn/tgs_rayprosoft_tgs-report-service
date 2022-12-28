@@ -27,6 +27,7 @@ public class
     {
         var mainAgentDividends = await _agentDividendService.GetQueries()
             .Where(x => x.AgentId == request.AgentId)
+            .Where(x => x.AgentDividendPercentage == request.AgentDividendPercentage)
             .Where(x => x.From >= request.From.ToUniversalTime())
             .Where(x => x.To < request.To.ToUniversalTime())
             .Include(x => x.AgentDividendMultipleLayers)
@@ -65,11 +66,11 @@ public class
             }))
             .ToArray();
 
-        var firstLayerAgentDividendIds = dividendProviderAgents.Where(x => x.GroupAgentId != null)
+        var allAgentDividendIds = dividendProviderAgents.Where(x => x.GroupAgentId != null)
             .Select(x => x.DividendProviderAgentId).ToArray();
 
         var allAgentDividends = await _agentDividendService.GetQueries()
-            .Where(x => firstLayerAgentDividendIds.Contains(x.AgentId))
+            .Where(x => allAgentDividendIds.Contains(x.AgentId))
             .Where(x => x.From >= request.From.ToUniversalTime())
             .Where(x => x.To < request.To.ToUniversalTime())
             .Select(x => new

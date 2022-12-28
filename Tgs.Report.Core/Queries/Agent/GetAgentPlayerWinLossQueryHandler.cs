@@ -40,6 +40,31 @@ namespace Tgs.Report.Core.Queries.Agent
             var playerAggregate = await _context.PlayerGameRebateAggregates
                 .Where(x => x.AgentId == request.AgentId)
                 .Where(x => x.ReportDate >= request.From.ToUniversalTime() && x.ReportDate < request.To.ToUniversalTime())
+                .Join(_context.PlayerAggregates,
+                    pg => new
+                    {
+                        pg.AgentId,
+                        pg.PlayerCode,
+                        pg.ReportDate,
+                        pg.Hour,
+                        pg.Minute
+                    },
+                    pa => new
+                    {
+                        pa.AgentId,
+                        pa.PlayerCode,
+                        pa.ReportDate,
+                        pa.Hour,
+                        pa.Minute
+                    },
+                    (pg,pa) => new
+                    {
+                        pg.PlayerCode,
+                        pg.GameType,
+                        pg.WinLoss,
+                        pa.AgentDividendPercentage
+                    })
+                .Where(x => x.AgentDividendPercentage == request.AgentDividendPercentage)
                 .GroupBy(g => g.PlayerCode,
                     (playerCode, aggregate) => new
                     {
