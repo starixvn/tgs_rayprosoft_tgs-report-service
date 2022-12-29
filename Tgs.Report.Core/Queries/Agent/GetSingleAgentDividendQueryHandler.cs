@@ -78,9 +78,10 @@ public class GetSingleAgentDividendQueryHandler : IRequestHandler<GetSingleAgent
             .Where(x => agent.Id == x.AgentId)
             .Where(x => x.AgentId == x.DividendProviderAgentId)
             .Where(x => x.AgentCoveredBonus != null || x.AgentCoveredBonusAdjust != null)
-            .GroupBy(x => x.AgentId, (agentId, list) => new
+            .GroupBy(x => new { x.AgentId, x.AgentDividendPercentage }, (agent, list) => new
             {
-                AgentId = agentId,
+                AgentId = agent.AgentId,
+                AgentDividendPercentage = agent.AgentDividendPercentage,
                 AgentCoveredBonus = list.Sum(l => l.AgentCoveredBonus),
                 AgentCoveredBonusAdjust = list.Sum(l => l.AgentCoveredBonusAdjust)
             })
@@ -105,9 +106,9 @@ public class GetSingleAgentDividendQueryHandler : IRequestHandler<GetSingleAgent
                 FromTeamAgentDividendAmount = ad.FromTeamAgentDividendAmount,
                 AgentDividendPercentage = ad.AgentDividendPercentage
             })
-            .GroupJoin(agentCovered, 
-                x => x.Id, 
-                c => c.AgentId,
+            .GroupJoin(agentCovered,
+                x => new { AgentId = x.Id, x.AgentDividendPercentage },
+                c => new { c.AgentId, c.AgentDividendPercentage },
                 (ad, list) => new
                 {
                     ad,
