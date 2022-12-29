@@ -21,7 +21,9 @@ namespace Tgs.Report.Core.Queries.Agent
             GetAgentDividendDetailsRequest request,
             CancellationToken cancellationToken)
         {
-            var agentDividends = await _context.AgentDividends.Where(x => x.AgentId == request.AgentId)
+            var agentDividends = await _context.AgentDividends
+                .Where(x => x.AgentId == request.AgentId)
+                .Where(x => x.AgentDividendPercentage == request.AgentDividendPercentage)
                 .Where(x => x.From >= request.From.ToUniversalTime())
                 .Where(x => x.To < request.To.ToUniversalTime())
                 .GroupBy(x => new
@@ -29,8 +31,7 @@ namespace Tgs.Report.Core.Queries.Agent
                     x.AgentId,
                     x.From,
                     x.To,
-                    x.CreatedOn,
-                    x.AgentDividendPercentage
+                    x.CreatedOn
                 },
                     (x, list) => new
                     {
@@ -38,18 +39,11 @@ namespace Tgs.Report.Core.Queries.Agent
                         x.From,
                         x.To,
                         x.CreatedOn,
-                        x.AgentDividendPercentage,
-                        LiveDealerWinLoss = list.Sum(l => l.LiveDealerWinLoss),
-                        SlotWinLoss =
-                            list.Sum(l => l.SlotWinLoss + l.FishingWinLoss + l.ArcadeWinLoss + l.TableGameWinLoss),
-                        LotteryWinLoss = list.Sum(l => l.LotteryWinLoss),
-                        CardGameWinLoss = list.Sum(l => l.CardGameWinLoss),
-                        SportsWinLoss = list.Sum(l => l.SportsWinLoss + l.ESportsWinLoss),
-                        VirtualSportsWinLoss = list.Sum(l => l.VirtualSportsWinLoss),
-                        WinLossAmount = list.Sum(l => l.WinLossAmount),
                         AgentDividendAmount = list.Sum(l => l.BeforeDividendAmount ?? l.AgentDividendAmount),
                         ExpenditureAmount = list.Sum(l => l.PromotionAmount + l.RebateAmount + l.AgentAdjustAmount)
-                    }).ToArrayAsync(cancellationToken);
+                    })
+                .ToArrayAsync(cancellationToken)
+                .ConfigureAwait(false);
 
             var agentIds = agentDividends.Select(x => x.AgentId).ToArray();
 
@@ -59,7 +53,8 @@ namespace Tgs.Report.Core.Queries.Agent
                     x.Id,
                     x.Username
                 })
-                .ToArrayAsync(cancellationToken);
+                .ToArrayAsync(cancellationToken)
+                .ConfigureAwait(false);
 
             var models = agentDividends.Join(agents, ad => ad.AgentId, a => a.Id,
                 (ad, a) => new AgentDividendDetailModel
@@ -69,15 +64,7 @@ namespace Tgs.Report.Core.Queries.Agent
                     SettlementDate = ad.CreatedOn,
                     SettlementDateFrom = ad.From,
                     SettlementDateTo = ad.To,
-                    LiveDealerWinLoss = ad.LiveDealerWinLoss,
-                    SlotWinLoss = ad.SlotWinLoss,
-                    LotteryWinLoss = ad.LotteryWinLoss,
-                    CardGameWinLoss = ad.CardGameWinLoss,
-                    SportsWinLoss = ad.SportsWinLoss,
-                    VirtualSportsWinLoss = ad.VirtualSportsWinLoss,
-                    WinLossAmount = ad.WinLossAmount,
                     AgentDividendAmount = ad.AgentDividendAmount,
-                    AgentDividendPercentage = ad.AgentDividendPercentage,
                     ExpenditureAmount = ad.ExpenditureAmount
                 }).ToArray();
 
