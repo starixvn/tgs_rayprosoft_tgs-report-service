@@ -25,32 +25,12 @@ public class
         GetAgentDividendTeamDetailsRequest request,
         CancellationToken cancellationToken)
     {
-        var mainAgentDividends = await _agentDividendService.GetQueries()
+        var dividendProviderAgents = await _agentDividendService.GetQueries()
             .Where(x => x.AgentId == request.AgentId)
+            .Where(x => x.AgentDividendPercentage == request.AgentDividendPercentage)
             .Where(x => x.From >= request.From.ToUniversalTime())
             .Where(x => x.To < request.To.ToUniversalTime())
             .Include(x => x.AgentDividendMultipleLayers)
-            .Select(x => new
-            {
-                x.Id,
-                x.AgentId,
-                x.From,
-                x.To,
-                x.AgentDividendPercentage,
-                AgentDividendMultipleLayers = x.AgentDividendMultipleLayers.Select(a => new
-                {
-                    a.AgentId,
-                    a.Dividend,
-                    a.DividendProviderAgentId,
-                    a.Layer,
-                    a.ActualDividendPercentage,
-                    a.AgentCoveredBonus,
-                    a.AgentCoveredBonusAdjust
-                })
-            })
-            .ToArrayAsync(cancellationToken).ConfigureAwait(false);
-
-        var dividendProviderAgents = mainAgentDividends
             .SelectMany(x => x.AgentDividendMultipleLayers.Select(s => new
             {
                 x.AgentDividendPercentage,
@@ -60,13 +40,12 @@ public class
                 s.Dividend,
                 s.ActualDividendPercentage,
                 s.AgentCoveredBonus,
-                s.AgentCoveredBonusAdjust,
-                GroupAgentId = s.Layer.Split(',').Where((s, i) => i == 1).FirstOrDefault()?.ToString()
+                s.AgentCoveredBonusAdjust
             }))
-            .ToArray();
+            .Where(x => x.DividendProviderAgentId != request.AgentId)
+            .ToArrayAsync(cancellationToken).ConfigureAwait(false);
 
-        var firstLayerAgentDividendIds = dividendProviderAgents.Where(x => x.GroupAgentId != null)
-            .Select(x => x.DividendProviderAgentId).ToArray();
+        var firstLayerAgentDividendIds = dividendProviderAgents.Select(x => x.DividendProviderAgentId).ToArray();
 
         var allAgentDividends = await _agentDividendService.GetQueries()
             .Where(x => firstLayerAgentDividendIds.Contains(x.AgentId))
@@ -92,14 +71,17 @@ public class
                 x.WinLossAmount,
                 x.PromotionAmount,
                 x.RebateAmount,
-                x.AgentAdjustAmount,
+                x.BonusAmount,
+                x.BonusAdjustAmount,
+                x.NoIncludeNetProfitBonusAdjustAmount,
                 x.CreatedOn,
                 x.AgentDividendPercentage
             })
-            .ToArrayAsync(cancellationToken).ConfigureAwait(false);
+            .ToArrayAsync(cancellationToken)
+            .ConfigureAwait(false);
 
         var agentDividends = allAgentDividends
-            .GroupJoin(dividendProviderAgents.Where(x => x.GroupAgentId != null), ad => new
+            .GroupJoin(dividendProviderAgents, ad => new
                 {
                     ad.AgentId,
                     ad.From,
@@ -135,12 +117,10 @@ public class
                     x.agentDividend.VirtualSportsWinLoss,
                     x.agentDividend.WinLossAmount,
                     ExpenditureAmount =
-                        x.agentDividend.PromotionAmount + x.agentDividend.RebateAmount +
-                        x.agentDividend.AgentAdjustAmount,
+                        x.agentDividend.BonusAmount +
+                        (x.agentDividend.BonusAdjustAmount - x.agentDividend.NoIncludeNetProfitBonusAdjustAmount),
                     BonusAmount = x.agentDividend.RebateAmount + x.agentDividend.PromotionAmount,
-                    x.agentDividend.AgentAdjustAmount,
                     x.agentDividend.CreatedOn,
-                    provider?.GroupAgentId,
                     AgentDividendPercentage = provider?.ActualDividendPercentage ?? 0M,
                     AgentDividendAmount = provider?.Dividend ?? 0
                 })

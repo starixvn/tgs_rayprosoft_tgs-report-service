@@ -54,6 +54,7 @@ namespace Tgs.Report.UnitTest.Agent
             var request = new GetAgentDividendTeamDetailsRequest
             {
                 AgentId = agentId,
+                AgentDividendPercentage = agentDividends.First().AgentDividendPercentage,
                 From = DateTimeOffset.UtcNow.AddDays(-1),
                 To = DateTimeOffset.UtcNow.AddDays(1),
                 SortBy = null

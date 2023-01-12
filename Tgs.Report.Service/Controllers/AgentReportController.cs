@@ -29,6 +29,18 @@ namespace Tgs.Report.Service.Controllers
             GetAgentDividendsAsync([FromQuery] GetAgentDividendsRequest request) =>
             _mediator.Send(request);
 
+        [HttpGet("singleAgentDividends")]
+        [Description("Get single agent dividends report")]
+        public Task<PagedResponse<AgentDividendModel>>
+            GetAgentDividendsAsync([FromQuery] GetSingleAgentDividendsRequest request) =>
+            _mediator.Send(request);
+
+        [HttpGet("subAgentDividends")]
+        [Description("Get sub agent dividends report")]
+        public Task<PagedResponse<AgentDividendModel>>
+            GetAgentDividendsAsync([FromQuery] GetSubAgentDividendsRequest request) =>
+            _mediator.Send(request);
+
         [HttpGet("dividendDetails")]
         [Description("Get agent dividend details report")]
         public Task<PagedResponse<AgentDividendDetailModel>>

@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Net.Http.Json;
 using System.Text.Json;
 using Tgs.Report.Client.Models;
 using Tgs.Report.Client.Models.Agent;
@@ -19,6 +20,7 @@ namespace Tgs.Report.Client
     public class ReportClient : IReportClient
     {
         private readonly HttpClient _client;
+        private readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
         public ReportClient(
             HttpClient client)
@@ -229,6 +231,30 @@ namespace Tgs.Report.Client
             return JsonSerializer.Deserialize<PagedResponse<AgentDividendModel>>(
                 await response.Content.ReadAsStringAsync(),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
+
+        public async ValueTask<PagedResponse<AgentDividendModel>> GetSingleAgentDividendsAsync(GetSingleAgentDividendsRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/agentReport/singleAgentDividends?", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+            _ = response.EnsureSuccessStatusCode();
+
+            return (await response.Content.ReadFromJsonAsync<PagedResponse<AgentDividendModel>>(_jsonSerializerOptions))!;
+        }
+
+        public async ValueTask<PagedResponse<AgentDividendModel>> GetSubAgentDividendsAsync(GetSubAgentDividendsRequest request)
+        {
+            var path = ClientPath.AppendWithProperties("/api/agentReport/subAgentDividends?", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+            var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+            _ = response.EnsureSuccessStatusCode();
+
+            return (await response.Content.ReadFromJsonAsync<PagedResponse<AgentDividendModel>>(_jsonSerializerOptions))!;
         }
 
         public async ValueTask<PagedResponse<AgentPlayerWinLossModel>> GetAgentPlayerWinLossAsync(
