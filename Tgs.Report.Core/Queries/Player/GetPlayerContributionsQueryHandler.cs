@@ -239,11 +239,11 @@ public class GetPlayerContributionsQueryHandler
                     BirthdayAmount = playerAggregates.Sum(p => p.BirthdayAmount)
                 })
             .Join(_context.Players.Include(x => x.Vip),
-                pa => pa.PlayerCode,
+                aggregate => aggregate.PlayerCode,
                 p => p.PlayerCode,
-                (pa,p) => new
+                (aggregate, p) => new
                 {
-                    pa,
+                    Aggregate = aggregate,
                     p.Username,
                     Level = p.VipId == null ? (int?)null : p.Vip!.Level
                 })
@@ -252,18 +252,18 @@ public class GetPlayerContributionsQueryHandler
             .Select(x => new PlayerContributionModel
             {
                 Username = x.Username,
-                PlayerCode = x.pa.PlayerCode,
+                PlayerCode = x.Aggregate.PlayerCode,
                 Level = x.Level,
                 Type = AccountType.Player,
-                CompanyAdjustAmount = x.pa.CompanyAdjustAmount,
-                AgentAdjustAmount = x.pa.AgentAdjustAmount,
-                BonusAdjustAmount = x.pa.BonusAdjustAmount,
-                BonusAmount = x.pa.BonusAmount + x.pa.UpgradeAmount + x.pa.SeasonAmount + x.pa.BirthdayAmount,
-                BetAmount = x.pa.BetAmount,
-                ValidBetAmount = x.pa.ValidBetAmount,
-                Turnover = x.pa.Turnover,
-                WinLossAmount = x.pa.WinLossAmount,
-                NetProfit = x.pa.NetProfit - (x.pa.UpgradeAmount + x.pa.SeasonAmount + x.pa.BirthdayAmount)
+                CompanyAdjustAmount = x.Aggregate.CompanyAdjustAmount,
+                AgentAdjustAmount = x.Aggregate.AgentAdjustAmount,
+                BonusAdjustAmount = x.Aggregate.BonusAdjustAmount,
+                BonusAmount = x.Aggregate.BonusAmount + x.Aggregate.UpgradeAmount + x.Aggregate.SeasonAmount + x.Aggregate.BirthdayAmount,
+                BetAmount = x.Aggregate.BetAmount,
+                ValidBetAmount = x.Aggregate.ValidBetAmount,
+                Turnover = x.Aggregate.Turnover,
+                WinLossAmount = x.Aggregate.WinLossAmount,
+                NetProfit = x.Aggregate.NetProfit - (x.Aggregate.UpgradeAmount + x.Aggregate.SeasonAmount + x.Aggregate.BirthdayAmount)
             })
             .Where(x =>
                 playerCodes.Contains(x.PlayerCode)
