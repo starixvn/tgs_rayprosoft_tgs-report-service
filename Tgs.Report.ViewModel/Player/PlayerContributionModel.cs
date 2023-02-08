@@ -4,13 +4,13 @@ namespace Tgs.Report.ViewModel.Player;
 
 public record PlayerContributionModel
 {
-    public string Username { get; init; } = default!;
+    public string Username { get; set; } = default!;
 
     public string PlayerCode { get; init; } = default!;
 
     public AccountType Type { get; init; }
 
-    public int? Level { get; init; }
+    public int? Level { get; set; }
 
     public decimal DepositAmount { get; set; }
 
