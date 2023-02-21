@@ -40,18 +40,20 @@ public class GetPlayerContributionsQueryHandler
             requestTo.Offset);
 
         var now = DateTimeOffset.Now.ToOffset(offset);
-        var today = new DateTimeOffset(now.Year,
+        var yesterday = new DateTimeOffset(now.Year,
             now.Month,
             now.Day,
             0,
             0,
             0,
-            offset);
+            requestTo.Offset).AddDays(-1);
 
         var fromDate = new DateOnly(from.Year, from.Month, from.Day);
-        var toDate = new DateOnly(to.Year, to.Month, to.Day);
+        var toDate = to > yesterday
+            ? new DateOnly(yesterday.Year, yesterday.Month, yesterday.Day)
+            : new DateOnly(to.Year, to.Month, to.Day);
 
-        var withdrawalByUserIds = to > today
+        var withdrawalByUserIds = to > yesterday
             ? await _context.WithdrawForms
                 .Join(_context.Players,
                     wf => wf.UserId,
@@ -61,7 +63,7 @@ public class GetPlayerContributionsQueryHandler
                         wf.BrandId,
                         wf.UserType,
                         wf.Status,
-                        wf.CreatedOn,
+                        wf.PaidOn,
                         wf.UserId,
                         wf.ActualAmount,
                         wf.Amount,
@@ -71,7 +73,8 @@ public class GetPlayerContributionsQueryHandler
                     })
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.UserType == 1 && x.Status == 9000)
-                .Where(x => x.CreatedOn >= today.ToUniversalTime() && x.CreatedOn < today.AddDays(1).ToUniversalTime())
+                .Where(from > yesterday, x => x.PaidOn >= from.UtcDateTime && x.PaidOn < to.UtcDateTime)
+                .Where(!(from > yesterday),x => x.PaidOn >= yesterday.UtcDateTime && x.PaidOn < to.UtcDateTime)
                 .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
                 .Where(request.HasUpperAgent == true, x => x.AgentId != null)
                 .Where(request.HasUpperAgent == false, x => x.AgentId == null)
@@ -85,7 +88,7 @@ public class GetPlayerContributionsQueryHandler
                 .ConfigureAwait(false)
             : null;
 
-        var depositByUserIds = to > today
+        var depositByUserIds = to > yesterday
             ? await _context.DepositForms
                 .Join(_context.Players,
                     df => df.PlayerCode,
@@ -94,7 +97,7 @@ public class GetPlayerContributionsQueryHandler
                     {
                         df.BrandId,
                         df.Status,
-                        df.CreatedOn,
+                        df.UpdatedOn,
                         df.PlayerCode,
                         df.ActualAmount,
                         df.Amount,
@@ -105,7 +108,8 @@ public class GetPlayerContributionsQueryHandler
                     })
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.Status == 8000)
-                .Where(x => x.CreatedOn >= today.ToUniversalTime() && x.CreatedOn < today.AddDays(1).ToUniversalTime())
+                .Where(from > yesterday, x => x.UpdatedOn >= from.UtcDateTime && x.UpdatedOn < to.UtcDateTime)
+                .Where(!(from > yesterday), x => x.UpdatedOn >= yesterday.UtcDateTime && x.UpdatedOn < to.UtcDateTime)
                 .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
                 .Where(request.HasUpperAgent == true, x => x.AgentId != null)
                 .Where(request.HasUpperAgent == false, x => x.AgentId == null)
@@ -153,10 +157,10 @@ public class GetPlayerContributionsQueryHandler
 
         var playerContributions = await _context.PlayerAggregates
             .Where(x => x.BrandId == request.BrandId)
-            .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
+            .Where(x => x.ReportDate >= from.UtcDateTime && x.ReportDate < to.UtcDateTime)
             .Where(request.HasUpperAgent == true, x => x.AgentId != null)
             .Where(request.HasUpperAgent == false, x => x.AgentId == null)
-            .Where(x => x.CreatedOn >= from.ToUniversalTime())
+            .Where(x => x.CreatedOn >= from.UtcDateTime)
             .GroupBy(x => x.PlayerCode, (playerCode, list) => new
             {
                 PlayerCode = playerCode,
@@ -179,7 +183,7 @@ public class GetPlayerContributionsQueryHandler
             })
             .GroupJoin(_context.PlayerBonusAggregates
                     .Where(x => x.BrandId == request.BrandId)
-                    .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
+                    .Where(x => x.ReportDate >= from.UtcDateTime && x.ReportDate < to.UtcDateTime)
                     .Where(request.HasUpperAgent == true, x => x.AgentId != null)
                     .Where(request.HasUpperAgent == false, x => x.AgentId == null)
                     .GroupBy(x => x.PlayerCode, (playerCode, list) => new
