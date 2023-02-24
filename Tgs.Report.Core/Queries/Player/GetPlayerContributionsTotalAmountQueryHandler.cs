@@ -41,18 +41,20 @@ public class GetPlayerContributionsTotalAmountQueryHandler
             requestTo.Offset);
 
         var now = DateTimeOffset.Now.ToOffset(offset);
-        var today = new DateTimeOffset(now.Year,
+        var yesterday = new DateTimeOffset(now.Year,
             now.Month,
             now.Day,
             0,
             0,
             0,
-            requestTo.Offset);
+            requestTo.Offset).AddDays(-1);
 
         var fromDate = new DateOnly(from.Year, from.Month, from.Day);
-        var toDate = new DateOnly(to.Year, to.Month, to.Day);
+        var toDate = to > yesterday
+            ? new DateOnly(yesterday.Year, yesterday.Month, yesterday.Day)
+            : new DateOnly(to.Year, to.Month, to.Day);
 
-        var withdrawRealTimeSummary = to > today
+        var withdrawRealTimeSummary = to > yesterday
             ? await _context.WithdrawForms
                 .Join(_context.Players,
                     wf => wf.UserId,
@@ -62,7 +64,7 @@ public class GetPlayerContributionsTotalAmountQueryHandler
                         wf.BrandId,
                         wf.UserType,
                         wf.Status,
-                        wf.CreatedOn,
+                        wf.PaidOn,
                         wf.UserId,
                         wf.ActualAmount,
                         wf.Amount,
@@ -72,8 +74,8 @@ public class GetPlayerContributionsTotalAmountQueryHandler
                     })
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.UserType == 1 && x.Status == 9000)
-                .Where(x => x.CreatedOn >= today.ToUniversalTime() &&
-                            x.CreatedOn < today.AddDays(1).ToUniversalTime())
+                .Where(from > yesterday, x => x.PaidOn >= from.UtcDateTime && x.PaidOn < to.UtcDateTime)
+                .Where(!(from > yesterday), x => x.PaidOn >= yesterday.UtcDateTime && x.PaidOn < to.UtcDateTime)
                 .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
                 .Where(request.HasUpperAgent == true, x => x.AgentId != null)
                 .Where(request.HasUpperAgent == false, x => x.AgentId == null)
@@ -87,7 +89,7 @@ public class GetPlayerContributionsTotalAmountQueryHandler
                 .ConfigureAwait(false)
             : new { WithdrawAmount = 0M };
 
-        var depositRealTimeSummary = to > today
+        var depositRealTimeSummary = to > yesterday
             ? await _context.DepositForms
                 .Join(_context.Players,
                     wf => wf.PlayerCode,
@@ -96,7 +98,7 @@ public class GetPlayerContributionsTotalAmountQueryHandler
                     {
                         df.BrandId,
                         df.Status,
-                        df.CreatedOn,
+                        df.UpdatedOn,
                         df.PlayerCode,
                         df.ActualAmount,
                         df.Amount,
@@ -107,8 +109,8 @@ public class GetPlayerContributionsTotalAmountQueryHandler
                     })
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.Status == 8000)
-                .Where(x => x.CreatedOn >= today.ToUniversalTime() &&
-                            x.CreatedOn < today.AddDays(1).ToUniversalTime())
+                .Where(from > yesterday, x => x.UpdatedOn >= from.UtcDateTime && x.UpdatedOn < to.UtcDateTime)
+                .Where(!(from > yesterday), x => x.UpdatedOn >= yesterday.UtcDateTime && x.UpdatedOn < to.UtcDateTime)
                 .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
                 .Where(request.HasUpperAgent == true, x => x.AgentId != null)
                 .Where(request.HasUpperAgent == false, x => x.AgentId == null)
@@ -156,20 +158,20 @@ public class GetPlayerContributionsTotalAmountQueryHandler
 
         return await _context.PlayerAggregates
             .Where(x => x.BrandId == request.BrandId)
-            .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
+            .Where(x => x.ReportDate >= from.UtcDateTime && x.ReportDate < to.UtcDateTime)
             .Where(request.HasUpperAgent == true, x => x.AgentId != null)
             .Where(request.HasUpperAgent == false, x => x.AgentId == null)
             .Select(x => x.PlayerCode)
             .Union(_context.PlayerBonusAggregates
                 .Where(x => x.BrandId == request.BrandId)
-                .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
+                .Where(x => x.ReportDate >= from.UtcDateTime && x.ReportDate < to.UtcDateTime)
                 .Where(request.HasUpperAgent == true, x => x.AgentId != null)
                 .Where(request.HasUpperAgent == false, x => x.AgentId == null)
                 .Select(x => x.PlayerCode))
             .GroupBy(x => x, (x, y) => new { PlayerCode = x })
             .GroupJoin(_context.PlayerAggregates
                     .Where(x => x.BrandId == request.BrandId)
-                    .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
+                    .Where(x => x.ReportDate >= from.UtcDateTime && x.ReportDate < to.UtcDateTime)
                     .Where(request.HasUpperAgent == true, x => x.AgentId != null)
                     .Where(request.HasUpperAgent == false, x => x.AgentId == null)
                     .GroupBy(x => x.PlayerCode, (playerCode, list) => new
@@ -216,7 +218,7 @@ public class GetPlayerContributionsTotalAmountQueryHandler
                 })
             .GroupJoin(_context.PlayerBonusAggregates
                     .Where(x => x.BrandId == request.BrandId)
-                    .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
+                    .Where(x => x.ReportDate >= from.UtcDateTime && x.ReportDate < to.UtcDateTime)
                     .Where(request.HasUpperAgent == true, x => x.AgentId != null)
                     .Where(request.HasUpperAgent == false, x => x.AgentId == null)
                     .GroupBy(x => x.PlayerCode, (playerCode, list) => new
