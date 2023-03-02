@@ -42,17 +42,18 @@ public class GetLicenseeMarketsQueryHandler : IRequestHandler<GetLicenseeMarkets
 
         var now = DateTimeOffset.Now.ToOffset(offset);
 
-        var today = new DateTimeOffset(
-            now.Year,
+        var yesterday = new DateTimeOffset(now.Year,
             now.Month,
             now.Day,
             0,
             0,
             0,
-            requestTo.Offset);
+            requestTo.Offset).AddDays(-1);
 
         var fromDate = new DateOnly(from.Year, from.Month, from.Day);
-        var toDate = new DateOnly(to.Year, to.Month, to.Day);
+        var toDate = to > yesterday
+            ? new DateOnly(yesterday.Year, yesterday.Month, yesterday.Day)
+            : new DateOnly(to.Year, to.Month, to.Day);
 
         var brands = await _context.Brands
             .Where(x => x.LicenseeId == request.LicenseeId)
@@ -72,12 +73,12 @@ public class GetLicenseeMarketsQueryHandler : IRequestHandler<GetLicenseeMarkets
 
         var brandIds = brands.Select(x => x.BrandId).ToArray();
 
-        var dailyRealTimeWithdraws = to > today
+        var dailyRealTimeWithdraws = to > yesterday
             ? await _context.WithdrawForms
                 .Where(x => brandIds.Contains(x.BrandId))
                 .Where(x => x.UserType == 1 && x.Status == 9000)
-                .Where(x => x.CreatedOn >= today.ToUniversalTime()
-                            && x.CreatedOn < today.AddDays(1).ToUniversalTime())
+                .Where(from > yesterday, x => x.PaidOn >= from.UtcDateTime && x.PaidOn < to.UtcDateTime)
+                .Where(!(from > yesterday), x => x.PaidOn >= yesterday.UtcDateTime && x.PaidOn < to.UtcDateTime)
                 .GroupBy(x => x.BrandId)
                 .Select(withdrawal => new
                 {
@@ -88,12 +89,12 @@ public class GetLicenseeMarketsQueryHandler : IRequestHandler<GetLicenseeMarkets
                 .ConfigureAwait(false)
             : null;
 
-        var dailyRealTimeDeposits = to > today
+        var dailyRealTimeDeposits = to > yesterday
             ? await _context.DepositForms
                 .Where(x => brandIds.Contains(x.BrandId))
                 .Where(x => x.Status == 8000)
-                .Where(x => x.CreatedOn >= today.ToUniversalTime()
-                            && x.CreatedOn < today.AddDays(1).ToUniversalTime())
+                .Where(from > yesterday, x => x.UpdatedOn >= from.UtcDateTime && x.UpdatedOn < to.UtcDateTime)
+                .Where(!(from > yesterday), x => x.UpdatedOn >= yesterday.UtcDateTime && x.UpdatedOn < to.UtcDateTime)
                 .GroupBy(x => x.BrandId)
                 .Select(deposit => new
                 {
