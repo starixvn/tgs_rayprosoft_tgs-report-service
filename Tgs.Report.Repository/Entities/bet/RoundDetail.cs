@@ -3,13 +3,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace Tgs.Report.Repository.Entities
-{
-    public partial class RoundDetail
-    {
-        public Guid RoundId { get; set; }
-        public string AdditionalData { get; set; } = null!;
+namespace Tgs.Report.Repository.Entities;
 
-        public virtual Round Round { get; set; } = null!;
-    }
+public partial class RoundDetail
+{
+    public Guid RoundId { get; set; }
+
+    public string AdditionalData { get; set; } = null!;
+
+    public virtual Round Round { get; set; } = null!;
 }

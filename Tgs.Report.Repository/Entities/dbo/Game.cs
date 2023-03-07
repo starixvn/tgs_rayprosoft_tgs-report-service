@@ -3,40 +3,57 @@
 using System;
 using System.Collections.Generic;
 
-namespace Tgs.Report.Repository.Entities
+namespace Tgs.Report.Repository.Entities;
+
+public partial class Game
 {
-    public partial class Game
-    {
-        public Game()
-        {
-            BrandGames = new HashSet<BrandGame>();
-        }
+    public int Id { get; set; }
 
-        public int Id { get; set; }
-        public short Status { get; set; }
-        public string ExternalId { get; set; } = null!;
-        public string? Description { get; set; }
-        public string? EndpointPath { get; set; }
-        public string? RuleUrl { get; set; }
-        public Guid GameProviderId { get; set; }
-        public short Type { get; set; }
-        public short PlatformType { get; set; }
-        public bool SubGame { get; set; }
-        public bool AvailableToBrand { get; set; }
-        public bool HasTurnoverOnTieBet { get; set; }
-        public bool Html5 { get; set; }
-        public string AvailableCurrencies { get; set; } = null!;
-        public string Code { get; set; } = null!;
-        public string Name { get; set; } = null!;
-        public DateTime CreatedOn { get; set; }
-        public DateTime UpdatedOn { get; set; }
-        public string CreatedByUsername { get; set; } = null!;
-        public string UpdatedByUsername { get; set; } = null!;
-        public string? Localization { get; set; }
-        public string? SubGameProviderCode { get; set; }
+    public short Status { get; set; }
 
-        public virtual GameProvider GameProvider { get; set; } = null!;
-        public virtual SubGameProvider? SubGameProviderCodeNavigation { get; set; }
-        public virtual ICollection<BrandGame> BrandGames { get; set; }
-    }
+    public string ExternalId { get; set; } = null!;
+
+    public string? Description { get; set; }
+
+    public string? EndpointPath { get; set; }
+
+    public string? RuleUrl { get; set; }
+
+    public Guid GameProviderId { get; set; }
+
+    public short Type { get; set; }
+
+    public short PlatformType { get; set; }
+
+    public bool SubGame { get; set; }
+
+    public bool AvailableToBrand { get; set; }
+
+    public bool HasTurnoverOnTieBet { get; set; }
+
+    public bool Html5 { get; set; }
+
+    public string AvailableCurrencies { get; set; } = null!;
+
+    public string Code { get; set; } = null!;
+
+    public string Name { get; set; } = null!;
+
+    public DateTime CreatedOn { get; set; }
+
+    public DateTime UpdatedOn { get; set; }
+
+    public string CreatedByUsername { get; set; } = null!;
+
+    public string UpdatedByUsername { get; set; } = null!;
+
+    public string? Localization { get; set; }
+
+    public string? SubGameProviderCode { get; set; }
+
+    public virtual ICollection<BrandGame> BrandGames { get; } = new List<BrandGame>();
+
+    public virtual GameProvider GameProvider { get; set; } = null!;
+
+    public virtual SubGameProvider? SubGameProviderCodeNavigation { get; set; }
 }

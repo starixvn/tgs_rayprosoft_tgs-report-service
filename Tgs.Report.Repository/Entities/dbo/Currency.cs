@@ -3,26 +3,27 @@
 using System;
 using System.Collections.Generic;
 
-namespace Tgs.Report.Repository.Entities
+namespace Tgs.Report.Repository.Entities;
+
+public partial class Currency
 {
-    public partial class Currency
-    {
-        public Currency()
-        {
-            BrandCurrencies = new HashSet<BrandCurrency>();
-            Wallets = new HashSet<Wallet>();
-        }
+    public string Code { get; set; } = null!;
 
-        public string Code { get; set; } = null!;
-        public string Name { get; set; } = null!;
-        public string? NativeName { get; set; }
-        public string? Symbol { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public DateTime UpdatedOn { get; set; }
-        public string CreatedByUsername { get; set; } = null!;
-        public string UpdatedByUsername { get; set; } = null!;
+    public string Name { get; set; } = null!;
 
-        public virtual ICollection<BrandCurrency> BrandCurrencies { get; set; }
-        public virtual ICollection<Wallet> Wallets { get; set; }
-    }
+    public string? NativeName { get; set; }
+
+    public string? Symbol { get; set; }
+
+    public DateTime CreatedOn { get; set; }
+
+    public DateTime UpdatedOn { get; set; }
+
+    public string CreatedByUsername { get; set; } = null!;
+
+    public string UpdatedByUsername { get; set; } = null!;
+
+    public virtual ICollection<BrandCurrency> BrandCurrencies { get; } = new List<BrandCurrency>();
+
+    public virtual ICollection<Wallet> Wallets { get; } = new List<Wallet>();
 }
