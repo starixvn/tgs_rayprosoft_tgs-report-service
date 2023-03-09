@@ -15,7 +15,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddReportCore(this IServiceCollection services)
     {
-        services.AddMediatR(Assembly.GetExecutingAssembly());
+        services.AddMediatR(r => r.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
         services.AddTransient<IRoundFactory, RoundFactory>();
         services.AddTransient<IPlayerFactory, PlayerFactory>();
         services.AddTransient<IPlayerDepositFactory, PlayerDepositFactory>();
