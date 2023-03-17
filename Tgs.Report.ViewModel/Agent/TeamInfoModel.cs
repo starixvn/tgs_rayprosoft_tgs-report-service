@@ -1,13 +1,12 @@
 ﻿using System;
 
-namespace Tgs.Report.ViewModel.Agent
+namespace Tgs.Report.ViewModel.Agent;
+
+public record TeamInfoModel
 {
-    public record TeamInfoModel
-    {
-        public decimal Contribution { get; init; }
+    public decimal Contribution { get; init; }
 
-        public DateTimeOffset? RegisteredOn { get; init; }
+    public DateTimeOffset? RegisteredOn { get; init; }
 
-        public string Username { get; init; } = default!;
-    }
+    public string Username { get; init; } = default!;
 }

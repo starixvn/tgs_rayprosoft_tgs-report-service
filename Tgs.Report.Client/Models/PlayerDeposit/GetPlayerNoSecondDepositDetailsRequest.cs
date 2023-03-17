@@ -1,9 +1,8 @@
-﻿namespace Tgs.Report.Client.Models.PlayerDeposit
+﻿namespace Tgs.Report.Client.Models.PlayerDeposit;
+
+public record GetPlayerNoSecondDepositDetailsRequest : PageableRequest
 {
-    public record GetPlayerNoSecondDepositDetailsRequest : PageableRequest
-    {
-        public Guid BrandId { get; init; }
-        public string AgentUsername { get; init; } = default!;
-        public DateTimeOffset Date { get; init; }
-    }
+    public Guid BrandId { get; init; }
+    public string AgentUsername { get; init; } = default!;
+    public DateTimeOffset Date { get; init; }
 }

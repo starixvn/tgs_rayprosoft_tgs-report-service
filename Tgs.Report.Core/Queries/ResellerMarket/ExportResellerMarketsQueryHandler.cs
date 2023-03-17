@@ -50,6 +50,6 @@ internal class ExportResellerMarketsQueryHandler : IRequestHandler<ExportReselle
 
         xlsx.SaveAs(stream);
 
-        return new MemoryStream(stream.ToArray());
+        return new(stream.ToArray());
     }
 }

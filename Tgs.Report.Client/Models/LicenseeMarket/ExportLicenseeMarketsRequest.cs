@@ -1,11 +1,10 @@
-﻿namespace Tgs.Report.Client.Models.LicenseeMarket
+﻿namespace Tgs.Report.Client.Models.LicenseeMarket;
+
+public record ExportLicenseeMarketsRequest : PageableRequest
 {
-    public record ExportLicenseeMarketsRequest : PageableRequest
-    {
-        public Guid LicenseeId { get; init; }
-        public string[]? CurrencyCodes { get; init; } = default!;
-        public string? CurrencyCode { get; init; }
-        public DateTimeOffset From { get; init; }
-        public DateTimeOffset To { get; init; }
-    }
+    public Guid LicenseeId { get; init; }
+    public string[]? CurrencyCodes { get; init; } = default!;
+    public string? CurrencyCode { get; init; }
+    public DateTimeOffset From { get; init; }
+    public DateTimeOffset To { get; init; }
 }

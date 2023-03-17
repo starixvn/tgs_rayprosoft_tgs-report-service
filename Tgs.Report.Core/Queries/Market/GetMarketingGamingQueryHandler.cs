@@ -12,9 +12,7 @@ public class GetMarketingGamingQueryHandler : IRequestHandler<GetMarketingGaming
     private readonly TgsContext _context;
 
     public GetMarketingGamingQueryHandler(TgsContext context)
-    {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-    }
+        => _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async Task<PagedResponse<MarketingGamingDetailModel>> Handle(
         GetMarketingGamingDetailRequest request,

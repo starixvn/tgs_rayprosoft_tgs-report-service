@@ -14,9 +14,7 @@ internal class AgentRepository : IAgentRepository
 
     public AgentRepository(
         TgsContext context)
-    {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-    }
+        => _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public Task<AgentWithNLevelInfo?> GetAgentWithNLevelAsync(
         Guid brandId,
@@ -33,7 +31,9 @@ internal class AgentRepository : IAgentRepository
         }
 
         if (!string.IsNullOrEmpty(userName))
+        {
             query = query.Where(x => x.Username == userName);
+        }
 
         return query.Select(a => new AgentWithNLevelInfo(
                 a.Id,
@@ -54,7 +54,7 @@ internal class AgentRepository : IAgentRepository
 
         return _context.Agents
             .Where(a => a.BrandId == brandId)
-            .Where(a => a.Path.IsDescendantOf(new LTree(parentAgentInfo.Path)))
+            .Where(a => a.Path.IsDescendantOf(new(parentAgentInfo.Path)))
             .Where(a => a.Id != parentAgentInfo.Id)
             .Select(a => new ChildAgentInfo(
                 a.Id,

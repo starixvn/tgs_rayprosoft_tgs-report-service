@@ -17,20 +17,19 @@ public sealed class GetResellerMarketsQueryTest : BaseTest
     [Test]
     public async Task Can_Get_Reseller_Markets()
     {
-        var fakeBrand = Substitute.For<ITgsService<Brand>>();
-        var fakeWithdrawForm = Substitute.For<ITgsService<WithdrawForm>>();
-        var fakePlayerAggregate = Substitute.For<ITgsService<PlayerAggregate>>();
-        var fakePlayerBonusAggregate = Substitute.For<ITgsService<PlayerBonusAggregate>>();
         var fakeContext = Substitute.For<TgsContext>();
 
-        var sut = new GetResellerMarketsQueryHandler(fakeContext, fakeBrand, fakeWithdrawForm, fakePlayerAggregate, fakePlayerBonusAggregate);
+        var sut = new GetResellerMarketsQueryHandler(fakeContext);
 
         var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
+        var licenseeId = new Guid("aac12420-20f6-4f0d-6982-08d9dbdc0473");
         var resellerId = new Guid("aac11120-20f6-4f0d-6982-08d9dbdc0473");
 
-        var brands = CreateBrandFixture(brandId, resellerId).CreateMany<Brand>(1)
+        var brands = CreateBrandFixture(brandId, licenseeId, resellerId).CreateMany<Brand>(1)
             .AsQueryable()
             .BuildMock();
+
+        var brandCurrencies = brands.Select(x => CreateBrandCurrenciesFixture(x).Create<BrandCurrency>()).BuildMock();
 
         var withdrawForms = CreateWithdrawFormFixture(brandId).CreateMany<WithdrawForm>(1).AsQueryable()
             .BuildMock();
@@ -39,7 +38,8 @@ public sealed class GetResellerMarketsQueryTest : BaseTest
             .AsQueryable()
             .BuildMock();
 
-        var playerBonusAggregates = CreatePlayerBonusAggregateFixture(brandId).CreateMany<PlayerBonusAggregate>(1).AsQueryable()
+        var playerBonusAggregates = CreatePlayerBonusAggregateFixture(brandId).CreateMany<PlayerBonusAggregate>(1)
+            .AsQueryable()
             .BuildMock();
 
         var brandDailyPaymentStatistics =
@@ -48,29 +48,24 @@ public sealed class GetResellerMarketsQueryTest : BaseTest
                 .AsQueryable()
                 .BuildMock();
 
-        var playerDailyPaymentStatistics =
-            CreatePlayerDailyPaymentStatisticsFixture().CreateMany<PlayerDailyPaymentStatistic>(5).AsQueryable()
-                .BuildMock();
-
         var deposits = CreateDepositFormFixture(brandId).CreateMany<DepositForm>(5).AsQueryable()
             .BuildMock();
 
-        var players = CreatePlayerFixture(brandId).CreateMany<Repository.Entities.Player>(1).AsQueryable()
-            .BuildMock();
-
         var mockBrandDailyPaymentStatistics = GetDbSet(brandDailyPaymentStatistics);
-        var mockPlayerDailyPaymentStatistics = GetDbSet(playerDailyPaymentStatistics);
         var mockDepositForms = GetDbSet(deposits);
-        var mockPlayers = GetDbSet(players);
+        var mockWithdrawForms = GetDbSet(withdrawForms);
+        var mockBrandCurrencies = GetDbSet(brandCurrencies);
+        var mockBrands = GetDbSet(brands);
+        var mockPlayerAggregates = GetDbSet(playerAggregates);
+        var mockPlayerBonusAggregates = GetDbSet(playerBonusAggregates);
 
-        fakeBrand.GetQueries().Returns(brands);
-        fakeWithdrawForm.GetQueries().Returns(withdrawForms);
-        fakePlayerAggregate.GetQueries().Returns(playerAggregates);
-        fakePlayerBonusAggregate.GetQueries().Returns(playerBonusAggregates);
+        fakeContext.WithdrawForms.Returns(mockWithdrawForms.Object);
+        fakeContext.PlayerAggregates.Returns(mockPlayerAggregates.Object);
+        fakeContext.PlayerBonusAggregates.Returns(mockPlayerBonusAggregates.Object);
         fakeContext.BrandDailyPaymentStatistics.Returns(mockBrandDailyPaymentStatistics.Object);
-        fakeContext.PlayerDailyPaymentStatistics.Returns(mockPlayerDailyPaymentStatistics.Object);
         fakeContext.DepositForms.Returns(mockDepositForms.Object);
-        fakeContext.Players.Returns(mockPlayers.Object);
+        fakeContext.BrandCurrencies.Returns(mockBrandCurrencies.Object);
+        fakeContext.Brands.Returns(mockBrands.Object);
 
         var request = new GetResellerMarketsRequest
         {
@@ -85,19 +80,45 @@ public sealed class GetResellerMarketsQueryTest : BaseTest
         Assert.AreEqual(1, response.Datas?.TotalCount);
     }
 
-    private static Fixture CreateBrandFixture(Guid brandId, Guid resellerId)
+    private static Fixture CreateBrandFixture(Guid brandId, Guid licenseeId, Guid resellerId)
     {
         var fixture = new Fixture();
         fixture.Customize<Brand>(u => u
             .With(s => s.Id, brandId)
-            .With(s => s.Licensee, new Licensee { ResellerId = resellerId })
-            .With(s => s.VipLevels, new VipLevel[] { })
-            .With(s => s.Transactions, new Transaction[] { })
-            .With(s => s.BrandCurrencies, new BrandCurrency[] { })
-            .With(s => s.Agents, new Repository.Entities.Agent[] { })
-            .With(s => s.Players, new Repository.Entities.Player[] { })
-            .With(s => s.DepositForms, new DepositForm[] { })
-            .With(s => s.PlayerLoginRecords, new PlayerLoginRecord[] { }));
+            .With(s => s.Licensee, new Licensee { Id = licenseeId, ResellerId = resellerId })
+            .With(s => s.VipLevels, new VipLevel[]
+            {
+            })
+            .With(s => s.Transactions, new Transaction[]
+            {
+            })
+            .With(s => s.BrandCurrencies, new BrandCurrency[]
+            {
+            })
+            .With(s => s.Agents, new Repository.Entities.Agent[]
+            {
+            })
+            .With(s => s.Players, new Repository.Entities.Player[]
+            {
+            })
+            .With(s => s.DepositForms, new DepositForm[]
+            {
+            })
+            .With(s => s.PlayerLoginRecords, new PlayerLoginRecord[]
+            {
+            }));
+
+        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        return fixture;
+    }
+
+    private static Fixture CreateBrandCurrenciesFixture(Brand brand)
+    {
+        var fixture = new Fixture();
+        fixture.Customize<BrandCurrency>(u => u
+            .With(s => s.BrandId, brand.Id)
+            .With(s => s.Brand, brand)
+            .With(s => s.CurrencyCodeNavigation, new Currency()));
 
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         return fixture;
@@ -139,27 +160,6 @@ public sealed class GetResellerMarketsQueryTest : BaseTest
         var fixture = new Fixture();
         fixture.Customize<PlayerBonusAggregate>(u => u
             .With(s => s.BrandId, brandId));
-        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-        return fixture;
-    }
-
-    private static Fixture CreatePlayerDailyPaymentStatisticsFixture()
-    {
-        var fixture = new Fixture();
-        fixture.Customize<PlayerDailyPaymentStatistic>(u => u
-            .With(s => s.ReportDate,
-                DateOnly.FromDateTime(DateTimeOffset.UtcNow.DateTime)));
-        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-        return fixture;
-    }
-
-    private static Fixture CreatePlayerFixture(Guid brandId)
-    {
-        var fixture = new Fixture();
-        fixture.Customize<Repository.Entities.Player>(u => u
-            .With(s => s.BrandId, brandId)
-            .With(s => s.Brand, new Brand())
-            .With(s => s.Birthdate, DateOnly.Parse("2022/05/04")));
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         return fixture;
     }

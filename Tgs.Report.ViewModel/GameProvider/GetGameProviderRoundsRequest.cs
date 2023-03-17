@@ -1,16 +1,15 @@
 ﻿using System;
 using MediatR;
 
-namespace Tgs.Report.ViewModel.GameProvider
+namespace Tgs.Report.ViewModel.GameProvider;
+
+public record GetGameProviderRoundsRequest : PageableRequest, IRequest<PagedResponse<GameProviderRoundsModel>>
 {
-    public record GetGameProviderRoundsRequest : PageableRequest, IRequest<PagedResponse<GameProviderRoundsModel>>
-    {
-        public DateTimeOffset From { get; init; }
+    public DateTimeOffset From { get; init; }
 
-        public DateTimeOffset To { get; init; }
+    public DateTimeOffset To { get; init; }
 
-        public Guid? GameProviderId { get; init; }
+    public Guid? GameProviderId { get; init; }
 
-        public string? CurrencyCode { get; init; }
-    }
+    public string? CurrencyCode { get; init; }
 }

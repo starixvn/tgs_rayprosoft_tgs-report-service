@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Tgs.Report.Client.Models.Market;
+﻿namespace Tgs.Report.Client.Models.Market;
 
 public record MarketModel
 {

@@ -50,6 +50,6 @@ internal class ExportLicenseeMarketsQueryHandler : IRequestHandler<ExportLicense
 
         xlsx?.SaveAs(stream);
 
-        return new MemoryStream(stream.ToArray());
+        return new(stream.ToArray());
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Tgs.Report.ViewModel.Market;
 
-public record MarketTotalAgentDividendModel
+public record MarketAgentProfitModel
 {
     public string MasterAgentName { get; init; } = default!;
 

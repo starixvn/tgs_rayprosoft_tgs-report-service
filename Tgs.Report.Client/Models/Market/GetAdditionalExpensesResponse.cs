@@ -1,7 +1,6 @@
-﻿namespace Tgs.Report.Client.Models.Market
+﻿namespace Tgs.Report.Client.Models.Market;
+
+public record GetAdditionalExpensesResponse
 {
-    public record GetAdditionalExpensesResponse
-    {
-        public AdditionalExpensesModel[] AdditionalExpenses { get; init; } = default!;
-    }
+    public AdditionalExpensesModel[] AdditionalExpenses { get; init; } = default!;
 }

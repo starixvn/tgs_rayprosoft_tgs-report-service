@@ -10,9 +10,7 @@ public class GetLicenseeMarketsQueryHandler : IRequestHandler<GetLicenseeMarkets
     private readonly TgsContext _context;
 
     public GetLicenseeMarketsQueryHandler(TgsContext context)
-    {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-    }
+        => _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async Task<LicenseeMarketsResponse> Handle(
         GetLicenseeMarketsRequest request,
@@ -52,7 +50,7 @@ public class GetLicenseeMarketsQueryHandler : IRequestHandler<GetLicenseeMarkets
 
         var fromDate = new DateOnly(from.Year, from.Month, from.Day);
         var toDate = to > yesterday
-            ? new DateOnly(yesterday.Year, yesterday.Month, yesterday.Day)
+            ? new(yesterday.Year, yesterday.Month, yesterday.Day)
             : new DateOnly(to.Year, to.Month, to.Day);
 
         var brands = await _context.Brands
@@ -119,113 +117,178 @@ public class GetLicenseeMarketsQueryHandler : IRequestHandler<GetLicenseeMarkets
             .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        var playerBonuses = await _context.PlayerBonusAggregates
-            .Where(x => brandIds.Contains(x.BrandId))
-            .Where(x => x.ReportDate >= from.ToUniversalTime()
-                        && x.ReportDate < to.ToUniversalTime())
-            .GroupBy(x => x.BrandId,
-                (brandId, aggregates) => new LicenseeMarketModel
+        var marketAggregates = await _context.Brands
+            .GroupJoin(_context.PlayerAggregates.Where(x => x.ReportDate >= from.UtcDateTime &&
+                    x.ReportDate < to.UtcDateTime),
+                brand => brand.Id,
+                aggregate => aggregate.BrandId,
+                (brand, aggregate) => new
                 {
-                    BrandId = brandId,
-                    RebateAmount = aggregates.Sum(s => s.RebateAmount),
-                    PromotionAmount = aggregates.Sum(s => s.PromotionAmount),
-                    UpgradeAmount = aggregates.Sum(s => s.UpgradeAmount),
-                    SeasonAmount = aggregates.Sum(s => s.SeasonAmount),
-                    BirthdayAmount = aggregates.Sum(s => s.BirthdayAmount),
-                    BonusAmount = aggregates.Sum(m => m.UpgradeAmount + m.SeasonAmount + m.BirthdayAmount)
+                    Aggregate = aggregate,
+                    BrandId = brand.Id,
+                    BrandCode = brand.Code,
+                    brand.LicenseeId
                 })
-            .ToArrayAsync(cancellationToken)
-            .ConfigureAwait(false);
-
-        var playerAggregates = await _context.PlayerAggregates
-            .Where(x => brandIds.Contains(x.BrandId))
-            .Where(x => x.ReportDate >= from.ToUniversalTime()
-                        && x.ReportDate < to.ToUniversalTime())
-            .GroupBy(x => x.BrandId,
-                (brandId, aggregates) => new LicenseeMarketModel
-                {
-                    BrandId = brandId,
-                    CompanyAdjustAmount = aggregates.Sum(m =>
-                        m.CompanyAdjustAmount - m.NoIncludeNetProfitCompanyAdjustAmount),
-                    BonusAmount = aggregates.Sum(m => m.RebateAmount + m.PromotionAmount),
-                    BetAmount = aggregates.Sum(m => m.BetAmount),
-                    Turnover = aggregates.Sum(m => m.Turnover),
-                    WinLossAmount = aggregates.Sum(m => m.WinLossAmount),
-                    NetProfit = aggregates.Sum(m =>
-                        m.WinLossAmount
-                        - m.CompanyAdjustAmount
-                        - m.RebateAmount
-                        - m.PromotionAmount)
-                })
-            .ToArrayAsync(cancellationToken)
-            .ConfigureAwait(false);
-
-        var groupDatas = brands
-            .GroupJoin(
-                playerAggregates.Concat(playerBonuses),
-                brand => brand.BrandId,
-                playerAggregate => playerAggregate.BrandId,
-                (brand, aggregates) => new
-                {
-                    Brand = brand,
-                    PlayerAggregates = aggregates
-                })
-            .SelectMany(
-                x => x.PlayerAggregates.DefaultIfEmpty(),
-                (x, playerAggregate) => new
-                {
-                    x.Brand.LicenseeId,
-                    x.Brand.BrandId,
-                    x.Brand.BrandCode,
-                    x.Brand.CurrencyCode,
-                    PlayerAggregate = playerAggregate
-                })
-            .GroupBy(
-                x => new
+            .SelectMany(x => x.Aggregate.DefaultIfEmpty(),
+                (x, aggregate) => new
                 {
                     x.LicenseeId,
                     x.BrandId,
                     x.BrandCode,
-                    x.CurrencyCode
-                },
-                (key, aggregates) =>
+                    AgentAggregate = aggregate
+                })
+            .Where(x => x.LicenseeId == request.LicenseeId)
+            .GroupJoin(_context.BrandCurrencies,
+                agent => agent.BrandId,
+                brandCurrency => brandCurrency.BrandId,
+                (agent, currencies) => new
                 {
-                    var paymentStatistics = brandPaymentStatistics
-                        ?.FirstOrDefault(x => x.BrandId == key.BrandId);
+                    agent.AgentAggregate,
+                    agent.BrandId,
+                    agent.BrandCode,
+                    BrandCurrencies = currencies
+                })
+            .SelectMany(x => x.BrandCurrencies.DefaultIfEmpty(),
+                (x, brandCurrency) => new
+                {
+                    x.AgentAggregate,
+                    x.BrandId,
+                    x.BrandCode,
+                    BrandCurrencyCode = brandCurrency.CurrencyCode
+                })
+            .Where(!string.IsNullOrEmpty(request.CurrencyCode),
+                x => x.BrandCurrencyCode == request.CurrencyCode)
+            .Where(request.CurrencyCodes != null,
+                x => request.CurrencyCodes!.Contains(x.BrandCurrencyCode))
+            .GroupJoin(_context.PlayerBonusAggregates,
+                agent => new
+                {
+                    agent.AgentAggregate.ReportDate,
+                    agent.AgentAggregate.Hour,
+                    agent.AgentAggregate.AgentId,
+                    agent.AgentAggregate.PlayerCode
+                },
+                bonus => new
+                {
+                    bonus.ReportDate,
+                    bonus.Hour,
+                    bonus.AgentId,
+                    bonus.PlayerCode
+                },
+                (agent, bonus) => new
+                {
+                    agent.AgentAggregate,
+                    agent.BrandId,
+                    agent.BrandCode,
+                    agent.BrandCurrencyCode,
+                    BonusAggregates = bonus
+                })
+            .SelectMany(x => x.BonusAggregates.DefaultIfEmpty(),
+                (x, bonusAggregate) => new
+                {
+                    x.AgentAggregate,
+                    x.BrandId,
+                    x.BrandCode,
+                    x.BrandCurrencyCode,
+                    BonusAggregate = bonusAggregate
+                })
+            .GroupBy(x => new
+            {
+                x.BrandId,
+                x.BrandCode,
+                x.BrandCurrencyCode
+            }, (x, aggregates) => new
+            {
+                x.BrandId,
+                x.BrandCode,
+                x.BrandCurrencyCode,
+                CompanyAdjustAmount =
+                    aggregates.Sum(s
+                        => s.AgentAggregate.CompanyAdjustAmount -
+                        s.AgentAggregate.NoIncludeNetProfitCompanyAdjustAmount),
+                BonusAmount =
+                    aggregates.Sum(s
+                        => s.AgentAggregate.RebateAmount + s.AgentAggregate.PromotionAmount + (s.BonusAggregate == null
+                            ? 0M
+                            : s.BonusAggregate.UpgradeAmount + s.BonusAggregate.SeasonAmount +
+                            s.BonusAggregate.BirthdayAmount)),
+                BetAmount = aggregates.Sum(s => s.AgentAggregate.BetAmount),
+                Turnover = aggregates.Sum(s => s.AgentAggregate.Turnover),
+                WinLossAmount = aggregates.Sum(s => s.AgentAggregate.WinLossAmount),
+                TotalAgentDividend = aggregates.Sum(m
+                    => m.AgentAggregate.AgentId == null
+                        ? 0M
+                        : (m.AgentAggregate.WinLossAmount - (m.AgentAggregate.RebateAmount +
+                            m.AgentAggregate.PromotionAmount +
+                            (m.BonusAggregate == null
+                                ? 0M
+                                : m.BonusAggregate.UpgradeAmount + m.BonusAggregate.SeasonAmount +
+                                m.BonusAggregate.BirthdayAmount) +
+                            m.AgentAggregate.BonusAdjustAmount -
+                            m.AgentAggregate.NoIncludeNetProfitBonusAdjustAmount)) *
+                        (m.AgentAggregate.ChiefAgentDividendPercentage / 100)).ToString(),
+                NetProfit = aggregates.Sum(m
+                    => m.AgentAggregate.WinLossAmount - (m.AgentAggregate.CompanyAdjustAmount -
+                        m.AgentAggregate.NoIncludeNetProfitCompanyAdjustAmount) -
+                    ((m.AgentAggregate.RebateAmount + m.AgentAggregate.PromotionAmount +
+                            (m.BonusAggregate == null
+                                ? 0M
+                                : m.BonusAggregate.UpgradeAmount + m.BonusAggregate.SeasonAmount +
+                                m.BonusAggregate.BirthdayAmount) +
+                            m.AgentAggregate.BonusAdjustAmount - m.AgentAggregate.NoIncludeNetProfitBonusAdjustAmount) *
+                        (m.AgentAggregate.AgentId == null
+                            ? 1
+                            : (100 - m.AgentAggregate.ChiefAgentDividendPercentage) / 100) -
+                        (m.AgentAggregate.AgentId == null
+                            ? 0M
+                            : (m.AgentAggregate.WinLossAmount - (m.AgentAggregate.RebateAmount +
+                                m.AgentAggregate.PromotionAmount +
+                                (m.BonusAggregate == null
+                                    ? 0M
+                                    : m.BonusAggregate.UpgradeAmount + m.BonusAggregate.SeasonAmount +
+                                    m.BonusAggregate.BirthdayAmount) +
+                                m.AgentAggregate.BonusAdjustAmount -
+                                m.AgentAggregate.NoIncludeNetProfitBonusAdjustAmount)) *
+                            (m.AgentAggregate.ChiefAgentDividendPercentage / 100)))).ToString()
+            })
+            .ToArrayAsync(cancellationToken)
+            .ConfigureAwait(false);
 
-                    var realTimeDeposit = dailyRealTimeDeposits?
-                        .FirstOrDefault(x => x.BrandId == key.BrandId);
+        var groupData = marketAggregates
+            .Select(x =>
+            {
+                var paymentStatistics = brandPaymentStatistics
+                    .FirstOrDefault(s => s.BrandId == x.BrandId);
 
-                    var realTimeWithdraw = dailyRealTimeWithdraws?
-                        .FirstOrDefault(x => x.BrandId == key.BrandId);
+                var realTimeDeposit = dailyRealTimeDeposits?
+                    .FirstOrDefault(s => s.BrandId == x.BrandId);
 
-                    return new LicenseeMarketDataModel
-                    {
-                        BrandId = key.BrandId,
-                        BrandCode = key.BrandCode,
-                        CurrencyCode = key.CurrencyCode,
-                        DepositAmount = (paymentStatistics?.DailyDepositAmount ?? 0M)
-                                        + (realTimeDeposit?.DepositAmount ?? 0M),
-                        DepositHandlingFee = (paymentStatistics?.DailyDepositHandlingFee ?? 0M)
-                                             + (realTimeDeposit?.DepositHandlingFee ?? 0M),
-                        WithdrawalAmount = decimal.Negate(
-                                            (paymentStatistics?.DailyWithdrawAmount ?? 0M)
-                                           + (realTimeWithdraw?.WithdrawalAmount ?? 0M)),
-                        CompanyAdjustAmount = aggregates.Sum(m => m.PlayerAggregate?.CompanyAdjustAmount ?? 0),
-                        BonusAmount = aggregates.Sum(m => m.PlayerAggregate?.BonusAmount ?? 0M),
-                        BetAmount = aggregates.Sum(m => m.PlayerAggregate?.BetAmount ?? 0),
-                        Turnover = aggregates.Sum(m => m.PlayerAggregate?.Turnover ?? 0),
-                        WinLossAmount = aggregates.Sum(m => m.PlayerAggregate?.WinLossAmount ?? 0),
-                        NetProfit = aggregates.Sum(m => m.PlayerAggregate == null
-                                ? 0
-                                : m.PlayerAggregate.NetProfit
-                                  - m.PlayerAggregate.UpgradeAmount
-                                  - m.PlayerAggregate.SeasonAmount
-                                  - m.PlayerAggregate.BirthdayAmount)
-                    };
-                });
+                var realTimeWithdraw = dailyRealTimeWithdraws?
+                    .FirstOrDefault(s => s.BrandId == x.BrandId);
 
-        var total = groupDatas
+                return new LicenseeMarketDataModel
+                {
+                    BrandId = x.BrandId,
+                    BrandCode = x.BrandCode,
+                    CurrencyCode = x.BrandCurrencyCode,
+                    DepositAmount = (paymentStatistics?.DailyDepositAmount ?? 0M)
+                        + (realTimeDeposit?.DepositAmount ?? 0M),
+                    DepositHandlingFee = (paymentStatistics?.DailyDepositHandlingFee ?? 0M)
+                        + (realTimeDeposit?.DepositHandlingFee ?? 0M),
+                    WithdrawalAmount = decimal.Negate(
+                        (paymentStatistics?.DailyWithdrawAmount ?? 0M)
+                        + (realTimeWithdraw?.WithdrawalAmount ?? 0M)),
+                    CompanyAdjustAmount = x.CompanyAdjustAmount,
+                    BonusAmount = x.BonusAmount,
+                    BetAmount = x.BetAmount,
+                    Turnover = x.Turnover,
+                    WinLossAmount = x.WinLossAmount,
+                    NetProfit = decimal.Parse(x.NetProfit ?? "0"),
+                    AgentProfit = decimal.Parse(x.TotalAgentDividend ?? "0")
+                };
+            });
+
+        var total = groupData
             .GroupBy(c => c.CurrencyCode)
             .Select(currency => new LicenseeMarketTotalModel
             {
@@ -242,9 +305,9 @@ public class GetLicenseeMarketsQueryHandler : IRequestHandler<GetLicenseeMarkets
             })
             .ToArray();
 
-        var datas = groupDatas.AsQueryable().CreatePagedResponse(request);
+        var datas = groupData.AsQueryable().CreatePagedResponse(request);
 
-        return new LicenseeMarketsResponse
+        return new()
         {
             Datas = datas,
             Totals = total

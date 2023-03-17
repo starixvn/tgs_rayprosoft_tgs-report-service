@@ -11,9 +11,7 @@ public class GetMarketingQueryHandler : IRequestHandler<GetMarketingListRequest,
     private readonly TgsContext _context;
 
     public GetMarketingQueryHandler(TgsContext context)
-    {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-    }
+        => _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async Task<PagedResponse<MarketingModel>> Handle(
         GetMarketingListRequest request,
@@ -60,10 +58,14 @@ public class GetMarketingQueryHandler : IRequestHandler<GetMarketingListRequest,
             .Where(x => x.BrandId == request.BrandId)
             .Where(x => x.AgentId == agent.Id)
             .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
-            .GroupBy(x => new { x.ReportDate, x.PlayerCode }, (player, group) => new
+            .GroupBy(x => new
             {
-                ReportDate = player.ReportDate,
-                PlayerCode = player.PlayerCode,
+                x.ReportDate,
+                x.PlayerCode
+            }, (player, group) => new
+            {
+                player.ReportDate,
+                player.PlayerCode,
                 RegisterCount = group.Sum(x => x.RegisteredCount),
                 FirstDepositCount = group.Sum(x => x.FirstFundInCount),
                 BetAmount = group.Sum(x => x.BetAmount)
@@ -96,9 +98,14 @@ public class GetMarketingQueryHandler : IRequestHandler<GetMarketingListRequest,
                 (date, groupDeposits) => new MarketingModel
                 {
                     ReportDate = date.ReportDate,
-                    RegisterCount = groupDeposits.FirstOrDefault(x => date.ReportDate == x.ReportDate)?.player?.RegisterCount ?? 0,
-                    FirstDepositCount = groupDeposits.FirstOrDefault(x => date.ReportDate == x.ReportDate)?.player?.FirstDepositCount ?? 0,
-                    GamingCount = groupDeposits.FirstOrDefault(x => date.ReportDate == x.ReportDate)?.player?.GamingCount ?? 0
+                    RegisterCount =
+                        groupDeposits.FirstOrDefault(x => date.ReportDate == x.ReportDate)?.player?.RegisterCount ?? 0,
+                    FirstDepositCount =
+                        groupDeposits.FirstOrDefault(x => date.ReportDate == x.ReportDate)?.player?.FirstDepositCount ??
+                        0,
+                    GamingCount = groupDeposits.FirstOrDefault(x => date.ReportDate == x.ReportDate)?.player
+                            ?.GamingCount ??
+                        0
                 })
             .AsQueryable()
             .CreatePagedResponse(request);

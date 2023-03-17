@@ -44,5 +44,5 @@ public record MarketModel
 
     public decimal PlatformCoveredBonusAdjust { get; init; }
 
-    public decimal TotalAgentDividend { get; init; }
+    public decimal AgentProfit { get; init; }
 }

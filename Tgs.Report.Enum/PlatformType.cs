@@ -1,18 +1,17 @@
-﻿namespace Tgs.Report.Enum
+﻿namespace Tgs.Report.Enum;
+
+/// <summary>
+///     Platform Type
+/// </summary>
+public enum PlatformType
 {
     /// <summary>
-    ///     Platform Type
+    ///     Desktop
     /// </summary>
-    public enum PlatformType
-    {
-        /// <summary>
-        ///     Desktop
-        /// </summary>
-        Desktop = 0,
+    Desktop = 0,
 
-        /// <summary>
-        ///     Mobile
-        /// </summary>
-        Mobile = 1
-    }
+    /// <summary>
+    ///     Mobile
+    /// </summary>
+    Mobile = 1
 }

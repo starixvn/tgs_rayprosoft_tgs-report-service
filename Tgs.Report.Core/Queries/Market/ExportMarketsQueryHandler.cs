@@ -49,6 +49,6 @@ internal class ExportMarketsQueryHandler : IRequestHandler<ExportMarketsRequest,
 
         xlsx?.SaveAs(stream);
 
-        return new MemoryStream(stream.ToArray());
+        return new(stream.ToArray());
     }
 }

@@ -8,70 +8,69 @@ using Tgs.Report.Core;
 using Tgs.Report.Core.Queries.Player;
 using Tgs.Report.ViewModel.Player;
 
-namespace Tgs.Report.UnitTest.Player
+namespace Tgs.Report.UnitTest.Player;
+
+[TestFixture]
+public sealed class GetPlayerAccountChangeQueryTest : BaseTest
 {
-    [TestFixture]
-    public sealed class GetPlayerAccountChangeQueryTest : BaseTest
+    [Test]
+    public async Task Can_Get_Player_Account_Change()
     {
-        [Test]
-        public async Task Can_Get_Player_Account_Change()
+        var fakeRepository = Substitute.For<IPlayerFactory>();
+
+        var sut = new GetPlayerAccountChangeQueryHandler(fakeRepository);
+
+        var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
+        var reportDate = new DateTimeOffset(2022, 1, 21, 0, 0, 0, new(8, 0, 0));
+
+        var request = new GetPlayerAccountChangesRequest
         {
-            var fakeRepository = Substitute.For<IPlayerFactory>();
+            BrandId = brandId,
+            PlayerCode = "PlayerCode",
+            From = DateTimeOffset.UtcNow.AddDays(-1),
+            To = DateTimeOffset.UtcNow.AddDays(1)
+        };
 
-            var sut = new GetPlayerAccountChangeQueryHandler(fakeRepository);
+        var models = CreatePlayerAccountChangeModelFixture(reportDate).CreateMany<PlayerAccountChangeModel>(1)
+            .AsEnumerable();
 
-            var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
-            var reportDate = new DateTimeOffset(2022, 1, 21, 0, 0, 0, new TimeSpan(8, 0, 0));
+        _ = fakeRepository.GetPlayerAccountChangeAsync(request).Returns((models.ToArray(), 1));
 
-            var request = new GetPlayerAccountChangesRequest
-            {
-                BrandId = brandId,
-                PlayerCode = "PlayerCode",
-                From = DateTimeOffset.UtcNow.AddDays(-1),
-                To = DateTimeOffset.UtcNow.AddDays(1)
-            };
+        var response = await sut.Handle(request, default);
 
-            var models = CreatePlayerAccountChangeModelFixture(reportDate).CreateMany<PlayerAccountChangeModel>(1)
-                .AsEnumerable();
+        Assert.AreEqual(1, response.TotalCount);
+    }
 
-            _ = fakeRepository.GetPlayerAccountChangeAsync(request).Returns((models.ToArray(), 1));
+    [Test]
+    public async Task Can_Get_Player_Account_Change_Total_Amount()
+    {
+        var fakeRepository = Substitute.For<IPlayerFactory>();
 
-            var response = await sut.Handle(request, default);
+        var sut = new GetPlayerAccountChangeTotalAmountQueryHandler(fakeRepository);
 
-            Assert.AreEqual(1, response.TotalCount);
-        }
+        var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
 
-        [Test]
-        public async Task Can_Get_Player_Account_Change_Total_Amount()
+        var request = new GetPlayerAccountChangesTotalAmountRequest
         {
-            var fakeRepository = Substitute.For<IPlayerFactory>();
+            BrandId = brandId,
+            PlayerCode = "PlayerCode",
+            From = DateTimeOffset.UtcNow.AddDays(-1),
+            To = DateTimeOffset.UtcNow.AddDays(1)
+        };
 
-            var sut = new GetPlayerAccountChangeTotalAmountQueryHandler(fakeRepository);
+        _ = await sut.Handle(request, default);
 
-            var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
+        _ = fakeRepository
+            .Received(1)
+            .GetPlayerAccountChangeTotalAmountAsync(request);
+    }
 
-            var request = new GetPlayerAccountChangesTotalAmountRequest
-            {
-                BrandId = brandId,
-                PlayerCode = "PlayerCode",
-                From = DateTimeOffset.UtcNow.AddDays(-1),
-                To = DateTimeOffset.UtcNow.AddDays(1)
-            };
-
-            _ = await sut.Handle(request, default);
-
-            _ = fakeRepository
-                .Received(1)
-                .GetPlayerAccountChangeTotalAmountAsync(request);
-        }
-
-        private static Fixture CreatePlayerAccountChangeModelFixture(DateTimeOffset date)
-        {
-            var fixture = new Fixture();
-            fixture.Customize<PlayerAccountChangeModel>(u => u
-                .With(s => s.RecordedOn, date));
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            return fixture;
-        }
+    private static Fixture CreatePlayerAccountChangeModelFixture(DateTimeOffset date)
+    {
+        var fixture = new Fixture();
+        fixture.Customize<PlayerAccountChangeModel>(u => u
+            .With(s => s.RecordedOn, date));
+        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        return fixture;
     }
 }

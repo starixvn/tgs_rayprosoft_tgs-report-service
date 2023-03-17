@@ -41,6 +41,12 @@ namespace Tgs.Report.Repository.Entities.Configurations
 
             entity.Property(e => e.FirstDepositOn).HasColumnName("first_deposit_on");
 
+            entity.Property(e => e.FirstWithdrawAmount).HasColumnName("first_withdraw_amount");
+
+            entity.Property(e => e.FirstWithdrawHandlingFee).HasColumnName("first_withdraw_handling_fee");
+
+            entity.Property(e => e.FirstWithdrawOn).HasColumnName("first_withdraw_on");
+
             entity.Property(e => e.TotalDepositAmount).HasColumnName("total_deposit_amount");
 
             entity.Property(e => e.TotalDepositCount).HasColumnName("total_deposit_count");

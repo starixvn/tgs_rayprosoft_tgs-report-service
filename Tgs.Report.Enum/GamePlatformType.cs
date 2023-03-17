@@ -1,12 +1,11 @@
 ﻿using System;
 
-namespace Tgs.Report.Enum
+namespace Tgs.Report.Enum;
+
+[Flags]
+public enum GamePlatformType : byte
 {
-    [Flags]
-    public enum GamePlatformType : byte
-    {
-        Desktop = 1,
-        Mobile = 2,
-        DesktopAndMobile = Desktop | Mobile
-    }
+    Desktop = 1,
+    Mobile = 2,
+    DesktopAndMobile = Desktop | Mobile
 }

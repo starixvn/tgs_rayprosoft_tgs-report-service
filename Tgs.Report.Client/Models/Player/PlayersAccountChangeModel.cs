@@ -1,16 +1,13 @@
-﻿using System;
+﻿namespace Tgs.Report.Client.Models.Player;
 
-namespace Tgs.Report.Client.Models.Player
+public record PlayersAccountChangeModel
 {
-    public record PlayersAccountChangeModel
-    {
-        public string Username { get; init; } = string.Empty;
-        public decimal Amount { get; init; }
-        public decimal BeforeBalance { get; init; }
-        public decimal AfterBalance { get; init; }
-        public short TransactionType { get; init; }
-        public DateTimeOffset RecordedOn { get; init; }
-        public string Operator { get; init; } = string.Empty;
-        public string Description { get; init; } = string.Empty;
-    }
+    public string Username { get; init; } = string.Empty;
+    public decimal Amount { get; init; }
+    public decimal BeforeBalance { get; init; }
+    public decimal AfterBalance { get; init; }
+    public short TransactionType { get; init; }
+    public DateTimeOffset RecordedOn { get; init; }
+    public string Operator { get; init; } = string.Empty;
+    public string Description { get; init; } = string.Empty;
 }
