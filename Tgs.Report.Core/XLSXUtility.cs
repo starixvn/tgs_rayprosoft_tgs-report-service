@@ -43,7 +43,7 @@ public static class XLSXUtility
                 }
 
 
-                sheet.Cell(rowIdx, columnIndex).SetValue($"{value}");
+                sheet.Cell(rowIdx, columnIndex).Value = $"{value}";
                 columnIndex++;
             }
 
@@ -96,7 +96,7 @@ public static class XLSXUtility
                 }
                 else
                 {
-                    sheet.Cell(rowIdx, columnIndex).SetValue($"{value}");
+                    sheet.Cell(rowIdx, columnIndex).Value = $"{value}";
                 }
 
                 columnIndex++;
