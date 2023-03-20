@@ -129,7 +129,11 @@ public class
             .CreatePagedResponseAsync(request)
             .ConfigureAwait(false);
 
-        return response.Items?.Select(x => new MarketAgentProfitModel
+        return new PagedResponse<MarketAgentProfitModel>
+        {
+            Valid = true,
+            TotalCount = response.TotalCount,
+            Items = response.Items?.Select(x => new MarketAgentProfitModel
             {
                 MasterAgentName = x.MasterAgentName,
                 Percentage = x.Percentage,
@@ -138,7 +142,7 @@ public class
                 CompanyAdjustment = x.CompanyAdjustment,
                 AgentProfit = decimal.Parse(x.AgentProfit!),
                 CompanyProfit = decimal.Parse(x.CompanyProfit!)
-            }).AsQueryable()
-            .CreatePagedResponse(request) ?? new PagedResponse<MarketAgentProfitModel>();
+            }).ToArray()
+        };
     }
 }
