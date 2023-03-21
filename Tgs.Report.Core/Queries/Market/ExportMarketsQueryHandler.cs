@@ -38,7 +38,8 @@ internal class ExportMarketsQueryHandler : IRequestHandler<ExportMarketsRequest,
             BetAmount = x.BetAmount,
             ValidBetAmount = x.ValidBetAmount,
             WinLossAmount = x.WinLossAmount,
-            NetProfit = x.NetProfit
+            NetProfit = x.NetProfit,
+            AgentProfit = x.AgentProfit
         });
 
         var resource = new ResourceManager(typeof(Resources.Market));

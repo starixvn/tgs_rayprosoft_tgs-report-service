@@ -798,4 +798,17 @@ public class ReportClient : IReportClient
         return JsonSerializer.Deserialize<VipTotalAmountModel>(await response.Content.ReadAsStringAsync(),
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
     }
+
+    public async ValueTask<PagedResponse<MarketAgentProfitModel>> GetMarketAgentProfitsAsync(GetMarketAgentProfitsRequest request)
+    {
+        var path = ClientPath.AppendWithProperties("/api/marketReport/agentProfit?", request);
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+        var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        return JsonSerializer.Deserialize<PagedResponse<MarketAgentProfitModel>>(await response.Content.ReadAsStringAsync(),
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+    }
 }

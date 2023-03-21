@@ -39,7 +39,8 @@ internal class ExportResellerMarketsQueryHandler : IRequestHandler<ExportReselle
             BetAmount = x.BetAmount,
             Turnover = x.Turnover,
             WinLossAmount = x.WinLossAmount,
-            NetProfit = x.NetProfit
+            NetProfit = x.NetProfit,
+            AgentProfit = x.AgentProfit
         });
 
         var resource = new ResourceManager(typeof(Resources.ResellerMarket));

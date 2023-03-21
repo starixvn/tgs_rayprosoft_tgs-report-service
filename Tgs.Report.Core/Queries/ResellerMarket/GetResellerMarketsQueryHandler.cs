@@ -304,7 +304,8 @@ public class GetResellerMarketsQueryHandler : IRequestHandler<GetResellerMarkets
                 BetAmount = currency.Sum(x => x.BetAmount),
                 Turnover = currency.Sum(x => x.Turnover),
                 WinLossAmount = currency.Sum(x => x.WinLossAmount),
-                NetProfit = currency.Sum(x => x.NetProfit)
+                NetProfit = currency.Sum(x => x.NetProfit),
+                AgentProfit = currency.Sum(x => x.AgentProfit)
             })
             .ToArray();
 

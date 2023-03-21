@@ -130,4 +130,6 @@ public interface IReportClient
         GetPlayerContributionsTotalAmountRequest request);
 
     ValueTask<VipTotalAmountModel> GetVipReportTotalAmountAsync(GetVipReportTotalAmountRequest request);
+
+    ValueTask<PagedResponse<MarketAgentProfitModel>> GetMarketAgentProfitsAsync(GetMarketAgentProfitsRequest request);
 }
