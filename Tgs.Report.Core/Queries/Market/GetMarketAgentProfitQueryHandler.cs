@@ -99,7 +99,7 @@ public class
                                 m.BonusAggregate.BirthdayAmount) +
                             m.AgentAggregate.BonusAdjustAmount -
                             m.AgentAggregate.NoIncludeNetProfitBonusAdjustAmount)) *
-                        (m.AgentAggregate.ChiefAgentDividendPercentage / 100)).ToString(),
+                        m.AgentAggregate.ChiefAgentDividendPercentage * 0.01M),
                 CompanyProfit = aggregates.Sum(m
                     => m.AgentAggregate.AgentId == null
                         ? 0M
@@ -111,7 +111,7 @@ public class
                                 m.BonusAggregate.BirthdayAmount) +
                             m.AgentAggregate.BonusAdjustAmount -
                             m.AgentAggregate.NoIncludeNetProfitBonusAdjustAmount)) *
-                        ((100 - m.AgentAggregate.ChiefAgentDividendPercentage) / 100)).ToString()
+                        (100 - m.AgentAggregate.ChiefAgentDividendPercentage) * 0.01M)
             })
             .Join(_context.Agents,
                 aggregate => aggregate.MasterAgentId,
@@ -140,8 +140,8 @@ public class
                 DirectPlayerNetProfit = x.DirectPlayerNetProfit,
                 TeamNetProfit = x.TeamNetProfit,
                 CompanyAdjustment = x.CompanyAdjustment,
-                AgentProfit = decimal.Parse(x.AgentProfit!),
-                CompanyProfit = decimal.Parse(x.CompanyProfit!)
+                AgentProfit = x.AgentProfit ?? 0M,
+                CompanyProfit = x.CompanyProfit ?? 0M
             }).ToArray()
         };
     }

@@ -200,7 +200,7 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                                 m.BonusAggregate.BirthdayAmount) +
                             m.AgentAggregate.BonusAdjustAmount -
                             m.AgentAggregate.NoIncludeNetProfitBonusAdjustAmount)) *
-                        (m.AgentAggregate.ChiefAgentDividendPercentage / 100)).ToString(),
+                        m.AgentAggregate.ChiefAgentDividendPercentage * 0.01M),
                 NetProfit = aggregates.Sum(m
                     => m.AgentAggregate.WinLossAmount - (m.AgentAggregate.CompanyAdjustAmount -
                         m.AgentAggregate.NoIncludeNetProfitCompanyAdjustAmount) -
@@ -212,7 +212,7 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                             m.AgentAggregate.BonusAdjustAmount - m.AgentAggregate.NoIncludeNetProfitBonusAdjustAmount) *
                         (m.AgentAggregate.AgentId == null
                             ? 1
-                            : (100 - m.AgentAggregate.ChiefAgentDividendPercentage) / 100) -
+                            : (100 - m.AgentAggregate.ChiefAgentDividendPercentage) * 0.01M) -
                         (m.AgentAggregate.AgentId == null
                             ? 0M
                             : (m.AgentAggregate.WinLossAmount - (m.AgentAggregate.RebateAmount +
@@ -223,7 +223,7 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                                     m.BonusAggregate.BirthdayAmount) +
                                 m.AgentAggregate.BonusAdjustAmount -
                                 m.AgentAggregate.NoIncludeNetProfitBonusAdjustAmount)) *
-                            (m.AgentAggregate.ChiefAgentDividendPercentage / 100)))).ToString(),
+                            m.AgentAggregate.ChiefAgentDividendPercentage * 0.01M))),
                 PlatformCoveredBonus =
                     aggregates.Sum(
                         m => m.AgentAggregate.ChiefAgentDividendPercentage == null
@@ -233,12 +233,12 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                                     ? 0M
                                     : m.BonusAggregate.UpgradeAmount + m.BonusAggregate.SeasonAmount +
                                     m.BonusAggregate.BirthdayAmount)) *
-                            ((100 - m.AgentAggregate.ChiefAgentDividendPercentage.Value) / 100)).ToString(),
+                            (100 - m.AgentAggregate.ChiefAgentDividendPercentage.Value) * 0.01M),
                 PlatformCoveredBonusAdjust =
                     aggregates.Sum(m => m.AgentAggregate.ChiefAgentDividendPercentage == null
                         ? 0M
                         : (m.AgentAggregate.BonusAdjustAmount - m.AgentAggregate.NoIncludeNetProfitBonusAdjustAmount) *
-                        ((100 - m.AgentAggregate.ChiefAgentDividendPercentage.Value) / 100)).ToString()
+                        (100 - m.AgentAggregate.ChiefAgentDividendPercentage.Value) * 0.01M)
             })
             .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
@@ -321,13 +321,13 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                         ValidBetAmount = aggregates.Sum(m => m.MarketAggregate?.OriginalTurnover ?? 0M),
                         Turnover = aggregates.Sum(m => m.MarketAggregate?.Turnover ?? 0M),
                         WinLossAmount = aggregates.Sum(m => m.MarketAggregate?.WinLossAmount ?? 0M),
-                        NetProfit = aggregates.Sum(m => decimal.Parse(m.MarketAggregate?.NetProfit ?? "0")),
+                        NetProfit = aggregates.Sum(m => m.MarketAggregate?.NetProfit ?? 0M),
                         AdditionalExpenses = aggregates.Sum(m => m.MarketAggregate?.AllAgentRebateAmount ?? 0M),
                         PlatformCoveredBonus =
-                            aggregates.Sum(m => decimal.Parse(m.MarketAggregate?.PlatformCoveredBonus ?? "0")),
+                            aggregates.Sum(m => m.MarketAggregate?.PlatformCoveredBonus ?? 0M),
                         PlatformCoveredBonusAdjust =
-                            aggregates.Sum(m => decimal.Parse(m.MarketAggregate?.PlatformCoveredBonusAdjust ?? "0")),
-                        AgentProfit = aggregates.Sum(m => decimal.Parse(m.MarketAggregate?.TotalAgentDividend ?? "0"))
+                            aggregates.Sum(m => m.MarketAggregate?.PlatformCoveredBonusAdjust ?? 0M),
+                        AgentProfit = aggregates.Sum(m => m.MarketAggregate?.TotalAgentDividend ?? 0M)
                     };
                 })
             .AsQueryable()

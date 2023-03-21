@@ -226,7 +226,7 @@ public class GetLicenseeMarketsQueryHandler : IRequestHandler<GetLicenseeMarkets
                                 m.BonusAggregate.BirthdayAmount) +
                             m.AgentAggregate.BonusAdjustAmount -
                             m.AgentAggregate.NoIncludeNetProfitBonusAdjustAmount)) *
-                        (m.AgentAggregate.ChiefAgentDividendPercentage / 100)).ToString(),
+                        m.AgentAggregate.ChiefAgentDividendPercentage * 0.01M),
                 NetProfit = aggregates.Sum(m
                     => m.AgentAggregate.WinLossAmount - (m.AgentAggregate.CompanyAdjustAmount -
                         m.AgentAggregate.NoIncludeNetProfitCompanyAdjustAmount) -
@@ -238,7 +238,7 @@ public class GetLicenseeMarketsQueryHandler : IRequestHandler<GetLicenseeMarkets
                             m.AgentAggregate.BonusAdjustAmount - m.AgentAggregate.NoIncludeNetProfitBonusAdjustAmount) *
                         (m.AgentAggregate.AgentId == null
                             ? 1
-                            : (100 - m.AgentAggregate.ChiefAgentDividendPercentage) / 100) -
+                            : (100 - m.AgentAggregate.ChiefAgentDividendPercentage) * 0.01M) -
                         (m.AgentAggregate.AgentId == null
                             ? 0M
                             : (m.AgentAggregate.WinLossAmount - (m.AgentAggregate.RebateAmount +
@@ -249,7 +249,7 @@ public class GetLicenseeMarketsQueryHandler : IRequestHandler<GetLicenseeMarkets
                                     m.BonusAggregate.BirthdayAmount) +
                                 m.AgentAggregate.BonusAdjustAmount -
                                 m.AgentAggregate.NoIncludeNetProfitBonusAdjustAmount)) *
-                            (m.AgentAggregate.ChiefAgentDividendPercentage / 100)))).ToString()
+                            m.AgentAggregate.ChiefAgentDividendPercentage * 0.01M)))
             })
             .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
@@ -283,8 +283,8 @@ public class GetLicenseeMarketsQueryHandler : IRequestHandler<GetLicenseeMarkets
                     BetAmount = x.BetAmount,
                     Turnover = x.Turnover,
                     WinLossAmount = x.WinLossAmount,
-                    NetProfit = decimal.Parse(x.NetProfit ?? "0"),
-                    AgentProfit = decimal.Parse(x.TotalAgentDividend ?? "0")
+                    NetProfit = x.NetProfit ?? 0M,
+                    AgentProfit = x.TotalAgentDividend ?? 0M
                 };
             });
 
