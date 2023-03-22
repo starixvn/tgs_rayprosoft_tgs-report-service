@@ -1,9 +1,8 @@
-﻿namespace Tgs.Report.ViewModel
+﻿namespace Tgs.Report.ViewModel;
+
+public enum SortOrder
 {
-    public enum SortOrder
-    {
-        Unspecified = -1,
-        Ascending = 0,
-        Descending = 1
-    }
+    Unspecified = -1,
+    Ascending = 0,
+    Descending = 1
 }

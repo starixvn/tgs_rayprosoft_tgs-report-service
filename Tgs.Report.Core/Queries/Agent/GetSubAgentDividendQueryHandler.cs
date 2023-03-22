@@ -6,7 +6,8 @@ using Tgs.Report.ViewModel.Agent;
 
 namespace Tgs.Report.Core.Queries.Agent;
 
-public class GetSubAgentDividendQueryHandler : IRequestHandler<GetSubAgentDividendsRequest, PagedResponse<AgentDividendModel>>
+public class
+    GetSubAgentDividendQueryHandler : IRequestHandler<GetSubAgentDividendsRequest, PagedResponse<AgentDividendModel>>
 {
     private readonly TgsContext _context;
 
@@ -53,10 +54,10 @@ public class GetSubAgentDividendQueryHandler : IRequestHandler<GetSubAgentDivide
             .Where(x => x.To < request.To.ToUniversalTime())
             .Where(x => agentIds.Contains(x.AgentId))
             .GroupBy(x => new
-            {
-                x.AgentId,
-                x.AgentDividendPercentage
-            },
+                {
+                    x.AgentId,
+                    x.AgentDividendPercentage
+                },
                 (x, list) => new
                 {
                     x.AgentId,
@@ -89,10 +90,14 @@ public class GetSubAgentDividendQueryHandler : IRequestHandler<GetSubAgentDivide
             .Where(x => agentIds.Contains(x.AgentId))
             .Where(x => x.AgentId == x.DividendProviderAgentId)
             .Where(x => x.AgentCoveredBonus != null || x.AgentCoveredBonusAdjust != null)
-            .GroupBy(x => new { x.AgentId, x.AgentDividendPercentage }, (agent, list) => new
+            .GroupBy(x => new
             {
-                AgentId = agent.AgentId,
-                AgentDividendPercentage = agent.AgentDividendPercentage,
+                x.AgentId,
+                x.AgentDividendPercentage
+            }, (agent, list) => new
+            {
+                agent.AgentId,
+                agent.AgentDividendPercentage,
                 AgentCoveredBonus = list.Sum(l => l.AgentCoveredBonus),
                 AgentCoveredBonusAdjust = list.Sum(l => l.AgentCoveredBonusAdjust)
             })
@@ -100,28 +105,36 @@ public class GetSubAgentDividendQueryHandler : IRequestHandler<GetSubAgentDivide
             .ConfigureAwait(false);
 
         var models = agentDividends.Join(subAgents,
-            ad => ad.AgentId,
-            a => a.Id,
-            (ad, a) => new AgentDividendModel
-            {
-                Id = ad.AgentId,
-                Username = a.Username,
-                CompanyAdjustAmount = ad.CompanyAdjustAmount,
-                AgentAdjustAmount = ad.AgentAdjustAmount - ad.NoIncludeNetProfitAgentAdjustAmount,
-                BonusAdjustAmount = ad.BonusAdjustAmount - ad.NoIncludeNetProfitBonusAdjustAmount,
-                BonusAmount = ad.BonusAmount,
-                BetAmount = ad.BetAmount,
-                ValidBetAmount = ad.OriginalTurnover,
-                WinLossAmount = ad.WinLossAmount,
-                NetProfit = ad.NetProfit,
-                AgentDividendAmount = ad.AgentDividendAmount,
-                FromPlayerAgentDividendAmount = ad.FromPlayerAgentDividendAmount,
-                FromTeamAgentDividendAmount = ad.FromTeamAgentDividendAmount,
-                AgentDividendPercentage = ad.AgentDividendPercentage
-            })
+                ad => ad.AgentId,
+                a => a.Id,
+                (ad, a) => new AgentDividendModel
+                {
+                    Id = ad.AgentId,
+                    Username = a.Username,
+                    CompanyAdjustAmount = ad.CompanyAdjustAmount,
+                    AgentAdjustAmount = ad.AgentAdjustAmount - ad.NoIncludeNetProfitAgentAdjustAmount,
+                    BonusAdjustAmount = ad.BonusAdjustAmount - ad.NoIncludeNetProfitBonusAdjustAmount,
+                    BonusAmount = ad.BonusAmount,
+                    BetAmount = ad.BetAmount,
+                    ValidBetAmount = ad.OriginalTurnover,
+                    WinLossAmount = ad.WinLossAmount,
+                    NetProfit = ad.NetProfit,
+                    AgentDividendAmount = ad.AgentDividendAmount,
+                    FromPlayerAgentDividendAmount = ad.FromPlayerAgentDividendAmount,
+                    FromTeamAgentDividendAmount = ad.FromTeamAgentDividendAmount,
+                    AgentDividendPercentage = ad.AgentDividendPercentage
+                })
             .GroupJoin(agentCovered,
-                x => new { AgentId = x.Id, x.AgentDividendPercentage },
-                c => new { c.AgentId, c.AgentDividendPercentage },
+                x => new
+                {
+                    AgentId = x.Id,
+                    x.AgentDividendPercentage
+                },
+                c => new
+                {
+                    c.AgentId,
+                    c.AgentDividendPercentage
+                },
                 (ad, list) => new
                 {
                     ad,

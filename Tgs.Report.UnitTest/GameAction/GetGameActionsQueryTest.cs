@@ -8,44 +8,43 @@ using Tgs.Report.Core.Queries.GameAction;
 using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.GameAction;
 
-namespace Tgs.Report.UnitTest.GameAction
+namespace Tgs.Report.UnitTest.GameAction;
+
+[TestFixture]
+public sealed class GetGameActionsQueryTest : BaseTest
 {
-    [TestFixture]
-    public sealed class GetGameActionsQueryTest : BaseTest
+    [Test]
+    public async Task Can_Get_Game_Actions()
     {
-        [Test]
-        public async Task Can_Get_Game_Actions()
+        var fakeDbContext = Substitute.For<TgsContext>();
+
+        var sut = new GetGameActionsQueryHandler(fakeDbContext);
+
+        var gameActions = CreateGameActionFixture().CreateMany<Repository.Entities.GameAction>(1)
+            .AsQueryable()
+            .BuildMock();
+
+        var request = new GetGameActionsRequest
         {
-            var fakeDbContext = Substitute.For<TgsContext>();
+            RoundId = gameActions.First().RoundId,
+            SortBy = null
+        };
 
-            var sut = new GetGameActionsQueryHandler(fakeDbContext);
+        var mockGameActions = GetDbSet(gameActions);
 
-            var gameActions = CreateGameActionFixture().CreateMany<Repository.Entities.GameAction>(1)
-                .AsQueryable()
-                .BuildMock();
+        fakeDbContext.GameActions.Returns(mockGameActions.Object);
 
-            var request = new GetGameActionsRequest
-            {
-                RoundId = gameActions.First().RoundId,
-                SortBy = null
-            };
+        var response = await sut.Handle(request, default);
 
-            var mockGameActions = GetDbSet(gameActions);
+        Assert.IsTrue(response.Valid);
+        Assert.AreEqual(1, response.Items?.Length);
+    }
 
-            fakeDbContext.GameActions.Returns(mockGameActions.Object);
-
-            var response = await sut.Handle(request, default);
-
-            Assert.IsTrue(response.Valid);
-            Assert.AreEqual(1, response.Items?.Length);
-        }
-
-        private static Fixture CreateGameActionFixture()
-        {
-            var fixture = new Fixture();
-            fixture.Customize<Repository.Entities.GameAction>(u => u);
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            return fixture;
-        }
+    private static Fixture CreateGameActionFixture()
+    {
+        var fixture = new Fixture();
+        fixture.Customize<Repository.Entities.GameAction>(u => u);
+        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        return fixture;
     }
 }

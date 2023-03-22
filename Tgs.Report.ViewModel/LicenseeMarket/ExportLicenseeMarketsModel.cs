@@ -23,4 +23,6 @@ public record ExportLicenseeMarketsModel
     public decimal WinLossAmount { get; init; }
 
     public decimal NetProfit { get; init; }
+
+    public decimal AgentProfit { get; init; }
 }

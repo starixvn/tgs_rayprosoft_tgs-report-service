@@ -1,7 +1,6 @@
-﻿namespace Tgs.Report.Enum
+﻿namespace Tgs.Report.Enum;
+
+public enum AdditionalExpensesType
 {
-    public enum AdditionalExpensesType
-    {
-        AllAgent = 1000
-    }
+    AllAgent = 1000
 }

@@ -14,4 +14,5 @@ public record ResellerMarketDataModel
     public decimal Turnover { get; init; }
     public decimal WinLossAmount { get; init; }
     public decimal NetProfit { get; init; }
+    public decimal AgentProfit { get; init; }
 }

@@ -1,7 +1,4 @@
-﻿using System;
+﻿namespace Tgs.Report.Client.Models.Player;
 
-namespace Tgs.Report.Client.Models.Player
-{
-    public record ExportPlayerContributionsRequest(Guid BrandId, string? Username, int? Level, DateTimeOffset From,
-        DateTimeOffset To);
-}
+public record ExportPlayerContributionsRequest(Guid BrandId, string? Username, int? Level, DateTimeOffset From,
+    DateTimeOffset To);

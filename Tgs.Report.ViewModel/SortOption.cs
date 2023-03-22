@@ -1,15 +1,14 @@
-﻿namespace Tgs.Report.ViewModel
+﻿namespace Tgs.Report.ViewModel;
+
+public class SortOption
 {
-    public class SortOption
+    public string? PropertyName { get; init; }
+
+    public bool IsDescending { get; init; }
+
+    public SortOption(string? propertyName, bool isDescending)
     {
-        public string? PropertyName { get; init; }
-
-        public bool IsDescending { get; init; }
-
-        public SortOption(string? propertyName, bool isDescending)
-        {
-            IsDescending = isDescending;
-            PropertyName = propertyName;
-        }
+        IsDescending = isDescending;
+        PropertyName = propertyName;
     }
 }

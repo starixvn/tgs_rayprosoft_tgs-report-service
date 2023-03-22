@@ -1,8 +1,7 @@
-﻿namespace Tgs.Report.Enum
+﻿namespace Tgs.Report.Enum;
+
+public enum BusinessType
 {
-    public enum BusinessType
-    {
-        B2C = 0,
-        B2B = 1
-    }
+    B2C = 0,
+    B2B = 1
 }

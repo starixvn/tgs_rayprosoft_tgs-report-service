@@ -1,10 +1,9 @@
-﻿namespace Tgs.Report.Enum
+﻿namespace Tgs.Report.Enum;
+
+public enum Status
 {
-    public enum Status
-    {
-        Active = 0,
-        Inactive = 1,
-        Archived = 2,
-        Maintenance = 3
-    }
+    Active = 0,
+    Inactive = 1,
+    Archived = 2,
+    Maintenance = 3
 }

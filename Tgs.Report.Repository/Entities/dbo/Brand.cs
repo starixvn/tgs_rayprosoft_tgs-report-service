@@ -65,6 +65,7 @@ namespace Tgs.Report.Repository.Entities
         public string? PlayerRegisterFlowSettings { get; set; }
         public bool EnableBankInfoRegisterFlow { get; set; }
         public bool DepositPaymentLockEnabled { get; set; }
+        public int? TimeSpanMinutes { get; set; }
 
         public virtual Licensee Licensee { get; set; } = null!;
         public virtual ICollection<AgentTransaction> AgentTransactions { get; set; }

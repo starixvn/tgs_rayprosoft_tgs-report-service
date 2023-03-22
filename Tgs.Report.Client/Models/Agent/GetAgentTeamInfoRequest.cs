@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace Tgs.Report.Client.Models.Agent;
 
-namespace Tgs.Report.Client.Models.Agent
+public record GetAgentTeamInfoRequest : PageableRequest
 {
-    public record GetAgentTeamInfoRequest : PageableRequest
-    {
-        public Guid AgentId { get; init; }
-    }
+    public Guid AgentId { get; init; }
 }

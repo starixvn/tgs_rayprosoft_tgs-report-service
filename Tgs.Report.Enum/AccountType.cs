@@ -1,8 +1,7 @@
-﻿namespace Tgs.Report.Enum
+﻿namespace Tgs.Report.Enum;
+
+public enum AccountType
 {
-    public enum AccountType
-    {
-        Agent = 1,
-        Player = 2
-    }
+    Agent = 1,
+    Player = 2
 }

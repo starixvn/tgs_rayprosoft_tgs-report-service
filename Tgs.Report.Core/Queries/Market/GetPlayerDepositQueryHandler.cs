@@ -11,9 +11,7 @@ public class GetPlayerDepositQueryHandler : IRequestHandler<GetPlayerDepositsReq
     private readonly TgsContext _context;
 
     public GetPlayerDepositQueryHandler(TgsContext context)
-    {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-    }
+        => _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async Task<PagedResponse<PlayerDepositModel>> Handle(
         GetPlayerDepositsRequest request,

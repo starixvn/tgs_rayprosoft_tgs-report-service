@@ -9,8 +9,8 @@ namespace Tgs.Report.Core.Queries.Market;
 public class GetPlayerDepositFirstDetailQueryHandler
     : IRequestHandler<GetPlayerFirstDepositDetailsRequest, PagedResponse<PlayerFirstDepositDetailModel>>
 {
-    private readonly IPlayerDepositFactory _playerDepositFactory;
     private readonly TgsContext _context;
+    private readonly IPlayerDepositFactory _playerDepositFactory;
 
     public GetPlayerDepositFirstDetailQueryHandler(
         IPlayerDepositFactory playerDepositFactory,

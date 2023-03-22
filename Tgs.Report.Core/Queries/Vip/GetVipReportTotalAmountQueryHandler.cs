@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Tgs.Report.Repository.Entities;
-using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Vip;
 
 namespace Tgs.Report.Core.Queries.Vip;
@@ -10,10 +9,7 @@ public class GetVipReportTotalAmountQueryHandler : IRequestHandler<GetVipReportT
 {
     private readonly TgsContext _context;
 
-    public GetVipReportTotalAmountQueryHandler(TgsContext context)
-    {
-        _context = context;
-    }
+    public GetVipReportTotalAmountQueryHandler(TgsContext context) => _context = context;
 
     public async Task<VipTotalAmountModel> Handle(
         GetVipReportTotalAmountRequest request,
@@ -51,28 +47,30 @@ public class GetVipReportTotalAmountQueryHandler : IRequestHandler<GetVipReportT
         var fromDate = new DateOnly(from.Year, from.Month, from.Day);
         var toDate = new DateOnly(to.Year, to.Month, to.Day);
 
-        var totalWithdrawal = to > today ? await _context.WithdrawForms
-            .Where(x => x.BrandId == request.BrandId)
-            .Where(x => x.UserType == 1 && x.Status == 9000)
-            .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
-            .Join(_context.Players,
-                wf => wf.UserId,
-                p => p.PlayerCode,
-                (wf, p) => new
-                {
-                    wf.UserId,
-                    wf.ActualAmount,
-                    wf.Amount,
-                    p.Username,
-                    Level = p.Vip == null ? (int?)null : p.Vip.Level
-                })
-            .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
-            .Where(request.Level, x => x.Level == request.Level)
-            .SumAsync(x => x.ActualAmount ?? x.Amount, cancellationToken)
-            .ConfigureAwait(false)
+        var totalWithdrawal = to > today
+            ? await _context.WithdrawForms
+                .Where(x => x.BrandId == request.BrandId)
+                .Where(x => x.UserType == 1 && x.Status == 9000)
+                .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
+                .Join(_context.Players,
+                    wf => wf.UserId,
+                    p => p.PlayerCode,
+                    (wf, p) => new
+                    {
+                        wf.UserId,
+                        wf.ActualAmount,
+                        wf.Amount,
+                        p.Username,
+                        Level = p.Vip == null ? (int?)null : p.Vip.Level
+                    })
+                .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
+                .Where(request.Level, x => x.Level == request.Level)
+                .SumAsync(x => x.ActualAmount ?? x.Amount, cancellationToken)
+                .ConfigureAwait(false)
             : 0M;
 
-        var totalDeposit = to > today ? await _context.DepositForms
+        var totalDeposit = to > today
+            ? await _context.DepositForms
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.Status == 8000)
                 .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
@@ -94,24 +92,25 @@ public class GetVipReportTotalAmountQueryHandler : IRequestHandler<GetVipReportT
             : 0M;
 
         var dailyDepositWithdraws = await _context.PlayerDailyPaymentStatistics
-            .Join(_context.Players.Where(x => x.BrandId == request.BrandId), pp => pp.PlayerCode, p => p.PlayerCode,(pp,p)=>new
-            {
-                pp.ReportDate,
-                p.AgentId,
-                p.PlayerCode,
-                p.Username,
-                Level = p.Vip == null ? (int?)null : p.Vip.Level,
-                pp.DailyDepositAmount,
-                pp.DailyWithdrawAmount
-            })
+            .Join(_context.Players.Where(x => x.BrandId == request.BrandId), pp => pp.PlayerCode, p => p.PlayerCode,
+                (pp, p) => new
+                {
+                    pp.ReportDate,
+                    p.AgentId,
+                    p.PlayerCode,
+                    p.Username,
+                    Level = p.Vip == null ? (int?)null : p.Vip.Level,
+                    pp.DailyDepositAmount,
+                    pp.DailyWithdrawAmount
+                })
             .Where(x => x.ReportDate >= fromDate && x.ReportDate < toDate)
             .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
             .Where(request.Level, x => x.Level == request.Level)
             .GroupBy(x => true)
-            .Select(group=> new
+            .Select(group => new
             {
                 DailyDepositAmount = group.Sum(s => s.DailyDepositAmount),
-                DailyWithdrawAmount = group.Sum(s => s.DailyWithdrawAmount),
+                DailyWithdrawAmount = group.Sum(s => s.DailyWithdrawAmount)
             })
             .FirstOrDefaultAsync(cancellationToken)
             .ConfigureAwait(false);
@@ -146,7 +145,8 @@ public class GetVipReportTotalAmountQueryHandler : IRequestHandler<GetVipReportT
                         ValidBetAmount = list.Sum(p => p.OriginalTurnover),
                         Turnover = list.Sum(p => p.Turnover),
                         WinLossAmount = list.Sum(p => p.WinLossAmount),
-                        NetProfit = list.Sum(p => p.WinLossAmount - (p.CompanyAdjustAmount - p.NoIncludeNetProfitCompanyAdjustAmount) -
+                        NetProfit = list.Sum(p => p.WinLossAmount -
+                            (p.CompanyAdjustAmount - p.NoIncludeNetProfitCompanyAdjustAmount) -
                             p.RebateAmount - p.PromotionAmount)
                     }),
                 p => p.PlayerCode,
@@ -241,19 +241,19 @@ public class GetVipReportTotalAmountQueryHandler : IRequestHandler<GetVipReportT
                 Level = x.Vip == null ? (int?)null : x.Vip.Level
             }), agg => agg.PlayerCode, p => p.PlayerCode, (agg, player) => new
             {
-                Username = player.Username,
-                Level = player.Level,
-                BrandId = player.BrandId,
-                PlayerCode = agg.PlayerCode,
-                DepositAmount = agg.DepositAmount,
-                CompanyAdjustAmount = agg.CompanyAdjustAmount,
-                BonusAdjustAmount = agg.BonusAdjustAmount,
-                BonusAmount = agg.BonusAmount,
-                BetAmount = agg.BetAmount,
-                ValidBetAmount = agg.ValidBetAmount,
-                Turnover = agg.Turnover,
-                WinLossAmount = agg.WinLossAmount,
-                NetProfit = agg.NetProfit,
+                player.Username,
+                player.Level,
+                player.BrandId,
+                agg.PlayerCode,
+                agg.DepositAmount,
+                agg.CompanyAdjustAmount,
+                agg.BonusAdjustAmount,
+                agg.BonusAmount,
+                agg.BetAmount,
+                agg.ValidBetAmount,
+                agg.Turnover,
+                agg.WinLossAmount,
+                agg.NetProfit,
                 agg.UpgradeAmount,
                 agg.SeasonAmount,
                 agg.BirthdayAmount
@@ -276,52 +276,52 @@ public class GetVipReportTotalAmountQueryHandler : IRequestHandler<GetVipReportT
             .FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
 
 
-            var vipRebateAmount = await _context.PlayerGameRebateAggregates
-                .Where(x => x.BrandId == request.BrandId)
-                .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
-                .GroupBy(x => new
-                    {
-                        x.PlayerCode,
-                        x.BrandId
-                    },
-                    (x, players) => new
-                    {
-                        x.BrandId,
-                        x.PlayerCode,
-                        RebateAmount = players.Sum(m => m.VipRebateAmount)
-                    })
-                .Join(_context.Players.Include(x => x.Vip).Select(x => new
+        var vipRebateAmount = await _context.PlayerGameRebateAggregates
+            .Where(x => x.BrandId == request.BrandId)
+            .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
+            .GroupBy(x => new
+                {
+                    x.PlayerCode,
+                    x.BrandId
+                },
+                (x, players) => new
                 {
                     x.BrandId,
                     x.PlayerCode,
-                    x.Username,
-                    Level = x.Vip == null ? (int?)null : x.Vip.Level
-                }), agg => agg.PlayerCode, p => p.PlayerCode, (agg, player) => new
-                {
-                    Username = player.Username,
-                    Level = player.Level,
-                    BrandId = agg.BrandId,
-                    PlayerCode = agg.PlayerCode,
-                    RebateAmount = agg.RebateAmount
+                    RebateAmount = players.Sum(m => m.VipRebateAmount)
                 })
-                .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
-                .Where(request.Level, x => x.Level == request.Level)
-                .SumAsync(x => x.RebateAmount, cancellationToken)
-                .ConfigureAwait(false);
-
-            return new VipTotalAmountModel
+            .Join(_context.Players.Include(x => x.Vip).Select(x => new
             {
-                DepositAmount = (dailyDepositWithdraws?.DailyDepositAmount ?? 0M) + totalDeposit,
-                WithdrawalAmount = (dailyDepositWithdraws?.DailyWithdrawAmount ?? 0M) + totalWithdrawal,
-                CompanyAdjustAmount = vipTotalAmount?.CompanyAdjustAmount ?? 0M,
-                BonusAdjustAmount = vipTotalAmount?.BonusAdjustAmount ?? 0M,
-                BonusAmount = vipTotalAmount?.BonusAmount ?? 0M,
-                BetAmount = vipTotalAmount?.BetAmount ?? 0M,
-                ValidBetAmount = vipTotalAmount?.ValidBetAmount ?? 0M,
-                Turnover = vipTotalAmount?.Turnover ?? 0M,
-                WinLossAmount = vipTotalAmount?.WinLossAmount ?? 0M,
-                NetProfit = vipTotalAmount?.NetProfit ?? 0M,
-                RebateAmount = vipRebateAmount
-            };
+                x.BrandId,
+                x.PlayerCode,
+                x.Username,
+                Level = x.Vip == null ? (int?)null : x.Vip.Level
+            }), agg => agg.PlayerCode, p => p.PlayerCode, (agg, player) => new
+            {
+                player.Username,
+                player.Level,
+                agg.BrandId,
+                agg.PlayerCode,
+                agg.RebateAmount
+            })
+            .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
+            .Where(request.Level, x => x.Level == request.Level)
+            .SumAsync(x => x.RebateAmount, cancellationToken)
+            .ConfigureAwait(false);
+
+        return new()
+        {
+            DepositAmount = (dailyDepositWithdraws?.DailyDepositAmount ?? 0M) + totalDeposit,
+            WithdrawalAmount = (dailyDepositWithdraws?.DailyWithdrawAmount ?? 0M) + totalWithdrawal,
+            CompanyAdjustAmount = vipTotalAmount?.CompanyAdjustAmount ?? 0M,
+            BonusAdjustAmount = vipTotalAmount?.BonusAdjustAmount ?? 0M,
+            BonusAmount = vipTotalAmount?.BonusAmount ?? 0M,
+            BetAmount = vipTotalAmount?.BetAmount ?? 0M,
+            ValidBetAmount = vipTotalAmount?.ValidBetAmount ?? 0M,
+            Turnover = vipTotalAmount?.Turnover ?? 0M,
+            WinLossAmount = vipTotalAmount?.WinLossAmount ?? 0M,
+            NetProfit = vipTotalAmount?.NetProfit ?? 0M,
+            RebateAmount = vipRebateAmount
+        };
     }
 }

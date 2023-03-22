@@ -1,9 +1,8 @@
-﻿namespace Tgs.Report.Enum
+﻿namespace Tgs.Report.Enum;
+
+public enum AgentStatus
 {
-    public enum AgentStatus
-    {
-        Enabled = 0,
-        Disabled = 1,
-        InBlacklist = 2
-    }
+    Enabled = 0,
+    Disabled = 1,
+    InBlacklist = 2
 }

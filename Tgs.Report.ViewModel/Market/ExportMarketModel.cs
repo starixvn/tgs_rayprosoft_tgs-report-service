@@ -15,4 +15,5 @@ public record ExportMarketModel
     public decimal ValidBetAmount { get; init; }
     public decimal WinLossAmount { get; init; }
     public decimal NetProfit { get; init; }
+    public decimal AgentProfit { get; init; }
 }

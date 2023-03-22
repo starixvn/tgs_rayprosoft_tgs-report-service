@@ -1,11 +1,10 @@
-﻿namespace Tgs.Report.Enum
+﻿namespace Tgs.Report.Enum;
+
+public enum AdjustmentTransactionType
 {
-    public enum AdjustmentTransactionType
-    {
-        Dividend = 1,
-        Recharge = 2,
-        Bonus = 3,
-        Transfer = 4,
-        Other = 99
-    }
+    Dividend = 1,
+    Recharge = 2,
+    Bonus = 3,
+    Transfer = 4,
+    Other = 99
 }

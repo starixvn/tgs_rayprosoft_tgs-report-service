@@ -33,6 +33,7 @@ namespace Tgs.Report.Repository.Entities
         public string? OrderNo { get; set; }
         public string? Note { get; set; }
         public decimal HandlingFee { get; set; }
+        public Guid? SnapshotEventId { get; set; }
 
         public virtual Brand Brand { get; set; } = null!;
     }

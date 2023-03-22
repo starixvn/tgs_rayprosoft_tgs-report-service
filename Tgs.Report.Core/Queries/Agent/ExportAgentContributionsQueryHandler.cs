@@ -9,10 +9,7 @@ internal class ExportAgentContributionsQueryHandler : IRequestHandler<ExportAgen
 {
     private readonly IMediator _mediator;
 
-    public ExportAgentContributionsQueryHandler(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public ExportAgentContributionsQueryHandler(IMediator mediator) => _mediator = mediator;
 
     public async Task<MemoryStream> Handle(
         ExportAgentContributionsRequest request,
@@ -58,6 +55,6 @@ internal class ExportAgentContributionsQueryHandler : IRequestHandler<ExportAgen
 
         xlsx?.SaveAs(stream);
 
-        return new MemoryStream(stream.ToArray());
+        return new(stream.ToArray());
     }
 }
