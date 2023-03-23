@@ -17,7 +17,7 @@ public class PlayerFactory : IPlayerFactory
     public async ValueTask<(PlayerAccountChangeModel[], int)> GetPlayerAccountChangeAsync(
         GetPlayerAccountChangesRequest request)
     {
-        const string spName = "dbo.report_get_player_account_change_records";
+        const string spName = "select * from dbo.report_get_player_account_change_records(@_from,@_to,@_player_code,@_transaction_type,@_game_action_type,@_page_size,@_page_number)";
 
         TransactionType? transactionType = request.AccountChangeType switch
         {
@@ -86,7 +86,7 @@ public class PlayerFactory : IPlayerFactory
                 { "_game_action_type", gameActionType },
                 { "_page_size", request.ShowAll ? int.MaxValue : request.Rows },
                 { "_page_number", request.ShowAll ? 1 : request.Page }
-            }, commandType: CommandType.StoredProcedure, transaction: transaction);
+            }, transaction: transaction);
 
         var playerAccountChangeResult = playerAccountChangeModels.ToArray();
 
