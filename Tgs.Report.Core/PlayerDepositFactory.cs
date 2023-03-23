@@ -44,7 +44,7 @@ public class PlayerDepositFactory : IPlayerDepositFactory
                 { "_agent_id", agentId },
                 { "_from", start },
                 { "_to", end }
-            }, commandType: CommandType.StoredProcedure, transaction: transaction);
+            }, transaction: transaction);
     }
 
     public async Task<RoundAggregateModel[]> GenerateRoundAggregateAsync(DateTimeOffset start, DateTimeOffset end)
@@ -61,7 +61,7 @@ public class PlayerDepositFactory : IPlayerDepositFactory
                 { "_created_on", DateTimeOffset.Now.ToOffset(start.Offset) },
                 { "_hour", start.Hour },
                 { "_minute", start.Minute }
-            }, commandType: CommandType.StoredProcedure, transaction: transaction);
+            }, transaction: transaction);
 
         return result.ToArray();
     }
@@ -80,7 +80,7 @@ public class PlayerDepositFactory : IPlayerDepositFactory
                 { "_report_date", new DateTimeOffset(start.Year, start.Month, start.Day, 0, 0, 0, start.Offset) },
                 { "_hour", start.Hour },
                 { "_minute", start.Minute }
-            }, commandType: CommandType.StoredProcedure, transaction: transaction);
+            }, transaction: transaction);
 
         return result.ToArray();
     }

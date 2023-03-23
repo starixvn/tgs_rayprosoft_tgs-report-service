@@ -86,7 +86,7 @@ public class PlayerFactory : IPlayerFactory
                 { "_game_action_type", gameActionType },
                 { "_page_size", request.ShowAll ? int.MaxValue : request.Rows },
                 { "_page_number", request.ShowAll ? 1 : request.Page }
-            }, commandType: CommandType.StoredProcedure, transaction: transaction);
+            }, transaction: transaction);
 
         var playerAccountChangeResult = playerAccountChangeModels.ToArray();
 
