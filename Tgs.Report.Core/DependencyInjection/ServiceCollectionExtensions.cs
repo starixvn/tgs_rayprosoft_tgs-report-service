@@ -13,11 +13,10 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddReportCore(this IServiceCollection services)
     {
-        services.AddMediatR(r => r.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()))
-            .AddTransient<IRoundFactory, RoundFactory>()
-            .AddTransient<IPlayerFactory, PlayerFactory>()
-            .AddTransient<IPlayerDepositFactory, PlayerDepositFactory>()
-            .AddTransient<IAgentFactory, AgentFactory>();
+        services.AddMediatR(r => r.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+        services.AddTransient<IRoundFactory, RoundFactory>();
+        services.AddTransient<IPlayerFactory, PlayerFactory>();
+        services.AddTransient<IPlayerDepositFactory, PlayerDepositFactory>();
 
         services
             .AddTransient<IRequestHandler<GetMarketsRequest, PagedResponse<MarketModel>>, GetMarketsQueryHandler>()

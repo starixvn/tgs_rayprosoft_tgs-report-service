@@ -56,12 +56,6 @@ public class AgentReportController : ControllerBase
         [FromQuery] GetAgentPlayerWinLossRequest request) =>
         _mediator.Send(request);
 
-    [HttpGet("{id}/agentWinLoss")]
-    [Description("Get agent Win/Loss report")]
-    public Task<PagedResponse<AgentWinLossModel>> GetAgentWinLossAsync(
-        [FromQuery] GetAgentWinLossRequest request) =>
-        _mediator.Send(request);
-
     [HttpGet("accountChanges")]
     [Description("Get agent account changes")]
     public Task<PagedResponse<AgentAccountChangeModel>> GetAgentAccountChangesAsync(

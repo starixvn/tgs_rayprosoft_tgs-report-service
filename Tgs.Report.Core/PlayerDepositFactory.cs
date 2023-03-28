@@ -1,8 +1,10 @@
-﻿using Dapper;
+﻿using System.Data;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.PlayerDeposit;
+using Tgs.Report.ViewModel.Round;
 
 namespace Tgs.Report.Core;
 
