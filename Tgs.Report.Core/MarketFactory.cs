@@ -93,8 +93,8 @@ namespace Tgs.Report.Core
                     { "brandId", request.BrandId },
                     { "date", request.Date.UtcDateTime },
                     { "sortBy", request.SortBy ?? "masteragentname" },
-                    { "pageSize", request.Rows },
-                    { "pageNumber", request.Page },
+                    { "pageSize", request.ShowAll ? int.MaxValue : request.Rows },
+                    { "pageNumber", request.ShowAll ? 1 : request.Page },
                     { "isDesc", request.IsDesc }
                 }, transaction);
 
