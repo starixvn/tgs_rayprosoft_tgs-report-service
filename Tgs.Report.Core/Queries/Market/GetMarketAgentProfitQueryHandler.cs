@@ -30,7 +30,7 @@ public class
             0,
             requestFrom.Offset);
 
-        var list = await _marketFactory.GetAgentWinLossAsync(request);
+        var list = await _marketFactory.GetAgentProfitsAsync(request);
 
         return new PagedResponse<MarketAgentProfitModel>
         {

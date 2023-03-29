@@ -4,5 +4,5 @@ namespace Tgs.Report.Core;
 
 public interface IMarketFactory
 {
-    Task<IEnumerable<MarketAgentProfitDataModel>> GetAgentWinLossAsync(GetMarketAgentProfitsRequest request);
+    Task<IEnumerable<MarketAgentProfitDataModel>> GetAgentProfitsAsync(GetMarketAgentProfitsRequest request);
 }

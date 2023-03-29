@@ -12,7 +12,7 @@ namespace Tgs.Report.Core
 
         public MarketFactory(TgsContext context) => _context = context;
 
-        public async Task<IEnumerable<MarketAgentProfitDataModel>> GetAgentWinLossAsync(GetMarketAgentProfitsRequest request)
+        public async Task<IEnumerable<MarketAgentProfitDataModel>> GetAgentProfitsAsync(GetMarketAgentProfitsRequest request)
         {
             var spName = @"WITH cte AS (
     SELECT 
