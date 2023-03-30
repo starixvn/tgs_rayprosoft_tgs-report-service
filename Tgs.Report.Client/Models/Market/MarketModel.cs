@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Tgs.Report.Client.Models.Market;
+﻿namespace Tgs.Report.Client.Models.Market;
 
 public record MarketModel
 {
@@ -43,4 +41,6 @@ public record MarketModel
     public decimal PlatformCoveredBonus { get; init; }
 
     public decimal PlatformCoveredBonusAdjust { get; init; }
+
+    public decimal AgentProfit { get; init; }
 }

@@ -1,15 +1,14 @@
-﻿namespace Tgs.Report.ViewModel
+﻿namespace Tgs.Report.ViewModel;
+
+public class PagedArray<T>
 {
-    public class PagedArray<T>
+    public int TotalCount { get; }
+
+    public T[]? Items { get; }
+
+    public PagedArray(int totalCount, T[] items)
     {
-        public int TotalCount { get; }
-
-        public T[]? Items { get; }
-
-        public PagedArray(int totalCount, T[] items)
-        {
-            TotalCount = totalCount;
-            Items = items;
-        }
+        TotalCount = totalCount;
+        Items = items;
     }
 }

@@ -12,9 +12,7 @@ public class GetMarketingRegisterDetailQueryHandler : IRequestHandler<GetMarketi
     private readonly TgsContext _context;
 
     public GetMarketingRegisterDetailQueryHandler(TgsContext context)
-    {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-    }
+        => _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async Task<PagedResponse<MarketingRegisterDetailModel>> Handle(
         GetMarketingRegisterDetailRequest request,
@@ -45,7 +43,8 @@ public class GetMarketingRegisterDetailQueryHandler : IRequestHandler<GetMarketi
         }
 
         return await _context.PlayerAggregates
-            .Where(x => x.BrandId == request.BrandId && x.ReportDate == reportDate.ToUniversalTime() && x.AgentId == agent.Id)
+            .Where(x => x.BrandId == request.BrandId && x.ReportDate == reportDate.ToUniversalTime() &&
+                x.AgentId == agent.Id)
             .Where(x => x.RegisteredCount == 1)
             .GroupBy(
                 x => x.PlayerCode,
@@ -90,24 +89,24 @@ public class GetMarketingRegisterDetailQueryHandler : IRequestHandler<GetMarketi
                     player.LastLoginOn,
                     login
                 }).SelectMany(x => x.login.DefaultIfEmpty(), (x, y) => new
-                {
-                    x.Username,
-                    x.playerCode,
-                    x.RegisteredOn,
-                    x.LastLoginOn,
-                    y
-                }).GroupBy(x => new
-                {
-                    x.Username,
-                    x.playerCode,
-                    x.RegisteredOn,
-                    x.LastLoginOn
-                }, (player, group) => new MarketingRegisterDetailModel
-                {
-                    Username = player.Username,
-                    RegisteredOn = player.RegisteredOn.Value,
-                    LastLoginOn = player.LastLoginOn,
-                    LoginCount = group.Count(c => c.y.Status == 1)
-                }).CreatePagedResponseAsync(request);
+            {
+                x.Username,
+                x.playerCode,
+                x.RegisteredOn,
+                x.LastLoginOn,
+                y
+            }).GroupBy(x => new
+            {
+                x.Username,
+                x.playerCode,
+                x.RegisteredOn,
+                x.LastLoginOn
+            }, (player, group) => new MarketingRegisterDetailModel
+            {
+                Username = player.Username,
+                RegisteredOn = player.RegisteredOn.Value,
+                LastLoginOn = player.LastLoginOn,
+                LoginCount = group.Count(c => c.y.Status == 1)
+            }).CreatePagedResponseAsync(request);
     }
 }

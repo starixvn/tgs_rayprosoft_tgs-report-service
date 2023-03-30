@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Tgs.Report.Repository.Entities;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Text.Json;
 
 #nullable disable
 
@@ -23,6 +25,10 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.HasIndex(e => e.AgentId, "ix_player_aggregates_agent_id");
 
             entity.HasIndex(e => new { e.ReportDate, e.BrandId, e.AgentId, e.PlayerCode }, "ix_player_aggregates_multiple_keys");
+
+            entity.HasIndex(e => new { e.ReportDateTime, e.BrandId, e.AgentId, e.PlayerCode }, "ix_player_aggregates_new_multiple_keys")
+                .HasNullSortOrder(new[] { NullSortOrder.NullsLast, NullSortOrder.NullsLast, NullSortOrder.NullsLast, NullSortOrder.NullsLast })
+                .HasSortOrder(new[] { SortOrder.Descending, SortOrder.Ascending, SortOrder.Ascending, SortOrder.Ascending });
 
             entity.Property(e => e.Id).HasColumnName("id");
 
@@ -117,6 +123,8 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.RegisteredCount).HasColumnName("registered_count");
 
             entity.Property(e => e.ReportDate).HasColumnName("report_date");
+
+            entity.Property(e => e.ReportDateTime).HasColumnName("report_date_time");
 
             entity.Property(e => e.SystemAdjustAmount)
                 .HasPrecision(18, 6)

@@ -10,93 +10,110 @@ using Tgs.Report.Repository;
 using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.BrandGameProvider;
 
-namespace Tgs.Report.UnitTest.BrandGameProvider
+namespace Tgs.Report.UnitTest.BrandGameProvider;
+
+public sealed class GetBrandGameProviderRoundsQueryTest
 {
-    public sealed class GetBrandGameProviderRoundsQueryTest
+    [Test]
+    public async Task Can_Get_Game_Provider_Rounds()
     {
-        [Test]
-        public async Task Can_Get_Game_Provider_Rounds()
+        var fakeBrandGameProviderAggregate = Substitute.For<ITgsService<BrandGameProviderAggregate>>();
+        var fakeBrand = Substitute.For<ITgsService<Brand>>();
+        var fakeGameProvider = Substitute.For<ITgsService<Repository.Entities.GameProvider>>();
+
+        var sut = new GetBrandGameProviderRoundsQueryHandler(fakeBrandGameProviderAggregate, fakeBrand,
+            fakeGameProvider);
+
+        var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
+        var gameProviderId = new Guid("aac11120-20f6-4f0d-6982-08d9dbdc0473");
+
+        var brands = CreateBrandFixture(brandId)
+            .CreateMany<Brand>(1)
+            .AsQueryable()
+            .BuildMock();
+
+        var gameProviders = CreateGameProviderFixture(gameProviderId)
+            .CreateMany<Repository.Entities.GameProvider>(1)
+            .AsQueryable()
+            .BuildMock();
+
+        var brandGameProviderAggregate = CreateBrandGameProviderAggregateFixture(brandId, gameProviderId)
+            .CreateMany<BrandGameProviderAggregate>(1)
+            .AsQueryable()
+            .BuildMock();
+
+        fakeBrand.GetQueries().Returns(brands);
+        fakeGameProvider.GetQueries().Returns(gameProviders);
+        fakeBrandGameProviderAggregate.GetQueries().Returns(brandGameProviderAggregate);
+
+        var request = new GetBrandGameProviderRoundsRequest
         {
-            var fakeBrandGameProviderAggregate = Substitute.For<ITgsService<BrandGameProviderAggregate>>();
-            var fakeBrand = Substitute.For<ITgsService<Brand>>();
-            var fakeGameProvider = Substitute.For<ITgsService<Repository.Entities.GameProvider>>();
+            BrandId = brandId,
+            From = DateTimeOffset.UtcNow.AddDays(-1),
+            To = DateTimeOffset.UtcNow.AddDays(1),
+            SortBy = null
+        };
 
-            var sut = new GetBrandGameProviderRoundsQueryHandler(fakeBrandGameProviderAggregate, fakeBrand,
-                fakeGameProvider);
+        var response = await sut.Handle(request, default);
 
-            var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
-            var gameProviderId = new Guid("aac11120-20f6-4f0d-6982-08d9dbdc0473");
+        Assert.AreEqual(1, response.Datas!.TotalCount);
+    }
 
-            var brands = CreateBrandFixture(brandId)
-                .CreateMany<Brand>(1)
-                .AsQueryable()
-                .BuildMock();
-
-            var gameProviders = CreateGameProviderFixture(gameProviderId)
-                .CreateMany<Repository.Entities.GameProvider>(1)
-                .AsQueryable()
-                .BuildMock();
-
-            var brandGameProviderAggregate = CreateBrandGameProviderAggregateFixture(brandId, gameProviderId)
-                .CreateMany<BrandGameProviderAggregate>(1)
-                .AsQueryable()
-                .BuildMock();
-
-            fakeBrand.GetQueries().Returns(brands);
-            fakeGameProvider.GetQueries().Returns(gameProviders);
-            fakeBrandGameProviderAggregate.GetQueries().Returns(brandGameProviderAggregate);
-
-            var request = new GetBrandGameProviderRoundsRequest
+    private static Fixture CreateBrandFixture(Guid brandId)
+    {
+        var fixture = new Fixture();
+        fixture.Customize<Brand>(u => u
+            .With(s => s.Id, brandId)
+            .With(s => s.Code, "GameProviderCode")
+            .With(s => s.VipLevels, new VipLevel[]
             {
-                BrandId = brandId,
-                From = DateTimeOffset.UtcNow.AddDays(-1),
-                To = DateTimeOffset.UtcNow.AddDays(1),
-                SortBy = null
-            };
+            })
+            .With(s => s.Transactions, new Transaction[]
+            {
+            })
+            .With(s => s.BrandCurrencies, new BrandCurrency[]
+            {
+            })
+            .With(s => s.Agents, new Repository.Entities.Agent[]
+            {
+            })
+            .With(s => s.Players, new Repository.Entities.Player[]
+            {
+            })
+            .With(s => s.DepositForms, new DepositForm[]
+            {
+            })
+            .With(s => s.PlayerLoginRecords, new PlayerLoginRecord[]
+            {
+            }));
+        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        return fixture;
+    }
 
-            var response = await sut.Handle(request, default);
+    private static Fixture CreateGameProviderFixture(Guid id)
+    {
+        var fixture = new Fixture();
+        fixture.Customize<Repository.Entities.GameProvider>(u => u
+            .With(s => s.Id, id)
+            .With(s => s.Code, "GameProviderCode")
+            .With(s => s.Games, new Game[]
+            {
+            })
+            .With(s => s.SubGameProviders, new SubGameProvider[]
+            {
+            }));
+        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        return fixture;
+    }
 
-            Assert.AreEqual(1, response.Datas!.TotalCount);
-        }
-
-        private static Fixture CreateBrandFixture(Guid brandId)
-        {
-            var fixture = new Fixture();
-            fixture.Customize<Brand>(u => u
-                .With(s => s.Id, brandId)
-                .With(s => s.Code, "GameProviderCode")
-                .With(s => s.VipLevels,new VipLevel[]{})
-                .With(s => s.Transactions, new Transaction[]{})
-                .With(s => s.BrandCurrencies,new BrandCurrency[]{})
-                .With(s => s.Agents, new Repository.Entities.Agent[]{})
-                .With(s => s.Players, new Repository.Entities.Player[]{})
-                .With(s => s.DepositForms, new DepositForm[]{})
-                .With(s => s.PlayerLoginRecords, new PlayerLoginRecord[] { }));
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            return fixture;
-        }
-
-        private static Fixture CreateGameProviderFixture(Guid id)
-        {
-            var fixture = new Fixture();
-            fixture.Customize<Repository.Entities.GameProvider>(u => u
-                .With(s => s.Id, id)
-                .With(s => s.Code, "GameProviderCode")
-                .With(s => s.Games, new Game[]{})
-                .With(s => s.SubGameProviders, new SubGameProvider[]{}));
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            return fixture;
-        }
-
-        private static Fixture CreateBrandGameProviderAggregateFixture(Guid brandId, Guid gameProviderId)
-        {
-            var fixture = new Fixture();
-            fixture.Customize<BrandGameProviderAggregate>(u => u
-                .With(s => s.BrandId, brandId)
-                .With(s => s.GameProviderId, gameProviderId)
-                .With(s => s.ReportDate, DateTime.UtcNow));
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            return fixture;
-        }
+    private static Fixture CreateBrandGameProviderAggregateFixture(Guid brandId, Guid gameProviderId)
+    {
+        var fixture = new Fixture();
+        fixture.Customize<BrandGameProviderAggregate>(u => u
+            .With(s => s.BrandId, brandId)
+            .With(s => s.GameProviderId, gameProviderId)
+            .With(s => s.ReportDate, DateTime.UtcNow));
+        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        return fixture;
     }
 }

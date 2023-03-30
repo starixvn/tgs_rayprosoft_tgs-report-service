@@ -1,11 +1,10 @@
-﻿namespace Tgs.Report.ViewModel.Round
+﻿namespace Tgs.Report.ViewModel.Round;
+
+public record GetBetRecordsResponse
 {
-    public record GetBetRecordsResponse
-    {
-        public int TotalCount { get; init; }
+    public int TotalCount { get; init; }
 
-        public BetRecordModel[] Datas { get; init; } = default!;
+    public BetRecordModel[] Datas { get; init; } = default!;
 
-        public BetRecordTotalModel Total { get; init; } = default!;
-    }
+    public BetRecordTotalModel Total { get; init; } = default!;
 }

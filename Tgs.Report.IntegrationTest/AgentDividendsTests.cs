@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using MockQueryable.Moq;
 using NSubstitute;
 using Tgs.Report.Client;
-using Tgs.Report.Client.Models.Agent;
 using Tgs.Report.Repository.Entities;
 
 namespace Tgs.Report.IntegrationTest;
@@ -30,7 +29,7 @@ public class AgentDividendsTests : BaseTest
                 var agent1 = CreateAgentFixture(brandId, agentId, agentUsername)
                     .Create<Agent>();
 
-                var agents = new Agent[]
+                var agents = new[]
                     {
                         agent1
                     }.AsQueryable()
@@ -67,7 +66,7 @@ public class AgentDividendsTests : BaseTest
 
         var sut = new ReportClient(httpClient);
 
-        var actual = await sut.GetSingleAgentDividendsAsync(new GetSingleAgentDividendsRequest
+        var actual = await sut.GetSingleAgentDividendsAsync(new()
         {
             BrandId = brandId,
             Username = agentUsername,
@@ -105,7 +104,7 @@ public class AgentDividendsTests : BaseTest
 
                 agent2.ParentAgentId = agentId;
 
-                var agents = new Agent[]
+                var agents = new[]
                     {
                         agent1,
                         agent2
@@ -143,7 +142,7 @@ public class AgentDividendsTests : BaseTest
 
         var sut = new ReportClient(httpClient);
 
-        var actual = await sut.GetSubAgentDividendsAsync(new GetSubAgentDividendsRequest
+        var actual = await sut.GetSubAgentDividendsAsync(new()
         {
             BrandId = brandId,
             Username = agentUsername,
@@ -182,14 +181,14 @@ public class AgentDividendsTests : BaseTest
 
                 agent2.ParentAgentId = agentId;
 
-                var agents = new Agent[]
+                var agents = new[]
                     {
                         agent1,
                         agent2
                     }.AsQueryable()
                     .BuildMock();
 
-                var agentDividends = new AgentDividend[]
+                var agentDividends = new[]
                     {
                         CreateAgentDividendFixture(brandId, agentId).Create<AgentDividend>(),
                         CreateAgentDividendFixture(brandId, childAgentId).Create<AgentDividend>()
@@ -224,7 +223,7 @@ public class AgentDividendsTests : BaseTest
 
         var sut = new ReportClient(httpClient);
 
-        var actual = await sut.GetAgentDividendsAsync(new GetAgentDividendsRequest
+        var actual = await sut.GetAgentDividendsAsync(new()
         {
             BrandId = brandId,
             Username = agentUsername,
@@ -246,7 +245,7 @@ public class AgentDividendsTests : BaseTest
             .With(s => s.Id, agentId)
             .With(s => s.Username, username)
             .With(s => s.Brand, new Brand())
-            .With(s => s.Players, new Repository.Entities.Player[]
+            .With(s => s.Players, new Player[]
             {
             }));
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());

@@ -13,11 +13,11 @@ public class
         PagedResponse<AgentContributionModel>>
 {
     private readonly IAgentRepository _agentRepository;
-    private readonly ITgsService<WithdrawForm> _withdrawFormsService;
-    private readonly ITgsService<Repository.Entities.Player> _playerService;
+    private readonly TgsContext _context;
     private readonly ITgsService<PlayerAggregate> _playerAggregateService;
     private readonly ITgsService<PlayerBonusAggregate> _playerBonusAggregate;
-    private readonly TgsContext _context;
+    private readonly ITgsService<Repository.Entities.Player> _playerService;
+    private readonly ITgsService<WithdrawForm> _withdrawFormsService;
 
     public GetAgentContributionsQueryHandler(
         IAgentRepository agentRepository,
@@ -30,7 +30,8 @@ public class
         _agentRepository = agentRepository ?? throw new ArgumentNullException(nameof(agentRepository));
         _withdrawFormsService = withdrawFormsService ?? throw new ArgumentNullException(nameof(withdrawFormsService));
         _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
-        _playerAggregateService = playerAggregateService ?? throw new ArgumentNullException(nameof(playerAggregateService));
+        _playerAggregateService =
+            playerAggregateService ?? throw new ArgumentNullException(nameof(playerAggregateService));
         _playerBonusAggregate = playerBonusAggregate ?? throw new ArgumentNullException(nameof(playerBonusAggregate));
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
@@ -85,41 +86,41 @@ public class
 
         var fromDate = new DateOnly(from.Year, from.Month, from.Day);
         var toDate = to > yesterday
-            ? new DateOnly(yesterday.Year, yesterday.Month, yesterday.Day)
+            ? new(yesterday.Year, yesterday.Month, yesterday.Day)
             : new DateOnly(to.Year, to.Month, to.Day);
 
-        var playerRealTimeWithdrawals = to > yesterday ?
-            await _withdrawFormsService.GetQueries()
-            .Where(x => x.BrandId == request.BrandId)
-            .Where(x => x.UserType == 1 && x.Status == 9000)
-            .Where(from > yesterday, x => x.PaidOn >= from.UtcDateTime && x.PaidOn < to.UtcDateTime)
-            .Where(!(from > yesterday), x => x.PaidOn >= yesterday.UtcDateTime && x.PaidOn < to.UtcDateTime)
-            .Join(_playerService.GetQueries(),
-                withdrawForm => withdrawForm.UserId,
-                player => player.PlayerCode,
-                (withdrawForm, player) => new
-                {
-                    player.AgentId,
-                    player.PlayerCode,
-                    WithdrawalAmount = withdrawForm.ActualAmount ?? withdrawForm.Amount
-                })
-            .GroupBy(x => new
-            {
-                x.AgentId,
-                x.PlayerCode
-            },
-                (x, withdrawals) => new
-                {
-                    x.AgentId,
-                    x.PlayerCode,
-                    WithdrawalAmount = withdrawals.Sum(w => w.WithdrawalAmount)
-                })
-            .ToArrayAsync(cancellationToken)
-            .ConfigureAwait(false)
+        var playerRealTimeWithdrawals = to > yesterday
+            ? await _withdrawFormsService.GetQueries()
+                .Where(x => x.BrandId == request.BrandId)
+                .Where(x => x.UserType == 1 && x.Status == 9000)
+                .Where(from > yesterday, x => x.PaidOn >= from.UtcDateTime && x.PaidOn < to.UtcDateTime)
+                .Where(!(from > yesterday), x => x.PaidOn >= yesterday.UtcDateTime && x.PaidOn < to.UtcDateTime)
+                .Join(_playerService.GetQueries(),
+                    withdrawForm => withdrawForm.UserId,
+                    player => player.PlayerCode,
+                    (withdrawForm, player) => new
+                    {
+                        player.AgentId,
+                        player.PlayerCode,
+                        WithdrawalAmount = withdrawForm.ActualAmount ?? withdrawForm.Amount
+                    })
+                .GroupBy(x => new
+                    {
+                        x.AgentId,
+                        x.PlayerCode
+                    },
+                    (x, withdrawals) => new
+                    {
+                        x.AgentId,
+                        x.PlayerCode,
+                        WithdrawalAmount = withdrawals.Sum(w => w.WithdrawalAmount)
+                    })
+                .ToArrayAsync(cancellationToken)
+                .ConfigureAwait(false)
             : null;
 
-        var playerRealTimeDeposits = to > yesterday ?
-            await _context.DepositForms
+        var playerRealTimeDeposits = to > yesterday
+            ? await _context.DepositForms
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.Status == 8000)
                 .Where(from > yesterday, x => x.UpdatedOn >= from.UtcDateTime && x.UpdatedOn < to.UtcDateTime)
@@ -135,10 +136,10 @@ public class
                         DepositHandlingFee = depositForm.HandlingFee
                     })
                 .GroupBy(x => new
-                {
-                    x.AgentId,
-                    x.PlayerCode
-                },
+                    {
+                        x.AgentId,
+                        x.PlayerCode
+                    },
                     (x, deposits) => new
                     {
                         x.AgentId,
@@ -151,21 +152,22 @@ public class
             : null;
 
         var playerPaymentStatistics = await _context.PlayerDailyPaymentStatistics
-            .Join(_context.Players.Where(x => x.BrandId == request.BrandId), pp => pp.PlayerCode, p => p.PlayerCode, (pp, p) => new
-            {
-                pp.ReportDate,
-                pp.PlayerCode,
-                pp.DailyDepositAmount,
-                pp.DailyDepositHandlingFee,
-                pp.DailyWithdrawAmount
-            })
+            .Join(_context.Players.Where(x => x.BrandId == request.BrandId), pp => pp.PlayerCode, p => p.PlayerCode,
+                (pp, p) => new
+                {
+                    pp.ReportDate,
+                    pp.PlayerCode,
+                    pp.DailyDepositAmount,
+                    pp.DailyDepositHandlingFee,
+                    pp.DailyWithdrawAmount
+                })
             .Where(x => x.ReportDate >= fromDate && x.ReportDate < toDate)
             .GroupBy(x => x.PlayerCode, (playerCode, group) => new
             {
                 PlayerCode = playerCode,
                 DepositAmount = group.Sum(s => s.DailyDepositAmount),
                 DepositHandlingFee = group.Sum(s => s.DailyDepositHandlingFee),
-                WithdrawAmount = group.Sum(s => s.DailyWithdrawAmount),
+                WithdrawAmount = group.Sum(s => s.DailyWithdrawAmount)
             })
             .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
@@ -270,10 +272,7 @@ public class
                     bonus.SeasonAmount,
                     bonus.BirthdayAmount
                 })
-            .GroupBy(x => new
-            {
-                x.PlayerCode
-            },
+            .GroupBy(x => new { x.PlayerCode },
                 (player, playerAggregate) =>
                     new
                     {
@@ -371,9 +370,9 @@ public class
                         Username = x.Username,
                         Type = AccountType.Player,
                         DepositAmount = (x.PlayerPaymentStastics?.DepositAmount ?? 0M)
-                                        + (depositItem?.DepositAmount ?? 0M),
+                            + (depositItem?.DepositAmount ?? 0M),
                         DepositHandlingFee = (x.PlayerPaymentStastics?.DepositHandlingFee ?? 0M)
-                                             + (depositItem?.DepositHandlingFee ?? 0M),
+                            + (depositItem?.DepositHandlingFee ?? 0M),
                         WithdrawalAmount =
                             (x.PlayerPaymentStastics?.WithdrawAmount ?? 0M)
                             + (withdrawItem?.WithdrawalAmount ?? 0M),
@@ -432,7 +431,8 @@ public class
             {
                 AgentId = player.AgentId,
                 PlayerCode = player.PlayerCode,
-                CompanyAdjustAmount = aggregates.Sum(p => p.CompanyAdjustAmount - p.NoIncludeNetProfitCompanyAdjustAmount),
+                CompanyAdjustAmount =
+                    aggregates.Sum(p => p.CompanyAdjustAmount - p.NoIncludeNetProfitCompanyAdjustAmount),
                 AgentAdjustAmount = aggregates.Sum(p => p.AgentAdjustAmount - p.NoIncludeNetProfitAgentAdjustAmount),
                 BonusAdjustAmount = aggregates.Sum(p => p.BonusAdjustAmount - p.NoIncludeNetProfitBonusAdjustAmount),
                 BonusAmount = aggregates.Sum(p => p.RebateAmount + p.PromotionAmount),
@@ -493,7 +493,6 @@ public class
                     Contribution = contribution
                 })
             .GroupBy(x => new
-
             {
                 x.FirstLayerAgentId,
                 x.AgentId
@@ -520,7 +519,7 @@ public class
                     UpgradeAmount = markets.Sum(m => m.Contribution?.UpgradeAmount ?? 0M),
                     SeasonAmount = markets.Sum(m => m.Contribution?.SeasonAmount ?? 0M),
                     BirthdayAmount = markets.Sum(m => m.Contribution?.BirthdayAmount ?? 0M),
-                    NetProfit = markets.Sum(m => m.Contribution?.NetProfit ?? 0M),
+                    NetProfit = markets.Sum(m => m.Contribution?.NetProfit ?? 0M)
                 };
             });
 
@@ -537,15 +536,15 @@ public class
             .SelectMany(x => x.AgentPlayerAggregates.DefaultIfEmpty(),
                 (x, playerAggregate) => new
                 {
-                    FirstLayerAgent = x.FirstLayerAgent,
+                    x.FirstLayerAgent,
                     AgentPlayerAggregate = playerAggregate,
                     SubAgentId = playerAggregate?.AgentId
                 })
             .GroupBy(x => new
-            {
-                x.FirstLayerAgent.UserName,
-                x.FirstLayerAgent.Id
-            },
+                {
+                    x.FirstLayerAgent.UserName,
+                    x.FirstLayerAgent.Id
+                },
                 (firstLayerAgent, aggregates) =>
                 {
                     var agentIds = aggregates
@@ -568,24 +567,24 @@ public class
                         Username = firstLayerAgent.UserName,
                         Type = AccountType.Agent,
                         DepositAmount = aggregates.Sum(p
-                                            => p.AgentPlayerAggregate?.DepositAmount ?? 0M)
-                                        + (realTimeDeposits?.Sum(w => w.DepositAmount) ?? 0M),
+                                => p.AgentPlayerAggregate?.DepositAmount ?? 0M)
+                            + (realTimeDeposits?.Sum(w => w.DepositAmount) ?? 0M),
                         DepositHandlingFee = aggregates.Sum(p
-                                                 => p.AgentPlayerAggregate?.DepositHandlingFee ?? 0M)
-                                             + (realTimeDeposits?.Sum(w => w.DepositHandlingFee) ?? 0M),
+                                => p.AgentPlayerAggregate?.DepositHandlingFee ?? 0M)
+                            + (realTimeDeposits?.Sum(w => w.DepositHandlingFee) ?? 0M),
                         WithdrawalAmount = aggregates.Sum(p
-                                               => p.AgentPlayerAggregate?.WithdrawAmount ?? 0M)
-                                           + (realTimeWithdraws?.Sum(w => w.WithdrawalAmount) ?? 0M),
+                                => p.AgentPlayerAggregate?.WithdrawAmount ?? 0M)
+                            + (realTimeWithdraws?.Sum(w => w.WithdrawalAmount) ?? 0M),
                         CompanyAdjustAmount = aggregates.Sum(p => p.AgentPlayerAggregate?.CompanyAdjustAmount ?? 0),
                         BonusAdjustAmount = aggregates.Sum(p => p.AgentPlayerAggregate?.BonusAdjustAmount ?? 0),
                         AgentAdjustAmount = aggregates.Sum(p => p.AgentPlayerAggregate?.AgentAdjustAmount ?? 0),
                         BonusAmount =
-                                aggregates.Sum(p
-                                    => p.AgentPlayerAggregate == null
-                                        ? 0
-                                        : p.AgentPlayerAggregate.BonusAmount +
-                                          p.AgentPlayerAggregate.UpgradeAmount + p.AgentPlayerAggregate.SeasonAmount +
-                                          p.AgentPlayerAggregate.BirthdayAmount),
+                            aggregates.Sum(p
+                                => p.AgentPlayerAggregate == null
+                                    ? 0
+                                    : p.AgentPlayerAggregate.BonusAmount +
+                                    p.AgentPlayerAggregate.UpgradeAmount + p.AgentPlayerAggregate.SeasonAmount +
+                                    p.AgentPlayerAggregate.BirthdayAmount),
                         BetAmount = aggregates.Sum(p => p.AgentPlayerAggregate?.BetAmount ?? 0),
                         ValidBetAmount = aggregates.Sum(p => p.AgentPlayerAggregate?.OriginalTurnover ?? 0),
                         Turnover = aggregates.Sum(p => p.AgentPlayerAggregate?.Turnover ?? 0),
@@ -593,9 +592,9 @@ public class
                         NetProfit = aggregates.Sum(p => p.AgentPlayerAggregate == null
                             ? 0
                             : p.AgentPlayerAggregate.NetProfit -
-                              p.AgentPlayerAggregate.UpgradeAmount -
-                              p.AgentPlayerAggregate.SeasonAmount -
-                              p.AgentPlayerAggregate.BirthdayAmount)
+                            p.AgentPlayerAggregate.UpgradeAmount -
+                            p.AgentPlayerAggregate.SeasonAmount -
+                            p.AgentPlayerAggregate.BirthdayAmount)
                     };
                 }).ToArray();
 

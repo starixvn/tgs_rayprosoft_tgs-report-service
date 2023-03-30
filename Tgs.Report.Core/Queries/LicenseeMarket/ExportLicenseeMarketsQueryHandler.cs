@@ -39,7 +39,8 @@ internal class ExportLicenseeMarketsQueryHandler : IRequestHandler<ExportLicense
             BetAmount = x.BetAmount,
             Turnover = x.Turnover,
             WinLossAmount = x.WinLossAmount,
-            NetProfit = x.NetProfit
+            NetProfit = x.NetProfit,
+            AgentProfit = x.AgentProfit
         });
 
         var resource = new ResourceManager(typeof(Resources.LicenseeMarket));
@@ -50,6 +51,6 @@ internal class ExportLicenseeMarketsQueryHandler : IRequestHandler<ExportLicense
 
         xlsx?.SaveAs(stream);
 
-        return new MemoryStream(stream.ToArray());
+        return new(stream.ToArray());
     }
 }

@@ -55,11 +55,11 @@ public class GetMarketsCacheHandler : IRequestHandler<GetMarketsRequest, PagedRe
             key,
             async entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5D);
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(1D);
 
                 return await _handler
                     .Handle(request, cancellationToken)
                     .ConfigureAwait(false);
-            }).ConfigureAwait(false);
+            }).ConfigureAwait(false) ?? new PagedResponse<MarketModel>();
     }
 }

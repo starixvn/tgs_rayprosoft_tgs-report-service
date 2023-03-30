@@ -1,9 +1,8 @@
-﻿namespace Tgs.Report.Client.Models.Market
-{
-    public record AdditionalExpensesModel
-    {
-        public short AdditionalExpensesType { get; init; }
+﻿namespace Tgs.Report.Client.Models.Market;
 
-        public decimal Amount { get; init; }
-    }
+public record AdditionalExpensesModel
+{
+    public short AdditionalExpensesType { get; init; }
+
+    public decimal Amount { get; init; }
 }

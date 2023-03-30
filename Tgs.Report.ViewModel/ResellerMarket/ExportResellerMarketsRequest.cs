@@ -2,18 +2,17 @@
 using System.IO;
 using MediatR;
 
-namespace Tgs.Report.ViewModel.ResellerMarket
+namespace Tgs.Report.ViewModel.ResellerMarket;
+
+public record ExportResellerMarketsRequest : PageableRequest, IRequest<MemoryStream>
 {
-    public record ExportResellerMarketsRequest : PageableRequest, IRequest<MemoryStream>
-    {
-        public string? CurrencyCode { get; init; }
+    public string? CurrencyCode { get; init; }
 
-        public string[]? CurrencyCodes { get; init; }
+    public string[]? CurrencyCodes { get; init; }
 
-        public DateTimeOffset From { get; init; }
+    public DateTimeOffset From { get; init; }
 
-        public Guid ResellerId { get; init; }
+    public Guid ResellerId { get; init; }
 
-        public DateTimeOffset To { get; init; }
-    }
+    public DateTimeOffset To { get; init; }
 }

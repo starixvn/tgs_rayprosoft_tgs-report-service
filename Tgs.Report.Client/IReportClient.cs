@@ -109,20 +109,27 @@ public interface IReportClient
 
     ValueTask<PagedResponse<PlayerDepositModel>> GetPlayerDepositsAsync(GetPlayerDepositsRequest request);
 
-    ValueTask<PagedResponse<PlayerFirstDepositDetailModel>> GetPlayerFirstDepositDetailsAsync(GetPlayerFirstDepositDetailsRequest request);
+    ValueTask<PagedResponse<PlayerFirstDepositDetailModel>> GetPlayerFirstDepositDetailsAsync(
+        GetPlayerFirstDepositDetailsRequest request);
 
-    ValueTask<PagedResponse<PlayerNoSecondDepositDetailModel>> GetPlayerNoSecondDepositDetailsAsync(GetPlayerNoSecondDepositDetailsRequest request);
+    ValueTask<PagedResponse<PlayerNoSecondDepositDetailModel>> GetPlayerNoSecondDepositDetailsAsync(
+        GetPlayerNoSecondDepositDetailsRequest request);
 
     ValueTask<PagedResponse<MarketingModel>> GetMarketingListAsync(GetMarketingListRequest request);
 
-    ValueTask<PagedResponse<MarketingRegisterDetailModel>> GetMarketingRegisterDetailsAsync(GetMarketingRegisterDetailRequest request);
+    ValueTask<PagedResponse<MarketingRegisterDetailModel>> GetMarketingRegisterDetailsAsync(
+        GetMarketingRegisterDetailRequest request);
 
-    ValueTask<PagedResponse<MarketingFirstDepositDetailModel>> GetMarketingFirstDepositDetailsAsync(GetMarketingFirstDepositDetailRequest request);
+    ValueTask<PagedResponse<MarketingFirstDepositDetailModel>> GetMarketingFirstDepositDetailsAsync(
+        GetMarketingFirstDepositDetailRequest request);
 
-    ValueTask<PagedResponse<MarketingGamingDetailModel>> GetMarketingGamingDetailsAsync(GetMarketingGamingDetailRequest request);
+    ValueTask<PagedResponse<MarketingGamingDetailModel>> GetMarketingGamingDetailsAsync(
+        GetMarketingGamingDetailRequest request);
 
     ValueTask<PlayerContributionTotalAmountModel> GetPlayerContributionsTotalAmountAsync(
         GetPlayerContributionsTotalAmountRequest request);
 
     ValueTask<VipTotalAmountModel> GetVipReportTotalAmountAsync(GetVipReportTotalAmountRequest request);
+
+    ValueTask<PagedResponse<MarketAgentProfitModel>> GetMarketAgentProfitsAsync(GetMarketAgentProfitsRequest request);
 }

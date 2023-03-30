@@ -1,14 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace Tgs.Report.Enum
+namespace Tgs.Report.Enum;
+
+[Flags]
+public enum PlayerType : byte
 {
-    [Flags]
-    public enum PlayerType : byte
-    {
-        None = 0,
-        [Description("Real Player")] RealPlayer = 1,
-        [Description("Test Player")] TestPlayer = 2,
-        All = RealPlayer | TestPlayer
-    }
+    None = 0,
+    [Description("Real Player")] RealPlayer = 1,
+    [Description("Test Player")] TestPlayer = 2,
+    All = RealPlayer | TestPlayer
 }

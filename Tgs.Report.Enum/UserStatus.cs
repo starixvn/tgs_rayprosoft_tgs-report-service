@@ -1,8 +1,7 @@
-﻿namespace Tgs.Report.Enum
+﻿namespace Tgs.Report.Enum;
+
+public enum UserStatus
 {
-    public enum UserStatus
-    {
-        Enabled = 0,
-        Disabled = 1
-    }
+    Enabled = 0,
+    Disabled = 1
 }

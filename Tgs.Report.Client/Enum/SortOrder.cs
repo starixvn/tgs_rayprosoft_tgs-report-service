@@ -1,9 +1,8 @@
-﻿namespace Tgs.Report.Client.Enum
+﻿namespace Tgs.Report.Client.Enum;
+
+public enum SortOrder
 {
-    public enum SortOrder
-    {
-        Unspecified = -1,
-        Ascending = 0,
-        Descending = 1
-    }
+    Unspecified = -1,
+    Ascending = 0,
+    Descending = 1
 }

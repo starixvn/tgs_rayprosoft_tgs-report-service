@@ -1,49 +1,48 @@
 ﻿using System.Collections;
 
-namespace Tgs.Report.Client
+namespace Tgs.Report.Client;
+
+public static class ClientPath
 {
-    public static class ClientPath
+    public static string AppendWithProperties(string path, object obj) => Append(path, obj);
+
+    public static string PathAppendWithProperties(this string path, object obj) => Append(path, obj);
+
+    private static string Append(string path, object obj)
     {
-        public static string AppendWithProperties(string path, object obj) => Append(path, obj);
+        var last = obj.GetType().GetProperties().Last();
 
-        public static string PathAppendWithProperties(this string path, object obj) => Append(path, obj);
+        return obj.GetType().GetProperties().Aggregate(path,
+            (current, propertyInfo) =>
+            {
+                var value = propertyInfo.GetValue(obj);
 
-        private static string Append(string path, object obj)
-        {
-            var last = obj.GetType().GetProperties().Last();
-
-            return obj.GetType().GetProperties().Aggregate(path,
-                (current, propertyInfo) =>
+                if (propertyInfo.PropertyType == typeof(DateTimeOffset)
+                    || propertyInfo.PropertyType == typeof(DateTimeOffset?))
                 {
-                    var value = propertyInfo.GetValue(obj);
+                    value = ((DateTimeOffset?)value)?.ToUniversalTime()
+                        .ToString("u");
+                }
 
-                    if (propertyInfo.PropertyType == typeof(DateTimeOffset)
-                        || propertyInfo.PropertyType == typeof(DateTimeOffset?))
+                if (propertyInfo.PropertyType.IsArray)
+                {
+                    if (value is null)
                     {
-                        value = ((DateTimeOffset?)value)?.ToUniversalTime()
-                            .ToString("u");
+                        return $"{current}";
                     }
 
-                    if (propertyInfo.PropertyType.IsArray)
-                    {
-                        if (value is null)
-                        {
-                            return $"{current}";
-                        }
+                    var query = string.Empty;
+                    var enumerable = (IEnumerable)value;
 
-                        var query = string.Empty;
-                        var enumerable = (IEnumerable)value;
+                    query = enumerable.Cast<object>().Aggregate(query,
+                        (current1, itme) => current1 + $"{propertyInfo.Name}={itme}&");
 
-                        query = enumerable.Cast<object>().Aggregate(query,
-                            (current1, itme) => current1 + $"{propertyInfo.Name}={itme}&");
+                    return $"{current}{query}";
+                }
 
-                        return $"{current}{query}";
-                    }
-
-                    return last.Equals(propertyInfo)
-                        ? $"{current}{propertyInfo.Name}={value}"
-                        : $"{current}{propertyInfo.Name}={value}&";
-                });
-        }
+                return last.Equals(propertyInfo)
+                    ? $"{current}{propertyInfo.Name}={value}"
+                    : $"{current}{propertyInfo.Name}={value}&";
+            });
     }
 }

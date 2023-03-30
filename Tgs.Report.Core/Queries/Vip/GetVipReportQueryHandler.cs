@@ -10,10 +10,7 @@ public class GetVipReportQueryHandler : IRequestHandler<GetVipReportRequest, Pag
 {
     private readonly TgsContext _context;
 
-    public GetVipReportQueryHandler(TgsContext context)
-    {
-        _context = context;
-    }
+    public GetVipReportQueryHandler(TgsContext context) => _context = context;
 
     public async Task<PagedResponse<VipModel>> Handle(
         GetVipReportRequest request,
@@ -51,81 +48,84 @@ public class GetVipReportQueryHandler : IRequestHandler<GetVipReportRequest, Pag
         var fromDate = new DateOnly(from.Year, from.Month, from.Day);
         var toDate = new DateOnly(to.Year, to.Month, to.Day);
 
-        var withdrawalByUserIds = to > today ? await _context.WithdrawForms
-            .Where(x => x.BrandId == request.BrandId)
-            .Where(x => x.UserType == 1 && x.Status == 9000)
-            .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
-            .Join(_context.Players,
-                wf => wf.UserId,
-                p => p.PlayerCode,
-                (wf, p) => new
-                {
-                    wf.BrandId,
-                    wf.UserType,
-                    wf.Status,
-                    wf.CreatedOn,
-                    wf.UserId,
-                    wf.ActualAmount,
-                    wf.Amount,
-                    p.AgentId,
-                    p.Username,
-                    Level = p.Vip == null ? (int?)null : p.Vip.Level
-                })
-            .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
-            .Where(request.Level, x => x.Level == request.Level)
-            .GroupBy(x => x.UserId,
-                (userId, withdrawals) => new
-                {
-                    UserId = userId,
-                    WithdrawalAmount = withdrawals.Sum(w => w.ActualAmount ?? w.Amount)
-                }).ToArrayAsync(cancellationToken)
-            .ConfigureAwait(false)
-                : null;
+        var withdrawalByUserIds = to > today
+            ? await _context.WithdrawForms
+                .Where(x => x.BrandId == request.BrandId)
+                .Where(x => x.UserType == 1 && x.Status == 9000)
+                .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
+                .Join(_context.Players,
+                    wf => wf.UserId,
+                    p => p.PlayerCode,
+                    (wf, p) => new
+                    {
+                        wf.BrandId,
+                        wf.UserType,
+                        wf.Status,
+                        wf.CreatedOn,
+                        wf.UserId,
+                        wf.ActualAmount,
+                        wf.Amount,
+                        p.AgentId,
+                        p.Username,
+                        Level = p.Vip == null ? (int?)null : p.Vip.Level
+                    })
+                .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
+                .Where(request.Level, x => x.Level == request.Level)
+                .GroupBy(x => x.UserId,
+                    (userId, withdrawals) => new
+                    {
+                        UserId = userId,
+                        WithdrawalAmount = withdrawals.Sum(w => w.ActualAmount ?? w.Amount)
+                    }).ToArrayAsync(cancellationToken)
+                .ConfigureAwait(false)
+            : null;
 
-        var depositByUserIds = to > today ? await _context.DepositForms
-            .Where(x => x.BrandId == request.BrandId)
-            .Where(x => x.Status == 8000)
-            .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
-            .Join(_context.Players,
-                df => df.PlayerCode,
-                p => p.PlayerCode,
-                (df, p) => new
-                {
-                    df.BrandId,
-                    df.Status,
-                    df.CreatedOn,
-                    df.PlayerCode,
-                    df.ActualAmount,
-                    df.Amount,
-                    p.AgentId,
-                    p.Username,
-                    Level = p.Vip == null ? (int?)null : p.Vip.Level
-                })
-            .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
-            .Where(request.Level, x => x.Level == request.Level)
-            .GroupBy(x => x.PlayerCode,
-                (playerCode, deposits) => new
-                {
-                    PlayerCode = playerCode,
-                    DepositAmount = deposits.Sum(w => w.ActualAmount ?? w.Amount)
-                }).ToArrayAsync(cancellationToken)
-            .ConfigureAwait(false)
-                : null;
+        var depositByUserIds = to > today
+            ? await _context.DepositForms
+                .Where(x => x.BrandId == request.BrandId)
+                .Where(x => x.Status == 8000)
+                .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
+                .Join(_context.Players,
+                    df => df.PlayerCode,
+                    p => p.PlayerCode,
+                    (df, p) => new
+                    {
+                        df.BrandId,
+                        df.Status,
+                        df.CreatedOn,
+                        df.PlayerCode,
+                        df.ActualAmount,
+                        df.Amount,
+                        p.AgentId,
+                        p.Username,
+                        Level = p.Vip == null ? (int?)null : p.Vip.Level
+                    })
+                .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
+                .Where(request.Level, x => x.Level == request.Level)
+                .GroupBy(x => x.PlayerCode,
+                    (playerCode, deposits) => new
+                    {
+                        PlayerCode = playerCode,
+                        DepositAmount = deposits.Sum(w => w.ActualAmount ?? w.Amount)
+                    }).ToArrayAsync(cancellationToken)
+                .ConfigureAwait(false)
+            : null;
 
         var dailyDepositWithdraws = await _context.PlayerDailyPaymentStatistics
-            .Join(_context.Players.Where(x => x.BrandId == request.BrandId), pp => pp.PlayerCode, p => p.PlayerCode,(pp,p)=>new
-            {
-                pp.ReportDate,
-                p.PlayerCode,
-                pp.DailyDepositAmount,
-                pp.DailyWithdrawAmount
-            })
+            .Join(_context.Players.Where(x => x.BrandId == request.BrandId), pp => pp.PlayerCode, p => p.PlayerCode,
+                (pp, p) => new
+                {
+                    pp.ReportDate,
+                    p.PlayerCode,
+                    pp.DailyDepositAmount,
+                    pp.DailyWithdrawAmount
+                })
             .Where(x => x.ReportDate >= fromDate && x.ReportDate < toDate)
-            .GroupBy(x => x.PlayerCode,(playerCode,group)=> new
+            .GroupBy(x => x.PlayerCode, (playerCode, group) => new
             {
                 PlayerCode = playerCode,
                 DailyDepositAmount = group.Sum(s => s.DailyDepositAmount),
-                DailyWithdrawAmount = group.Sum(s => s.DailyWithdrawAmount),
+                DailyWithdrawAmount = group.Sum(s => s.DailyWithdrawAmount)
             })
             .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
@@ -332,9 +332,9 @@ public class GetVipReportQueryHandler : IRequestHandler<GetVipReportRequest, Pag
                     ?.DailyDepositAmount ?? 0M)
                 + (depositByUserIds?.FirstOrDefault(x => x.PlayerCode == item.PlayerCode)?.DepositAmount ?? 0M);
 
-        item.WithdrawalAmount =(dailyDepositWithdraws.FirstOrDefault(x => x.PlayerCode == item.PlayerCode)
-                ?.DailyWithdrawAmount ?? 0M)
-            + (withdrawalByUserIds?.FirstOrDefault(w => w.UserId == item.PlayerCode)?.WithdrawalAmount ?? 0);
+            item.WithdrawalAmount = (dailyDepositWithdraws.FirstOrDefault(x => x.PlayerCode == item.PlayerCode)
+                    ?.DailyWithdrawAmount ?? 0M)
+                + (withdrawalByUserIds?.FirstOrDefault(w => w.UserId == item.PlayerCode)?.WithdrawalAmount ?? 0);
         }
 
         return vips;

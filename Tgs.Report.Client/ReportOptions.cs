@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace Tgs.Report.Client;
 
-namespace Tgs.Report.Client
+public class ReportOptions
 {
-    public class ReportOptions
-    {
-        public Uri BaseUrl { get; set; } = default!;
-    }
+    public Uri BaseUrl { get; set; } = default!;
 }

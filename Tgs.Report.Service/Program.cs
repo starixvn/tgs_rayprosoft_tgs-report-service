@@ -61,7 +61,9 @@ builder.Services
         var nodeIp = conifg.GetValue<string>("NODE_IP");
 
         if (!string.IsNullOrWhiteSpace(nodeIp))
-            options.Endpoint = new Uri($"http://{nodeIp}:4317");
+        {
+            options.Endpoint = new($"http://{nodeIp}:4317");
+        }
 
         conifg.GetSection("Opentelemetry:Tracing").Bind(options);
     });
@@ -149,7 +151,11 @@ app.MapProfileViewer();
 
 app.UseRequestLocalization(option =>
 {
-    var supportedCultures = new[] { "en-US", "zh-CN" };
+    var supportedCultures = new[]
+    {
+        "en-US",
+        "zh-CN"
+    };
 
     option
         .SetDefaultCulture(supportedCultures[0])

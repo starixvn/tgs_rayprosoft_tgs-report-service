@@ -1,34 +1,34 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using MockQueryable.Moq;
+using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core.Queries.Round;
 using Tgs.Report.Enum;
 using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.Round;
 
-namespace Tgs.Report.UnitTest.Round
+namespace Tgs.Report.UnitTest.Round;
+
+internal class GetRoundsTotalQueryTest : BaseTest
 {
-    internal class GetRoundsTotalQueryTest
+    [Test]
+    public async Task Can_Get_Rounds_Sum()
     {
-        [Test]
-        public async Task Can_Get_Rounds_Sum()
+        var fakeDbContext = Substitute.For<TgsContext>();
+
+        var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
+        var roundId = new Guid("aac02111-20f6-4f0d-6982-08d9dbdc0473");
+        var gameProviderId = new Guid("aac02112-20f6-4f0d-6982-08d9dbdc0473");
+        var gameId = 1;
+        var playerCode = "PlayerCode";
+
+        var games = new[]
         {
-            var dbContextOptionsBuilder = new DbContextOptionsBuilder<TgsContext>();
-            dbContextOptionsBuilder
-                .UseInMemoryDatabase(Guid.NewGuid().ToString())
-                .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
-
-            var context = new TgsContext(dbContextOptionsBuilder.Options);
-
-            var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
-            var roundId = new Guid("aac02111-20f6-4f0d-6982-08d9dbdc0473");
-            var gameProviderId = new Guid("aac02112-20f6-4f0d-6982-08d9dbdc0473");
-            var gameId = 1;
-            var playerCode = "PlayerCode";
-
-            _ = context.Games.Add(new Game
+            new Game
             {
                 Id = gameId,
                 GameProviderId = gameProviderId,
@@ -38,9 +38,12 @@ namespace Tgs.Report.UnitTest.Round
                 ExternalId = "externalId",
                 Name = "Lobby",
                 UpdatedByUsername = "username"
-            });
+            }
+        }.AsQueryable().BuildMock();
 
-            _ = context.Players.Add(new Repository.Entities.Player
+        var players = new[]
+        {
+            new Repository.Entities.Player
             {
                 BrandId = brandId,
                 PlayerCode = playerCode,
@@ -50,9 +53,12 @@ namespace Tgs.Report.UnitTest.Round
                 Username = "username",
                 WithdrawPassword = Array.Empty<byte>(),
                 WithdrawSalt = Array.Empty<byte>()
-            });
+            }
+        }.AsQueryable().BuildMock();
 
-            _ = context.Rounds.Add(new Repository.Entities.Round
+        var rounds = new[]
+        {
+            new Repository.Entities.Round
             {
                 Id = roundId,
                 GameId = gameId,
@@ -67,26 +73,41 @@ namespace Tgs.Report.UnitTest.Round
                 PlayerCode = playerCode,
                 CurrencyCode = "CNY",
                 ExternalRoundId = "externalRoundId"
-            });
+            }
+        }.AsQueryable().BuildMock();
 
-            _ = context.RoundDetails.Add(new RoundDetail { RoundId = roundId, AdditionalData = "{}" });
-
-            _ = await context.SaveChangesAsync();
-
-            var sut = new GetRoundsTotalQueryHandler(context);
-
-            var request = new GetRoundsTotalRequest
+        var roundDetails = new[]
+        {
+            new RoundDetail
             {
-                BrandId = brandId,
-                From = DateTimeOffset.UtcNow.AddDays(-1),
-                To = DateTimeOffset.UtcNow.AddDays(1)
-            };
+                RoundId = roundId,
+                AdditionalData = "additionalData"
+            }
+        }.AsQueryable().BuildMock();
 
-            var response = await sut.Handle(request, default);
+        var mockRounds = GetDbSet(rounds);
+        var mockRoundDetails = GetDbSet(roundDetails);
+        var mockPlayers = GetDbSet(players);
+        var mockGames = GetDbSet(games);
 
-            Assert.AreEqual(10, response.BetAmount);
-            Assert.AreEqual(10, response!.ValidBetAmount);
-            Assert.AreEqual(15, response!.WinLoss);
-        }
+        fakeDbContext.Rounds.Returns(mockRounds.Object);
+        fakeDbContext.RoundDetails.Returns(mockRoundDetails.Object);
+        fakeDbContext.Players.Returns(mockPlayers.Object);
+        fakeDbContext.Games.Returns(mockGames.Object);
+
+        var sut = new GetRoundsTotalQueryHandler(fakeDbContext);
+
+        var request = new GetRoundsTotalRequest
+        {
+            BrandId = brandId,
+            From = DateTimeOffset.UtcNow.AddDays(-1),
+            To = DateTimeOffset.UtcNow.AddDays(1)
+        };
+
+        var response = await sut.Handle(request, default);
+
+        Assert.AreEqual(10, response.BetAmount);
+        Assert.AreEqual(10, response!.ValidBetAmount);
+        Assert.AreEqual(15, response!.WinLoss);
     }
 }
