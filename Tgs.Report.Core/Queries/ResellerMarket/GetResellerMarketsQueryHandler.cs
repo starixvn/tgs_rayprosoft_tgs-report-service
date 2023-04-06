@@ -241,7 +241,7 @@ public class GetResellerMarketsQueryHandler : IRequestHandler<GetResellerMarkets
                             m.AgentAggregate.BonusAdjustAmount - m.AgentAggregate.NoIncludeNetProfitBonusAdjustAmount) *
                         (m.AgentAggregate.AgentId == null
                             ? 1
-                            : (100 - m.AgentAggregate.ChiefAgentDividendPercentage) * 0.01M) -
+                            : (100 - m.AgentAggregate.ChiefAgentDividendPercentage) * 0.01M) +
                         (m.AgentAggregate.AgentId == null
                             ? 0M
                             : (m.AgentAggregate.WinLossAmount - (m.AgentAggregate.RebateAmount +
