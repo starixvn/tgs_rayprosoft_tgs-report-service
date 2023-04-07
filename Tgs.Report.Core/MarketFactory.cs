@@ -56,7 +56,7 @@ namespace Tgs.Report.Core
         ) AS "AgentProfit",
         SUM(company_adjust_amount) AS "CompanyAdjustment",
         SUM(
-            (win_loss_amount - rebate_amount - promotion_amount - upgrade_amount - season_amount - birthday_amount - (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)) * (100.0 - chief_agent_dividend_percentage) / 100.0
+            ((win_loss_amount - rebate_amount - promotion_amount - upgrade_amount - season_amount - birthday_amount - (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)) * (100.0 - chief_agent_dividend_percentage) / 100.0) - company_adjust_amount
         ) AS "CompanyProfit",
         count(*) over() AS "TotalCount"
     FROM 
