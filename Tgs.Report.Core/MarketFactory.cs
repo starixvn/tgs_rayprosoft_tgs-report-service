@@ -18,7 +18,15 @@ namespace Tgs.Report.Core
     WITH cte AS (
     SELECT 
         JSONB_PATH_QUERY(pa.AGENT_DIVIDEND_PERCENTAGE_TREE_DATA, '$[*] ? (@.ParentAgentId == null)') ->> 'AgentId' AS root_agent_id,
-        pa.*,
+        pa.agent_id,
+        pa.win_loss_amount,
+        pa.rebate_amount,
+        pa.promotion_amount,
+        pa.bonus_adjust_amount,
+        pa.no_include_net_profit_bonus_adjust_amount,
+        pa.company_adjust_amount,
+        pa.no_include_net_profit_company_adjust_amount,
+        pa.chief_agent_dividend_percentage,
         COALESCE(pba.upgrade_amount,0.0) upgrade_amount,
         COALESCE(pba.season_amount,0.0) season_amount,
         COALESCE(pba.birthday_amount,0.0) birthday_amount
@@ -56,7 +64,7 @@ namespace Tgs.Report.Core
         ) AS "AgentProfit",
         SUM(company_adjust_amount) AS "CompanyAdjustment",
         SUM(
-            ((win_loss_amount - rebate_amount - promotion_amount - upgrade_amount - season_amount - birthday_amount - (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)) * (100.0 - chief_agent_dividend_percentage) / 100.0) - company_adjust_amount
+            ((win_loss_amount - rebate_amount - promotion_amount - upgrade_amount - season_amount - birthday_amount - (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)) * (100.0 - chief_agent_dividend_percentage) / 100.0) - (company_adjust_amount - no_include_net_profit_company_adjust_amount)
         ) AS "CompanyProfit",
         count(*) over() AS "TotalCount"
     FROM 
