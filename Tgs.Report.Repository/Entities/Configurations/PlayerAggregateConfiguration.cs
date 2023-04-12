@@ -6,8 +6,6 @@ using System;
 using System.Collections.Generic;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Tgs.Report.Repository.Entities;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System.Text.Json;
 
 #nullable disable
 
@@ -125,6 +123,8 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.ReportDate).HasColumnName("report_date");
 
             entity.Property(e => e.ReportDateTime).HasColumnName("report_date_time");
+
+            entity.Property(e => e.RoundCount).HasColumnName("round_count");
 
             entity.Property(e => e.SystemAdjustAmount)
                 .HasPrecision(18, 6)

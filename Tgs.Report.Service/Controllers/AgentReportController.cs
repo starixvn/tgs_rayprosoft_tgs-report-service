@@ -90,4 +90,10 @@ public class AgentReportController : ControllerBase
         => File(
             await _mediator.Send(request).ConfigureAwait(false),
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+    [HttpGet("breadcrumb")]
+    [Description("Get Breadcrumb")]
+    public Task<IEnumerable<BreadcrumbModel>> GetBreadcrumbAsync(
+        [FromQuery] GetBreadcrumbRequest request) =>
+        _mediator.Send(request);
 }

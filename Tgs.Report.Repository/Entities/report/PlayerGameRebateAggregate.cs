@@ -32,5 +32,6 @@ namespace Tgs.Report.Repository.Entities
         public decimal OriginalTurnover { get; set; }
         public decimal ValidBetAmount { get; set; }
         public DateTime? ReportDateTime { get; set; }
+        public int RoundCount { get; set; }
     }
 }

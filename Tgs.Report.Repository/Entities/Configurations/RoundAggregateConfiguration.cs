@@ -54,6 +54,8 @@ namespace Tgs.Report.Repository.Entities.Configurations
 
             entity.Property(e => e.ReportDate).HasColumnName("report_date");
 
+            entity.Property(e => e.RoundCount).HasColumnName("round_count");
+
             entity.Property(e => e.Turnover)
                 .HasPrecision(18, 6)
                 .HasColumnName("turnover");
