@@ -1,10 +1,9 @@
-﻿namespace Tgs.Report.Enum
+﻿namespace Tgs.Report.Enum;
+
+public enum RoleType
 {
-    public enum RoleType
-    {
-        Admin = 0,
-        Reseller = 1,
-        Licensee = 2,
-        Brand = 3
-    }
+    Admin = 0,
+    Reseller = 1,
+    Licensee = 2,
+    Brand = 3
 }

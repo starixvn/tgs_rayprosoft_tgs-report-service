@@ -142,6 +142,10 @@ namespace Tgs.Report.Repository.Entities.Configurations
 
             entity.Property(e => e.Status).HasColumnName("status");
 
+            entity.Property(e => e.TimeSpanMinutes)
+                .HasColumnName("time_span_minutes")
+                .HasDefaultValueSql("480");
+
             entity.Property(e => e.TimeZoneId)
                 .HasMaxLength(256)
                 .HasColumnName("time_zone_id");

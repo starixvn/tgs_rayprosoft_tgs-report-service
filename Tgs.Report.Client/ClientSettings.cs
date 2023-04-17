@@ -1,7 +1,6 @@
-﻿namespace Tgs.Report.Client
+﻿namespace Tgs.Report.Client;
+
+public record ClientSettings
 {
-    public record ClientSettings
-    {
-        public string Url { get; init; } = default!;
-    }
+    public string Url { get; init; } = default!;
 }

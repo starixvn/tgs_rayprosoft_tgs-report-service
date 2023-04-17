@@ -1,8 +1,7 @@
-﻿namespace Tgs.Report.Enum
+﻿namespace Tgs.Report.Enum;
+
+public enum AgentType
 {
-    public enum AgentType
-    {
-        Cash = 1,
-        Credit = 2
-    }
+    Cash = 1,
+    Credit = 2
 }

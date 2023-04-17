@@ -9,8 +9,8 @@ namespace Tgs.Report.Core.Queries.Market;
 public class GetPlayerNoSecondDepositDetailQueryHandler : IRequestHandler<GetPlayerNoSecondDepositDetailsRequest,
     PagedResponse<PlayerNoSecondDepositDetailModel>>
 {
-    private readonly IPlayerDepositFactory _playerDepositFactory;
     private readonly TgsContext _context;
+    private readonly IPlayerDepositFactory _playerDepositFactory;
 
     public GetPlayerNoSecondDepositDetailQueryHandler(
         IPlayerDepositFactory playerDepositFactory,

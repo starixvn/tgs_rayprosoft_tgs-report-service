@@ -14,14 +14,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ClosedXML" Version="0.95.4" />
+    <PackageReference Include="ClosedXML" Version="0.100.3" />
     <PackageReference Include="Dapper" Version="2.0.123" />
-    <PackageReference Include="MediatR" Version="11.1.0" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="MediatR" Version="12.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Scrutor" Version="4.2.1" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
-    <PackageReference Include="Tgs.GameProviders.Pluggable.Client" Version="0.0.29" />
+    <PackageReference Include="Tgs.GameProviders.Pluggable.Client" Version="0.0.30" />
   </ItemGroup>
 
   <ItemGroup>

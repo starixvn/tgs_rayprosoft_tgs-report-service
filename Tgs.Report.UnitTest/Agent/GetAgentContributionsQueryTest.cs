@@ -31,7 +31,7 @@ public sealed class GetAgentContributionsQueryTest : BaseTest
 
         var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
         var agentUsername = "agentUsername";
-        var reportDate = new DateTimeOffset(2022, 1, 21, 0, 0, 0, new TimeSpan(8, 0, 0));
+        var reportDate = new DateTimeOffset(2022, 1, 21, 0, 0, 0, new(8, 0, 0));
 
         var agents = CreateAgentFixture(brandId, agentUsername)
             .CreateMany<Repository.Entities.Agent>(1)
@@ -44,11 +44,15 @@ public sealed class GetAgentContributionsQueryTest : BaseTest
 
         var players = agents.SelectMany(x => x.Players);
 
-        var playerAggregates = CreatePlayerAggregateFixture(brandId, agents.First().Id, players.First().PlayerCode, reportDate).CreateMany<PlayerAggregate>(1).AsQueryable()
-            .BuildMock();
+        var playerAggregates =
+            CreatePlayerAggregateFixture(brandId, agents.First().Id, players.First().PlayerCode, reportDate)
+                .CreateMany<PlayerAggregate>(1).AsQueryable()
+                .BuildMock();
 
-        var playerBonusAggregates = CreatePlayerBonusAggregateFixture(brandId, agents.First().Id, players.First().PlayerCode, reportDate).CreateMany<PlayerBonusAggregate>(1).AsQueryable()
-            .BuildMock();
+        var playerBonusAggregates =
+            CreatePlayerBonusAggregateFixture(brandId, agents.First().Id, players.First().PlayerCode, reportDate)
+                .CreateMany<PlayerBonusAggregate>(1).AsQueryable()
+                .BuildMock();
 
         var request = new GetAgentContributionsRequest
         {
@@ -66,7 +70,7 @@ public sealed class GetAgentContributionsQueryTest : BaseTest
 
         var agentDailyPaymentStatistics =
             CreateAgentDailyPaymentStatisticsFixture().CreateMany<AgentDailyPaymentStatistic>(1).AsQueryable()
-            .BuildMock();
+                .BuildMock();
 
         var mockAgentDailyPaymentStatistics = GetDbSet(agentDailyPaymentStatistics);
         var mockPlayerDailyPaymentStatistics = GetDbSet(playerDailyPaymentStatistics);
@@ -85,7 +89,7 @@ public sealed class GetAgentContributionsQueryTest : BaseTest
             {
                 var agent = agents.First();
 
-                return new AgentWithNLevelInfo(agent.Id, "", 1);
+                return new(agent.Id, "", 1);
             });
 
         fakeWithdrawForm.GetQueries().Returns(withdrawForms);
@@ -108,7 +112,15 @@ public sealed class GetAgentContributionsQueryTest : BaseTest
             .With(s => s.BrandId, brandId)
             .With(s => s.Username, username)
             .With(s => s.Brand, new Brand())
-            .With(s => s.Players, new Repository.Entities.Player[] { new Repository.Entities.Player { PlayerCode = "playerCode", AgentId = agentId, BrandId = brandId } }));
+            .With(s => s.Players, new[]
+            {
+                new Repository.Entities.Player
+                {
+                    PlayerCode = "playerCode",
+                    AgentId = agentId,
+                    BrandId = brandId
+                }
+            }));
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         return fixture;
     }
@@ -123,7 +135,8 @@ public sealed class GetAgentContributionsQueryTest : BaseTest
         return fixture;
     }
 
-    private static Fixture CreatePlayerAggregateFixture(Guid brandId, Guid agentId, string playerCode, DateTimeOffset reportDate)
+    private static Fixture CreatePlayerAggregateFixture(Guid brandId, Guid agentId, string playerCode,
+        DateTimeOffset reportDate)
     {
         var fixture = new Fixture();
         fixture.Customize<PlayerAggregate>(u => u
@@ -137,7 +150,8 @@ public sealed class GetAgentContributionsQueryTest : BaseTest
         return fixture;
     }
 
-    private static Fixture CreatePlayerBonusAggregateFixture(Guid brandId, Guid agentId, string playerCode, DateTimeOffset reportDate)
+    private static Fixture CreatePlayerBonusAggregateFixture(Guid brandId, Guid agentId, string playerCode,
+        DateTimeOffset reportDate)
     {
         var fixture = new Fixture();
         fixture.Customize<PlayerBonusAggregate>(u => u

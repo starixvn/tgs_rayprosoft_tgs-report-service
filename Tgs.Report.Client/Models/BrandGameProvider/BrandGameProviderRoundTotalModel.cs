@@ -1,17 +1,16 @@
-﻿namespace Tgs.Report.Client.Models.BrandGameProvider
+﻿namespace Tgs.Report.Client.Models.BrandGameProvider;
+
+public record BrandGameProviderRoundTotalModel
 {
-    public record BrandGameProviderRoundTotalModel
-    {
-        public string CurrencyCode { get; init; } = default!;
+    public string CurrencyCode { get; init; } = default!;
 
-        public int TransactionCount { get; init; }
+    public int TransactionCount { get; init; }
 
-        public decimal BetAmount { get; init; }
+    public decimal BetAmount { get; init; }
 
-        public decimal ValidBetAmount { get; init; }
+    public decimal ValidBetAmount { get; init; }
 
-        public decimal OriginalTurnover { get; init; }
+    public decimal OriginalTurnover { get; init; }
 
-        public decimal CompanyWinLoss { get; init; }
-    }
+    public decimal CompanyWinLoss { get; init; }
 }

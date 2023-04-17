@@ -1,13 +1,12 @@
 ﻿using System;
 
-namespace Tgs.Report.Enum
+namespace Tgs.Report.Enum;
+
+[Flags]
+public enum GameTag : byte
 {
-    [Flags]
-    public enum GameTag : byte
-    {
-        None = 0,
-        New = 1,
-        Hot = 2,
-        Recommend = 4
-    }
+    None = 0,
+    New = 1,
+    Hot = 2,
+    Recommend = 4
 }

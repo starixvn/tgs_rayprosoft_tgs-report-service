@@ -10,10 +10,7 @@ internal class
 {
     private readonly IMediator _mediator;
 
-    public ExportPlayerContributionsQueryHandler(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public ExportPlayerContributionsQueryHandler(IMediator mediator) => _mediator = mediator;
 
     public async Task<MemoryStream> Handle(
         ExportPlayerContributionsRequest request,
@@ -57,6 +54,6 @@ internal class
         await using var stream = new MemoryStream();
         xlsx?.SaveAs(stream);
 
-        return new MemoryStream(stream.ToArray());
+        return new(stream.ToArray());
     }
 }

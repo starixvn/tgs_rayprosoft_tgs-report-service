@@ -39,7 +39,8 @@ namespace Tgs.Report.Repository.Entities
         public decimal DepositHandlingFee { get; set; }
         public decimal WithdrawHandlingFee { get; set; }
         public decimal? AgentDividendPercentage { get; set; }
-        public string? AgentDividendPercentageTreeData { get; set; }
+        public AgentDividendPercentage[]? AgentDividendPercentageTreeData { get; set; }
         public decimal? ChiefAgentDividendPercentage { get; set; }
+        public DateTime? ReportDateTime { get; set; }
     }
 }

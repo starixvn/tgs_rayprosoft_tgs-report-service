@@ -1,9 +1,8 @@
-﻿namespace Tgs.Report.Enum
+﻿namespace Tgs.Report.Enum;
+
+public enum SettlementIntervalType
 {
-    public enum SettlementIntervalType
-    {
-        Daily = 1,
-        Weekly = 2,
-        Monthly = 3
-    }
+    Daily = 1,
+    Weekly = 2,
+    Monthly = 3
 }

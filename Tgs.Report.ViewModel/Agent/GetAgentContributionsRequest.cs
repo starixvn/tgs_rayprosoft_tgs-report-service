@@ -2,16 +2,15 @@
 using MediatR;
 using Tgs.Report.Enum;
 
-namespace Tgs.Report.ViewModel.Agent
+namespace Tgs.Report.ViewModel.Agent;
+
+public record GetAgentContributionsRequest : PageableRequest, IRequest<PagedResponse<AgentContributionModel>>
 {
-    public record GetAgentContributionsRequest : PageableRequest, IRequest<PagedResponse<AgentContributionModel>>
-    {
-        public Guid BrandId { get; set; }
-        public Guid? AgentId { get; set; }
-        public string? Username { get; set; }
-        public AgentType? Type { get; set; }
-        public DateTimeOffset From { get; set; }
-        public DateTimeOffset To { get; set; }
-        public bool IncludeAgents { get; set; }
-    }
+    public Guid BrandId { get; set; }
+    public Guid? AgentId { get; set; }
+    public string? Username { get; set; }
+    public AgentType? Type { get; set; }
+    public DateTimeOffset From { get; set; }
+    public DateTimeOffset To { get; set; }
+    public bool IncludeAgents { get; set; }
 }

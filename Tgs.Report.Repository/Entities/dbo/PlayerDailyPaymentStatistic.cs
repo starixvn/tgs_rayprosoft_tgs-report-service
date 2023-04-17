@@ -24,5 +24,8 @@ namespace Tgs.Report.Repository.Entities
         public decimal? FirstDepositHandlingFee { get; set; }
         public decimal? TotalDepositHandlingFee { get; set; }
         public decimal? TotalWithdrawHandlingFee { get; set; }
+        public decimal? FirstWithdrawAmount { get; set; }
+        public decimal? FirstWithdrawHandlingFee { get; set; }
+        public DateTime? FirstWithdrawOn { get; set; }
     }
 }

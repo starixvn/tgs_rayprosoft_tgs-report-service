@@ -50,7 +50,7 @@ public class GetPlayerContributionsQueryHandler
 
         var fromDate = new DateOnly(from.Year, from.Month, from.Day);
         var toDate = to > yesterday
-            ? new DateOnly(yesterday.Year, yesterday.Month, yesterday.Day)
+            ? new(yesterday.Year, yesterday.Month, yesterday.Day)
             : new DateOnly(to.Year, to.Month, to.Day);
 
         var withdrawalByUserIds = to > yesterday
@@ -74,7 +74,7 @@ public class GetPlayerContributionsQueryHandler
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.UserType == 1 && x.Status == 9000)
                 .Where(from > yesterday, x => x.PaidOn >= from.UtcDateTime && x.PaidOn < to.UtcDateTime)
-                .Where(!(from > yesterday),x => x.PaidOn >= yesterday.UtcDateTime && x.PaidOn < to.UtcDateTime)
+                .Where(!(from > yesterday), x => x.PaidOn >= yesterday.UtcDateTime && x.PaidOn < to.UtcDateTime)
                 .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
                 .Where(request.HasUpperAgent == true, x => x.AgentId != null)
                 .Where(request.HasUpperAgent == false, x => x.AgentId == null)
@@ -125,17 +125,18 @@ public class GetPlayerContributionsQueryHandler
             : null;
 
         var playerDailyPaymentStatistics = await _context.PlayerDailyPaymentStatistics
-            .Join(_context.Players.Where(x => x.BrandId == request.BrandId), pp => pp.PlayerCode, p => p.PlayerCode, (pp, p) => new
-            {
-                pp.ReportDate,
-                p.AgentId,
-                p.PlayerCode,
-                p.Username,
-                Level = p.Vip == null ? (int?)null : p.Vip.Level,
-                pp.DailyDepositAmount,
-                pp.DailyDepositHandlingFee,
-                pp.DailyWithdrawAmount
-            })
+            .Join(_context.Players.Where(x => x.BrandId == request.BrandId), pp => pp.PlayerCode, p => p.PlayerCode,
+                (pp, p) => new
+                {
+                    pp.ReportDate,
+                    p.AgentId,
+                    p.PlayerCode,
+                    p.Username,
+                    Level = p.Vip == null ? (int?)null : p.Vip.Level,
+                    pp.DailyDepositAmount,
+                    pp.DailyDepositHandlingFee,
+                    pp.DailyWithdrawAmount
+                })
             .Where(x => x.ReportDate >= fromDate && x.ReportDate < toDate)
             .Where(!string.IsNullOrEmpty(request.Username), x => x.Username == request.Username)
             .Where(request.HasUpperAgent == true, x => x.AgentId != null)
@@ -146,7 +147,7 @@ public class GetPlayerContributionsQueryHandler
                 PlayerCode = playerCode,
                 DailyDepositAmount = group.Sum(s => s.DailyDepositAmount),
                 DailyDepositHandlingFee = group.Sum(s => s.DailyDepositHandlingFee),
-                DailyWithdrawAmount = group.Sum(s => s.DailyWithdrawAmount),
+                DailyWithdrawAmount = group.Sum(s => s.DailyWithdrawAmount)
             })
             .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
@@ -262,12 +263,15 @@ public class GetPlayerContributionsQueryHandler
                 CompanyAdjustAmount = x.Aggregate.CompanyAdjustAmount,
                 AgentAdjustAmount = x.Aggregate.AgentAdjustAmount,
                 BonusAdjustAmount = x.Aggregate.BonusAdjustAmount,
-                BonusAmount = x.Aggregate.BonusAmount + x.Aggregate.UpgradeAmount + x.Aggregate.SeasonAmount + x.Aggregate.BirthdayAmount,
+                BonusAmount =
+                    x.Aggregate.BonusAmount + x.Aggregate.UpgradeAmount + x.Aggregate.SeasonAmount +
+                    x.Aggregate.BirthdayAmount,
                 BetAmount = x.Aggregate.BetAmount,
                 ValidBetAmount = x.Aggregate.ValidBetAmount,
                 Turnover = x.Aggregate.Turnover,
                 WinLossAmount = x.Aggregate.WinLossAmount,
-                NetProfit = x.Aggregate.NetProfit - (x.Aggregate.UpgradeAmount + x.Aggregate.SeasonAmount + x.Aggregate.BirthdayAmount)
+                NetProfit = x.Aggregate.NetProfit -
+                    (x.Aggregate.UpgradeAmount + x.Aggregate.SeasonAmount + x.Aggregate.BirthdayAmount)
             })
             .Where(x =>
                 playerCodes.Contains(x.PlayerCode)
@@ -304,7 +308,7 @@ public class GetPlayerContributionsQueryHandler
         }
 
         return playerContributions.Items == null
-            ? new PagedResponse<PlayerContributionModel>
+            ? new()
             {
                 Valid = true,
                 Items = Array.Empty<PlayerContributionModel>()

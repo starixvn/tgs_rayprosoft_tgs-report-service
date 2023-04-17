@@ -1,8 +1,7 @@
-﻿namespace Tgs.Report.Enum
+﻿namespace Tgs.Report.Enum;
+
+public enum AgentConfigStatus
 {
-    public enum AgentConfigStatus
-    {
-        DoneForConfigurePercentage = 1,
-        WaitForConfigurePercentage = 2
-    }
+    DoneForConfigurePercentage = 1,
+    WaitForConfigurePercentage = 2
 }

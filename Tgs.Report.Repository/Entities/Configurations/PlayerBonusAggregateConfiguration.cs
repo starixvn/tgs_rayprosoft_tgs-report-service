@@ -23,6 +23,10 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.HasIndex(e => new { e.ReportDate, e.BrandId, e.AgentId, e.PlayerCode }, "ix_player_bonus_aggregates_multiple_keys")
                 .HasSortOrder(new[] { SortOrder.Descending, SortOrder.Ascending, SortOrder.Ascending, SortOrder.Ascending });
 
+            entity.HasIndex(e => new { e.ReportDateTime, e.BrandId, e.AgentId, e.PlayerCode }, "ix_player_bonus_aggregates_new_multiple_keys")
+                .HasNullSortOrder(new[] { NullSortOrder.NullsLast, NullSortOrder.NullsLast, NullSortOrder.NullsLast, NullSortOrder.NullsLast })
+                .HasSortOrder(new[] { SortOrder.Descending, SortOrder.Ascending, SortOrder.Ascending, SortOrder.Ascending });
+
             entity.Property(e => e.PlayerCode)
                 .HasMaxLength(16)
                 .HasColumnName("player_code");
@@ -50,6 +54,8 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.RebateAmount)
                 .HasPrecision(18, 6)
                 .HasColumnName("rebate_amount");
+
+            entity.Property(e => e.ReportDateTime).HasColumnName("report_date_time");
 
             entity.Property(e => e.SeasonAmount)
                 .HasPrecision(18, 6)

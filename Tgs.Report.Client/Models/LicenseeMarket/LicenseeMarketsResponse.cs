@@ -1,8 +1,7 @@
-﻿namespace Tgs.Report.Client.Models.LicenseeMarket
+﻿namespace Tgs.Report.Client.Models.LicenseeMarket;
+
+public record LicenseeMarketsResponse
 {
-    public record LicenseeMarketsResponse
-    {
-        public PagedResponse<LicenseeMarketDataModel> Datas { get; init; } = default!;
-        public LicenseeMarketTotalModel[] Totals { get; init; } = default!;
-    }
+    public PagedResponse<LicenseeMarketDataModel> Datas { get; init; } = default!;
+    public LicenseeMarketTotalModel[] Totals { get; init; } = default!;
 }

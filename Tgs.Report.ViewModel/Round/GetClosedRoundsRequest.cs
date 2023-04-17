@@ -1,12 +1,11 @@
 ﻿using System;
 using MediatR;
 
-namespace Tgs.Report.ViewModel.Round
-{
-    public record GetClosedRoundsRequest : PageableRequest, IRequest<PagedResponse<ClosedRoundModel>>
-    {
-        public string? ExternalRoundId { get; init; }
+namespace Tgs.Report.ViewModel.Round;
 
-        public Guid? GameProviderId { get; init; }
-    }
+public record GetClosedRoundsRequest : PageableRequest, IRequest<PagedResponse<ClosedRoundModel>>
+{
+    public string? ExternalRoundId { get; init; }
+
+    public Guid? GameProviderId { get; init; }
 }

@@ -69,19 +69,20 @@ public class GetAgentDividendQueryHandler : IRequestHandler<GetAgentDividendsReq
         var toDate = new DateOnly(to.Year, to.Month, to.Day);
 
         var dailyDepositWithdraws = await _context.PlayerDailyPaymentStatistics
-            .Join(_context.Players.Where(x => x.BrandId == request.BrandId), pp => pp.PlayerCode, p => p.PlayerCode,(pp,p)=>new
-            {
-                pp.ReportDate,
-                p.AgentId,
-                pp.DailyDepositAmount,
-                pp.DailyWithdrawAmount
-            })
+            .Join(_context.Players.Where(x => x.BrandId == request.BrandId), pp => pp.PlayerCode, p => p.PlayerCode,
+                (pp, p) => new
+                {
+                    pp.ReportDate,
+                    p.AgentId,
+                    pp.DailyDepositAmount,
+                    pp.DailyWithdrawAmount
+                })
             .Where(x => x.ReportDate >= fromDate && x.ReportDate < toDate)
-            .GroupBy(x => x.AgentId,(agentId,group)=> new
+            .GroupBy(x => x.AgentId, (agentId, group) => new
             {
                 AgentId = agentId,
                 DailyDepositAmount = group.Sum(s => s.DailyDepositAmount),
-                DailyWithdrawAmount = group.Sum(s => s.DailyWithdrawAmount),
+                DailyWithdrawAmount = group.Sum(s => s.DailyWithdrawAmount)
             })
             .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
@@ -154,34 +155,34 @@ public class GetAgentDividendQueryHandler : IRequestHandler<GetAgentDividendsReq
             .ConfigureAwait(false);
 
         var models = agentDividends.Join(agents,
-            ad => ad.AgentId,
-            a => a.Id,
-            (ad, a) => new AgentDividendModel
-            {
-                Id = ad.AgentId,
-                Username = a.Username,
-                CompanyAdjustAmount = ad.CompanyAdjustAmount,
-                AgentAdjustAmount = ad.AgentAdjustAmount - ad.NoIncludeNetProfitAgentAdjustAmount,
-                BonusAdjustAmount = ad.BonusAdjustAmount - ad.NoIncludeNetProfitBonusAdjustAmount,
-                BonusAmount = ad.BonusAmount,
-                BetAmount = ad.BetAmount,
-                ValidBetAmount = ad.OriginalTurnover,
-                WinLossAmount = ad.WinLossAmount,
-                NetProfit = ad.NetProfit,
-                AgentDividendAmount = ad.AgentDividendAmount,
-                FromPlayerAgentDividendAmount = ad.FromPlayerAgentDividendAmount,
-                FromTeamAgentDividendAmount = ad.FromTeamAgentDividendAmount,
-                AgentDividendPercentage = ad.AgentDividendPercentage
-            })
-            .GroupJoin(agentCovered, 
-                x => x.Id, 
+                ad => ad.AgentId,
+                a => a.Id,
+                (ad, a) => new AgentDividendModel
+                {
+                    Id = ad.AgentId,
+                    Username = a.Username,
+                    CompanyAdjustAmount = ad.CompanyAdjustAmount,
+                    AgentAdjustAmount = ad.AgentAdjustAmount - ad.NoIncludeNetProfitAgentAdjustAmount,
+                    BonusAdjustAmount = ad.BonusAdjustAmount - ad.NoIncludeNetProfitBonusAdjustAmount,
+                    BonusAmount = ad.BonusAmount,
+                    BetAmount = ad.BetAmount,
+                    ValidBetAmount = ad.OriginalTurnover,
+                    WinLossAmount = ad.WinLossAmount,
+                    NetProfit = ad.NetProfit,
+                    AgentDividendAmount = ad.AgentDividendAmount,
+                    FromPlayerAgentDividendAmount = ad.FromPlayerAgentDividendAmount,
+                    FromTeamAgentDividendAmount = ad.FromTeamAgentDividendAmount,
+                    AgentDividendPercentage = ad.AgentDividendPercentage
+                })
+            .GroupJoin(agentCovered,
+                x => x.Id,
                 c => c.AgentId,
                 (ad, list) => new
                 {
                     ad,
                     list
                 })
-            .SelectMany(x => x.list.DefaultIfEmpty(),(x,covered)=> new
+            .SelectMany(x => x.list.DefaultIfEmpty(), (x, covered) => new
             {
                 x.ad,
                 covered
@@ -190,8 +191,10 @@ public class GetAgentDividendQueryHandler : IRequestHandler<GetAgentDividendsReq
             {
                 Id = x.ad.Id,
                 Username = x.ad.Username,
-                DepositAmount = dailyDepositWithdraws.FirstOrDefault(a => a.AgentId == x.ad.Id)?.DailyDepositAmount ?? 0M,
-                WithdrawalAmount = dailyDepositWithdraws.FirstOrDefault(a => a.AgentId == x.ad.Id)?.DailyWithdrawAmount ?? 0M,
+                DepositAmount = dailyDepositWithdraws.FirstOrDefault(a => a.AgentId == x.ad.Id)?.DailyDepositAmount ??
+                    0M,
+                WithdrawalAmount =
+                    dailyDepositWithdraws.FirstOrDefault(a => a.AgentId == x.ad.Id)?.DailyWithdrawAmount ?? 0M,
                 CompanyAdjustAmount = x.ad.CompanyAdjustAmount,
                 AgentAdjustAmount = x.ad.AgentAdjustAmount,
                 BonusAdjustAmount = x.ad.BonusAdjustAmount,

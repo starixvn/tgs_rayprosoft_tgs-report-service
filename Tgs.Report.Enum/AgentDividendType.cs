@@ -1,8 +1,7 @@
-﻿namespace Tgs.Report.Enum
+﻿namespace Tgs.Report.Enum;
+
+public enum AgentDividendType
 {
-    public enum AgentDividendType
-    {
-        OneLayer = 0,
-        MultipleLayer = 1
-    }
+    OneLayer = 0,
+    MultipleLayer = 1
 }

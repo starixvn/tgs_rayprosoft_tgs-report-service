@@ -27,6 +27,7 @@ namespace Tgs.Report.Repository.Entities
         public string? OrderNo { get; set; }
         public int? PromotionPlayerId { get; set; }
         public decimal HandlingFee { get; set; }
+        public Guid? SnapshotEventId { get; set; }
 
         public virtual Brand Brand { get; set; } = null!;
         public virtual Player PlayerCodeNavigation { get; set; } = null!;

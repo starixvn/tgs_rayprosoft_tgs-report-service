@@ -1,10 +1,9 @@
 ﻿using System;
 using MediatR;
 
-namespace Tgs.Report.ViewModel.GameAction
+namespace Tgs.Report.ViewModel.GameAction;
+
+public record GetGameActionsRequest : PageableRequest, IRequest<PagedResponse<GameActionModel>>
 {
-    public record GetGameActionsRequest : PageableRequest, IRequest<PagedResponse<GameActionModel>>
-    {
-        public Guid RoundId { get; init; }
-    }
+    public Guid RoundId { get; init; }
 }
