@@ -17,8 +17,8 @@ public static class ServiceCollectionExtensions
             .AddTransient<IRoundFactory, RoundFactory>()
             .AddTransient<IPlayerFactory, PlayerFactory>()
             .AddTransient<IPlayerDepositFactory, PlayerDepositFactory>()
+            .AddTransient<IMarketFactory, MarketFactory>()
             .AddTransient<IAgentFactory, AgentFactory>();
-
         services
             .AddTransient<IRequestHandler<GetMarketsRequest, PagedResponse<MarketModel>>, GetMarketsQueryHandler>()
             .Decorate<IRequestHandler<GetMarketsRequest, PagedResponse<MarketModel>>, GetMarketsCacheHandler>();

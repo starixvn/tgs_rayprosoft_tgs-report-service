@@ -212,7 +212,7 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                             m.AgentAggregate.BonusAdjustAmount - m.AgentAggregate.NoIncludeNetProfitBonusAdjustAmount) *
                         (m.AgentAggregate.AgentId == null
                             ? 1
-                            : (100 - m.AgentAggregate.ChiefAgentDividendPercentage) * 0.01M) -
+                            : (100 - m.AgentAggregate.ChiefAgentDividendPercentage) * 0.01M) +
                         (m.AgentAggregate.AgentId == null
                             ? 0M
                             : (m.AgentAggregate.WinLossAmount - (m.AgentAggregate.RebateAmount +
@@ -226,19 +226,21 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                             m.AgentAggregate.ChiefAgentDividendPercentage * 0.01M))),
                 PlatformCoveredBonus =
                     aggregates.Sum(
-                        m => m.AgentAggregate.ChiefAgentDividendPercentage == null
-                            ? 0M
-                            : (m.AgentAggregate.RebateAmount + m.AgentAggregate.PromotionAmount +
+                        m => 
+                            (m.AgentAggregate.RebateAmount + m.AgentAggregate.PromotionAmount +
                                 (m.BonusAggregate == null
                                     ? 0M
                                     : m.BonusAggregate.UpgradeAmount + m.BonusAggregate.SeasonAmount +
                                     m.BonusAggregate.BirthdayAmount)) *
-                            (100 - m.AgentAggregate.ChiefAgentDividendPercentage.Value) * 0.01M),
+                            (m.AgentAggregate.AgentId == null
+                                ? 1
+                                : (100 - m.AgentAggregate.ChiefAgentDividendPercentage) * 0.01M)),
                 PlatformCoveredBonusAdjust =
-                    aggregates.Sum(m => m.AgentAggregate.ChiefAgentDividendPercentage == null
-                        ? 0M
-                        : (m.AgentAggregate.BonusAdjustAmount - m.AgentAggregate.NoIncludeNetProfitBonusAdjustAmount) *
-                        (100 - m.AgentAggregate.ChiefAgentDividendPercentage.Value) * 0.01M)
+                    aggregates.Sum(m => 
+                        (m.AgentAggregate.BonusAdjustAmount - m.AgentAggregate.NoIncludeNetProfitBonusAdjustAmount) *
+                        (m.AgentAggregate.AgentId == null
+                            ? 1
+                            : (100 - m.AgentAggregate.ChiefAgentDividendPercentage) * 0.01M))
             })
             .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
