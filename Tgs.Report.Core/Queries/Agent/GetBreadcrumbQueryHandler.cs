@@ -15,7 +15,6 @@ internal class GetBreadcrumbQueryHandler : IRequestHandler<GetBreadcrumbRequest,
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
-
     public async Task<IEnumerable<BreadcrumbModel>> Handle(
         GetBreadcrumbRequest request,
         CancellationToken cancellationToken)
@@ -30,7 +29,7 @@ internal class GetBreadcrumbQueryHandler : IRequestHandler<GetBreadcrumbRequest,
 
         if (round != null)
         {
-            playerCode = round?.PlayerCode;
+            playerCode = round.PlayerCode;
         }
 
         var player = !string.IsNullOrEmpty(playerCode)
@@ -39,7 +38,7 @@ internal class GetBreadcrumbQueryHandler : IRequestHandler<GetBreadcrumbRequest,
 
         if (player != null)
         {
-            agentId = player?.AgentId;
+            agentId = player.AgentId;
         }
 
         if (agentId == null)
@@ -47,50 +46,46 @@ internal class GetBreadcrumbQueryHandler : IRequestHandler<GetBreadcrumbRequest,
             return Array.Empty<BreadcrumbModel>();
         }
 
-        var agents = await _context.Agents.FromSql($@"select
-  a.*
-from
-  dbo.agents f
-  inner join
-    dbo.agents a
-    on
-      (
-        a.path @> f.path
-      )
-where
-  f.id={agentId}").ToArrayAsync(cancellationToken);
+        var agent = await _context.Agents.Select(x => new
+        {
+            x.Id,
+            x.Path
+        }).FirstOrDefaultAsync(x => x.Id == agentId, cancellationToken);
 
-        var pathList = agents.Select(x => new BreadcrumbModel
+        if (agent == null)
+        {
+            return Array.Empty<BreadcrumbModel>();
+        }
+
+        var agents = await _context.Agents
+            .Where(x => x.Path.IsAncestorOf(agent.Path))
+            .Select(x => new
+            {
+                x.Id,
+                x.Username,
+                x.Path.NLevel
+            })
+            .ToArrayAsync(cancellationToken);
+
+        var pathList = agents.OrderBy(x => x.NLevel).Select(x => new BreadcrumbModel
         {
             Id = x.Id.ToString(),
             Name = x.Username,
             Type = "agent"
-        });
+        }).ToList();
 
-        if (player != null)
+        if (player != null && round != null)
         {
-            pathList = pathList.Concat(new[]
+            pathList.Add(new BreadcrumbModel
             {
-                new BreadcrumbModel
-                {
-                    Id = player.PlayerCode,
-                    Name = player.Username,
-                    Type = "player"
-                }
+                Id = player.PlayerCode,
+                Name = player.Username,
+                Type = "player"
             });
         }
-
-        if (round != null)
+        else
         {
-            pathList = pathList.Concat(new[]
-            {
-                new BreadcrumbModel
-                {
-                    Id = round.Id.ToString(),
-                    Name = round.Id.ToString(),
-                    Type = "round"
-                }
-            });
+            pathList.RemoveAt(pathList.Count - 1);
         }
 
         return pathList;

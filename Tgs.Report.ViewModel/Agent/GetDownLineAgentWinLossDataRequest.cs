@@ -1,12 +1,11 @@
 ﻿using System;
-using MediatR;
 
 namespace Tgs.Report.ViewModel.Agent;
 
-public record GetAgentPlayerWinLossRequest : PageableRequest, IRequest<PagedResponse<AgentPlayerWinLossModel>>
+public record GetDownLineAgentWinLossDataRequest : PageableRequest
 {
+    public Guid BrandId { get; init; }
     public Guid AgentId { get; init; }
-    public decimal AgentDividendPercentage { get; init; }
     public DateTimeOffset From { get; init; }
     public DateTimeOffset To { get; init; }
 }

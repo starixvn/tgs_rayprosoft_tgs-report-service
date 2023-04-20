@@ -3,13 +3,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace Tgs.Report.Repository.Entities
+namespace Tgs.Report.Repository.Entities;
+
+public partial class TransactionPromotion
 {
-    public partial class TransactionPromotion
-    {
-        public Guid TransactionId { get; set; }
-        public Guid PromotionId { get; set; }
-        public Guid PromotionBonusId { get; set; }
-        public string? PromotionType { get; set; }
-    }
+    public Guid TransactionId { get; set; }
+
+    public Guid PromotionId { get; set; }
+
+    public Guid PromotionBonusId { get; set; }
+
+    public string? PromotionType { get; set; }
 }

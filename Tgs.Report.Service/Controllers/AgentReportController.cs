@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Agent;
+using TGS.Core.Infrastructures.Extensions;
 
 namespace Tgs.Report.Service.Controllers;
 
@@ -53,13 +54,7 @@ public class AgentReportController : ControllerBase
     [HttpGet("{id}/winLoss")]
     [Description("Get agent player Win/Loss report")]
     public Task<PagedResponse<AgentPlayerWinLossModel>> GetAgentPlayerWinLossAsync(
-        [FromQuery] GetAgentPlayerWinLossRequest request) =>
-        _mediator.Send(request);
-
-    [HttpGet("{id}/agentWinLoss")]
-    [Description("Get agent Win/Loss report")]
-    public Task<PagedResponse<AgentWinLossModel>> GetAgentWinLossAsync(
-        [FromQuery] GetAgentWinLossRequest request) =>
+        [FromQuery] GetAgentDividendPlayerWinLossRequest request) =>
         _mediator.Send(request);
 
     [HttpGet("accountChanges")]
@@ -90,6 +85,30 @@ public class AgentReportController : ControllerBase
         => File(
             await _mediator.Send(request).ConfigureAwait(false),
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+    [HttpGet("agentWinLoss")]
+    [Description("Get agent Win/Loss report")]
+    public Task<PagedResponse<AgentWinLossModel>> GetAgentWinLossAsync(
+    [FromQuery] GetAgentWinLossRequest request) =>
+        _mediator.Send(request);
+
+    [HttpGet("downLineAgentWinLoss")]
+    [Description("Get down line agent Win/Loss report")]
+    public Task<PagedResponse<AgentWinLossModel>> GetDownLineAgentWinLossAsync(
+        [FromQuery] GetDownLineAgentWinLossRequest request) =>
+        _mediator.Send(request);
+
+    [HttpGet("masterAgentWinLoss")]
+    [Description("Get master agent Win/Loss report")]
+    public Task<PagedResponse<AgentWinLossModel>> GetMasterAgentWinLossAsync(
+        [FromQuery] GetMasterAgentWinLossRequest request) =>
+        _mediator.Send(request);
+
+    [HttpGet("agentPlayerWinLoss")]
+    [Description("Get agent player Win/Loss report")]
+    public Task<PagedResponse<AgentWinLossModel>> GetAgentPlayerWinLossAsync(
+        [FromQuery] GetPlayerWinLossRequest request) =>
+        _mediator.Send(request);
 
     [HttpGet("breadcrumb")]
     [Description("Get Breadcrumb")]

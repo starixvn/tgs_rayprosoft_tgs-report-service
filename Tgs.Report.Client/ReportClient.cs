@@ -799,6 +799,71 @@ public class ReportClient : IReportClient
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
     }
 
+    public async ValueTask<PagedResponse<AgentWinLossModel>> GetAgentWinLossAsync(GetAgentWinLossRequest request)
+    {
+        var path = ClientPath.AppendWithProperties("/api/agentReport/agentWinLoss?", request);
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+        var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        return JsonSerializer.Deserialize<PagedResponse<AgentWinLossModel>>(await response.Content.ReadAsStringAsync(),
+            _jsonSerializerOptions)!;
+    }
+
+    public async ValueTask<PagedResponse<AgentWinLossModel>> GetDownLineAgentWinLossAsync(GetDownLineAgentWinLossRequest request)
+    {
+        var path = ClientPath.AppendWithProperties("/api/agentReport/downLineAgentWinLoss?", request);
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+        var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        return JsonSerializer.Deserialize<PagedResponse<AgentWinLossModel>>(await response.Content.ReadAsStringAsync(),
+            _jsonSerializerOptions)!;
+    }
+
+    public async ValueTask<PagedResponse<AgentWinLossModel>> GetMasterAgentWinLossAsync(GetMasterAgentWinLossRequest request)
+    {
+        var path = ClientPath.AppendWithProperties("/api/agentReport/masterAgentWinLoss?", request);
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+        var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        return JsonSerializer.Deserialize<PagedResponse<AgentWinLossModel>>(await response.Content.ReadAsStringAsync(),
+            _jsonSerializerOptions)!;
+    }
+
+    public async ValueTask<PagedResponse<AgentWinLossModel>> GetAgentPlayerWinLossAsync(GetPlayerWinLossRequest request)
+    {
+        var path = ClientPath.AppendWithProperties("/api/agentReport/agentPlayerWinLoss?", request);
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+        var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        return JsonSerializer.Deserialize<PagedResponse<AgentWinLossModel>>(await response.Content.ReadAsStringAsync(),
+            _jsonSerializerOptions)!;
+    }
+
+    public async ValueTask<PagedResponse<BreadcrumbModel>> GetBreadcrumbAsync(GetBreadcrumbRequest request)
+    {
+        var path = ClientPath.AppendWithProperties("/api/agentReport/breadcrumb?", request);
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+        var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        return JsonSerializer.Deserialize<PagedResponse<BreadcrumbModel>>(await response.Content.ReadAsStringAsync(),
+            _jsonSerializerOptions)!;
+    }
+
     public async ValueTask<PagedResponse<MarketAgentProfitModel>> GetMarketAgentProfitsAsync(GetMarketAgentProfitsRequest request)
     {
         var path = ClientPath.AppendWithProperties("/api/marketReport/agentProfit?", request);
