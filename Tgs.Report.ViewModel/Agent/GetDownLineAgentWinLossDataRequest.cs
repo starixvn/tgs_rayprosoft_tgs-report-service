@@ -2,7 +2,7 @@
 
 namespace Tgs.Report.ViewModel.Agent;
 
-public record GetDownLineAgentWinLossDataRequest : PageableRequest
+public record GetDownLineAgentWinLossDataRequest
 {
     public Guid BrandId { get; init; }
     public Guid AgentId { get; init; }

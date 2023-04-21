@@ -4,7 +4,7 @@ namespace Tgs.Report.Core;
 
 public interface IAgentFactory
 {
-    Task<IEnumerable<AgentWinLossDataModel>> GetMasterAgentWinLossAsync(GetMasterAgentWinLossDataRequest request);
-    Task<IEnumerable<AgentWinLossDataModel>> GetAgentWinLossAsync(GetAgentWinLossDataRequest request);
-    Task<IEnumerable<AgentWinLossDataModel>> GetDownLineAgentWinLossAsync(GetDownLineAgentWinLossDataRequest request);
+    Task<IEnumerable<AgentWinLossModel>> GetMasterAgentWinLossAsync(GetMasterAgentWinLossDataRequest request);
+    Task<IEnumerable<AgentWinLossModel>> GetAgentWinLossAsync(GetAgentWinLossDataRequest request);
+    Task<IEnumerable<AgentWinLossModel>> GetDownLineAgentWinLossAsync(GetDownLineAgentWinLossDataRequest request);
 }

@@ -19,7 +19,7 @@ public sealed class GetAgentWinLossQueryTest : BaseTest
     public async Task Can_Get_Agent_Win_Loss()
     {
         var fakeAgentFactory = Substitute.For<IAgentFactory>();
-        var agentWinLosses = CreateAgentWinLossFixture().CreateMany<AgentWinLossDataModel>(10);
+        var agentWinLosses = CreateAgentWinLossFixture().CreateMany<AgentWinLossModel>(10);
 
         fakeAgentFactory.GetAgentWinLossAsync(Arg.Any<GetAgentWinLossDataRequest>()).Returns(agentWinLosses);
 
@@ -45,7 +45,7 @@ public sealed class GetAgentWinLossQueryTest : BaseTest
     public async Task Can_Get_Master_Agent_Win_Loss()
     {
         var fakeAgentFactory = Substitute.For<IAgentFactory>();
-        var agentWinLosses = CreateAgentWinLossFixture().CreateMany<AgentWinLossDataModel>(10);
+        var agentWinLosses = CreateAgentWinLossFixture().CreateMany<AgentWinLossModel>(10);
 
         fakeAgentFactory.GetMasterAgentWinLossAsync(Arg.Any<GetMasterAgentWinLossDataRequest>()).Returns(agentWinLosses);
 
@@ -70,7 +70,7 @@ public sealed class GetAgentWinLossQueryTest : BaseTest
     public async Task Can_Get_DownLine_Agent_Win_Loss()
     {
         var fakeAgentFactory = Substitute.For<IAgentFactory>();
-        var agentWinLosses = CreateAgentWinLossFixture().CreateMany<AgentWinLossDataModel>(10);
+        var agentWinLosses = CreateAgentWinLossFixture().CreateMany<AgentWinLossModel>(10);
 
         fakeAgentFactory.GetDownLineAgentWinLossAsync(Arg.Any<GetDownLineAgentWinLossDataRequest>()).Returns(agentWinLosses);
 
@@ -133,7 +133,7 @@ public sealed class GetAgentWinLossQueryTest : BaseTest
     private static Fixture CreateAgentWinLossFixture()
     {
         var fixture = new Fixture();
-        fixture.Build<AgentWinLossDataModel>();
+        fixture.Build<AgentWinLossModel>();
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         return fixture;
     }

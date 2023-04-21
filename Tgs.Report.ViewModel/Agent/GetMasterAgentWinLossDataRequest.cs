@@ -2,7 +2,7 @@
 
 namespace Tgs.Report.ViewModel.Agent;
 
-public record GetMasterAgentWinLossDataRequest : PageableRequest
+public record GetMasterAgentWinLossDataRequest
 {
     public Guid BrandId { get; init; }
     public DateTimeOffset From { get; init; }
