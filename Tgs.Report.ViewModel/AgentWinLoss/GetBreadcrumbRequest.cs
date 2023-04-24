@@ -9,5 +9,5 @@ public record GetBreadcrumbRequest : IRequest<IEnumerable<BreadcrumbModel>>
 {
     public Guid? AgentId { get; init; }
     public string? PlayerCode { get; init; }
-    public bool QueryOrder { get; init; }
+    public Guid? RoundId { get; init; }
 }

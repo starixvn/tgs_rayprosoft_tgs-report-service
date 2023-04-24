@@ -20,12 +20,27 @@ internal class GetBreadcrumbQueryHandler : IRequestHandler<GetBreadcrumbRequest,
         GetBreadcrumbRequest request,
         CancellationToken cancellationToken)
     {
+        var playerCode = request.PlayerCode;
 
-        var player = !string.IsNullOrEmpty(request.PlayerCode)
-            ? await _context.Players.FirstOrDefaultAsync(x => x.PlayerCode == request.PlayerCode, cancellationToken)
+        var agentId = request.AgentId;
+
+        var round = request.RoundId != null
+            ? await _context.Rounds.FirstOrDefaultAsync(x => x.Id == request.RoundId, cancellationToken)
             : null;
 
-        var agentId = player == null ? request.AgentId : player.AgentId;
+        if (round != null)
+        {
+            playerCode = round.PlayerCode;
+        }
+
+        var player = !string.IsNullOrEmpty(playerCode)
+            ? await _context.Players.FirstOrDefaultAsync(x => x.PlayerCode == playerCode, cancellationToken)
+            : null;
+
+        if (player != null)
+        {
+            agentId = player.AgentId;
+        }
 
         if (agentId == null)
             return Array.Empty<BreadcrumbModel>();
@@ -56,7 +71,7 @@ internal class GetBreadcrumbQueryHandler : IRequestHandler<GetBreadcrumbRequest,
             Type = "agent"
         }).ToList();
 
-        if (request.QueryOrder && player != null)
+        if (request.RoundId != null && player != null)
         {
             pathList.Add(new BreadcrumbModel
             {
