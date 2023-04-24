@@ -1,4 +1,4 @@
-﻿using Tgs.Report.ViewModel.Agent;
+﻿using Tgs.Report.ViewModel.AgentWinLoss;
 
 namespace Tgs.Report.Core;
 
@@ -7,4 +7,6 @@ public interface IAgentFactory
     Task<IEnumerable<AgentWinLossModel>> GetMasterAgentWinLossAsync(GetMasterAgentWinLossDataRequest request);
     Task<IEnumerable<AgentWinLossModel>> GetAgentWinLossAsync(GetAgentWinLossDataRequest request);
     Task<IEnumerable<AgentWinLossModel>> GetDownLineAgentWinLossAsync(GetDownLineAgentWinLossDataRequest request);
+    Task<IEnumerable<AgentPlayerSpecialDetailModel>> GetAgentPlayerSpecialDetailAsync(GetAgentPlayerSpecialDetailDataRequest request);
+    Task<IEnumerable<SpecialDetailDataModel>> GetSpecialDetailAsync(GetSpecialDetailDataRequest request);
 }

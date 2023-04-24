@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Tgs.Report.Client.Models;
 using Tgs.Report.Client.Models.Agent;
+using Tgs.Report.Client.Models.AgentWinLoss;
 using Tgs.Report.Client.Models.BrandGameProvider;
 using Tgs.Report.Client.Models.GameAction;
 using Tgs.Report.Client.Models.GameProvider;
@@ -140,5 +141,11 @@ public interface IReportClient
     ValueTask<PagedResponse<AgentWinLossModel>> GetAgentPlayerWinLossAsync(GetPlayerWinLossRequest request);
 
     ValueTask<PagedResponse<BreadcrumbModel>> GetBreadcrumbAsync(GetBreadcrumbRequest request);
+
+    ValueTask<IEnumerable<AgentPlayerSpecialDetailModel>> GetAgentPlayerSpecialDetailAsync(GetAgentPlayerSpecialDetailRequest request);
+
+    ValueTask<IEnumerable<AgentSpecialDetailModel>> GetAgentSpecialDetailAsync(GetAgentSpecialDetailRequest request);
+
+    ValueTask<IEnumerable<CompanySpecialDetailModel>> GetCompanySpecialDetailAsync(GetCompanySpecialDetailRequest request);
 
 }
