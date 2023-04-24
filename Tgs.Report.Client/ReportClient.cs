@@ -852,7 +852,7 @@ public class ReportClient : IReportClient
             _jsonSerializerOptions)!;
     }
 
-    public async ValueTask<PagedResponse<BreadcrumbModel>> GetBreadcrumbAsync(GetBreadcrumbRequest request)
+    public async ValueTask<IEnumerable<BreadcrumbModel>> GetAgentWinLossBreadcrumbAsync(GetBreadcrumbRequest request)
     {
         var path = ClientPath.AppendWithProperties("/api/agentWinLossReport/breadcrumb?", request);
 
@@ -861,7 +861,7 @@ public class ReportClient : IReportClient
 
         _ = response.EnsureSuccessStatusCode();
 
-        return JsonSerializer.Deserialize<PagedResponse<BreadcrumbModel>>(await response.Content.ReadAsStringAsync(),
+        return JsonSerializer.Deserialize<IEnumerable<BreadcrumbModel>>(await response.Content.ReadAsStringAsync(),
             _jsonSerializerOptions)!;
     }
 
