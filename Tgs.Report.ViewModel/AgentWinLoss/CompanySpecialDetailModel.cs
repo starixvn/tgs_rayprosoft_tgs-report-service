@@ -1,0 +1,15 @@
+﻿using System;
+
+namespace Tgs.Report.ViewModel.AgentWinLoss;
+
+public record CompanySpecialDetailModel
+{
+    public DateTimeOffset From { get; set; }
+    public DateTimeOffset To { get; set; }
+    public decimal Percentage { get; set; }
+    public decimal PlayerWinLoss { get; set; }
+    public decimal PlayerSpecial { get; set; }
+    public decimal CompanyWinLoss { get; set; }
+    public decimal CompanySpecial { get; set; }
+    public decimal CompanyTotal { get; set; }
+}

@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using Tgs.Report.Client.Models;
 using Tgs.Report.Client.Models.Agent;
+using Tgs.Report.Client.Models.AgentWinLoss;
 using Tgs.Report.Client.Models.BrandGameProvider;
 using Tgs.Report.Client.Models.GameAction;
 using Tgs.Report.Client.Models.GameProvider;
@@ -797,6 +798,110 @@ public class ReportClient : IReportClient
 
         return JsonSerializer.Deserialize<VipTotalAmountModel>(await response.Content.ReadAsStringAsync(),
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+    }
+
+    public async ValueTask<PagedResponse<AgentWinLossModel>> GetAgentWinLossAsync(GetAgentWinLossRequest request)
+    {
+        var path = ClientPath.AppendWithProperties("/api/agentWinLossReport/agentWinLoss?", request);
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+        var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        return JsonSerializer.Deserialize<PagedResponse<AgentWinLossModel>>(await response.Content.ReadAsStringAsync(),
+            _jsonSerializerOptions)!;
+    }
+
+    public async ValueTask<PagedResponse<AgentWinLossModel>> GetDownLineAgentWinLossAsync(GetDownLineAgentWinLossRequest request)
+    {
+        var path = ClientPath.AppendWithProperties("/api/agentWinLossReport/downLineAgentWinLoss?", request);
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+        var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        return JsonSerializer.Deserialize<PagedResponse<AgentWinLossModel>>(await response.Content.ReadAsStringAsync(),
+            _jsonSerializerOptions)!;
+    }
+
+    public async ValueTask<PagedResponse<AgentWinLossModel>> GetMasterAgentWinLossAsync(GetMasterAgentWinLossRequest request)
+    {
+        var path = ClientPath.AppendWithProperties("/api/agentWinLossReport/masterAgentWinLoss?", request);
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+        var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        return JsonSerializer.Deserialize<PagedResponse<AgentWinLossModel>>(await response.Content.ReadAsStringAsync(),
+            _jsonSerializerOptions)!;
+    }
+
+    public async ValueTask<PagedResponse<AgentWinLossModel>> GetAgentPlayerWinLossAsync(GetPlayerWinLossRequest request)
+    {
+        var path = ClientPath.AppendWithProperties("/api/agentWinLossReport/agentPlayerWinLoss?", request);
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+        var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        return JsonSerializer.Deserialize<PagedResponse<AgentWinLossModel>>(await response.Content.ReadAsStringAsync(),
+            _jsonSerializerOptions)!;
+    }
+
+    public async ValueTask<PagedResponse<BreadcrumbModel>> GetBreadcrumbAsync(GetBreadcrumbRequest request)
+    {
+        var path = ClientPath.AppendWithProperties("/api/agentWinLossReport/breadcrumb?", request);
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+        var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        return JsonSerializer.Deserialize<PagedResponse<BreadcrumbModel>>(await response.Content.ReadAsStringAsync(),
+            _jsonSerializerOptions)!;
+    }
+
+    public async ValueTask<IEnumerable<AgentPlayerSpecialDetailModel>> GetAgentPlayerSpecialDetailAsync(GetAgentPlayerSpecialDetailRequest request)
+    {
+        var path = ClientPath.AppendWithProperties("/api/agentWinLossReport/agentPlayerSpecialDetail?", request);
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+        var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        return JsonSerializer.Deserialize<IEnumerable<AgentPlayerSpecialDetailModel>>(await response.Content.ReadAsStringAsync(),
+            _jsonSerializerOptions)!;
+    }
+
+    public async ValueTask<IEnumerable<AgentSpecialDetailModel>> GetAgentSpecialDetailAsync(GetAgentSpecialDetailRequest request)
+    {
+        var path = ClientPath.AppendWithProperties("/api/agentWinLossReport/agentSpecialDetail?", request);
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+        var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        return JsonSerializer.Deserialize<IEnumerable<AgentSpecialDetailModel>>(await response.Content.ReadAsStringAsync(),
+            _jsonSerializerOptions)!;
+    }
+
+    public async ValueTask<IEnumerable<CompanySpecialDetailModel>> GetCompanySpecialDetailAsync(GetCompanySpecialDetailRequest request)
+    {
+        var path = ClientPath.AppendWithProperties("/api/agentWinLossReport/companySpecialDetail?", request);
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+        var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        return JsonSerializer.Deserialize<IEnumerable<CompanySpecialDetailModel>>(await response.Content.ReadAsStringAsync(),
+            _jsonSerializerOptions)!;
     }
 
     public async ValueTask<PagedResponse<MarketAgentProfitModel>> GetMarketAgentProfitsAsync(GetMarketAgentProfitsRequest request)
