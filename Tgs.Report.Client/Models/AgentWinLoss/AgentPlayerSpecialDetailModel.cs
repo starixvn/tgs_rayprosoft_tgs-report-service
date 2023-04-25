@@ -2,6 +2,7 @@
 
 public record AgentPlayerSpecialDetailModel
 {
-    public string Special { get; set; } = default!;
-    public decimal Amount { get; set; }
+    public decimal Bonus { get; set; }
+    public decimal BonusAdjust { get; set; }
+    public decimal Special { get; set; }
 }
