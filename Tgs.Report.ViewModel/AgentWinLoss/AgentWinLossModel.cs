@@ -1,12 +1,11 @@
-﻿using System;
-
-namespace Tgs.Report.ViewModel.AgentWinLoss;
+﻿namespace Tgs.Report.ViewModel.AgentWinLoss;
 
 public record AgentWinLossModel
 {
     public string Id { get; set; } = default!;
     public string Username { get; set; } = default!;
     public string MemberType { get; set; } = default!;
+    public int RoundCount { get; set; }
     public decimal Turnover { get; set; }
     public decimal WinLoss { get; set; }
     public decimal AgentWinLoss { get; set; }

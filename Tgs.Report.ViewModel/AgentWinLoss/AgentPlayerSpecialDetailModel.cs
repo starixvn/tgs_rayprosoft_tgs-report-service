@@ -1,5 +1,4 @@
-﻿
-namespace Tgs.Report.ViewModel.AgentWinLoss;
+﻿namespace Tgs.Report.ViewModel.AgentWinLoss;
 
 public record AgentPlayerSpecialDetailModel
 {
