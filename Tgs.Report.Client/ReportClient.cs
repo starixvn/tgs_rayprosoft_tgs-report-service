@@ -865,7 +865,7 @@ public class ReportClient : IReportClient
             _jsonSerializerOptions)!;
     }
 
-    public async ValueTask<IEnumerable<AgentPlayerSpecialDetailModel>> GetAgentPlayerSpecialDetailAsync(GetAgentPlayerSpecialDetailRequest request)
+    public async ValueTask<AgentPlayerSpecialDetailModel> GetAgentPlayerSpecialDetailAsync(GetAgentPlayerSpecialDetailRequest request)
     {
         var path = ClientPath.AppendWithProperties("/api/agentWinLossReport/agentPlayerSpecialDetail?", request);
 
@@ -874,7 +874,7 @@ public class ReportClient : IReportClient
 
         _ = response.EnsureSuccessStatusCode();
 
-        return JsonSerializer.Deserialize<IEnumerable<AgentPlayerSpecialDetailModel>>(await response.Content.ReadAsStringAsync(),
+        return JsonSerializer.Deserialize<AgentPlayerSpecialDetailModel>(await response.Content.ReadAsStringAsync(),
             _jsonSerializerOptions)!;
     }
 

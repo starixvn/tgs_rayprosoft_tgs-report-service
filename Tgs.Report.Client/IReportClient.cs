@@ -144,7 +144,7 @@ public interface IReportClient
 
     ValueTask<IEnumerable<BreadcrumbModel>> GetAgentWinLossBreadcrumbAsync(GetBreadcrumbRequest request);
 
-    ValueTask<IEnumerable<AgentPlayerSpecialDetailModel>> GetAgentPlayerSpecialDetailAsync(GetAgentPlayerSpecialDetailRequest request);
+    ValueTask<AgentPlayerSpecialDetailModel> GetAgentPlayerSpecialDetailAsync(GetAgentPlayerSpecialDetailRequest request);
 
     ValueTask<IEnumerable<AgentSpecialDetailModel>> GetAgentSpecialDetailAsync(GetAgentSpecialDetailRequest request);
 

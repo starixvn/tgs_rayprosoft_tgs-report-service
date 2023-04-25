@@ -47,7 +47,7 @@ public class AgentWinLossReportController : ControllerBase
 
     [HttpGet("agentPlayerSpecialDetail")]
     [Description("Get Agent Player Special Detail")]
-    public Task<IEnumerable<AgentPlayerSpecialDetailModel>> GetAgentPlayerSpecialDetailAsync(
+    public Task<AgentPlayerSpecialDetailModel> GetAgentPlayerSpecialDetailAsync(
         [FromQuery] GetAgentPlayerSpecialDetailRequest request) =>
         _mediator.Send(request);
 

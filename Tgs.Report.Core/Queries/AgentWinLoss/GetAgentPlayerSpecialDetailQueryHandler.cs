@@ -4,7 +4,7 @@ using Tgs.Report.ViewModel.AgentWinLoss;
 namespace Tgs.Report.Core.Queries.AgentWinLoss;
 
 internal class GetAgentPlayerSpecialDetailQueryHandler : IRequestHandler<GetAgentPlayerSpecialDetailRequest,
-    IEnumerable<AgentPlayerSpecialDetailModel>>
+    AgentPlayerSpecialDetailModel>
 {
     private readonly IAgentFactory _agentFactory;
 
@@ -13,7 +13,7 @@ internal class GetAgentPlayerSpecialDetailQueryHandler : IRequestHandler<GetAgen
         _agentFactory = agentFactory;
     }
 
-    public Task<IEnumerable<AgentPlayerSpecialDetailModel>> Handle(
+    public async Task<AgentPlayerSpecialDetailModel> Handle(
         GetAgentPlayerSpecialDetailRequest request,
         CancellationToken cancellationToken)
     {
@@ -25,7 +25,8 @@ internal class GetAgentPlayerSpecialDetailQueryHandler : IRequestHandler<GetAgen
             From = request.From,
             To = request.To
         };
+        var response = await _agentFactory.GetAgentPlayerSpecialDetailAsync(getRequest);
 
-        return _agentFactory.GetAgentPlayerSpecialDetailAsync(getRequest);
+        return response.FirstOrDefault() ?? new AgentPlayerSpecialDetailModel();
     }
 }
