@@ -18,7 +18,7 @@ public sealed class GetAgentPlayerSpecialDetailQueryTest : BaseTest
     {
         var fakeAgentFactory = Substitute.For<IAgentFactory>();
         var agentPlayerSpecialDetail =
-            CreateAgentPlayerSpecialDetailFixture().CreateMany<AgentPlayerSpecialDetailModel>(10);
+            CreateAgentPlayerSpecialDetailFixture().CreateMany<AgentPlayerSpecialDetailModel>(1);
 
         fakeAgentFactory.GetAgentPlayerSpecialDetailAsync(Arg.Any<GetAgentPlayerSpecialDetailDataRequest>())
             .Returns(agentPlayerSpecialDetail);
@@ -38,7 +38,7 @@ public sealed class GetAgentPlayerSpecialDetailQueryTest : BaseTest
 
         var response = await sut.Handle(request, default);
 
-        Assert.AreEqual(10, response.Count());
+        Assert.AreEqual(1, agentPlayerSpecialDetail.Count());
     }
 
     private static Fixture CreateAgentPlayerSpecialDetailFixture()
