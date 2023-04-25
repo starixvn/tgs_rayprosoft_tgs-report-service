@@ -197,9 +197,9 @@ FROM   player_win_loss;";
     {
         var spName = $@"
 SELECT
-  Sum(rebate_amount       + promotion_amount + upgrade_amount + season_amount + birthday_amount) bonus
-, Sum(bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)                           bonusAdjust
-, Sum(win_loss_amount     * @platformcharge * 0.01)
+  Sum(rebate_amount       + promotion_amount + upgrade_amount + season_amount + birthday_amount) as bonus
+, Sum(bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)                           as bonusAdjust
+, Sum(win_loss_amount     * @platformcharge * 0.01)                                              as special
 FROM
   report.player_aggregates
 WHERE
@@ -225,7 +225,7 @@ WHERE
     {
         var spName = $@"
 SELECT
-  report_date
+  report_date                                                                                                                                                                                     AS ReportDate
 , Jsonb_path_query(agent_dividend_percentage_tree_data, '$[*] ? (@.AgentId == ""{request.AgentId}"")') ->> 'AgentId'                                                                              AS AgentId
 , ( Jsonb_path_query(agent_dividend_percentage_tree_data, '$[*] ? (@.AgentId == ""{request.AgentId}"").DividendPercentage') ) :: NUMERIC                                                          AS Percentage
 , Sum(win_loss_amount)                                                                                                                                                                            AS WinLoss
@@ -238,9 +238,9 @@ WHERE
   AND brand_id           = @brandid
   AND agent_id IS NOT NULL
 GROUP BY
-  report_date
-, masterid
-, agentdividendpercentage;";
+  1
+, 2
+, 3;";
 
         var conn = _context.Database.GetDbConnection();
         var transaction = _context.Database.CurrentTransaction?.GetDbTransaction();
