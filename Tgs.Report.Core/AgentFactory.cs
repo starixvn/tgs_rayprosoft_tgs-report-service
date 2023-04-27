@@ -199,7 +199,7 @@ FROM   player_win_loss;";
 SELECT
   Sum(rebate_amount       + promotion_amount + upgrade_amount + season_amount + birthday_amount) as bonus
 , Sum(bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)                           as bonusAdjust
-, Sum(win_loss_amount     * @platformcharge * 0.01)                                              as special
+, Sum(win_loss_amount     * @platformcharge * 0.01)                                              as productFee
 FROM
   report.player_aggregates
 WHERE
