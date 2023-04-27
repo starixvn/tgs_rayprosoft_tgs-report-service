@@ -50,7 +50,8 @@ WITH agent_data AS
          GROUP BY ad.masterid,
                   a.username )
 SELECT *
-FROM   agent_win_loss;";
+FROM   agent_win_loss
+WHERE turnover <> 0 AND winloss <> 0 AND winloss <> 0 AND special <> 0;";
 
         var conn = _context.Database.GetDbConnection();
         var transaction = _context.Database.CurrentTransaction?.GetDbTransaction();
@@ -103,7 +104,8 @@ SELECT *,
        count(*) over() AS ""totalcount""
 FROM   (
               SELECT *
-              FROM   agent_win_loss ) a1;";
+              FROM   agent_win_loss
+              WHERE turnover <> 0 AND winloss <> 0 AND winloss <> 0 AND special <> 0) a1;";
 
         var conn = _context.Database.GetDbConnection();
         var transaction = _context.Database.CurrentTransaction?.GetDbTransaction();
@@ -177,7 +179,8 @@ SELECT *
 FROM   agent_win_loss
 UNION
 SELECT *
-FROM   player_win_loss;";
+FROM   player_win_loss
+WHERE turnover <> 0 AND winloss <> 0 AND winloss <> 0 AND special <> 0;";
 
         var conn = _context.Database.GetDbConnection();
         var transaction = _context.Database.CurrentTransaction?.GetDbTransaction();
