@@ -26,7 +26,16 @@ internal class GetMasterAgentWinLossQueryHandler : IRequestHandler<GetMasterAgen
             To = request.To
         };
 
-        return (await _agentFactory.GetMasterAgentWinLossAsync(getRequest))
-            .AsQueryable().CreatePagedResponse(request);
+        var response = await _agentFactory.GetMasterAgentWinLossAsync(getRequest);
+
+        var agentWinLossModels = response as AgentWinLossModel[] ?? response.ToArray();
+
+        foreach (var item in agentWinLossModels)
+        {
+            item.AgentTotal = item.AgentWinLoss + item.AgentSpecial;
+            item.CompanyTotal = item.CompanyWinLoss + item.CompanySpecial;
+        }
+
+        return agentWinLossModels.AsQueryable().CreatePagedResponse(request);
     }
 }
