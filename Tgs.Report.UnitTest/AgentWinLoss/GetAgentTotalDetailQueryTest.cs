@@ -11,29 +11,29 @@ using Tgs.Report.ViewModel.AgentWinLoss;
 namespace Tgs.Report.UnitTest.AgentWinLoss;
 
 [TestFixture]
-public sealed class GetAgentSpecialDetailQueryTest : BaseTest
+public sealed class GetAgentTotalDetailQueryTest : BaseTest
 {
     [Test]
-    public async Task Can_Get_Agent_Special_Detail()
+    public async Task Can_Get_Agent_Total_Detail()
     {
         var fakeAgentFactory = Substitute.For<IAgentFactory>();
         var agentWinLosses = new[]
         {
-            CreateAgentSpecialDetailFixture(DateTimeOffset.Parse("2023/04/01 00:00:00+8"), 70)
+            CreateAgentTotalDetailFixture(DateTimeOffset.Parse("2023/04/01 00:00:00+8"), 70)
                 .Create<SpecialDetailDataModel>(),
-            CreateAgentSpecialDetailFixture(DateTimeOffset.Parse("2023/04/01 01:00:00+8"), 70)
+            CreateAgentTotalDetailFixture(DateTimeOffset.Parse("2023/04/01 01:00:00+8"), 70)
                 .Create<SpecialDetailDataModel>(),
-            CreateAgentSpecialDetailFixture(DateTimeOffset.Parse("2023/04/05 03:00:00+8"), 50)
+            CreateAgentTotalDetailFixture(DateTimeOffset.Parse("2023/04/05 03:00:00+8"), 50)
                 .Create<SpecialDetailDataModel>(),
-            CreateAgentSpecialDetailFixture(DateTimeOffset.Parse("2023/04/06 01:00:00+8"), 50)
+            CreateAgentTotalDetailFixture(DateTimeOffset.Parse("2023/04/06 01:00:00+8"), 50)
                 .Create<SpecialDetailDataModel>(),
-            CreateAgentSpecialDetailFixture(DateTimeOffset.Parse("2023/04/02 01:00:00+8"), 70)
+            CreateAgentTotalDetailFixture(DateTimeOffset.Parse("2023/04/02 01:00:00+8"), 70)
                 .Create<SpecialDetailDataModel>(),
-            CreateAgentSpecialDetailFixture(DateTimeOffset.Parse("2023/04/04 01:00:00+8"), 70)
+            CreateAgentTotalDetailFixture(DateTimeOffset.Parse("2023/04/04 01:00:00+8"), 70)
                 .Create<SpecialDetailDataModel>(),
-            CreateAgentSpecialDetailFixture(DateTimeOffset.Parse("2023/04/07 01:00:00+8"), 70)
+            CreateAgentTotalDetailFixture(DateTimeOffset.Parse("2023/04/07 01:00:00+8"), 70)
                 .Create<SpecialDetailDataModel>(),
-            CreateAgentSpecialDetailFixture(DateTimeOffset.Parse("2023/04/08 01:00:00+8"), 70)
+            CreateAgentTotalDetailFixture(DateTimeOffset.Parse("2023/04/08 01:00:00+8"), 70)
                 .Create<SpecialDetailDataModel>()
         };
 
@@ -57,10 +57,10 @@ public sealed class GetAgentSpecialDetailQueryTest : BaseTest
 
         Assert.AreEqual(3, response.Count());
         Assert.AreEqual(agentWinLosses.Where(x => x.Percentage == 70).Sum(x => x.WinLoss),
-            response.Where(x => x.Percentage == 70).Sum(x => x.PlayerWinLoss));
+            -response.Where(x => x.Percentage == 70).Sum(x => x.PlayerWinLoss));
     }
 
-    private static Fixture CreateAgentSpecialDetailFixture(DateTimeOffset reportDate, decimal percentage)
+    private static Fixture CreateAgentTotalDetailFixture(DateTimeOffset reportDate, decimal percentage)
     {
         var fixture = new Fixture();
         fixture.Customize<SpecialDetailDataModel>(u => u
