@@ -52,8 +52,8 @@ internal class GetAgentTotalDetailQueryHandler : IRequestHandler<GetAgentTotalDe
             From = list.Min(m => m.ReportDate),
             To = list.Max(m => m.ReportDate),
             Percentage = group.Percentage,
-            PlayerWinLoss = list.Sum(s => s.WinLoss),
-            PlayerSpecial = -list.Sum(s => s.BonusAmount),
+            PlayerWinLoss = -list.Sum(s => s.WinLoss),
+            PlayerSpecial = list.Sum(s => s.BonusAmount),
             AgentWinLoss = list.Sum(s => s.WinLoss) * group.Percentage * 0.01M,
             AgentSpecial = -list.Sum(s => s.BonusAmount) * group.Percentage * 0.01M,
             AgentTotal = list.Sum(s => s.WinLoss) * group.Percentage * 0.01M -
