@@ -52,8 +52,8 @@ internal class GetCompanyTotalDetailQueryHandler : IRequestHandler<GetCompanyTot
             From = list.Min(m => m.ReportDate),
             To = list.Max(m => m.ReportDate),
             Percentage = 100 - group.Percentage,
-            PlayerWinLoss = list.Sum(s => s.WinLoss),
-            PlayerSpecial = -list.Sum(s => s.BonusAmount),
+            PlayerWinLoss = -list.Sum(s => s.WinLoss),
+            PlayerSpecial = list.Sum(s => s.BonusAmount),
             CompanyWinLoss = list.Sum(s => s.WinLoss) * (100 - group.Percentage) * 0.01M,
             CompanySpecial = -list.Sum(s => s.BonusAmount) * (100 - group.Percentage) * 0.01M,
             CompanyTotal = list.Sum(s => s.WinLoss) * (100 - group.Percentage) * 0.01M -
