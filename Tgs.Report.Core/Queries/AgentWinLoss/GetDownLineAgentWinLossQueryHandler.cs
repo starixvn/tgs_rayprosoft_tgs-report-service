@@ -27,7 +27,16 @@ internal class GetDownLineAgentWinLossQueryHandler : IRequestHandler<GetDownLine
             To = request.To
         };
 
-        return (await _agentFactory.GetDownLineAgentWinLossAsync(getRequest))
-            .AsQueryable().CreatePagedResponse(request);
+        var response = await _agentFactory.GetDownLineAgentWinLossAsync(getRequest);
+
+        var agentWinLossModels = response as AgentWinLossModel[] ?? response.ToArray();
+
+        foreach (var item in agentWinLossModels)
+        {
+            item.AgentTotal = item.AgentWinLoss + item.AgentSpecial;
+            item.CompanyTotal = item.CompanyWinLoss + item.CompanySpecial;
+        }
+
+        return agentWinLossModels.AsQueryable().CreatePagedResponse(request);
     }
 }
