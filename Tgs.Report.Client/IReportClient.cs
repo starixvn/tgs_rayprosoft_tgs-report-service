@@ -146,8 +146,8 @@ public interface IReportClient
 
     ValueTask<AgentPlayerSpecialDetailModel> GetAgentPlayerSpecialDetailAsync(GetAgentPlayerSpecialDetailRequest request);
 
-    ValueTask<IEnumerable<AgentSpecialDetailModel>> GetAgentSpecialDetailAsync(GetAgentSpecialDetailRequest request);
+    ValueTask<IEnumerable<AgentTotalDetailModel>> GetAgentTotalDetailAsync(GetAgentTotalDetailRequest request);
 
-    ValueTask<IEnumerable<CompanySpecialDetailModel>> GetCompanySpecialDetailAsync(GetCompanySpecialDetailRequest request);
+    ValueTask<IEnumerable<CompanyTotalDetailModel>> GetCompanyTotalDetailAsync(GetCompanyTotalDetailRequest request);
 
 }

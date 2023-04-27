@@ -1,13 +1,13 @@
 ﻿namespace Tgs.Report.Client.Models.AgentWinLoss;
 
-public record AgentSpecialDetailModel
+public record CompanyTotalDetailModel
 {
     public DateTimeOffset From { get; set; }
     public DateTimeOffset To { get; set; }
     public decimal Percentage { get; set; }
     public decimal PlayerWinLoss { get; set; }
     public decimal PlayerSpecial { get; set; }
-    public decimal AgentWinLoss { get; set; }
-    public decimal AgentSpecial { get; set; }
-    public decimal AgentTotal { get; set; }
+    public decimal CompanyWinLoss { get; set; }
+    public decimal CompanySpecial { get; set; }
+    public decimal CompanyTotal { get; set; }
 }

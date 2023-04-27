@@ -1,6 +1,6 @@
 ﻿namespace Tgs.Report.Client.Models.AgentWinLoss;
 
-public record GetCompanySpecialDetailRequest
+public record GetAgentTotalDetailRequest
 {
     public Guid BrandId { get; init; }
     public Guid AgentId { get; init; }

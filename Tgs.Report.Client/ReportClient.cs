@@ -878,29 +878,29 @@ public class ReportClient : IReportClient
             _jsonSerializerOptions)!;
     }
 
-    public async ValueTask<IEnumerable<AgentSpecialDetailModel>> GetAgentSpecialDetailAsync(GetAgentSpecialDetailRequest request)
+    public async ValueTask<IEnumerable<AgentTotalDetailModel>> GetAgentTotalDetailAsync(GetAgentTotalDetailRequest request)
     {
-        var path = ClientPath.AppendWithProperties("/api/agentWinLossReport/agentSpecialDetail?", request);
+        var path = ClientPath.AppendWithProperties("/api/agentWinLossReport/agentTotalDetail?", request);
 
         var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
         var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
         _ = response.EnsureSuccessStatusCode();
 
-        return JsonSerializer.Deserialize<IEnumerable<AgentSpecialDetailModel>>(await response.Content.ReadAsStringAsync(),
+        return JsonSerializer.Deserialize<IEnumerable<AgentTotalDetailModel>>(await response.Content.ReadAsStringAsync(),
             _jsonSerializerOptions)!;
     }
 
-    public async ValueTask<IEnumerable<CompanySpecialDetailModel>> GetCompanySpecialDetailAsync(GetCompanySpecialDetailRequest request)
+    public async ValueTask<IEnumerable<CompanyTotalDetailModel>> GetCompanyTotalDetailAsync(GetCompanyTotalDetailRequest request)
     {
-        var path = ClientPath.AppendWithProperties("/api/agentWinLossReport/companySpecialDetail?", request);
+        var path = ClientPath.AppendWithProperties("/api/agentWinLossReport/companyTotalDetail?", request);
 
         var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
         var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
 
         _ = response.EnsureSuccessStatusCode();
 
-        return JsonSerializer.Deserialize<IEnumerable<CompanySpecialDetailModel>>(await response.Content.ReadAsStringAsync(),
+        return JsonSerializer.Deserialize<IEnumerable<CompanyTotalDetailModel>>(await response.Content.ReadAsStringAsync(),
             _jsonSerializerOptions)!;
     }
 

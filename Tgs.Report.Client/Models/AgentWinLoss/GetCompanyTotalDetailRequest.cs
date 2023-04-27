@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using MediatR;
+﻿namespace Tgs.Report.Client.Models.AgentWinLoss;
 
-namespace Tgs.Report.ViewModel.AgentWinLoss;
-
-public record GetCompanySpecialDetailRequest : IRequest<IEnumerable<CompanySpecialDetailModel>>
+public record GetCompanyTotalDetailRequest
 {
     public Guid BrandId { get; init; }
     public Guid AgentId { get; init; }

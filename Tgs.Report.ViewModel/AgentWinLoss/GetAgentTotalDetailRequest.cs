@@ -1,6 +1,10 @@
-﻿namespace Tgs.Report.Client.Models.AgentWinLoss;
+﻿using System;
+using System.Collections.Generic;
+using MediatR;
 
-public record GetAgentSpecialDetailRequest
+namespace Tgs.Report.ViewModel.AgentWinLoss;
+
+public record GetAgentTotalDetailRequest : IRequest<IEnumerable<AgentTotalDetailModel>>
 {
     public Guid BrandId { get; init; }
     public Guid AgentId { get; init; }
