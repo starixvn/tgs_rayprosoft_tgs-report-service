@@ -40,12 +40,12 @@ public sealed class GetCompanySpecialDetailQueryTest : BaseTest
         fakeAgentFactory.GetSpecialDetailAsync(Arg.Any<GetSpecialDetailDataRequest>())
             .Returns(agentWinLosses);
 
-        var sut = new GetCompanySpecialDetailQueryHandler(fakeAgentFactory);
+        var sut = new GetCompanyTotalDetailQueryHandler(fakeAgentFactory);
 
         var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
         var agentId = new Guid("aac22220-20f6-4f0d-6982-08d9dbdc0473");
 
-        var request = new GetCompanySpecialDetailRequest
+        var request = new GetCompanyTotalDetailRequest
         {
             BrandId = brandId,
             AgentId = agentId,

@@ -80,10 +80,6 @@ internal class GetBreadcrumbQueryHandler : IRequestHandler<GetBreadcrumbRequest,
                 Type = "player"
             });
         }
-        else
-        {
-            pathList.RemoveAt(pathList.Count - 1);
-        }
 
         return pathList;
     }

@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Tgs.Report.ViewModel.AgentWinLoss;
 
-public record GetAgentSpecialDetailRequest : IRequest<IEnumerable<AgentSpecialDetailModel>>
+public record GetCompanyTotalDetailRequest : IRequest<IEnumerable<CompanyTotalDetailModel>>
 {
     public Guid BrandId { get; init; }
     public Guid AgentId { get; init; }

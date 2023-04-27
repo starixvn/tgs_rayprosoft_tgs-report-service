@@ -1,6 +1,8 @@
-﻿namespace Tgs.Report.Client.Models.AgentWinLoss;
+﻿using System;
 
-public record CompanySpecialDetailModel
+namespace Tgs.Report.ViewModel.AgentWinLoss;
+
+public record CompanyTotalDetailModel
 {
     public DateTimeOffset From { get; set; }
     public DateTimeOffset To { get; set; }

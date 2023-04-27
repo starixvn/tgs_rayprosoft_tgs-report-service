@@ -3,15 +3,15 @@ using Tgs.Report.ViewModel.AgentWinLoss;
 
 namespace Tgs.Report.Core.Queries.AgentWinLoss;
 
-internal class GetCompanySpecialDetailQueryHandler : IRequestHandler<GetCompanySpecialDetailRequest,
-    IEnumerable<CompanySpecialDetailModel>>
+internal class GetCompanyTotalDetailQueryHandler : IRequestHandler<GetCompanyTotalDetailRequest,
+    IEnumerable<CompanyTotalDetailModel>>
 {
     private readonly IAgentFactory _agentFactory;
 
-    public GetCompanySpecialDetailQueryHandler(IAgentFactory agentFactory) => _agentFactory = agentFactory;
+    public GetCompanyTotalDetailQueryHandler(IAgentFactory agentFactory) => _agentFactory = agentFactory;
 
-    public async Task<IEnumerable<CompanySpecialDetailModel>> Handle(
-        GetCompanySpecialDetailRequest request,
+    public async Task<IEnumerable<CompanyTotalDetailModel>> Handle(
+        GetCompanyTotalDetailRequest request,
         CancellationToken cancellationToken)
     {
         var getRequest = new GetSpecialDetailDataRequest
@@ -47,7 +47,7 @@ internal class GetCompanySpecialDetailQueryHandler : IRequestHandler<GetCompanyS
         {
             x.GroupId,
             x.Percentage
-        }, (group, list) => new CompanySpecialDetailModel
+        }, (group, list) => new CompanyTotalDetailModel
         {
             From = list.Min(m => m.ReportDate),
             To = list.Max(m => m.ReportDate),

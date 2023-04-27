@@ -51,15 +51,15 @@ public class AgentWinLossReportController : ControllerBase
         [FromQuery] GetAgentPlayerSpecialDetailRequest request) =>
         _mediator.Send(request);
 
-    [HttpGet("agentSpecialDetail")]
-    [Description("Get Agent Special Detail")]
-    public Task<IEnumerable<AgentSpecialDetailModel>> GetAgentSpecialDetailAsync(
-        [FromQuery] GetAgentSpecialDetailRequest request) =>
+    [HttpGet("agentTotalDetail")]
+    [Description("Get Agent Total Detail")]
+    public Task<IEnumerable<AgentTotalDetailModel>> GetAgentTotalDetailAsync(
+        [FromQuery] GetAgentTotalDetailRequest request) =>
         _mediator.Send(request);
 
-    [HttpGet("companySpecialDetail")]
-    [Description("Get Company Special Detail")]
-    public Task<IEnumerable<CompanySpecialDetailModel>> GetCompanySpecialDetailAsync(
-        [FromQuery] GetCompanySpecialDetailRequest request) =>
+    [HttpGet("companyTotalDetail")]
+    [Description("Get Company Total Detail")]
+    public Task<IEnumerable<CompanyTotalDetailModel>> GetCompanyTotalDetailAsync(
+        [FromQuery] GetCompanyTotalDetailRequest request) =>
         _mediator.Send(request);
 }
