@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Tgs.Report.Enum;
 using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.Agent;
 using Tgs.Report.ViewModel.AgentWinLoss;
@@ -25,9 +24,7 @@ internal class GetBreadcrumbQueryHandler : IRequestHandler<GetBreadcrumbRequest,
 
         var agentId = request.AgentId;
 
-        var round = request.RoundId != null
-            ? await _context.Rounds.FirstOrDefaultAsync(x => x.Id == request.RoundId, cancellationToken)
-            : null;
+        var round = await _context.Rounds.FirstOrDefaultAsync(x => x.Id == request.RoundId, cancellationToken);
 
         if (round != null)
         {
@@ -49,11 +46,10 @@ internal class GetBreadcrumbQueryHandler : IRequestHandler<GetBreadcrumbRequest,
         var agent = await _context.Agents.Select(x => new
         {
             x.Id,
-            x.LevelType,
             x.Path
         }).FirstOrDefaultAsync(x => x.Id == agentId, cancellationToken);
 
-        if (agent == null || agent.LevelType == (int)AgentLevelType.Chief)
+        if (agent == null)
             return Array.Empty<BreadcrumbModel>();
 
         var agents = await _context.Agents
@@ -81,6 +77,10 @@ internal class GetBreadcrumbQueryHandler : IRequestHandler<GetBreadcrumbRequest,
                 Name = player.Username,
                 Type = "player"
             });
+        }
+        else if(request.PlayerCode == null)
+        {
+            pathList.RemoveAt(pathList.Count - 1);
         }
 
         return pathList;
