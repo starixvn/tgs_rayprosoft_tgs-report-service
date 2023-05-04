@@ -51,7 +51,7 @@ WITH agent_data AS
                   a.username )
 SELECT *
 FROM   agent_win_loss
-WHERE turnover <> 0 AND winloss <> 0 AND winloss <> 0 AND special <> 0;";
+WHERE turnover <> 0 OR winloss <> 0 OR special <> 0;";
 
         var conn = _context.Database.GetDbConnection();
         var transaction = _context.Database.CurrentTransaction?.GetDbTransaction();
@@ -105,7 +105,7 @@ SELECT *,
 FROM   (
               SELECT *
               FROM   agent_win_loss
-              WHERE turnover <> 0 AND winloss <> 0 AND winloss <> 0 AND special <> 0) a1;";
+              WHERE turnover <> 0 OR winloss <> 0 OR special <> 0) a1;";
 
         var conn = _context.Database.GetDbConnection();
         var transaction = _context.Database.CurrentTransaction?.GetDbTransaction();
@@ -180,7 +180,7 @@ FROM   agent_win_loss
 UNION
 SELECT *
 FROM   player_win_loss
-WHERE turnover <> 0 AND winloss <> 0 AND winloss <> 0 AND special <> 0;";
+WHERE turnover <> 0 OR winloss <> 0 OR special <> 0;";
 
         var conn = _context.Database.GetDbConnection();
         var transaction = _context.Database.CurrentTransaction?.GetDbTransaction();
