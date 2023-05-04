@@ -6,6 +6,7 @@ using AutoFixture;
 using MockQueryable.Moq;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.Report.Core;
 using Tgs.Report.Core.Queries.Agent;
 using Tgs.Report.Repository;
 using Tgs.Report.Repository.Entities;
@@ -19,14 +20,14 @@ public sealed class GetAgentContributionsQueryTest : BaseTest
     [Test]
     public async Task Can_Get_Agent_Contributions()
     {
-        var fakeAgentRepository = Substitute.For<IAgentRepository>();
+        var fakeAgentFactory = Substitute.For<IAgentFactory>();
         var fakeWithdrawForm = Substitute.For<ITgsService<WithdrawForm>>();
         var fakePlayer = Substitute.For<ITgsService<Repository.Entities.Player>>();
         var fakePlayerAggregate = Substitute.For<ITgsService<PlayerAggregate>>();
         var fakePlayerBonusAggregate = Substitute.For<ITgsService<PlayerBonusAggregate>>();
         var fakeContext = Substitute.For<TgsContext>();
 
-        var sut = new GetAgentContributionsQueryHandler(fakeAgentRepository, fakeWithdrawForm, fakePlayer,
+        var sut = new GetAgentContributionsQueryHandler(fakeAgentFactory, fakeWithdrawForm, fakePlayer,
             fakePlayerAggregate, fakePlayerBonusAggregate, fakeContext);
 
         var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
@@ -75,22 +76,12 @@ public sealed class GetAgentContributionsQueryTest : BaseTest
         var mockAgentDailyPaymentStatistics = GetDbSet(agentDailyPaymentStatistics);
         var mockPlayerDailyPaymentStatistics = GetDbSet(playerDailyPaymentStatistics);
         var mockPlayers = GetDbSet(players);
+        var mockAgents = GetDbSet(agents);
 
         fakeContext.AgentDailyPaymentStatistics.Returns(mockAgentDailyPaymentStatistics.Object);
         fakeContext.PlayerDailyPaymentStatistics.Returns(mockPlayerDailyPaymentStatistics.Object);
         fakeContext.Players.Returns(mockPlayers.Object);
-
-        fakeAgentRepository.GetAgentWithNLevelAsync(
-                Arg.Is(brandId),
-                Arg.Is((Guid?)null),
-                Arg.Is(agentUsername),
-                Arg.Any<CancellationToken>())
-            .Returns(x =>
-            {
-                var agent = agents.First();
-
-                return new(agent.Id, "", 1);
-            });
+        fakeContext.Agents.Returns(mockAgents.Object);
 
         fakeWithdrawForm.GetQueries().Returns(withdrawForms);
         fakePlayer.GetQueries().Returns(players);

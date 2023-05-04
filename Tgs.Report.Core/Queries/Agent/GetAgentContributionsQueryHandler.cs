@@ -12,7 +12,7 @@ public class
     GetAgentContributionsQueryHandler : IRequestHandler<GetAgentContributionsRequest,
         PagedResponse<AgentContributionModel>>
 {
-    private readonly IAgentRepository _agentRepository;
+    private readonly IAgentFactory _agentFactory;
     private readonly TgsContext _context;
     private readonly ITgsService<PlayerAggregate> _playerAggregateService;
     private readonly ITgsService<PlayerBonusAggregate> _playerBonusAggregate;
@@ -20,14 +20,14 @@ public class
     private readonly ITgsService<WithdrawForm> _withdrawFormsService;
 
     public GetAgentContributionsQueryHandler(
-        IAgentRepository agentRepository,
+        IAgentFactory agentFactory,
         ITgsService<WithdrawForm> withdrawFormsService,
         ITgsService<Repository.Entities.Player> playerService,
         ITgsService<PlayerAggregate> playerAggregateService,
         ITgsService<PlayerBonusAggregate> playerBonusAggregate,
         TgsContext context)
     {
-        _agentRepository = agentRepository ?? throw new ArgumentNullException(nameof(agentRepository));
+        _agentFactory = agentFactory ?? throw new ArgumentNullException(nameof(agentFactory));
         _withdrawFormsService = withdrawFormsService ?? throw new ArgumentNullException(nameof(withdrawFormsService));
         _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
         _playerAggregateService =
@@ -40,11 +40,11 @@ public class
         GetAgentContributionsRequest request,
         CancellationToken cancellationToken)
     {
-        var agent = await _agentRepository.GetAgentWithNLevelAsync(
-            request.BrandId,
-            request.AgentId,
-            request.Username,
-            cancellationToken).ConfigureAwait(false);
+        var agent = await _context.Agents.Where(x => x.BrandId == request.BrandId)
+        .Where(request.AgentId,x => x.Id == request.AgentId)
+        .Where(request.Username, x => x.Username == request.Username)
+        .FirstOrDefaultAsync(cancellationToken)
+        .ConfigureAwait(false);
 
         if (agent == null)
         {
@@ -172,61 +172,36 @@ public class
             .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        var playersPaged = await _playerService.GetQueries()
+        var playersPaged = await _playerAggregateService.GetQueries()
             .Where(x => x.BrandId == request.BrandId)
             .Where(x => x.AgentId == agent.Id)
-            .Select(x => x.PlayerCode)
-            .GroupJoin(_playerAggregateService.GetQueries()
-                    .Where(x => x.BrandId == request.BrandId)
-                    .Where(x => x.AgentId == agent.Id)
-                    .Where(x => x.ReportDate >= request.From.ToUniversalTime() &&
-                        x.ReportDate < request.To.ToUniversalTime())
-                    .Where(x => x.CreatedOn >= request.From.ToUniversalTime())
-                    .GroupBy(x => x.PlayerCode, (playerCode, list) => new
-                    {
-                        PlayerCode = playerCode,
-                        CompanyAdjustAmount = list.Sum(p => p.CompanyAdjustAmount -
-                            p.NoIncludeNetProfitCompanyAdjustAmount),
-                        AgentAdjustAmount = list.Sum(p
-                            => p.AgentAdjustAmount -
-                            p.NoIncludeNetProfitAgentAdjustAmount),
-                        BonusAdjustAmount = list.Sum(p
-                            => p.BonusAdjustAmount -
-                            p.NoIncludeNetProfitBonusAdjustAmount),
-                        BonusAmount =
-                            list.Sum(p
-                                => p.RebateAmount + p.PromotionAmount),
-                        BetAmount = list.Sum(p => p.BetAmount),
-                        OriginalTurnover = list.Sum(p => p.OriginalTurnover),
-                        Turnover = list.Sum(p => p.Turnover),
-                        WinLossAmount = list.Sum(p => p.WinLossAmount),
-                        NetProfit = list.Sum(p => p.WinLossAmount
-                            - (p.BonusAdjustAmount -
-                                p.NoIncludeNetProfitBonusAdjustAmount)
-                            - p.RebateAmount
-                            - p.PromotionAmount)
-                    }),
-                playerCode => playerCode,
-                playerAggregate => playerAggregate.PlayerCode,
-                (playerCode, players) => new
-                {
-                    PlayerCode = playerCode,
-                    players
-                })
-            .SelectMany(x => x.players.DefaultIfEmpty(),
-                (x, playerAggregate) => new
-                {
-                    x.PlayerCode,
-                    playerAggregate.CompanyAdjustAmount,
-                    playerAggregate.AgentAdjustAmount,
-                    playerAggregate.BonusAdjustAmount,
-                    playerAggregate.BonusAmount,
-                    playerAggregate.BetAmount,
-                    playerAggregate.OriginalTurnover,
-                    playerAggregate.Turnover,
-                    playerAggregate.WinLossAmount,
-                    playerAggregate.NetProfit
-                })
+            .Where(x => x.ReportDate >= request.From.ToUniversalTime() &&
+                x.ReportDate < request.To.ToUniversalTime())
+            .Where(x => x.CreatedOn >= request.From.ToUniversalTime())
+            .GroupBy(x => x.PlayerCode, (playerCode, list) => new
+            {
+                PlayerCode = playerCode,
+                CompanyAdjustAmount = list.Sum(p => p.CompanyAdjustAmount -
+                    p.NoIncludeNetProfitCompanyAdjustAmount),
+                AgentAdjustAmount = list.Sum(p
+                    => p.AgentAdjustAmount -
+                    p.NoIncludeNetProfitAgentAdjustAmount),
+                BonusAdjustAmount = list.Sum(p
+                    => p.BonusAdjustAmount -
+                    p.NoIncludeNetProfitBonusAdjustAmount),
+                BonusAmount =
+                    list.Sum(p
+                        => p.RebateAmount + p.PromotionAmount),
+                BetAmount = list.Sum(p => p.BetAmount),
+                OriginalTurnover = list.Sum(p => p.OriginalTurnover),
+                Turnover = list.Sum(p => p.Turnover),
+                WinLossAmount = list.Sum(p => p.WinLossAmount),
+                NetProfit = list.Sum(p => p.WinLossAmount
+                    - (p.BonusAdjustAmount -
+                        p.NoIncludeNetProfitBonusAdjustAmount)
+                    - p.RebateAmount
+                    - p.PromotionAmount)
+            })
             .GroupJoin(_playerBonusAggregate.GetQueries()
                     .Where(x => x.BrandId == request.BrandId)
                     .Where(x => x.AgentId == agent.Id)
@@ -394,15 +369,13 @@ public class
             return players;
         }
 
-        var firstLayerAgents = await _agentRepository
-            .GetFirstLayerAgentsAsync(request.BrandId, agent.Id)
-            .ToArrayAsync(cancellationToken)
-            .ConfigureAwait(false);
-
-        var allSubAgents = await _agentRepository
-            .GetChildAgentsAsync(request.BrandId, agent)
-            .ToArrayAsync(cancellationToken)
-            .ConfigureAwait(false);
+        var playerAggregateData = await _agentFactory.GetAgentContributionAsync(new GetAgentContributionsDataRequest
+        {
+            BrandId = request.BrandId,
+            AgentId = agent.Id,
+            From = request.From,
+            To = request.To
+        }).ConfigureAwait(false);
 
         var brandAgentsPaymentStatistics = await _context.AgentDailyPaymentStatistics
             .Where(x => x.ReportDate >= fromDate && x.ReportDate < toDate)
@@ -417,184 +390,46 @@ public class
             .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        var playerAggregateData = await _playerAggregateService.GetQueries()
-            .Where(x => x.BrandId == request.BrandId)
-            .Where(x => x.ReportDate >= request.From.ToUniversalTime() &&
-                x.ReportDate < request.To.ToUniversalTime())
-            .Where(x => x.CreatedOn >= request.From.ToUniversalTime())
-            .Where(x => x.AgentId != null)
-            .GroupBy(x => new
-            {
-                AgentId = x.AgentId!.Value,
-                x.PlayerCode
-            }, (player, aggregates) => new AgentContributionDataModel
-            {
-                AgentId = player.AgentId,
-                PlayerCode = player.PlayerCode,
-                CompanyAdjustAmount =
-                    aggregates.Sum(p => p.CompanyAdjustAmount - p.NoIncludeNetProfitCompanyAdjustAmount),
-                AgentAdjustAmount = aggregates.Sum(p => p.AgentAdjustAmount - p.NoIncludeNetProfitAgentAdjustAmount),
-                BonusAdjustAmount = aggregates.Sum(p => p.BonusAdjustAmount - p.NoIncludeNetProfitBonusAdjustAmount),
-                BonusAmount = aggregates.Sum(p => p.RebateAmount + p.PromotionAmount),
-                BetAmount = aggregates.Sum(p => p.BetAmount),
-                OriginalTurnover = aggregates.Sum(p => p.OriginalTurnover),
-                Turnover = aggregates.Sum(p => p.Turnover),
-                WinLossAmount = aggregates.Sum(p => p.WinLossAmount),
-                NetProfit = aggregates.Sum(p => p.WinLossAmount
-                    - (p.BonusAdjustAmount -
-                        p.NoIncludeNetProfitBonusAdjustAmount)
-                    - p.RebateAmount
-                    - p.PromotionAmount)
-            })
-            .ToArrayAsync(cancellationToken)
-            .ConfigureAwait(false);
-
-        var playerBonusAggregate = await _playerBonusAggregate.GetQueries()
-            .Where(x => x.BrandId == request.BrandId)
-            .Where(x => x.ReportDate >= request.From.ToUniversalTime() &&
-                x.ReportDate < request.To.ToUniversalTime())
-            .Where(x => x.AgentId != null)
-            .GroupBy(x => new
-            {
-                AgentId = x.AgentId!.Value,
-                x.PlayerCode
-            }, (player, list) => new AgentContributionDataModel
-            {
-                AgentId = player.AgentId,
-                PlayerCode = player.PlayerCode,
-                CompanyAdjustAmount = 0,
-                AgentAdjustAmount = 0,
-                BonusAdjustAmount = 0,
-                BonusAmount = 0,
-                BetAmount = 0,
-                OriginalTurnover = 0,
-                Turnover = 0,
-                WinLossAmount = 0,
-                NetProfit = 0,
-                UpgradeAmount = list.Sum(p => p.UpgradeAmount),
-                SeasonAmount = list.Sum(p => p.SeasonAmount),
-                BirthdayAmount = list.Sum(p
-                    => p.BirthdayAmount)
-            }).ToArrayAsync(cancellationToken);
-
-        var agentPlayerAggregate = allSubAgents
-            .GroupJoin(playerAggregateData.Concat(playerBonusAggregate), agent => agent.AgentId, data => data.AgentId,
-                (agent, contributions) => new
-                {
-                    agent.AgentId,
-                    agent.FirstLayerAgentId,
-                    Contributions = contributions
-                })
-            .SelectMany(x => x.Contributions.DefaultIfEmpty(),
-                (agent, contribution) => new
-                {
-                    agent.AgentId,
-                    agent.FirstLayerAgentId,
-                    Contribution = contribution
-                })
-            .GroupBy(x => new
-            {
-                x.FirstLayerAgentId,
-                x.AgentId
-            }, (group, markets) =>
-            {
-                var paymentStatistics = brandAgentsPaymentStatistics
-                    .FirstOrDefault(bap => bap.AgentId == group.AgentId);
-
-                return new
-                {
-                    group.FirstLayerAgentId,
-                    group.AgentId,
-                    DepositAmount = paymentStatistics?.DepositAmount ?? 0M,
-                    DepositHandlingFee = paymentStatistics?.DepositHandlingFee ?? 0M,
-                    WithdrawAmount = paymentStatistics?.WithdrawAmount ?? 0M,
-                    CompanyAdjustAmount = markets.Sum(m => m.Contribution?.CompanyAdjustAmount ?? 0M),
-                    BonusAdjustAmount = markets.Sum(m => m.Contribution?.BonusAdjustAmount ?? 0M),
-                    AgentAdjustAmount = markets.Sum(m => m.Contribution?.AgentAdjustAmount ?? 0M),
-                    BonusAmount = markets.Sum(m => m.Contribution?.BonusAmount ?? 0M),
-                    BetAmount = markets.Sum(m => m.Contribution?.BetAmount ?? 0M),
-                    OriginalTurnover = markets.Sum(m => m.Contribution?.OriginalTurnover ?? 0M),
-                    Turnover = markets.Sum(m => m.Contribution?.Turnover ?? 0M),
-                    WinLossAmount = markets.Sum(m => m.Contribution?.WinLossAmount ?? 0M),
-                    UpgradeAmount = markets.Sum(m => m.Contribution?.UpgradeAmount ?? 0M),
-                    SeasonAmount = markets.Sum(m => m.Contribution?.SeasonAmount ?? 0M),
-                    BirthdayAmount = markets.Sum(m => m.Contribution?.BirthdayAmount ?? 0M),
-                    NetProfit = markets.Sum(m => m.Contribution?.NetProfit ?? 0M)
-                };
-            });
-
-        var childAgentPlayers = firstLayerAgents
-            .GroupJoin(
-                agentPlayerAggregate,
-                agent => agent.Id,
-                playerAggregate => playerAggregate.FirstLayerAgentId,
-                (firstLayerAgent, agentPlayers) => new
-                {
-                    FirstLayerAgent = firstLayerAgent,
-                    AgentPlayerAggregates = agentPlayers
-                })
-            .SelectMany(x => x.AgentPlayerAggregates.DefaultIfEmpty(),
-                (x, playerAggregate) => new
-                {
-                    x.FirstLayerAgent,
-                    AgentPlayerAggregate = playerAggregate,
-                    SubAgentId = playerAggregate?.AgentId
-                })
+        var childAgentPlayers = playerAggregateData
             .GroupBy(x => new
                 {
-                    x.FirstLayerAgent.UserName,
-                    x.FirstLayerAgent.Id
+                    x.Username,
+                    x.MasterId
                 },
                 (firstLayerAgent, aggregates) =>
                 {
-                    var agentIds = aggregates
-                        .Select(p => p.FirstLayerAgent.Id)
-                        .Concat(aggregates
-                            .Where(p => p.SubAgentId.HasValue)
-                            .Select(p => p.SubAgentId!.Value))
-                        .Distinct();
+                    var agentIds = aggregates.Select(p => p.AgentId);
+
+                    var paymentStatistics = brandAgentsPaymentStatistics
+                        .Where(bap => firstLayerAgent.MasterId == bap.AgentId || agentIds.Contains(bap.AgentId));
 
                     var realTimeDeposits = playerRealTimeDeposits?
                         .Where(x => x.AgentId != null)
-                        .Where(x => agentIds.Contains(x.AgentId!.Value));
+                        .Where(x => firstLayerAgent.MasterId == x.AgentId || agentIds.Contains(x.AgentId!.Value));
 
                     var realTimeWithdraws = playerRealTimeWithdrawals?
                         .Where(x => x.AgentId != null)
-                        .Where(x => agentIds.Contains(x.AgentId!.Value));
+                        .Where(x => firstLayerAgent.MasterId == x.AgentId || agentIds.Contains(x.AgentId!.Value));
 
                     return new AgentContributionModel
                     {
-                        Username = firstLayerAgent.UserName,
+                        Username = firstLayerAgent.Username,
                         Type = AccountType.Agent,
-                        DepositAmount = aggregates.Sum(p
-                                => p.AgentPlayerAggregate?.DepositAmount ?? 0M)
+                        DepositAmount = paymentStatistics.Sum(p => p.DepositAmount ?? 0M)
                             + (realTimeDeposits?.Sum(w => w.DepositAmount) ?? 0M),
-                        DepositHandlingFee = aggregates.Sum(p
-                                => p.AgentPlayerAggregate?.DepositHandlingFee ?? 0M)
+                        DepositHandlingFee = paymentStatistics.Sum(p => p.DepositHandlingFee ?? 0M)
                             + (realTimeDeposits?.Sum(w => w.DepositHandlingFee) ?? 0M),
-                        WithdrawalAmount = aggregates.Sum(p
-                                => p.AgentPlayerAggregate?.WithdrawAmount ?? 0M)
+                        WithdrawalAmount = paymentStatistics.Sum(p => p.WithdrawAmount ?? 0M)
                             + (realTimeWithdraws?.Sum(w => w.WithdrawalAmount) ?? 0M),
-                        CompanyAdjustAmount = aggregates.Sum(p => p.AgentPlayerAggregate?.CompanyAdjustAmount ?? 0),
-                        BonusAdjustAmount = aggregates.Sum(p => p.AgentPlayerAggregate?.BonusAdjustAmount ?? 0),
-                        AgentAdjustAmount = aggregates.Sum(p => p.AgentPlayerAggregate?.AgentAdjustAmount ?? 0),
-                        BonusAmount =
-                            aggregates.Sum(p
-                                => p.AgentPlayerAggregate == null
-                                    ? 0
-                                    : p.AgentPlayerAggregate.BonusAmount +
-                                    p.AgentPlayerAggregate.UpgradeAmount + p.AgentPlayerAggregate.SeasonAmount +
-                                    p.AgentPlayerAggregate.BirthdayAmount),
-                        BetAmount = aggregates.Sum(p => p.AgentPlayerAggregate?.BetAmount ?? 0),
-                        ValidBetAmount = aggregates.Sum(p => p.AgentPlayerAggregate?.OriginalTurnover ?? 0),
-                        Turnover = aggregates.Sum(p => p.AgentPlayerAggregate?.Turnover ?? 0),
-                        WinLossAmount = aggregates.Sum(p => p.AgentPlayerAggregate?.WinLossAmount ?? 0),
-                        NetProfit = aggregates.Sum(p => p.AgentPlayerAggregate == null
-                            ? 0
-                            : p.AgentPlayerAggregate.NetProfit -
-                            p.AgentPlayerAggregate.UpgradeAmount -
-                            p.AgentPlayerAggregate.SeasonAmount -
-                            p.AgentPlayerAggregate.BirthdayAmount)
+                        CompanyAdjustAmount = aggregates.Sum(p => p.CompanyAdjustAmount),
+                        BonusAdjustAmount = aggregates.Sum(p => p.BonusAdjustAmount),
+                        AgentAdjustAmount = aggregates.Sum(p => p.AgentAdjustAmount),
+                        BonusAmount = aggregates.Sum(p => p.BonusAmount),
+                        BetAmount = aggregates.Sum(p => p.BetAmount),
+                        ValidBetAmount = aggregates.Sum(p => p.OriginalTurnover),
+                        Turnover = aggregates.Sum(p => p.Turnover),
+                        WinLossAmount = aggregates.Sum(p => p.WinLossAmount),
+                        NetProfit = aggregates.Sum(p => p.NetProfit)
                     };
                 }).ToArray();
 
