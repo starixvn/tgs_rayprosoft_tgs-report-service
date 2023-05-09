@@ -54,7 +54,7 @@ internal class ExportSystemRoundsQueryHandler : IRequestHandler<ExportSystemRoun
             WinLoss = x.WinLoss
         });
 
-        var resource = new ResourceManager(typeof(Resources.Round));
+        var resource = new ResourceManager(typeof(Resources.SystemRound));
 
         var xlsx = exportData?.ExportSystemRoundsWithLocalization("rounds", resource);
 

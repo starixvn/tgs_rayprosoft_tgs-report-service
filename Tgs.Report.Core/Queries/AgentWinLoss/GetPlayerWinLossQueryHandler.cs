@@ -25,6 +25,7 @@ internal class GetPlayerWinLossQueryHandler : IRequestHandler<GetPlayerWinLossRe
             .GroupBy(x => x.PlayerCode, (playerCode, list) => new
             {
                 PlayerCode = playerCode,
+                RoundConut = list.Sum(s => s.RoundCount),
                 Turnover = list.Sum(s => s.Turnover),
                 WinLoss = list.Sum(s => s.WinLossAmount),
                 AgentWinLoss = list.Sum(s => s.WinLossAmount * s.AgentDividendPercentage * 0.01M) ?? 0M,
@@ -51,6 +52,8 @@ internal class GetPlayerWinLossQueryHandler : IRequestHandler<GetPlayerWinLossRe
                     Id = agg.PlayerCode,
                     Username = player.Username,
                     MemberType = "player",
+                    RoundCount = agg.RoundConut,
+                    Turnover = agg.Turnover,
                     WinLoss = agg.WinLoss,
                     AgentWinLoss = agg.AgentWinLoss,
                     CompanyWinLoss = agg.CompanyWinLoss,
