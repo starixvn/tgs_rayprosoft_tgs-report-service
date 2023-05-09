@@ -158,5 +158,5 @@ public interface IReportClient
 
     ValueTask<Stream> ExportPlayerWinLossAsync(ExportPlayerWinLossRequest request);
 
-    ValueTask<Stream> ExportRoundsAsync(ExportPlayerWinLossRequest request);
+    ValueTask<Stream> ExportRoundsAsync(ExportRoundsRequest request);
 }

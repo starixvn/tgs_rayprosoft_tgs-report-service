@@ -972,7 +972,7 @@ public class ReportClient : IReportClient
         return stream;
     }
 
-    public async ValueTask<Stream> ExportRoundsAsync(ExportPlayerWinLossRequest request)
+    public async ValueTask<Stream> ExportRoundsAsync(ExportRoundsRequest request)
     {
         var path = ClientPath.AppendWithProperties("/api/roundReport/exportRounds?", request);
 
