@@ -150,4 +150,13 @@ public interface IReportClient
 
     ValueTask<IEnumerable<CompanyTotalDetailModel>> GetCompanyTotalDetailAsync(GetCompanyTotalDetailRequest request);
 
+    ValueTask<Stream> ExportAgentWinLossAsync(ExportAgentWinLossRequest request);
+
+    ValueTask<Stream> ExportDownLineAgentWinLossAsync(ExportDownLineAgentWinLossRequest request);
+
+    ValueTask<Stream> ExportMasterAgentWinLossAsync(ExportMasterAgentWinLossRequest request);
+
+    ValueTask<Stream> ExportPlayerWinLossAsync(ExportPlayerWinLossRequest request);
+
+    ValueTask<Stream> ExportRoundsAsync(ExportPlayerWinLossRequest request);
 }

@@ -34,6 +34,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Agent.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\AgentWinLossRes.Designer.cs">
+      <DependentUpon>AgentWinLossRes.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Resources\AgentContribution.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -48,6 +53,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>LicenseeMarket.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\SystemRound.Designer.cs">
+      <DependentUpon>SystemRound.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Update="Resources\Round.Designer.cs">
       <DependentUpon>Round.resx</DependentUpon>
@@ -87,6 +97,10 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Agent.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\AgentWinLossRes.resx">
+      <LastGenOutput>AgentWinLossRes.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\AgentContribution.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>AgentContribution.Designer.cs</LastGenOutput>
@@ -98,6 +112,10 @@
     <EmbeddedResource Update="Resources\LicenseeMarket.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>LicenseeMarket.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\SystemRound.resx">
+      <LastGenOutput>SystemRound.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Round.resx">
       <LastGenOutput>Round.Designer.cs</LastGenOutput>

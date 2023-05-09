@@ -62,4 +62,32 @@ public class AgentWinLossReportController : ControllerBase
     public Task<IEnumerable<CompanyTotalDetailModel>> GetCompanyTotalDetailAsync(
         [FromQuery] GetCompanyTotalDetailRequest request) =>
         _mediator.Send(request);
+
+    [HttpGet("exportAgentWinLoss")]
+    [Description("export agent WinLoss")]
+    public async Task<IActionResult> ExportAgentWinLossAsync([FromQuery] ExportAgentWinLossRequest request)
+        => File(
+            await _mediator.Send(request).ConfigureAwait(false),
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+    [HttpGet("exportDownLineAgentWinLoss")]
+    [Description("export downLine agent WinLoss")]
+    public async Task<IActionResult> ExportDownLineAgentWinLossAsync([FromQuery] ExportDownLineAgentWinLossRequest request)
+        => File(
+            await _mediator.Send(request).ConfigureAwait(false),
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+    [HttpGet("exportMasterAgentWinLoss")]
+    [Description("export master agent WinLoss")]
+    public async Task<IActionResult> ExportMasterAgentWinLossAsync([FromQuery] ExportMasterAgentWinLossRequest request)
+        => File(
+            await _mediator.Send(request).ConfigureAwait(false),
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+    [HttpGet("exportPlayerWinLoss")]
+    [Description("export player WinLoss")]
+    public async Task<IActionResult> ExportPlayerWinLossAsync([FromQuery] ExportPlayerWinLossRequest request)
+        => File(
+            await _mediator.Send(request).ConfigureAwait(false),
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 }

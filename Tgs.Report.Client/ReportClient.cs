@@ -904,6 +904,91 @@ public class ReportClient : IReportClient
             _jsonSerializerOptions)!;
     }
 
+    public async ValueTask<Stream> ExportAgentWinLossAsync(ExportAgentWinLossRequest request)
+    {
+        var path = ClientPath.AppendWithProperties("/api/agentWinLossReport/exportAgentWinLoss?", request);
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+
+        httpRequest.Headers.Add("Accept-Language", CultureInfo.CurrentCulture.Name);
+
+        var response = await _client.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        var stream = await response.Content.ReadAsStreamAsync();
+
+        return stream;
+    }
+
+    public async ValueTask<Stream> ExportDownLineAgentWinLossAsync(ExportDownLineAgentWinLossRequest request)
+    {
+        var path = ClientPath.AppendWithProperties("/api/agentWinLossReport/exportDownLineAgentWinLoss?", request);
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+
+        httpRequest.Headers.Add("Accept-Language", CultureInfo.CurrentCulture.Name);
+
+        var response = await _client.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        var stream = await response.Content.ReadAsStreamAsync();
+
+        return stream;
+    }
+
+    public async ValueTask<Stream> ExportMasterAgentWinLossAsync(ExportMasterAgentWinLossRequest request)
+    {
+        var path = ClientPath.AppendWithProperties("/api/agentWinLossReport/exportMasterAgentWinLoss?", request);
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+
+        httpRequest.Headers.Add("Accept-Language", CultureInfo.CurrentCulture.Name);
+
+        var response = await _client.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        var stream = await response.Content.ReadAsStreamAsync();
+
+        return stream;
+    }
+
+    public async ValueTask<Stream> ExportPlayerWinLossAsync(ExportPlayerWinLossRequest request)
+    {
+        var path = ClientPath.AppendWithProperties("/api/agentWinLossReport/exportPlayerWinLoss?", request);
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+
+        httpRequest.Headers.Add("Accept-Language", CultureInfo.CurrentCulture.Name);
+
+        var response = await _client.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        var stream = await response.Content.ReadAsStreamAsync();
+
+        return stream;
+    }
+
+    public async ValueTask<Stream> ExportRoundsAsync(ExportPlayerWinLossRequest request)
+    {
+        var path = ClientPath.AppendWithProperties("/api/roundReport/exportRounds?", request);
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+
+        httpRequest.Headers.Add("Accept-Language", CultureInfo.CurrentCulture.Name);
+
+        var response = await _client.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        var stream = await response.Content.ReadAsStreamAsync();
+
+        return stream;
+    }
+
     public async ValueTask<PagedResponse<MarketAgentProfitModel>> GetMarketAgentProfitsAsync(GetMarketAgentProfitsRequest request)
     {
         var path = ClientPath.AppendWithProperties("/api/marketReport/agentProfit?", request);

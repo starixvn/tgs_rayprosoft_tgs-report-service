@@ -31,7 +31,6 @@ public class RoundReportController : ControllerBase
         await _mediator.Send(request).ConfigureAwait(false),
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 
-
     [HttpGet("roundsTotal", Name = "GetRoundsTotal")]
     [Description("Get rounds Total BetAmount & ValidBetAmount & WinLoss")]
     public Task<RoundTotalModel> GetRoundsTotalAsync([FromQuery] GetRoundsTotalRequest request) =>
@@ -70,4 +69,10 @@ public class RoundReportController : ControllerBase
     [Description("Get open rounds")]
     public Task<PagedResponse<OpenRoundModel>> GetOpenRoundsAsync([FromQuery] GetOpenRoundsRequest request) =>
         _mediator.Send(request);
+
+    [HttpGet("exportRounds")]
+    [Description("export rounds")]
+    public async Task<IActionResult> ExportRoundsAsync([FromQuery] ExportRoundsRequest request) => File(
+        await _mediator.Send(request).ConfigureAwait(false),
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 }
