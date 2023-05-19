@@ -50,13 +50,13 @@ internal class ExportAgentDividendsQueryHandler : IRequestHandler<ExportAgentDiv
         var exportData = dividends?.Select(x => new ExportAgentDividendModel
         {
             Username = x.Username,
-            BonusAmount = x.BonusAmount,
-            AgentAdjustAmount = x.AgentAdjustAmount,
-            BetAmount = x.BetAmount,
-            ValidBetAmount = x.ValidBetAmount,
-            WinLossAmount = x.WinLossAmount,
-            NetProfit = x.NetProfit,
-            AgentDividendAmount = x.AgentDividendAmount
+            BonusAmount = x.BonusAmount.Truncate(2),
+            AgentAdjustAmount = x.AgentAdjustAmount.Truncate(2),
+            BetAmount = x.BetAmount.Truncate(2),
+            ValidBetAmount = x.ValidBetAmount.Truncate(2),
+            WinLossAmount = x.WinLossAmount.Truncate(2),
+            NetProfit = x.NetProfit.Truncate(2),
+            AgentDividendAmount = x.AgentDividendAmount.Truncate(2)
         });
 
         var resource = new ResourceManager(typeof(AgentDividend));

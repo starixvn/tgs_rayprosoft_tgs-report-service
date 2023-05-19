@@ -50,8 +50,8 @@ internal class ExportSystemRoundsQueryHandler : IRequestHandler<ExportSystemRoun
             Id = x.Id,
             CreatedOn = x.CreatedOn.ToString("o"),
             ClosedOn = x.ClosedOn?.ToString("o"),
-            BetAmount = x.BetAmount,
-            WinLoss = x.WinLoss
+            BetAmount = x.BetAmount?.Truncate(2),
+            WinLoss = x.WinLoss?.Truncate(2)
         });
 
         var resource = new ResourceManager(typeof(Resources.SystemRound));
