@@ -34,12 +34,12 @@ internal class ExportMasterAgentWinLossHandler : IRequestHandler<ExportMasterAge
             RoundCount = x.RoundCount,
             Turnover = x.Turnover,
             WinLoss = x.WinLoss,
-            AgentWinLoss = x.AgentWinLoss,
-            CompanyWinLoss = x.CompanyWinLoss,
             Special = x.Special,
+            AgentWinLoss = x.AgentWinLoss,
             AgentSpecial = x.AgentSpecial,
-            CompanySpecial = x.CompanySpecial,
             AgentTotal = x.AgentTotal,
+            CompanyWinLoss = x.CompanyWinLoss,
+            CompanySpecial = x.CompanySpecial,
             CompanyTotal = x.CompanyTotal
         });
 
