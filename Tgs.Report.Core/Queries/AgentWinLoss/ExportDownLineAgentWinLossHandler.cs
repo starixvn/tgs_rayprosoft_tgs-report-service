@@ -35,12 +35,12 @@ internal class ExportDownLineAgentWinLossHandler : IRequestHandler<ExportDownLin
             RoundCount = x.RoundCount,
             Turnover = x.Turnover,
             WinLoss = x.WinLoss,
-            Special = x.Special,
             AgentWinLoss = x.AgentWinLoss,
-            AgentSpecial = x.AgentSpecial,
-            AgentTotal = x.AgentTotal,
             CompanyWinLoss = x.CompanyWinLoss,
+            Special = x.Special,
+            AgentSpecial = x.AgentSpecial,
             CompanySpecial = x.CompanySpecial,
+            AgentTotal = x.AgentTotal,
             CompanyTotal = x.CompanyTotal
         });
 
