@@ -33,15 +33,15 @@ internal class ExportAgentWinLossHandler : IRequestHandler<ExportAgentWinLossReq
             Username = x.Username,
             MemberType = x.MemberType,
             RoundCount = x.RoundCount,
-            Turnover = x.Turnover,
-            WinLoss = x.WinLoss,
-            AgentWinLoss = x.AgentWinLoss,
-            CompanyWinLoss = x.CompanyWinLoss,
-            Special = x.Special,
-            AgentSpecial = x.AgentSpecial,
-            CompanySpecial = x.CompanySpecial,
-            AgentTotal = x.AgentTotal,
-            CompanyTotal = x.CompanyTotal
+            Turnover = x.Turnover.Truncate(2),
+            WinLoss = x.WinLoss.Truncate(2),
+            AgentWinLoss = x.AgentWinLoss.Truncate(2),
+            CompanyWinLoss = x.CompanyWinLoss.Truncate(2),
+            Special = x.Special.Truncate(2),
+            AgentSpecial = x.AgentSpecial.Truncate(2),
+            CompanySpecial = x.CompanySpecial.Truncate(2),
+            AgentTotal = x.AgentTotal.Truncate(2),
+            CompanyTotal = x.CompanyTotal.Truncate(2)
         });
 
         var resource = new ResourceManager(typeof(AgentWinLossRes));

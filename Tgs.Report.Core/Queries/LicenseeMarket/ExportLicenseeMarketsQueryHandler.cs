@@ -31,16 +31,15 @@ internal class ExportLicenseeMarketsQueryHandler : IRequestHandler<ExportLicense
         {
             BrandCode = x.BrandCode,
             CurrencyCode = x.CurrencyCode,
-            DepositAmount = x.DepositAmount,
-            DepositHandlingFee = x.DepositHandlingFee,
-            WithdrawalAmount = x.WithdrawalAmount,
-            CompanyAdjustAmount = x.CompanyAdjustAmount,
-            BonusAmount = x.BonusAmount,
-            BetAmount = x.BetAmount,
-            Turnover = x.Turnover,
-            WinLossAmount = x.WinLossAmount,
-            NetProfit = x.NetProfit,
-            AgentProfit = x.AgentProfit
+            DepositAmount = (x.DepositAmount - x.DepositHandlingFee).Truncate(2),
+            WithdrawalAmount = x.WithdrawalAmount.Truncate(2),
+            CompanyAdjustAmount = x.CompanyAdjustAmount.Truncate(2),
+            BonusAmount = x.BonusAmount.Truncate(2),
+            BetAmount = x.BetAmount.Truncate(2),
+            Turnover = x.Turnover.Truncate(2),
+            WinLossAmount = x.WinLossAmount.Truncate(2),
+            NetProfit = x.NetProfit.Truncate(2),
+            AgentProfit = x.AgentProfit.Truncate(2)
         });
 
         var resource = new ResourceManager(typeof(Resources.LicenseeMarket));
