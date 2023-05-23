@@ -118,33 +118,54 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BetAmount" xml:space="preserve">
-    <value>【投注金額】</value>
+    <value>投注金额</value>
   </data>
   <data name="ClosedOn" xml:space="preserve">
-    <value>【平台結算時間】</value>
+    <value>结算时间</value>
   </data>
   <data name="CreatedOn" xml:space="preserve">
-    <value>【平台投注時間】</value>
+    <value>投注时间</value>
   </data>
   <data name="ExternalClosedOn" xml:space="preserve">
-    <value>【三方結算時間】</value>
+    <value>三方结算时间</value>
   </data>
   <data name="ExternalCreatedOn" xml:space="preserve">
-    <value>【三方投注時間】</value>
+    <value>三方投注时间</value>
   </data>
   <data name="ExternalRoundId" xml:space="preserve">
-    <value>【三方訂單ID】</value>
+    <value>三方订单ID</value>
   </data>
   <data name="Id" xml:space="preserve">
-    <value>【訂單ID】</value>
+    <value>订单ID</value>
   </data>
   <data name="PlayerCode" xml:space="preserve">
-    <value>【三方用戶名】</value>
+    <value>三方用户名</value>
   </data>
   <data name="PlayerName" xml:space="preserve">
-    <value>【用戶名】</value>
+    <value>用户名</value>
   </data>
   <data name="WinLoss" xml:space="preserve">
-    <value>【玩家輸贏金額】</value>
+    <value>玩家输赢金额</value>
+  </data>
+  <data name="GameProviderName" xml:space="preserve">
+    <value>游戏厂商</value>
+  </data>
+  <data name="SubGameProviderName" xml:space="preserve">
+    <value>子游戏厂商</value>
+  </data>
+  <data name="GameName" xml:space="preserve">
+    <value>游戏名称</value>
+  </data>
+  <data name="CurrencyCode" xml:space="preserve">
+    <value>币种</value>
+  </data>
+  <data name="ValidBetAmount" xml:space="preserve">
+    <value>有效投注</value>
+  </data>
+  <data name="Turnover" xml:space="preserve">
+    <value>流水</value>
+  </data>
+  <data name="SettleAmount" xml:space="preserve">
+    <value>派彩</value>
   </data>
 </root>

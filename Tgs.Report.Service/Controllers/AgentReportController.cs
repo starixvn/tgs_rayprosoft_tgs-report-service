@@ -3,6 +3,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Agent;
+using Tgs.Report.ViewModel.AgentWinLoss;
+using TGS.Core.Infrastructures.Extensions;
 
 namespace Tgs.Report.Service.Controllers;
 
@@ -53,7 +55,7 @@ public class AgentReportController : ControllerBase
     [HttpGet("{id}/winLoss")]
     [Description("Get agent player Win/Loss report")]
     public Task<PagedResponse<AgentPlayerWinLossModel>> GetAgentPlayerWinLossAsync(
-        [FromQuery] GetAgentPlayerWinLossRequest request) =>
+        [FromQuery] GetAgentDividendPlayerWinLossRequest request) =>
         _mediator.Send(request);
 
     [HttpGet("accountChanges")]

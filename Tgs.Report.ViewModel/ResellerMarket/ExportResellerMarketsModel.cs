@@ -8,8 +8,6 @@ public record ExportResellerMarketsModel
 
     public decimal DepositAmount { get; init; }
 
-    public decimal DepositHandlingFee { get; init; }
-
     public decimal WithdrawalAmount { get; init; }
 
     public decimal CompanyAdjustAmount { get; init; }

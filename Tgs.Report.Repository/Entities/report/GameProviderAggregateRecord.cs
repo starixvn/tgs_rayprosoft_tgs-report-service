@@ -3,14 +3,17 @@
 using System;
 using System.Collections.Generic;
 
-namespace Tgs.Report.Repository.Entities
+namespace Tgs.Report.Repository.Entities;
+
+public partial class GameProviderAggregateRecord
 {
-    public partial class GameProviderAggregateRecord
-    {
-        public int Id { get; set; }
-        public int AuditLogId { get; set; }
-        public Guid GameProviderId { get; set; }
-        public string Data { get; set; } = null!;
-        public DateTime CreatedOn { get; set; }
-    }
+    public int Id { get; set; }
+
+    public int AuditLogId { get; set; }
+
+    public Guid GameProviderId { get; set; }
+
+    public string Data { get; set; } = null!;
+
+    public DateTime CreatedOn { get; set; }
 }

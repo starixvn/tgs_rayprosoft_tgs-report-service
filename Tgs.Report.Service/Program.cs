@@ -28,7 +28,7 @@ builder.Services
     {
         var config = sp.GetRequiredService<IConfiguration>();
 
-        options.BaseUrl = config.GetValue<Uri>("Report:GameProvidersPluggableBaseUrl");
+        options.BaseUrl = config.GetValue<Uri>("Report:GameProvidersPluggableBaseUrl")!;
     })
     .AddMemoryCache();
 
@@ -48,8 +48,8 @@ builder.Logging
         _ = options.AddFluentdForwardExporter(fluentOptions =>
         {
             var nodeIp = builder.Configuration.GetValue<string>("NODE_IP");
-            fluentOptions.Host = nodeIp;
-            fluentOptions.Tag = builder.Configuration.GetValue<string>("OTEL_SERVICE_NAME");
+            fluentOptions.Host = nodeIp!;
+            fluentOptions.Tag = builder.Configuration.GetValue<string>("OTEL_SERVICE_NAME")!;
             fluentOptions.UseMessagePack();
         });
     });
@@ -111,7 +111,7 @@ builder.Services
             {
                 var config = sp.GetRequiredService<IConfiguration>();
 
-                options.Url = config.GetValue<string>("NatsSetting:Urls");
+                options.Url = config.GetValue<string>("NatsSetting:Urls")!;
             });
     })
     .ClearAllExchanges()

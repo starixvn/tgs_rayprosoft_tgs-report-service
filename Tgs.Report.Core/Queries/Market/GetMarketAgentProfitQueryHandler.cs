@@ -30,12 +30,12 @@ public class
             0,
             requestFrom.Offset);
 
-        var list = await _marketFactory.GetAgentProfitsAsync(request);
+        var list = (await _marketFactory.GetAgentProfitsAsync(request)).ToArray();
 
         return new PagedResponse<MarketAgentProfitModel>
         {
             Valid = true,
-            TotalCount = list.FirstOrDefault().TotalCount,
+            TotalCount = list.FirstOrDefault()?.TotalCount ?? 0,
             Items = list.Select(x => new MarketAgentProfitModel
             {
                 MasterAgentName = x.MasterAgentName,

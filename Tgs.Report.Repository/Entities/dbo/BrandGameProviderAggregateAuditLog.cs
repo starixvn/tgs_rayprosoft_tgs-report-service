@@ -3,13 +3,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace Tgs.Report.Repository.Entities
+namespace Tgs.Report.Repository.Entities;
+
+public partial class BrandGameProviderAggregateAuditLog
 {
-    public partial class BrandGameProviderAggregateAuditLog
-    {
-        public int Id { get; set; }
-        public Guid? BrandId { get; set; }
-        public Guid CreatedByUserId { get; set; }
-        public DateTime CreatedOn { get; set; }
-    }
+    public int Id { get; set; }
+
+    public Guid? BrandId { get; set; }
+
+    public Guid CreatedByUserId { get; set; }
+
+    public DateTime CreatedOn { get; set; }
 }

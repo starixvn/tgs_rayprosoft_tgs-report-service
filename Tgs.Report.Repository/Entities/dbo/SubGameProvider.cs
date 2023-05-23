@@ -3,26 +3,29 @@
 using System;
 using System.Collections.Generic;
 
-namespace Tgs.Report.Repository.Entities
+namespace Tgs.Report.Repository.Entities;
+
+public partial class SubGameProvider
 {
-    public partial class SubGameProvider
-    {
-        public SubGameProvider()
-        {
-            Games = new HashSet<Game>();
-        }
+    public string Code { get; set; } = null!;
 
-        public string Code { get; set; } = null!;
-        public string Name { get; set; } = null!;
-        public string? Description { get; set; }
-        public Guid GameProviderId { get; set; }
-        public string? Localization { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public DateTime UpdatedOn { get; set; }
-        public string CreatedByUsername { get; set; } = null!;
-        public string UpdatedByUsername { get; set; } = null!;
+    public string Name { get; set; } = null!;
 
-        public virtual GameProvider GameProvider { get; set; } = null!;
-        public virtual ICollection<Game> Games { get; set; }
-    }
+    public string? Description { get; set; }
+
+    public Guid GameProviderId { get; set; }
+
+    public string? Localization { get; set; }
+
+    public DateTime CreatedOn { get; set; }
+
+    public DateTime UpdatedOn { get; set; }
+
+    public string CreatedByUsername { get; set; } = null!;
+
+    public string UpdatedByUsername { get; set; } = null!;
+
+    public virtual GameProvider GameProvider { get; set; } = null!;
+
+    public virtual ICollection<Game> Games { get; set; } = new List<Game>();
 }

@@ -4,7 +4,7 @@ namespace Tgs.Report.ViewModel.Market;
 
 public record MarketAgentProfitDataModel
 {
-    public string MasterAgentName { get; init; }
+    public string MasterAgentName { get; init; } = default!;
 
     public decimal Percentage { get; init; }
 

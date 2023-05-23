@@ -8,7 +8,6 @@ public record ExportPlayerContributionModel
     public AccountType Type { get; init; }
     public int? Level { get; init; }
     public decimal DepositAmount { get; init; }
-    public decimal DepositHandlingFee { get; init; }
     public decimal WithdrawalAmount { get; init; }
     public decimal CompanyAdjustAmount { get; init; }
     public decimal AgentAdjustAmount { get; init; }

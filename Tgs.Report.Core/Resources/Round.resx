@@ -147,4 +147,25 @@
   <data name="PlayerCode" xml:space="preserve">
     <value>PLAYER CODE</value>
   </data>
+  <data name="GameProviderName" xml:space="preserve">
+    <value>GAME PROVIDER</value>
+  </data>
+  <data name="SubGameProviderName" xml:space="preserve">
+    <value>SUB GAME PROVIDER</value>
+  </data>
+  <data name="GameName" xml:space="preserve">
+    <value>GAME NAME</value>
+  </data>
+  <data name="CurrencyCode" xml:space="preserve">
+    <value>CURRENCY</value>
+  </data>
+  <data name="ValidBetAmount" xml:space="preserve">
+    <value>VALID BET AMOUNT</value>
+  </data>
+  <data name="Turnover" xml:space="preserve">
+    <value>TURNOVER</value>
+  </data>
+  <data name="SettleAmount" xml:space="preserve">
+    <value>SETTLE AMOUNT</value>
+  </data>
 </root>
