@@ -88,6 +88,15 @@ namespace Tgs.Report.Core.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 CURRENCY 的當地語系化字串。
+        /// </summary>
+        public static string CurrencyCode {
+            get {
+                return ResourceManager.GetString("CurrencyCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 EXTERNAL CLOSED ON 的當地語系化字串。
         /// </summary>
         public static string ExternalClosedOn {
@@ -115,6 +124,24 @@ namespace Tgs.Report.Core.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 GAME NAME 的當地語系化字串。
+        /// </summary>
+        public static string GameName {
+            get {
+                return ResourceManager.GetString("GameName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 GAME PROVIDER 的當地語系化字串。
+        /// </summary>
+        public static string GameProviderName {
+            get {
+                return ResourceManager.GetString("GameProviderName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 ID 的當地語系化字串。
         /// </summary>
         public static string Id {
@@ -138,6 +165,42 @@ namespace Tgs.Report.Core.Resources {
         public static string PlayerName {
             get {
                 return ResourceManager.GetString("PlayerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 SETTLE AMOUNT 的當地語系化字串。
+        /// </summary>
+        public static string SettleAmount {
+            get {
+                return ResourceManager.GetString("SettleAmount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 SUB GAME PROVIDER 的當地語系化字串。
+        /// </summary>
+        public static string SubGameProviderName {
+            get {
+                return ResourceManager.GetString("SubGameProviderName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 TURNOVER 的當地語系化字串。
+        /// </summary>
+        public static string Turnover {
+            get {
+                return ResourceManager.GetString("Turnover", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 VALID BET AMOUNT 的當地語系化字串。
+        /// </summary>
+        public static string ValidBetAmount {
+            get {
+                return ResourceManager.GetString("ValidBetAmount", resourceCulture);
             }
         }
         

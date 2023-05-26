@@ -20,35 +20,7 @@ public static class XLSXUtility
             return workbook;
         }
 
-        var rowIdx = 2;
-        foreach (var model in models)
-        {
-            var columnIndex = 1;
-            foreach (var propertyInfo in model!.GetType().GetProperties())
-            {
-                var value = propertyInfo.GetValue(model);
-
-                if (propertyInfo.PropertyType.IsEnum)
-                {
-                    value = value?.ToString();
-                }
-                if (propertyInfo.PropertyType == typeof(bool))
-                {
-                    value = value?.ToString();
-                }
-                if (propertyInfo.PropertyType == typeof(DateTimeOffset) ||
-                    propertyInfo.PropertyType == typeof(DateTime))
-                {
-                    value = ((DateTimeOffset)value!).ToString("d");
-                }
-
-
-                sheet.Cell(rowIdx, columnIndex).Value = $"{value}";
-                columnIndex++;
-            }
-
-            rowIdx++;
-        }
+        sheet.Cell("A2").InsertData(models);
 
         return workbook;
     }

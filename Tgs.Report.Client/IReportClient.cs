@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Tgs.Report.Client.Models;
 using Tgs.Report.Client.Models.Agent;
+using Tgs.Report.Client.Models.AgentWinLoss;
 using Tgs.Report.Client.Models.BrandGameProvider;
 using Tgs.Report.Client.Models.GameAction;
 using Tgs.Report.Client.Models.GameProvider;
@@ -132,4 +133,30 @@ public interface IReportClient
     ValueTask<VipTotalAmountModel> GetVipReportTotalAmountAsync(GetVipReportTotalAmountRequest request);
 
     ValueTask<PagedResponse<MarketAgentProfitModel>> GetMarketAgentProfitsAsync(GetMarketAgentProfitsRequest request);
+
+    ValueTask<PagedResponse<AgentWinLossModel>> GetAgentWinLossAsync(GetAgentWinLossRequest request);
+
+    ValueTask<PagedResponse<AgentWinLossModel>> GetDownLineAgentWinLossAsync(GetDownLineAgentWinLossRequest request);
+
+    ValueTask<PagedResponse<AgentWinLossModel>> GetMasterAgentWinLossAsync(GetMasterAgentWinLossRequest request);
+
+    ValueTask<PagedResponse<AgentWinLossModel>> GetAgentPlayerWinLossAsync(GetPlayerWinLossRequest request);
+
+    ValueTask<IEnumerable<BreadcrumbModel>> GetAgentWinLossBreadcrumbAsync(GetBreadcrumbRequest request);
+
+    ValueTask<AgentPlayerSpecialDetailModel> GetAgentPlayerSpecialDetailAsync(GetAgentPlayerSpecialDetailRequest request);
+
+    ValueTask<IEnumerable<AgentTotalDetailModel>> GetAgentTotalDetailAsync(GetAgentTotalDetailRequest request);
+
+    ValueTask<IEnumerable<CompanyTotalDetailModel>> GetCompanyTotalDetailAsync(GetCompanyTotalDetailRequest request);
+
+    ValueTask<Stream> ExportAgentWinLossAsync(ExportAgentWinLossRequest request);
+
+    ValueTask<Stream> ExportDownLineAgentWinLossAsync(ExportDownLineAgentWinLossRequest request);
+
+    ValueTask<Stream> ExportMasterAgentWinLossAsync(ExportMasterAgentWinLossRequest request);
+
+    ValueTask<Stream> ExportPlayerWinLossAsync(ExportPlayerWinLossRequest request);
+
+    ValueTask<Stream> ExportRoundsAsync(ExportRoundsRequest request);
 }

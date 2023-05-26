@@ -3,17 +3,23 @@
 using System;
 using System.Collections.Generic;
 
-namespace Tgs.Report.Repository.Entities
+namespace Tgs.Report.Repository.Entities;
+
+public partial class PlayerBucketHistory
 {
-    public partial class PlayerBucketHistory
-    {
-        public int Id { get; set; }
-        public string PlayerCode { get; set; } = null!;
-        public decimal Turnover { get; set; }
-        public DateTime From { get; set; }
-        public DateTime To { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public Guid PlayerBucketId { get; set; }
-        public string RoundData { get; set; } = null!;
-    }
+    public int Id { get; set; }
+
+    public string PlayerCode { get; set; } = null!;
+
+    public decimal Turnover { get; set; }
+
+    public DateTime From { get; set; }
+
+    public DateTime To { get; set; }
+
+    public DateTime CreatedOn { get; set; }
+
+    public Guid PlayerBucketId { get; set; }
+
+    public string RoundData { get; set; } = null!;
 }

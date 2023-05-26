@@ -3,16 +3,21 @@
 using System;
 using System.Collections.Generic;
 
-namespace Tgs.Report.Repository.Entities
+namespace Tgs.Report.Repository.Entities;
+
+public partial class Setting
 {
-    public partial class Setting
-    {
-        public string Key { get; set; } = null!;
-        public string Value { get; set; } = null!;
-        public string? Description { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public DateTime UpdatedOn { get; set; }
-        public string CreatedByUsername { get; set; } = null!;
-        public string UpdatedByUsername { get; set; } = null!;
-    }
+    public string Key { get; set; } = null!;
+
+    public string Value { get; set; } = null!;
+
+    public string? Description { get; set; }
+
+    public DateTime CreatedOn { get; set; }
+
+    public DateTime UpdatedOn { get; set; }
+
+    public string CreatedByUsername { get; set; } = null!;
+
+    public string UpdatedByUsername { get; set; } = null!;
 }

@@ -156,4 +156,7 @@
   <data name="DepositHandlingFee" xml:space="preserve">
     <value>存款手续费</value>
   </data>
+  <data name="AgentProfit" xml:space="preserve">
+    <value>代理总分红</value>
+  </data>
 </root>

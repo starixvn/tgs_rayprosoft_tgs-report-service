@@ -32,15 +32,15 @@ internal class ExportVipReportQueryHandler : IRequestHandler<ExportVipReportRequ
         {
             Username = x.Username,
             Level = x.Level,
-            DepositAmount = x.DepositAmount,
-            WithdrawalAmount = x.WithdrawalAmount,
-            BonusAmount = x.BonusAmount,
-            CompanyAdjustAmount = x.CompanyAdjustAmount,
-            BonusAdjustAmount = x.BonusAdjustAmount,
-            RebateAmount = x.RebateAmount,
-            ValidBetAmount = x.Turnover,
-            WinLossAmount = x.WinLossAmount,
-            NetProfit = x.NetProfit
+            DepositAmount = x.DepositAmount.Truncate(2),
+            WithdrawalAmount = x.WithdrawalAmount.Truncate(2),
+            BonusAmount = x.BonusAmount.Truncate(2),
+            CompanyAdjustAmount = x.CompanyAdjustAmount.Truncate(2),
+            BonusAdjustAmount = x.BonusAdjustAmount.Truncate(2),
+            RebateAmount = x.RebateAmount.Truncate(2),
+            ValidBetAmount = x.Turnover.Truncate(2),
+            WinLossAmount = x.WinLossAmount.Truncate(2),
+            NetProfit = x.NetProfit.Truncate(2)
         });
 
         var resource = new ResourceManager(typeof(VipReport));

@@ -156,4 +156,7 @@
   <data name="DepositHandlingFee" xml:space="preserve">
     <value>DEPOSIT TRANSFER FEE</value>
   </data>
+  <data name="AgentProfit" xml:space="preserve">
+    <value>AGENT PROFIT</value>
+  </data>
 </root>

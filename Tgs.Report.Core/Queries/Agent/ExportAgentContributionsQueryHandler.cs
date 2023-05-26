@@ -34,17 +34,16 @@ internal class ExportAgentContributionsQueryHandler : IRequestHandler<ExportAgen
         {
             Username = x.Username,
             Type = x.Type,
-            DepositAmount = x.DepositAmount,
-            DepositHandlingFee = x.DepositHandlingFee,
-            WithdrawalAmount = x.WithdrawalAmount,
-            BonusAmount = x.BonusAmount,
-            CompanyAdjustAmount = x.CompanyAdjustAmount,
-            AgentAdjustAmount = x.AgentAdjustAmount,
-            BonusAdjustAmount = x.BonusAdjustAmount,
-            BetAmount = x.BetAmount,
-            ValidBetAmount = x.ValidBetAmount,
-            WinLossAmount = x.WinLossAmount,
-            NetProfit = x.NetProfit
+            DepositAmount = (x.DepositAmount - x.DepositHandlingFee).Truncate(2),
+            WithdrawalAmount = x.WithdrawalAmount.Truncate(2),
+            BonusAmount = x.BonusAmount.Truncate(2),
+            CompanyAdjustAmount = x.CompanyAdjustAmount.Truncate(2),
+            AgentAdjustAmount = x.AgentAdjustAmount.Truncate(2),
+            BonusAdjustAmount = x.BonusAdjustAmount.Truncate(2),
+            BetAmount = x.BetAmount.Truncate(2),
+            ValidBetAmount = x.ValidBetAmount.Truncate(2),
+            WinLossAmount = x.WinLossAmount.Truncate(2),
+            NetProfit = x.NetProfit.Truncate(2)
         });
 
         var resource = new ResourceManager(typeof(AgentContribution));
