@@ -30,12 +30,6 @@ internal class GetMasterAgentWinLossQueryHandler : IRequestHandler<GetMasterAgen
 
         var agentWinLossModels = response as AgentWinLossModel[] ?? response.ToArray();
 
-        foreach (var item in agentWinLossModels)
-        {
-            item.AgentTotal = item.AgentWinLoss + item.AgentSpecial;
-            item.CompanyTotal = item.CompanyWinLoss + item.CompanySpecial;
-        }
-
         return agentWinLossModels.AsQueryable().CreatePagedResponse(request);
     }
 }
