@@ -58,4 +58,8 @@ public record BetRecordModel
     public decimal? TieBetAdjustment { get; init; }
 
     public string? AdditionalData { get; init; }
+
+    public decimal? OriginalTurnover { get; init; }
+
+    public decimal EffectiveBettingPercentage { get; init; }
 }
