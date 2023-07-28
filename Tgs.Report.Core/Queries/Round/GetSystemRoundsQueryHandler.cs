@@ -149,6 +149,9 @@ public class GetSystemRoundsQueryHandler : IRequestHandler<GetSystemRoundsReques
                 CurrencyCode = combine.round.CurrencyCode,
                 BetAmount = combine.round.BetAmount,
                 ValidBetAmount = combine.round.Turnover,
+                EffectiveBettingPercentage = combine.round.EffectiveBettingPercentage ??
+                    (combine.brandGame == null ? 100M : combine.brandGame.EffectiveBettingPercentage),
+                OriginalTurnover = combine.round.Turnover,
                 Turnover = combine.round.Turnover * (combine.round.EffectiveBettingPercentage ??
                     (combine.brandGame == null ? 100M : combine.brandGame.EffectiveBettingPercentage)) / 100M,
                 SettleAmount = combine.round.SettleAmount,
