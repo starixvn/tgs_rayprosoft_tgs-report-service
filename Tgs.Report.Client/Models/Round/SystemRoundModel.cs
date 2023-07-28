@@ -25,4 +25,6 @@ public record SystemRoundModel
     public string? AdditionalData { get; init; }
     public string? GameProviderCode { get; init; }
     public int GameId { get; init; }
+    public decimal? OriginalTurnover { get; init; }
+    public decimal EffectiveBettingPercentage { get; init; }
 }
