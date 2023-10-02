@@ -235,6 +235,9 @@ public class GetBetRecordsQueryHandler : IRequestHandler<GetBetRecordsRequest, G
                 CurrencyCode = combine.combine.CurrencyCode,
                 BetAmount = combine.combine.BetAmount,
                 ValidBetAmount = combine.combine.Turnover,
+                EffectiveBettingPercentage = combine.combine.EffectiveBettingPercentage ??
+                    (combine.brandGame == null ? 100M : combine.brandGame.EffectiveBettingPercentage),
+                OriginalTurnover = combine.combine.Turnover,
                 Turnover = combine.combine.Turnover * (combine.combine.EffectiveBettingPercentage ??
                     (combine.brandGame == null ? 100M : combine.brandGame.EffectiveBettingPercentage)) / 100M,
                 SettleAmount = combine.combine.SettleAmount,

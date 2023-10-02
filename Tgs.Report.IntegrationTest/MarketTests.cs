@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using MockQueryable.Moq;
 using NSubstitute;
 using Tgs.Report.Client;
-using Tgs.Report.Client.Models.Market;
 using Tgs.Report.Repository.Entities;
 
 namespace Tgs.Report.IntegrationTest;
@@ -32,7 +31,8 @@ public class MarketTests : BaseTest
                 var withdrawForms = CreateWithdrawFormFixture(brandId).CreateMany<WithdrawForm>(1).AsQueryable()
                     .BuildMock();
 
-                var playerLoginRecords = CreatePlayerLoginRecordsFixture(brandId).CreateMany<PlayerLoginRecord>(1).AsQueryable()
+                var playerLoginRecords = CreatePlayerLoginRecordsFixture(brandId).CreateMany<PlayerLoginRecord>(1)
+                    .AsQueryable()
                     .BuildMock();
 
                 var dailyStatistic = CreateBrandDailyPaymentStatisticFixture(brandId, reportDate)
@@ -51,7 +51,7 @@ public class MarketTests : BaseTest
                     CreatePlayerDailyPaymentStatisticsFixture().CreateMany<PlayerDailyPaymentStatistic>(5).AsQueryable()
                         .BuildMock();
 
-                var players = CreatePlayerFixture(brandId, reportDate).CreateMany<Repository.Entities.Player>(1).AsQueryable()
+                var players = CreatePlayerFixture(brandId, reportDate).CreateMany<Player>(1).AsQueryable()
                     .BuildMock();
 
                 foreach (var item in dailyRegisterStatistic) item.PlayerCode = players.First().PlayerCode;
@@ -65,14 +65,14 @@ public class MarketTests : BaseTest
                 var mockPlayers = GetDbSet(players);
                 var dailyRegisterStatistics = GetDbSet(dailyRegisterStatistic);
 
-                fakeDbContext.WithdrawForms.Returns(mockWithdrawForms.Object);
-                fakeDbContext.PlayerAggregates.Returns(mockPlayerAggregates.Object);
-                fakeDbContext.PlayerLoginRecords.Returns(mockPlayerLoginRecords.Object);
-                fakeDbContext.BrandDailyPaymentStatistics.Returns(mockDailyStatistic.Object);
-                fakeDbContext.PlayerBonusAggregates.Returns(mockPlayerBonusAggregates.Object);
-                fakeDbContext.PlayerDailyPaymentStatistics.Returns(mockPlayerDailyPaymentStatistics.Object);
-                fakeDbContext.PlayerDailyRegisterStatistics.Returns(dailyRegisterStatistics.Object);
-                fakeDbContext.Players.Returns(mockPlayers.Object);
+                _ = fakeDbContext.WithdrawForms.Returns(mockWithdrawForms.Object);
+                _ = fakeDbContext.PlayerAggregates.Returns(mockPlayerAggregates.Object);
+                _ = fakeDbContext.PlayerLoginRecords.Returns(mockPlayerLoginRecords.Object);
+                _ = fakeDbContext.BrandDailyPaymentStatistics.Returns(mockDailyStatistic.Object);
+                _ = fakeDbContext.PlayerBonusAggregates.Returns(mockPlayerBonusAggregates.Object);
+                _ = fakeDbContext.PlayerDailyPaymentStatistics.Returns(mockPlayerDailyPaymentStatistics.Object);
+                _ = fakeDbContext.PlayerDailyRegisterStatistics.Returns(dailyRegisterStatistics.Object);
+                _ = fakeDbContext.Players.Returns(mockPlayers.Object);
 
                 _ = services.AddSingleton(fakeDbContext);
             }));
@@ -119,7 +119,7 @@ public class MarketTests : BaseTest
         fixture.Customize<PlayerLoginRecord>(u => u
             .With(s => s.BrandId, brandId)
             .With(s => s.Brand, new Brand())
-            .With(s => s.PlayerCodeNavigation, new Repository.Entities.Player()));
+            .With(s => s.PlayerCodeNavigation, new Player()));
 
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         return fixture;
@@ -159,7 +159,7 @@ public class MarketTests : BaseTest
     private static Fixture CreatePlayerFixture(Guid brandId, DateTimeOffset reportDate)
     {
         var fixture = new Fixture();
-        fixture.Customize<Repository.Entities.Player>(u => u
+        fixture.Customize<Player>(u => u
             .With(s => s.BrandId, brandId)
             .With(s => s.Brand, new Brand())
             .With(s => s.RegisteredOn, reportDate)

@@ -21,6 +21,7 @@ internal class GetPlayerWinLossQueryHandler : IRequestHandler<GetPlayerWinLossRe
     {
         return _context.PlayerAggregates.Where(x => x.ReportDate >= request.From && x.ReportDate < request.To)
             .Where(x => x.PlayerCode == request.PlayerCode)
+
             .Where(x => x.AgentId != null)
             .GroupBy(x => x.PlayerCode, (playerCode, list) => new
             {
@@ -59,9 +60,7 @@ internal class GetPlayerWinLossQueryHandler : IRequestHandler<GetPlayerWinLossRe
                     CompanyWinLoss = agg.CompanyWinLoss,
                     Special = -agg.Special,
                     AgentSpecial = -agg.AgentSpecial,
-                    CompanySpecial = -agg.CompanySpecial,
-                    AgentTotal = agg.AgentWinLoss - agg.AgentSpecial,
-                    CompanyTotal = agg.CompanyWinLoss - agg.CompanySpecial
+                    CompanySpecial = -agg.CompanySpecial
                 })
             .CreatePagedResponseAsync(request);
     }
