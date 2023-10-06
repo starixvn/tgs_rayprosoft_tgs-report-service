@@ -1,4 +1,4 @@
-﻿using Tgs.Report.Enum;
+﻿using Tgs.Report.Client.Enum;
 
 namespace Tgs.Report.Client.Models.Player
 {
