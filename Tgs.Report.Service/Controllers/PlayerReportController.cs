@@ -50,4 +50,28 @@ public class PlayerReportController : ControllerBase
     public Task<PagedResponse<PlayersAccountChangeModel>> GetPlayersAccountChangesAsync(
         [FromQuery] GetPlayersAccountChangesRequest request)
         => _mediator.Send(request);
+
+    [HttpGet("player-all-agent-rebates", Name = "GetPlayerAllAgentRebates")]
+    [Description("Get player all agent rebates")]
+    public IAsyncEnumerable<PlayerAllAgentRebateModel> GetPlayerAllAgentRebatesAsync(
+        [FromQuery] GetPlayerAllAgentRebatesRequest request)
+        => _mediator.CreateStream(request);
+
+    [HttpGet("player-all-agent-rebates-total-amount", Name = "GetPlayerAllAgentRebatesTotalAmount")]
+    [Description("Get player all agent rebates total amount")]
+    public Task<PlayerAllAgentRebateTotalAmountModel> GetPlayerAllAgentRebatesTotalAmountAsync(
+        [FromQuery] GetPlayerAllAgentRebateTotalAmountRequest request)
+        => _mediator.Send(request);
+
+    [HttpGet("player-all-agent-game-types", Name = "GetPlayerAllAgentGameTypes")]
+    [Description("Get player all agent game types")]
+    public IAsyncEnumerable<PlayerAllAgentGameTypeModel> GetPlayerAllAgentGameTypesAsync(
+        [FromQuery] GetPlayerAllAgentGameTypesRequest request)
+        => _mediator.CreateStream(request);
+
+    [HttpGet("player-all-agent-rebate-details", Name = "GetPlayerAllAgentRebateDetails")]
+    [Description("Get player all agent rebate details")]
+    public IAsyncEnumerable<PlayerAllAgentRebateDetailModel> GetPlayerAllAgentRebateDetailsAsync(
+        [FromQuery] GetPlayerAllAgentRebatesDetailsRequest request)
+        => _mediator.CreateStream(request);
 }

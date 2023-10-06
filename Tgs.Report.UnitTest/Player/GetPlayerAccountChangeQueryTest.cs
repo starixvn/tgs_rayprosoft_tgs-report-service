@@ -5,12 +5,14 @@ using AutoFixture;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.Report.Core;
+using Tgs.Report.Core.Models;
 using Tgs.Report.Core.Queries.Player;
 using Tgs.Report.ViewModel.Player;
 
 namespace Tgs.Report.UnitTest.Player;
 
 [TestFixture]
+[Parallelizable]
 public sealed class GetPlayerAccountChangeQueryTest : BaseTest
 {
     [Test]
@@ -34,7 +36,20 @@ public sealed class GetPlayerAccountChangeQueryTest : BaseTest
         var models = CreatePlayerAccountChangeModelFixture(reportDate).CreateMany<PlayerAccountChangeModel>(1)
             .AsEnumerable();
 
-        _ = fakeRepository.GetPlayerAccountChangeAsync(request).Returns((models.ToArray(), 1));
+        var query = new GetPlayerAccountChangesQuery
+        {
+            BrandId = request.BrandId,
+            PlayerCode = request.PlayerCode,
+            From = request.From,
+            To = request.To,
+            Page = request.Page,
+            Rows = request.Rows,
+            SortBy = request.SortBy,
+            OrderBy = request.OrderBy,
+            ShowAll = request.ShowAll
+        };
+
+        _ = fakeRepository.GetPlayerAccountChangeAsync(query).Returns((models.ToArray(), 1));
 
         var response = await sut.Handle(request, default);
 
@@ -58,11 +73,19 @@ public sealed class GetPlayerAccountChangeQueryTest : BaseTest
             To = DateTimeOffset.UtcNow.AddDays(1)
         };
 
+        var query = new GetPlayerAccountChangesTotalAmountQuery
+        {
+            BrandId = request.BrandId,
+            PlayerCode = request.PlayerCode,
+            From = request.From,
+            To = request.To
+        };
+
         _ = await sut.Handle(request, default);
 
         _ = fakeRepository
             .Received(1)
-            .GetPlayerAccountChangeTotalAmountAsync(request);
+            .GetPlayerAccountChangeTotalAmountAsync(query);
     }
 
     private static Fixture CreatePlayerAccountChangeModelFixture(DateTimeOffset date)

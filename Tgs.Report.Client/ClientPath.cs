@@ -24,6 +24,13 @@ public static class ClientPath
                         .ToString("u");
                 }
 
+                if (propertyInfo.PropertyType == typeof(DateTime)
+                    || propertyInfo.PropertyType == typeof(DateTime?))
+                {
+                    value = ((DateTime?)value)?.ToUniversalTime()
+                        .ToString("u");
+                }
+
                 if (propertyInfo.PropertyType.IsArray)
                 {
                     if (value is null)

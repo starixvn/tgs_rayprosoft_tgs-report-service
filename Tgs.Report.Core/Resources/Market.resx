@@ -130,7 +130,7 @@
     <value>DEPOSIT AMOUNT</value>
   </data>
   <data name="WithdrawalAmount" xml:space="preserve">
-    <value>WITHDRAWAL AMOUNT </value>
+    <value>WITHDRAWAL AMOUNT</value>
   </data>
   <data name="CompanyAdjustAmount" xml:space="preserve">
     <value>COMPANY ADJUST AMOUNT</value>

@@ -11,6 +11,7 @@ using Tgs.Report.ViewModel.GameAction;
 namespace Tgs.Report.UnitTest.GameAction;
 
 [TestFixture]
+[Parallelizable]
 public sealed class GetGameActionsQueryTest : BaseTest
 {
     [Test]

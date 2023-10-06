@@ -38,6 +38,12 @@ public static class ServiceCollectionExtensions
             c.BaseAddress = options.BaseUrl;
         });
 
+        services.AddHttpClient<IReportPlayerAllAgentClient, ReportPlayerAllAgentClient>((sp, c) =>
+        {
+            var options = sp.GetRequiredService<IOptions<ReportOptions>>().Value;
+            c.BaseAddress = options.BaseUrl;
+        });
+
         return services;
     }
 }

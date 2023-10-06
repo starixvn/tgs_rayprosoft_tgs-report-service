@@ -12,6 +12,8 @@ using Tgs.Report.ViewModel.GameProvider;
 
 namespace Tgs.Report.UnitTest.GameProvider;
 
+[TestFixture]
+[Parallelizable]
 public sealed class GetGameProviderRoundsQueryTest
 {
     [Test]

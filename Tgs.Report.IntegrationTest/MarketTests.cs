@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MockQueryable.Moq;
 using NSubstitute;
@@ -10,10 +11,11 @@ using Tgs.Report.Repository.Entities;
 
 namespace Tgs.Report.IntegrationTest;
 
-[TestClass]
-public class MarketTests : BaseTest
+[TestFixture]
+[Parallelizable]
+public class MarketTests
 {
-    [TestMethod]
+    [Test]
     public async Task Can_Get_Markets()
     {
         var brandId = Guid.NewGuid();
@@ -23,6 +25,14 @@ public class MarketTests : BaseTest
             .ConfigureServices(services =>
             {
                 var fakeDbContext = Substitute.For<TgsContext>();
+                var fakePlayerAggregateDbSet = Substitute.For<DbSet<PlayerAggregate>, IQueryable<PlayerAggregate>>();
+                var fakeWithdrawFormDbSet = Substitute.For<DbSet<WithdrawForm>, IQueryable<WithdrawForm>>();
+                var fakePlayerDbSet = Substitute.For<DbSet<Player>, IQueryable<Player>>();
+                var fakePlayerLoginRecordDbSet = Substitute.For<DbSet<PlayerLoginRecord>, IQueryable<PlayerLoginRecord>>();
+                var fakeBrandDailyPaymentStatisticDbSet = Substitute.For<DbSet<BrandDailyPaymentStatistic>, IQueryable<BrandDailyPaymentStatistic>>();
+                var fakePlayerBonusAggregateDbSet = Substitute.For<DbSet<PlayerBonusAggregate>, IQueryable<PlayerBonusAggregate>>();
+                var fakePlayerDailyPaymentStatisticDbSet = Substitute.For<DbSet<PlayerDailyPaymentStatistic>, IQueryable<PlayerDailyPaymentStatistic>>();
+                var fakePlayerDailyRegisterStatisticDbSet = Substitute.For<DbSet<PlayerDailyRegisterStatistic>, IQueryable<PlayerDailyRegisterStatistic>>();
 
                 var playerAggregates = CreatePlayerAggregateFixture(brandId, reportDate).CreateMany<PlayerAggregate>(1)
                     .AsQueryable()
@@ -56,23 +66,23 @@ public class MarketTests : BaseTest
 
                 foreach (var item in dailyRegisterStatistic) item.PlayerCode = players.First().PlayerCode;
 
-                var mockPlayerAggregates = GetDbSet(playerAggregates);
-                var mockWithdrawForms = GetDbSet(withdrawForms);
-                var mockPlayerLoginRecords = GetDbSet(playerLoginRecords);
-                var mockDailyStatistic = GetDbSet(dailyStatistic);
-                var mockPlayerBonusAggregates = GetDbSet(playerBonusAggregates);
-                var mockPlayerDailyPaymentStatistics = GetDbSet(playerDailyPaymentStatistics);
-                var mockPlayers = GetDbSet(players);
-                var dailyRegisterStatistics = GetDbSet(dailyRegisterStatistic);
+                var fakePlayerAggregates = fakePlayerAggregateDbSet.Initialize(playerAggregates);
+                var fakeWithdrawForms = fakeWithdrawFormDbSet.Initialize(withdrawForms);
+                var fakePlayerLoginRecords = fakePlayerLoginRecordDbSet.Initialize(playerLoginRecords);
+                var fakeDailyStatistic = fakeBrandDailyPaymentStatisticDbSet.Initialize(dailyStatistic);
+                var fakePlayerBonusAggregates = fakePlayerBonusAggregateDbSet.Initialize(playerBonusAggregates);
+                var fakePlayerDailyPaymentStatistics = fakePlayerDailyPaymentStatisticDbSet.Initialize(playerDailyPaymentStatistics);
+                var fakePlayers = fakePlayerDbSet.Initialize(players);
+                var fakeDailyRegisterStatistics = fakePlayerDailyRegisterStatisticDbSet.Initialize(dailyRegisterStatistic);
 
-                _ = fakeDbContext.WithdrawForms.Returns(mockWithdrawForms.Object);
-                _ = fakeDbContext.PlayerAggregates.Returns(mockPlayerAggregates.Object);
-                _ = fakeDbContext.PlayerLoginRecords.Returns(mockPlayerLoginRecords.Object);
-                _ = fakeDbContext.BrandDailyPaymentStatistics.Returns(mockDailyStatistic.Object);
-                _ = fakeDbContext.PlayerBonusAggregates.Returns(mockPlayerBonusAggregates.Object);
-                _ = fakeDbContext.PlayerDailyPaymentStatistics.Returns(mockPlayerDailyPaymentStatistics.Object);
-                _ = fakeDbContext.PlayerDailyRegisterStatistics.Returns(dailyRegisterStatistics.Object);
-                _ = fakeDbContext.Players.Returns(mockPlayers.Object);
+                _ = fakeDbContext.WithdrawForms.Returns(fakeWithdrawForms);
+                _ = fakeDbContext.PlayerAggregates.Returns(fakePlayerAggregates);
+                _ = fakeDbContext.PlayerLoginRecords.Returns(fakePlayerLoginRecords);
+                _ = fakeDbContext.BrandDailyPaymentStatistics.Returns(fakeDailyStatistic);
+                _ = fakeDbContext.PlayerBonusAggregates.Returns(fakePlayerBonusAggregates);
+                _ = fakeDbContext.PlayerDailyPaymentStatistics.Returns(fakePlayerDailyPaymentStatistics);
+                _ = fakeDbContext.PlayerDailyRegisterStatistics.Returns(fakeDailyRegisterStatistics);
+                _ = fakeDbContext.Players.Returns(fakePlayers);
 
                 _ = services.AddSingleton(fakeDbContext);
             }));
