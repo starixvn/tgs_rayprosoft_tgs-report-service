@@ -1,6 +1,8 @@
 ﻿using System.Collections.Concurrent;
 using System.Linq.Expressions;
 using System.Reflection;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.EntityFrameworkCore;
 using Tgs.Report.ViewModel;
 
@@ -52,6 +54,24 @@ public static class QueryableExtensions
             TotalCount = pagedResult.TotalCount,
             Items = pagedResult.Items
         };
+    }
+
+    public static IAsyncEnumerable<TModel> CreateResponseAsyncEnumerable<TModel>(this IQueryable<TModel>? query,
+        PageableRequest request)
+    {
+        if (query == null)
+        {
+            return (IAsyncEnumerable<TModel>)Enumerable.Empty<TModel>();
+        }
+
+        var result = request.SortBy == null ? query : query.OrderBy(request.GetSortOption());
+
+        if (request.ShowAll || request.Rows == 0)
+        {
+            return result!.ToAsyncEnumerable();
+        }
+
+        return result!.ToAsyncEnumerable(request.Page, request.Rows);
     }
 
     public static PagedResponse<TModel> CreatePagedResponse<TModel>(this IQueryable<TModel>? query,
@@ -116,6 +136,13 @@ public static class QueryableExtensions
         pageSize = pageSize <= 0 ? 10 : pageSize;
         var items = await query.Skip(page * pageSize).Take(pageSize).ToArrayAsync();
         return new(totalCount, items);
+    }
+
+    public static IAsyncEnumerable<T> ToAsyncEnumerable<T>(this IQueryable<T> query, int page, int pageSize)
+    {
+        page = page <= 0 ? 0 : page - 1;
+        pageSize = pageSize <= 0 ? 10 : pageSize;
+        return query.Skip(page * pageSize).Take(pageSize).ToAsyncEnumerable();
     }
 
     public static IQueryable<T>? OrderBy<T>(this IQueryable<T>? query, SortOption sortOption) =>

@@ -178,7 +178,7 @@ namespace Tgs.Report.Core.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 WITHDRAWAL AMOUNT  的當地語系化字串。
+        ///   查詢類似 WITHDRAWAL AMOUNT 的當地語系化字串。
         /// </summary>
         public static string WithdrawalAmount {
             get {

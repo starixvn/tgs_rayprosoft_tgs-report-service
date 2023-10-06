@@ -13,6 +13,7 @@ using Tgs.Report.ViewModel.AgentWinLoss;
 namespace Tgs.Report.UnitTest.AgentWinLoss;
 
 [TestFixture]
+[Parallelizable]
 public sealed class GetAgentWinLossQueryTest : BaseTest
 {
     [Test]

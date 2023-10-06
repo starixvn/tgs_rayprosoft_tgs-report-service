@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MockQueryable.Moq;
 using NSubstitute;
@@ -10,10 +11,11 @@ using Tgs.Report.Repository.Entities;
 
 namespace Tgs.Report.IntegrationTest;
 
-[TestClass]
-public class AgentDividendsTests : BaseTest
+[TestFixture]
+[Parallelizable]
+public class AgentDividendsTests
 {
-    [TestMethod]
+    [Test]
     public async Task Can_Get_Single_Agent_Dividends()
     {
         var brandId = Guid.NewGuid();
@@ -23,6 +25,11 @@ public class AgentDividendsTests : BaseTest
             .ConfigureServices(services =>
             {
                 var fakeDbContext = Substitute.For<TgsContext>();
+                var fakeAgentDbSet = Substitute.For<DbSet<Agent>, IQueryable<Agent>>();
+                var fakeAgentDividendDbSet = Substitute.For<DbSet<AgentDividend>, IQueryable<AgentDividend>>();
+                var fakePlayerDbSet = Substitute.For<DbSet<Player>, IQueryable<Player>>();
+                var fakeAgentDividendMultipleLayerDbSet = Substitute.For<DbSet<AgentDividendMultipleLayer>, IQueryable<AgentDividendMultipleLayer>>();
+                var fakePlayerDailyPaymentStatisticDbSet = Substitute.For<DbSet<PlayerDailyPaymentStatistic>, IQueryable<PlayerDailyPaymentStatistic>>();
 
                 var agentId = Guid.NewGuid();
 
@@ -32,32 +39,29 @@ public class AgentDividendsTests : BaseTest
                 var agents = new[]
                     {
                         agent1
-                    }.AsQueryable()
-                    .BuildMock();
+                    }.AsQueryable().BuildMock();
 
                 var agentDividends = CreateAgentDividendFixture(brandId, agentId).CreateMany<AgentDividend>(1)
-                    .AsQueryable()
-                    .BuildMock();
+                    .AsQueryable().BuildMock();
 
                 var agentDividendMultipleLayers = agentDividends.SelectMany(x => x.AgentDividendMultipleLayers);
 
                 var players = agents.SelectMany(x => x.Players);
 
                 var playerDailyPaymentStatistics =
-                    CreatePlayerDailyPaymentStatisticsFixture().CreateMany<PlayerDailyPaymentStatistic>(5).AsQueryable()
-                        .BuildMock();
+                    CreatePlayerDailyPaymentStatisticsFixture().CreateMany<PlayerDailyPaymentStatistic>(5).AsQueryable().BuildMock();
 
-                var mockAgents = GetDbSet(agents);
-                var mockAgentDividends = GetDbSet(agentDividends);
-                var mockPlayers = GetDbSet(players);
-                var mockAgentDividendMultipleLayers = GetDbSet(agentDividendMultipleLayers);
-                var mockPlayerDailyPaymentStatistics = GetDbSet(playerDailyPaymentStatistics);
+                var fakeAgents = fakeAgentDbSet.Initialize(agents);
+                var fakeAgentDividends = fakeAgentDividendDbSet.Initialize(agentDividends);
+                var fakePlayers = fakePlayerDbSet.Initialize(players);
+                var fakeAgentDividendMultipleLayers = fakeAgentDividendMultipleLayerDbSet.Initialize(agentDividendMultipleLayers);
+                var fakePlayerDailyPaymentStatistics = fakePlayerDailyPaymentStatisticDbSet.Initialize(playerDailyPaymentStatistics);
 
-                fakeDbContext.Agents.Returns(mockAgents.Object);
-                fakeDbContext.AgentDividends.Returns(mockAgentDividends.Object);
-                fakeDbContext.Players.Returns(mockPlayers.Object);
-                fakeDbContext.AgentDividendMultipleLayers.Returns(mockAgentDividendMultipleLayers.Object);
-                fakeDbContext.PlayerDailyPaymentStatistics.Returns(mockPlayerDailyPaymentStatistics.Object);
+                _ = fakeDbContext.Agents.Returns(fakeAgents);
+                _ = fakeDbContext.AgentDividends.Returns(fakeAgentDividends);
+                _ = fakeDbContext.Players.Returns(fakePlayers);
+                _ = fakeDbContext.AgentDividendMultipleLayers.Returns(fakeAgentDividendMultipleLayers);
+                _ = fakeDbContext.PlayerDailyPaymentStatistics.Returns(fakePlayerDailyPaymentStatistics);
 
                 _ = services.AddSingleton(fakeDbContext);
             }));
@@ -76,11 +80,11 @@ public class AgentDividendsTests : BaseTest
             Rows = 20
         });
 
-        Assert.IsNotNull(actual);
-        Assert.IsTrue(actual.Items.Length == 1);
+        Assert.That(actual, Is.Not.Null);
+        Assert.That(actual.Items, Has.Length.EqualTo(1));
     }
 
-    [TestMethod]
+    [Test]
     public async Task Can_Get_Sub_Agent_Dividends()
     {
         var brandId = Guid.NewGuid();
@@ -123,17 +127,23 @@ public class AgentDividendsTests : BaseTest
                     CreatePlayerDailyPaymentStatisticsFixture().CreateMany<PlayerDailyPaymentStatistic>(5).AsQueryable()
                         .BuildMock();
 
-                var mockAgents = GetDbSet(agents);
-                var mockAgentDividends = GetDbSet(agentDividends);
-                var mockPlayers = GetDbSet(players);
-                var mockAgentDividendMultipleLayers = GetDbSet(agentDividendMultipleLayers);
-                var mockPlayerDailyPaymentStatistics = GetDbSet(playerDailyPaymentStatistics);
+                var fakeAgentDbSet = Substitute.For<DbSet<Agent>, IQueryable<Agent>>();
+                var fakeAgentDividendDbSet = Substitute.For<DbSet<AgentDividend>, IQueryable<AgentDividend>>();
+                var fakePlayerDbSet = Substitute.For<DbSet<Player>, IQueryable<Player>>();
+                var fakeAgentDividendMultipleLayerDbSet = Substitute.For<DbSet<AgentDividendMultipleLayer>, IQueryable<AgentDividendMultipleLayer>>();
+                var fakePlayerDailyPaymentStatisticDbSet = Substitute.For<DbSet<PlayerDailyPaymentStatistic>, IQueryable<PlayerDailyPaymentStatistic>>();
 
-                fakeDbContext.Agents.Returns(mockAgents.Object);
-                fakeDbContext.AgentDividends.Returns(mockAgentDividends.Object);
-                fakeDbContext.Players.Returns(mockPlayers.Object);
-                fakeDbContext.AgentDividendMultipleLayers.Returns(mockAgentDividendMultipleLayers.Object);
-                fakeDbContext.PlayerDailyPaymentStatistics.Returns(mockPlayerDailyPaymentStatistics.Object);
+                var fakeAgents = fakeAgentDbSet.Initialize(agents);
+                var fakeAgentDividends = fakeAgentDividendDbSet.Initialize(agentDividends);
+                var fakePlayers = fakePlayerDbSet.Initialize(players);
+                var fakeAgentDividendMultipleLayers = fakeAgentDividendMultipleLayerDbSet.Initialize(agentDividendMultipleLayers);
+                var fakePlayerDailyPaymentStatistics = fakePlayerDailyPaymentStatisticDbSet.Initialize(playerDailyPaymentStatistics);
+
+                _ = fakeDbContext.Agents.Returns(fakeAgents);
+                _ = fakeDbContext.AgentDividends.Returns(fakeAgentDividends);
+                _ = fakeDbContext.Players.Returns(fakePlayers);
+                _ = fakeDbContext.AgentDividendMultipleLayers.Returns(fakeAgentDividendMultipleLayers);
+                _ = fakeDbContext.PlayerDailyPaymentStatistics.Returns(fakePlayerDailyPaymentStatistics);
 
                 _ = services.AddSingleton(fakeDbContext);
             }));
@@ -152,12 +162,12 @@ public class AgentDividendsTests : BaseTest
             Rows = 20
         });
 
-        Assert.IsNotNull(actual);
-        Assert.IsTrue(actual.Items.Length == 1);
-        Assert.IsTrue(actual.Items[0].Username == childAgentUsername);
+        Assert.That(actual, Is.Not.Null);
+        Assert.That(actual.Items, Has.Length.EqualTo(1));
+        Assert.That(actual.Items[0].Username, Is.EqualTo(childAgentUsername));
     }
 
-    [TestMethod]
+    [Test]
     public async Task Can_Get_Agent_Dividends()
     {
         var brandId = Guid.NewGuid();
@@ -204,17 +214,23 @@ public class AgentDividendsTests : BaseTest
                     CreatePlayerDailyPaymentStatisticsFixture().CreateMany<PlayerDailyPaymentStatistic>(5).AsQueryable()
                         .BuildMock();
 
-                var mockAgents = GetDbSet(agents);
-                var mockAgentDividends = GetDbSet(agentDividends);
-                var mockPlayers = GetDbSet(players);
-                var mockAgentDividendMultipleLayers = GetDbSet(agentDividendMultipleLayers);
-                var mockPlayerDailyPaymentStatistics = GetDbSet(playerDailyPaymentStatistics);
+                var fakeAgentDbSet = Substitute.For<DbSet<Agent>, IQueryable<Agent>>();
+                var fakeAgentDividendDbSet = Substitute.For<DbSet<AgentDividend>, IQueryable<AgentDividend>>();
+                var fakePlayerDbSet = Substitute.For<DbSet<Player>, IQueryable<Player>>();
+                var fakeAgentDividendMultipleLayerDbSet = Substitute.For<DbSet<AgentDividendMultipleLayer>, IQueryable<AgentDividendMultipleLayer>>();
+                var fakePlayerDailyPaymentStatisticDbSet = Substitute.For<DbSet<PlayerDailyPaymentStatistic>, IQueryable<PlayerDailyPaymentStatistic>>();
 
-                fakeDbContext.Agents.Returns(mockAgents.Object);
-                fakeDbContext.AgentDividends.Returns(mockAgentDividends.Object);
-                fakeDbContext.Players.Returns(mockPlayers.Object);
-                fakeDbContext.AgentDividendMultipleLayers.Returns(mockAgentDividendMultipleLayers.Object);
-                fakeDbContext.PlayerDailyPaymentStatistics.Returns(mockPlayerDailyPaymentStatistics.Object);
+                var fakeAgents = fakeAgentDbSet.Initialize(agents);
+                var fakeAgentDividends = fakeAgentDividendDbSet.Initialize(agentDividends);
+                var fakePlayers = fakePlayerDbSet.Initialize(players);
+                var fakeAgentDividendMultipleLayers = fakeAgentDividendMultipleLayerDbSet.Initialize(agentDividendMultipleLayers);
+                var fakePlayerDailyPaymentStatistics = fakePlayerDailyPaymentStatisticDbSet.Initialize(playerDailyPaymentStatistics);
+
+                _ = fakeDbContext.Agents.Returns(fakeAgents);
+                _ = fakeDbContext.AgentDividends.Returns(fakeAgentDividends);
+                _ = fakeDbContext.Players.Returns(fakePlayers);
+                _ = fakeDbContext.AgentDividendMultipleLayers.Returns(fakeAgentDividendMultipleLayers);
+                _ = fakeDbContext.PlayerDailyPaymentStatistics.Returns(fakePlayerDailyPaymentStatistics);
 
                 _ = services.AddSingleton(fakeDbContext);
             }));
@@ -233,8 +249,8 @@ public class AgentDividendsTests : BaseTest
             Rows = 20
         });
 
-        Assert.IsNotNull(actual);
-        Assert.IsTrue(actual.Items.Length == 2);
+        Assert.That(actual, Is.Not.Null);
+        Assert.That(actual.Items, Has.Length.EqualTo(2));
     }
 
     private static Fixture CreateAgentFixture(Guid brandId, Guid agentId, string username)

@@ -2,6 +2,7 @@
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Tgs.Report.Core.Models;
 using Tgs.Report.Enum;
 using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.Player;
@@ -15,7 +16,7 @@ public class PlayerFactory : IPlayerFactory
     public PlayerFactory(TgsContext context) => _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async ValueTask<(PlayerAccountChangeModel[], int)> GetPlayerAccountChangeAsync(
-        GetPlayerAccountChangesRequest request)
+        Models.GetPlayerAccountChangesQuery request)
     {
         const string spName = "select * from dbo.report_get_player_account_change_records(@_from,@_to,@_player_code,@_transaction_type,@_game_action_type,@_page_size,@_page_number)";
 
@@ -120,7 +121,7 @@ public class PlayerFactory : IPlayerFactory
     }
 
     public ValueTask<decimal> GetPlayerAccountChangeTotalAmountAsync(
-        GetPlayerAccountChangesTotalAmountRequest request)
+        Models.GetPlayerAccountChangesTotalAmountQuery request)
     {
         var transactionTypes = request.AccountChangeType switch
         {
@@ -321,4 +322,119 @@ public class PlayerFactory : IPlayerFactory
 
         return ValueTask.FromResult(totalAmount);
     }
+
+    public IQueryable<PlayerAllAgentRebateModel> GetPlayerAllAgentRebatesQueryable(
+        GetPlayerAllAgentRebatesQuery request)
+        => _context.PlayerAllAgentRebateContributors
+            .Where(x => x.BrandId == request.BrandId)
+            .Where(x => x.ReportDate >= request.From && x.ReportDate < request.To)
+            .GroupBy(x => new { x.ReportDate, x.PlayerCode })
+            .Select(x => new
+            {
+                x.Key.PlayerCode,
+                x.Key.ReportDate,
+                SentOn = x.Max(m => m.SentOn),
+                MaxActivePlayer = x.Count(),
+                ValidBet =
+                    x.Sum(s => s.SportsTurnover +
+                               s.VirtualSportsTurnover +
+                               s.LiveDealerTurnover +
+                               s.CardGameTurnover +
+                               s.SlotTurnover +
+                               s.LotteryTurnover),
+                Rebate = x.Sum(s =>
+                    s.SportsTurnoverRebate +
+                    s.VirtualSportsTurnoverRebate +
+                    s.LiveDealerTurnoverRebate +
+                    s.CardGameTurnoverRebate +
+                    s.SlotTurnoverRebate +
+                    s.LotteryTurnoverRebate)
+            })
+            .Join(_context.Players,
+                record => record.PlayerCode,
+                p => p.PlayerCode,
+                (a, b) => new
+                {
+                    a.ReportDate,
+                    a.PlayerCode,
+                    a.SentOn,
+                    a.MaxActivePlayer,
+                    a.ValidBet,
+                    a.Rebate,
+                    b.Username
+                })
+            .Where(request.Username, x => EF.Functions.ILike(x.Username, $"%{request.Username}%"))
+            .Select(x => new PlayerAllAgentRebateModel
+            {
+                Username = x.Username,
+                PlayerCode = x.PlayerCode,
+                ValidBet = x.ValidBet,
+                Rebate = x.Rebate,
+                MaxActivePlayerNumber = x.MaxActivePlayer,
+                SettleDateTime = x.ReportDate,
+                SentOn = x.SentOn!.Value
+            });
+
+    public IQueryable<PlayerAllAgentRebateDetailModel> GetPlayerAllAgentRebatesDetailQueryable(
+        GetPlayerAllAgentRebatesDetailQuery request)
+        => _context.PlayerAllAgentRebateContributors
+            .Where(x => x.BrandId == request.BrandId)
+            .Where(x => x.ReportDate == request.SettleDateTime)
+            .Join(_context.Players,
+                record => record.ChildPlayerCode,
+                p => p.PlayerCode,
+                (a, b) => new
+                {
+                    a.ReportDate,
+                    a.PlayerCode,
+                    a.SportsTurnover,
+                    a.VirtualSportsTurnover,
+                    a.LiveDealerTurnover,
+                    a.CardGameTurnover,
+                    a.SlotTurnover,
+                    a.LotteryTurnover,
+                    a.SportsTurnoverRebate,
+                    a.VirtualSportsTurnoverRebate,
+                    a.LiveDealerTurnoverRebate,
+                    a.CardGameTurnoverRebate,
+                    a.SlotTurnoverRebate,
+                    a.LotteryTurnoverRebate,
+                    b.Username
+                })
+            .Select(x => new PlayerAllAgentRebateDetailModel
+            {
+                Username = x.Username,
+                PlayerCode = x.PlayerCode,
+                SportsbookValidBet = x.SportsTurnover,
+                VirtualSportsValidBet = x.VirtualSportsTurnover,
+                LiveDealerValidBet = x.LiveDealerTurnover,
+                CardGameValidBet = x.CardGameTurnover,
+                SlotValidBet = x.SlotTurnover,
+                LotteryValidBet = x.LotteryTurnover,
+                SportsbookRebate = x.SportsTurnoverRebate,
+                VirtualSportsRebate = x.VirtualSportsTurnoverRebate,
+                LiveDealerRebate = x.LiveDealerTurnoverRebate,
+                CardGameRebate = x.CardGameTurnoverRebate,
+                SlotRebate = x.SlotTurnoverRebate,
+                LotteryRebate = x.LotteryTurnoverRebate,
+                RebateSubTotal = x.SportsTurnoverRebate +
+                                 x.VirtualSportsTurnoverRebate +
+                                 x.LiveDealerTurnoverRebate +
+                                 x.CardGameTurnoverRebate +
+                                 x.SlotTurnoverRebate +
+                                 x.LotteryTurnoverRebate
+            });
+
+    public IQueryable<PlayerAllAgentGameTypeModel> GetPlayerAllAgentGameTypesQueryable(
+        GetPlayerAllAgentGameTypesQuery request)
+        => _context.PlayerAllAgentRebateRecords.Where(x => x.BrandId == request.BrandId)
+            .Where(x => x.PlayerCode == request.PlayerCode)
+            .Where(x => x.ReportDate == request.SettleDateTime)
+            .Where(x => x.AllAgentRebateType == (int)AllAgentRebateType.ValidBet)
+            .Select(x => new PlayerAllAgentGameTypeModel
+            {
+                AllAgentGameType = (AllAgentGameType)x.AllAgentGameType,
+                ActivePlayerNumber = x.ActualPlayerNumber,
+                RebatePercentage = x.RebatePercentage
+            });
 }

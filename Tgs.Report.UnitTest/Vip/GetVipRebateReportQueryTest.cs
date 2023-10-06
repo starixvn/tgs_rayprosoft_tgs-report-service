@@ -12,6 +12,7 @@ using Tgs.Report.ViewModel.Vip;
 namespace Tgs.Report.UnitTest.Vip;
 
 [TestFixture]
+[Parallelizable]
 public sealed class GetVipRebateReportQueryTest : BaseTest
 {
     [Test]

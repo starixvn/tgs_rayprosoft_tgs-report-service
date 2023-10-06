@@ -12,6 +12,7 @@ using Tgs.Report.ViewModel.Market;
 namespace Tgs.Report.UnitTest.Market;
 
 [TestFixture]
+[Parallelizable]
 public sealed class GetAdditionalExpensesQueryTest : BaseTest
 {
     [Test]

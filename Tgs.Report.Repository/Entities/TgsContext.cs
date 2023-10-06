@@ -14,6 +14,7 @@ public partial class TgsContext : DbContext
         : base(options)
     {
     }
+
     public TgsContext()
     {
     }
@@ -69,6 +70,10 @@ public partial class TgsContext : DbContext
     public virtual DbSet<Player> Players { get; set; }
 
     public virtual DbSet<PlayerAggregate> PlayerAggregates { get; set; }
+
+    public virtual DbSet<PlayerAllAgentRebateContributor> PlayerAllAgentRebateContributors { get; set; }
+
+    public virtual DbSet<PlayerAllAgentRebateRecord> PlayerAllAgentRebateRecords { get; set; }
 
     public virtual DbSet<PlayerBonusAggregate> PlayerBonusAggregates { get; set; }
 
@@ -145,6 +150,8 @@ public partial class TgsContext : DbContext
             modelBuilder.ApplyConfiguration(new Configurations.LicenseeConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.PlayerConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.PlayerAggregateConfiguration());
+            modelBuilder.ApplyConfiguration(new Configurations.PlayerAllAgentRebateContributorConfiguration());
+            modelBuilder.ApplyConfiguration(new Configurations.PlayerAllAgentRebateRecordConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.PlayerBonusAggregateConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.PlayerBucketConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.PlayerBucketHistoryConfiguration());

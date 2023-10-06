@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using MockQueryable.Moq;
 using NSubstitute;
 using NUnit.Framework;
@@ -13,6 +11,8 @@ using Tgs.Report.ViewModel.Round;
 
 namespace Tgs.Report.UnitTest.Round;
 
+[TestFixture]
+[Parallelizable]
 internal class GetRoundsTotalQueryTest : BaseTest
 {
     [Test]

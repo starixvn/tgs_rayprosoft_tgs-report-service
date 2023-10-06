@@ -12,6 +12,7 @@ using Tgs.Report.ViewModel.LicenseeMarket;
 namespace Tgs.Report.UnitTest.LicenseeMarket;
 
 [TestFixture]
+[Parallelizable]
 public sealed class GetLicenseeMarketsQueryTest : BaseTest
 {
     [Test]

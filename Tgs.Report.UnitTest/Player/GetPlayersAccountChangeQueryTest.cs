@@ -14,6 +14,7 @@ using Tgs.Report.ViewModel.Player;
 namespace Tgs.Report.UnitTest.Player;
 
 [TestFixture]
+[Parallelizable]
 public sealed class GetPlayersAccountChangeQueryTest : BaseTest
 {
     [Test]

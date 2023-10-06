@@ -71,7 +71,7 @@ public partial class PlayerAggregate
 
     public decimal? AgentDividendPercentage { get; set; }
 
-    public AgentDividendPercentage[]? AgentDividendPercentageTreeData { get; set; }
+    public string? AgentDividendPercentageTreeData { get; set; }
 
     public decimal? ChiefAgentDividendPercentage { get; set; }
 

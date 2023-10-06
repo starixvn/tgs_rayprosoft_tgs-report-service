@@ -14,6 +14,7 @@ using Tgs.Report.ViewModel.Round;
 namespace Tgs.Report.UnitTest.Round;
 
 [TestFixture]
+[Parallelizable]
 public sealed class GetBetRecordsQueryTest
 {
     [Test]
