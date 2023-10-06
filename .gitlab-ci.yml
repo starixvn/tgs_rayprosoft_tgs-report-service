@@ -122,10 +122,6 @@ deploy-dev:
       artifacts: true
   only:
     - main
-  script:
-    - !reference [.deploy-template, script]
-    - kubectl -n $namespace apply -f artifacts/k8s/daily_settlement_cronjob.yaml
-    - kubectl -n $namespace apply -f artifacts/k8s/distribute_cronjob.yaml
 
 deploy-staging:
   extends: .deploy-template
@@ -142,10 +138,6 @@ deploy-staging:
   only:
     - main
   when: manual
-  script:
-    - !reference [.deploy-template, script]
-    - kubectl -n $namespace apply -f artifacts/k8s/daily_settlement_cronjob.yaml
-    - kubectl -n $namespace apply -f artifacts/k8s/distribute_cronjob.yaml
 
 deploy-prod:
   extends: .deploy-template
@@ -162,7 +154,3 @@ deploy-prod:
   only:
     - main
   when: manual
-  script:
-    - !reference [.deploy-template, script]
-    - kubectl -n $namespace apply -f artifacts/k8s/daily_settlement_cronjob.yaml
-    - kubectl -n $namespace apply -f artifacts/k8s/distribute_cronjob.yaml
