@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using MockQueryable.Moq;
 using NSubstitute;
 using NUnit.Framework;
@@ -14,6 +12,7 @@ using Tgs.Report.ViewModel.Round;
 namespace Tgs.Report.UnitTest.Round;
 
 [TestFixture]
+[Parallelizable]
 public class GetAgentPlayerRoundsQueryTest : BaseTest
 {
     [Test]

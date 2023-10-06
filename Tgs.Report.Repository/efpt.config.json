@@ -13,6 +13,7 @@
    "Schemas": null,
    "SelectedHandlebarsLanguage": 0,
    "SelectedToBeGenerated": 0,
+   "T4TemplatePath": null,
    "Tables": [
       {
          "Name": "bet.game_actions",
@@ -100,6 +101,14 @@
       },
       {
          "Name": "dbo.licensees",
+         "ObjectType": 0
+      },
+      {
+         "Name": "dbo.player_all_agent_rebate_contributors",
+         "ObjectType": 0
+      },
+      {
+         "Name": "dbo.player_all_agent_rebate_records",
          "ObjectType": 0
       },
       {
@@ -220,6 +229,7 @@
    "UseNodaTime": false,
    "UseNullableReferences": true,
    "UseSchemaFolders": true,
+   "UseSchemaNamespaces": false,
    "UseSpatial": true,
    "UseT4": false
 }

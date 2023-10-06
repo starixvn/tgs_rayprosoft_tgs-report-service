@@ -12,6 +12,8 @@ using Tgs.Report.ViewModel.ResellerMarket;
 
 namespace Tgs.Report.UnitTest.ResellerMarket;
 
+[TestFixture]
+[Parallelizable]
 public sealed class GetResellerMarketsQueryTest : BaseTest
 {
     [Test]

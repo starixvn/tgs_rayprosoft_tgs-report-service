@@ -12,6 +12,7 @@ using Tgs.Report.ViewModel.Agent;
 namespace Tgs.Report.UnitTest.Agent;
 
 [TestFixture]
+[Parallelizable]
 public sealed class GetAgentDividendDetailQueryTest : BaseTest
 {
     [Test]

@@ -24,4 +24,10 @@ public partial class BrandDailyPaymentStatistic
     public decimal? DailyWithdrawAmount { get; set; }
 
     public decimal? DailyWithdrawHandlingFee { get; set; }
+
+    public int? DailyDepositApprovedCount { get; set; }
+
+    public int? DailyDepositRejectCount { get; set; }
+
+    public int? DailyDepositTotalCount { get; set; }
 }

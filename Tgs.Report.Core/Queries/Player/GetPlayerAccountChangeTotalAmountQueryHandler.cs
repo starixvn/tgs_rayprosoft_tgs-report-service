@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Tgs.Report.Core.Models;
 using Tgs.Report.ViewModel.Player;
 
 namespace Tgs.Report.Core.Queries.Player;
@@ -15,6 +16,13 @@ public class GetPlayerAccountChangeTotalAmountQueryHandler :
         GetPlayerAccountChangesTotalAmountRequest request,
         CancellationToken cancellationToken)
         => await _playerFactory
-            .GetPlayerAccountChangeTotalAmountAsync(request)
+            .GetPlayerAccountChangeTotalAmountAsync(new GetPlayerAccountChangesTotalAmountQuery
+            {
+                BrandId = request.BrandId,
+                PlayerCode = request.PlayerCode,
+                AccountChangeType = request.AccountChangeType,
+                From = request.From,
+                To = request.To
+            })
             .ConfigureAwait(false);
 }

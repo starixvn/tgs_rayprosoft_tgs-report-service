@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
 using MockQueryable.Moq;
 using NSubstitute;
@@ -12,10 +11,11 @@ using Tgs.Report.Repository.Entities;
 
 namespace Tgs.Report.IntegrationTest;
 
-[TestClass]
-public class RoundTests : BaseTest
+[TestFixture]
+[Parallelizable]
+public class RoundTests
 {
-    [TestMethod]
+    [Test]
     public async Task Can_Get_Bet_Records()
     {
         var brandId = Guid.NewGuid();
@@ -65,12 +65,12 @@ public class RoundTests : BaseTest
                     .AsQueryable()
                     .BuildMock();
 
-                fakeRoundService.GetQueries().Returns(rounds);
-                fakeGameService.GetQueries().Returns(games);
-                fakeRoundDetailService.GetQueries().Returns(roundDetails);
-                fakePlayerService.GetQueries().Returns(players);
-                fakeBrandGameService.GetQueries().Returns(brandGames);
-                fakeGameProviderService.GetQueries().Returns(gameProviders);
+                _ = fakeRoundService.GetQueries().Returns(rounds);
+                _ = fakeGameService.GetQueries().Returns(games);
+                _ = fakeRoundDetailService.GetQueries().Returns(roundDetails);
+                _ = fakePlayerService.GetQueries().Returns(players);
+                _ = fakeBrandGameService.GetQueries().Returns(brandGames);
+                _ = fakeGameProviderService.GetQueries().Returns(gameProviders);
 
                 _ = services.AddSingleton(fakeDbContext);
                 _ = services.AddTransient(x => fakeRoundService);

@@ -14,6 +14,7 @@ using Tgs.Report.ViewModel.Agent;
 namespace Tgs.Report.UnitTest.Agent;
 
 [TestFixture]
+[Parallelizable]
 public sealed class GetAgentContributionsQueryTest : BaseTest
 {
     [Test]
