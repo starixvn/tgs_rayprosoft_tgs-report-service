@@ -14,13 +14,6 @@ imagePullSecrets:
   - name: dockerhub
 nameOverride: "report-api"
 fullnameOverride: "report-api"
-
-connectionStrings:
-  tgs: Server=localhost;Database=tgs;User Id=tgs;Password=1qaz2wsx!@
-  redis: localhost,abortConnect=false,connectTimeout=3000
-
-nats:
-  urls: nats://nats-client:4222
   
 podAnnotations: {}
 

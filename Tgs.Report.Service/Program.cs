@@ -111,7 +111,7 @@ builder.Services
             {
                 var config = sp.GetRequiredService<IConfiguration>();
 
-                options.Url = config.GetValue<string>("NatsSetting:Urls")!;
+                options.Url = config.GetConnectionString("Nats")!;
             });
     })
     .ClearAllExchanges()
