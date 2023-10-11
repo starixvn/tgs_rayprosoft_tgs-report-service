@@ -6,12 +6,6 @@ metadata:
 data:
   appsettings.json: |
     {
-      "ConnectionStrings": {
-        "RedisConfigurationString": "{{ .Values.connectionStrings.redis }}"
-      },
-      "NatsSetting": {
-        "Urls": "{{ .Values.nats.urls }}"
-      },
       "Report": {
         "GameProvidersPluggableBaseUrl": "http://game-pluggable-service"
       }
