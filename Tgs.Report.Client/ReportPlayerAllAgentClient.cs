@@ -47,9 +47,9 @@ public class ReportPlayerAllAgentClient : IReportPlayerAllAgentClient
             _jsonSerializerOptions)!;
     }
 
-    public async IAsyncEnumerable<PlayerAllAgentGameTypeModel> GetPlayerAllAgentGameTypesAsync(GetPlayerAllAgentGameTypesRequest request)
+    public async IAsyncEnumerable<PlayerAllAgentRebateDetailGameTypeModel> GetPlayerAllAgentRebateDetailGameTypesAsync(GetPlayerAllAgentRebateDetailGameTypesRequest request)
     {
-        var path = ClientPath.AppendWithProperties("/api/playerReport/player-all-agent-game-types?", request);
+        var path = ClientPath.AppendWithProperties("/api/playerReport/player-all-agent-rebate-detail-game-types?", request);
 
         var response = await _client.GetAsync(path, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
@@ -57,7 +57,7 @@ public class ReportPlayerAllAgentClient : IReportPlayerAllAgentClient
 
         var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
-        var playerAllGameTypes = JsonSerializer.DeserializeAsyncEnumerable<PlayerAllAgentGameTypeModel>(
+        var playerAllGameTypes = JsonSerializer.DeserializeAsyncEnumerable<PlayerAllAgentRebateDetailGameTypeModel>(
             responseStream,
             _jsonSerializerOptions);
 

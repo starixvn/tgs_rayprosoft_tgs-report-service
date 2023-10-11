@@ -11,8 +11,8 @@ public interface IPlayerFactory
 
     IQueryable<PlayerAllAgentRebateModel> GetPlayerAllAgentRebatesQueryable(GetPlayerAllAgentRebatesQuery request);
 
-    IQueryable<PlayerAllAgentRebateDetailModel> GetPlayerAllAgentRebatesDetailQueryable(GetPlayerAllAgentRebatesDetailQuery request);
+    IQueryable<PlayerAllAgentRebateDetailModel> GetPlayerAllAgentRebateDetailsQueryable(GetPlayerAllAgentRebatesDetailQuery request);
 
-    IQueryable<PlayerAllAgentGameTypeModel> GetPlayerAllAgentGameTypesQueryable(GetPlayerAllAgentGameTypesQuery request);
+    IQueryable<PlayerAllAgentRebateDetailGameTypeModel> GetPlayerAllAgentRebateDetailGameTypesQueryable(GetPlayerAllAgentRebateDetailGameTypesQuery request);
 
 }

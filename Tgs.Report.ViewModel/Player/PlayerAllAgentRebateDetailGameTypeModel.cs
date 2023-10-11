@@ -1,8 +1,8 @@
-﻿using Tgs.Report.Client.Enum;
+﻿using Tgs.Report.Enum;
 
-namespace Tgs.Report.Client.Models.Player
+namespace Tgs.Report.ViewModel.Player
 {
-    public class PlayerAllAgentGameTypeModel
+    public class PlayerAllAgentRebateDetailGameTypeModel
     {
         public AllAgentGameType AllAgentGameType { get; set; }
         public int ActivePlayerNumber { get; set; }

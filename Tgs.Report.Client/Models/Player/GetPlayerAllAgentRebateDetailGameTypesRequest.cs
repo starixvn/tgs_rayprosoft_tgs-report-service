@@ -1,6 +1,6 @@
 ﻿namespace Tgs.Report.Client.Models.Player
 {
-    public record GetPlayerAllAgentGameTypesRequest : PageableRequest
+    public record GetPlayerAllAgentRebateDetailGameTypesRequest
     {
         public Guid BrandId { get; set; }
         public string PlayerCode { get; set; } = string.Empty;

@@ -375,7 +375,7 @@ public class PlayerFactory : IPlayerFactory
                 SentOn = x.SentOn!.Value
             });
 
-    public IQueryable<PlayerAllAgentRebateDetailModel> GetPlayerAllAgentRebatesDetailQueryable(
+    public IQueryable<PlayerAllAgentRebateDetailModel> GetPlayerAllAgentRebateDetailsQueryable(
         GetPlayerAllAgentRebatesDetailQuery request)
         => _context.PlayerAllAgentRebateContributors
             .Where(x => x.BrandId == request.BrandId)
@@ -425,13 +425,13 @@ public class PlayerFactory : IPlayerFactory
                                  x.LotteryTurnoverRebate
             });
 
-    public IQueryable<PlayerAllAgentGameTypeModel> GetPlayerAllAgentGameTypesQueryable(
-        GetPlayerAllAgentGameTypesQuery request)
+    public IQueryable<PlayerAllAgentRebateDetailGameTypeModel> GetPlayerAllAgentRebateDetailGameTypesQueryable(
+        GetPlayerAllAgentRebateDetailGameTypesQuery request)
         => _context.PlayerAllAgentRebateRecords.Where(x => x.BrandId == request.BrandId)
             .Where(x => x.PlayerCode == request.PlayerCode)
             .Where(x => x.ReportDate == request.SettleDateTime)
             .Where(x => x.AllAgentRebateType == (int)AllAgentRebateType.ValidBet)
-            .Select(x => new PlayerAllAgentGameTypeModel
+            .Select(x => new PlayerAllAgentRebateDetailGameTypeModel
             {
                 AllAgentGameType = (AllAgentGameType)x.AllAgentGameType,
                 ActivePlayerNumber = x.ActualPlayerNumber,
