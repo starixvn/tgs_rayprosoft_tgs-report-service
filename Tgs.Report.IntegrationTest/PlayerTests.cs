@@ -7,13 +7,12 @@ using Microsoft.Extensions.DependencyInjection;
 using MockQueryable.Moq;
 using NSubstitute;
 using Tgs.Report.Client;
+using Tgs.Report.Client.Models.Player;
 using Tgs.Report.Core;
 using Tgs.Report.Core.Models;
 using Tgs.Report.Repository.Entities;
-using Tgs.Report.ViewModel.Player;
-using GetPlayerAllAgentRebatesRequest = Tgs.Report.Client.Models.Player.GetPlayerAllAgentRebatesRequest;
-using GetPlayerAllAgentRebateTotalAmountRequest =
-    Tgs.Report.Client.Models.Player.GetPlayerAllAgentRebateTotalAmountRequest;
+using PlayerAllAgentRebateDetailModel = Tgs.Report.ViewModel.Player.PlayerAllAgentRebateDetailModel;
+using PlayerAllAgentRebateModel = Tgs.Report.ViewModel.Player.PlayerAllAgentRebateModel;
 
 namespace Tgs.Report.IntegrationTest;
 
@@ -112,6 +111,81 @@ public class PlayerTests
 
         Assert.That(actual, Is.Not.Null);
         Assert.That(actual, Has.Length.EqualTo(10));
+    }
+
+    [Test]
+    public async Task Can_Get_Player_All_Agent_Rebate_Detail_Game_Types()
+    {
+        var fakePlayerFactory = Substitute.For<IPlayerFactory>();
+
+        var brandId = Guid.NewGuid();
+        var createdOn = new DateTimeOffset(2022, 1, 21, 0, 0, 0, new TimeSpan(8, 0, 0));
+
+        var fixture = new Fixture();
+
+        var playerAllAgentRebateDetailGameTypes = fixture.CreateMany<ViewModel.Player.PlayerAllAgentRebateDetailGameTypeModel>(6).ToArray();
+
+        _ = fakePlayerFactory.GetPlayerAllAgentRebateDetailGameTypesQueryable(Arg.Any<GetPlayerAllAgentRebateDetailGameTypesQuery>())
+            .Returns(playerAllAgentRebateDetailGameTypes.AsQueryable());
+
+        await using var web = new TestReportApplication(builder => builder
+            .ConfigureServices(services =>
+            {
+                _ = services.AddSingleton(fakePlayerFactory);
+            }));
+
+        var httpClient = web.CreateClient();
+
+        var sut = new ReportPlayerAllAgentClient(httpClient);
+
+        var actual = await sut.GetPlayerAllAgentRebateDetailGameTypesAsync(new GetPlayerAllAgentRebateDetailGameTypesRequest
+            {
+                BrandId = brandId,
+                PlayerCode = "playerCode",
+                SettleDateTime = createdOn.UtcDateTime
+            })
+            .ToArrayAsync();
+
+        Assert.That(actual, Is.Not.Null);
+        Assert.That(actual, Has.Length.EqualTo(6));
+    }
+
+
+    [Test]
+    public async Task Can_Get_Player_All_Agent_Rebate_Detail()
+    {
+        var fakePlayerFactory = Substitute.For<IPlayerFactory>();
+
+        var brandId = Guid.NewGuid();
+        var createdOn = new DateTimeOffset(2022, 1, 21, 0, 0, 0, new TimeSpan(8, 0, 0));
+
+        var fixture = new Fixture();
+
+        var playerAllAgentRebateDetails = fixture.CreateMany<PlayerAllAgentRebateDetailModel>(20).ToArray();
+
+        _ = fakePlayerFactory.GetPlayerAllAgentRebateDetailsQueryable(Arg.Any<GetPlayerAllAgentRebatesDetailQuery>())
+            .Returns(playerAllAgentRebateDetails.AsQueryable());
+
+        await using var web = new TestReportApplication(builder => builder
+            .ConfigureServices(services =>
+            {
+                _ = services.AddSingleton(fakePlayerFactory);
+            }));
+
+        var httpClient = web.CreateClient();
+
+        var sut = new ReportPlayerAllAgentClient(httpClient);
+
+        var actual = await sut.GetPlayerAllAgentRebateDetailAsync(new GetPlayerAllAgentRebatesDetailsRequest
+            {
+                BrandId = brandId,
+                PlayerCode = "playerCode",
+                SettleDateTime = createdOn.UtcDateTime
+            })
+            .ToArrayAsync();
+
+        Assert.That(actual, Is.Not.Null);
+        Assert.That(actual, Has.Length.EqualTo(20));
     }
 
     [Test]

@@ -63,15 +63,15 @@ public class PlayerReportController : ControllerBase
         [FromQuery] GetPlayerAllAgentRebateTotalAmountRequest request)
         => _mediator.Send(request);
 
-    [HttpGet("player-all-agent-game-types", Name = "GetPlayerAllAgentGameTypes")]
-    [Description("Get player all agent game types")]
-    public IAsyncEnumerable<PlayerAllAgentGameTypeModel> GetPlayerAllAgentGameTypesAsync(
-        [FromQuery] GetPlayerAllAgentGameTypesRequest request)
+    [HttpGet("player-all-agent-rebate-detail-game-types", Name = "GetPlayerAllAgentRebateDetailGameTypes")]
+    [Description("Get player all agent rebate detail game types")]
+    public IAsyncEnumerable<PlayerAllAgentRebateDetailGameTypeModel> GetPlayerAllAgentRebateDetailGameTypesAsync(
+        [FromQuery] GetPlayerAllAgentRebateDetailGameTypesRequest request)
         => _mediator.CreateStream(request);
 
     [HttpGet("player-all-agent-rebate-details", Name = "GetPlayerAllAgentRebateDetails")]
     [Description("Get player all agent rebate details")]
     public IAsyncEnumerable<PlayerAllAgentRebateDetailModel> GetPlayerAllAgentRebateDetailsAsync(
-        [FromQuery] GetPlayerAllAgentRebatesDetailsRequest request)
+        [FromQuery] GetPlayerAllAgentRebateDetailsRequest request)
         => _mediator.CreateStream(request);
 }
