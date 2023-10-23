@@ -70,7 +70,7 @@ public class PlayerTests
         var username = "";
         var createdOn = new DateTimeOffset(2022, 1, 21, 0, 0, 0, new TimeSpan(8, 0, 0));
 
-        var playerAllAgentRebates = CreatePlayerAllAgentRebateContributorFixture(brandId, createdOn)
+        var playerAllAgentRebates = CreatePlayerAllAgentRebateContributorFixture(brandId, createdOn, 10.0032M)
             .CreateMany<PlayerAllAgentRebateContributor>(10).ToArray();
 
         var players = playerAllAgentRebates.Select(x => x.PlayerCode)
@@ -111,6 +111,19 @@ public class PlayerTests
 
         Assert.That(actual, Is.Not.Null);
         Assert.That(actual, Has.Length.EqualTo(10));
+
+        foreach (var playerAllAgentRebateModel in actual)
+        {
+            var playerRebate = playerAllAgentRebates.Where(x => x.PlayerCode == playerAllAgentRebateModel.PlayerCode)
+                .Sum(s => s.SportsTurnoverRebate +
+                          s.VirtualSportsTurnoverRebate +
+                          s.LiveDealerTurnoverRebate +
+                          s.CardGameTurnoverRebate +
+                          s.SlotTurnoverRebate +
+                          s.LotteryTurnoverRebate).Truncate(2);
+
+            Assert.That(playerAllAgentRebateModel.Rebate, Is.EqualTo(playerRebate));
+        }
     }
 
     [Test]
@@ -229,13 +242,14 @@ public class PlayerTests
         });
     }
 
-    private static Fixture CreatePlayerAllAgentRebateContributorFixture(Guid brandId, DateTimeOffset reportDate)
+    private static Fixture CreatePlayerAllAgentRebateContributorFixture(Guid brandId, DateTimeOffset reportDate, decimal sportsTurnoverRebate)
     {
         var fixture = new Fixture();
 
         fixture.Customize<PlayerAllAgentRebateContributor>(u => u
             .With(s => s.BrandId, brandId)
-            .With(s => s.ReportDate, reportDate));
+            .With(s => s.ReportDate, reportDate)
+            .With(s => s.SportsTurnoverRebate, sportsTurnoverRebate));
 
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
