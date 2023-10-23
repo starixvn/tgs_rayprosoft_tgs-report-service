@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using Dapper;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Tgs.Report.Core.Models;
@@ -328,34 +329,27 @@ public class PlayerFactory : IPlayerFactory
         => _context.PlayerAllAgentRebateContributors
             .Where(x => x.BrandId == request.BrandId)
             .Where(x => x.ReportDate >= request.From && x.ReportDate < request.To)
-            .Select(x => new
-            {
-                x.BrandId, 
-                x.ReportDate,
-                x.PlayerCode,
-                x.SentOn,
-                ValidBet = x.SportsTurnover +
-                             x.VirtualSportsTurnover +
-                             x.LiveDealerTurnover +
-                             x.CardGameTurnover +
-                             x.SlotTurnover +
-                             x.LotteryTurnover,
-                Rebate = (x.SportsTurnoverRebate +
-                         x.VirtualSportsTurnoverRebate +
-                         x.LiveDealerTurnoverRebate +
-                         x.CardGameTurnoverRebate +
-                         x.SlotTurnoverRebate +
-                         x.LotteryTurnoverRebate).Truncate(2)
-            })
-            .GroupBy(x => new { x.ReportDate, x.PlayerCode, x.ValidBet, x.Rebate })
+            .GroupBy(x => new { x.ReportDate, x.PlayerCode })
             .Select(x => new
             {
                 x.Key.PlayerCode,
                 x.Key.ReportDate,
                 SentOn = x.Max(m => m.SentOn),
                 MaxActivePlayer = x.Count(),
-                x.Key.ValidBet,
-                x.Key.Rebate
+                ValidBet =
+                    x.Sum(s => s.SportsTurnover +
+                               s.VirtualSportsTurnover +
+                               s.LiveDealerTurnover +
+                               s.CardGameTurnover +
+                               s.SlotTurnover +
+                               s.LotteryTurnover),
+                Rebate = x.Sum(s =>
+                    Math.Truncate((s.SportsTurnoverRebate +
+                         s.VirtualSportsTurnoverRebate +
+                         s.LiveDealerTurnoverRebate +
+                         s.CardGameTurnoverRebate +
+                         s.SlotTurnoverRebate +
+                         s.LotteryTurnoverRebate) * (decimal)Math.Pow(10, 2)) / (decimal)Math.Pow(10, 2))
             })
             .Join(_context.Players,
                 record => record.PlayerCode,
