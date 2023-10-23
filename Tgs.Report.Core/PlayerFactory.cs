@@ -348,7 +348,7 @@ public class PlayerFactory : IPlayerFactory
                     s.LiveDealerTurnoverRebate +
                     s.CardGameTurnoverRebate +
                     s.SlotTurnoverRebate +
-                    s.LotteryTurnoverRebate)
+                    s.LotteryTurnoverRebate).Truncate(2)
             })
             .Join(_context.Players,
                 record => record.PlayerCode,
@@ -369,7 +369,7 @@ public class PlayerFactory : IPlayerFactory
                 Username = x.Username,
                 PlayerCode = x.PlayerCode,
                 ValidBet = x.ValidBet,
-                Rebate = x.Rebate.Truncate(2),
+                Rebate = x.Rebate,
                 MaxActivePlayerNumber = x.MaxActivePlayer,
                 SettleDateTime = x.ReportDate,
                 SentOn = x.SentOn!.Value
