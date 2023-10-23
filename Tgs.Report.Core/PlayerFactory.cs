@@ -369,7 +369,7 @@ public class PlayerFactory : IPlayerFactory
                 Username = x.Username,
                 PlayerCode = x.PlayerCode,
                 ValidBet = x.ValidBet,
-                Rebate = x.Rebate,
+                Rebate = x.Rebate.Truncate(2),
                 MaxActivePlayerNumber = x.MaxActivePlayer,
                 SettleDateTime = x.ReportDate,
                 SentOn = x.SentOn!.Value
