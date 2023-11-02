@@ -22,6 +22,4 @@ public partial class PlayerBucket
     public decimal CurrentBucketAmount { get; set; }
 
     public Guid? SnapshotId { get; set; }
-
-    public virtual Player PlayerCodeNavigation { get; set; } = null!;
 }

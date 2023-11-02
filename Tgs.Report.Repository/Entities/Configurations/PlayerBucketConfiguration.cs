@@ -33,14 +33,9 @@ namespace Tgs.Report.Repository.Entities.Configurations
             .HasColumnName("current_bucket_amount");
             entity.Property(e => e.IsFull).HasColumnName("is_full");
             entity.Property(e => e.PlayerCode)
-            .HasMaxLength(16)
             .HasDefaultValueSql("''::character varying")
             .HasColumnName("player_code");
             entity.Property(e => e.SnapshotId).HasColumnName("snapshot_id");
-
-            entity.HasOne(d => d.PlayerCodeNavigation).WithMany(p => p.PlayerBuckets)
-            .HasForeignKey(d => d.PlayerCode)
-            .HasConstraintName("fk_player_buckets_players_player_code");
 
             OnConfigurePartial(entity);
         }

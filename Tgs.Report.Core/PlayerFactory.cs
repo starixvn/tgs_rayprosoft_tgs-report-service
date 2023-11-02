@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Linq;
 using Dapper;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using Microsoft.EntityFrameworkCore;
@@ -328,12 +329,13 @@ public class PlayerFactory : IPlayerFactory
         GetPlayerAllAgentRebatesQuery request)
         => _context.PlayerAllAgentRebateContributors
             .Where(x => x.BrandId == request.BrandId)
-            .Where(x => x.ReportDate >= request.From && x.ReportDate < request.To)
-            .GroupBy(x => new { x.ReportDate, x.PlayerCode })
+            .Where(x => x.SettleDate >= request.From && x.SettleDate < request.To)
+            .GroupBy(x => new { x.From, x.To, x.PlayerCode })
             .Select(x => new
             {
                 x.Key.PlayerCode,
-                x.Key.ReportDate,
+                x.Key.From,
+                x.Key.To,
                 SentOn = x.Max(m => m.SentOn),
                 MaxActivePlayer = x.Count(),
                 ValidBet =
@@ -351,12 +353,14 @@ public class PlayerFactory : IPlayerFactory
                          s.SlotTurnoverRebate +
                          s.LotteryTurnoverRebate) * (decimal)Math.Pow(10, 2)) / (decimal)Math.Pow(10, 2))
             })
+            .Where(x => x.ValidBet > 0)
             .Join(_context.Players,
                 record => record.PlayerCode,
                 p => p.PlayerCode,
                 (a, b) => new
                 {
-                    a.ReportDate,
+                    a.From,
+                    a.To,
                     a.PlayerCode,
                     a.SentOn,
                     a.MaxActivePlayer,
@@ -372,7 +376,7 @@ public class PlayerFactory : IPlayerFactory
                 ValidBet = x.ValidBet,
                 Rebate = x.Rebate,
                 MaxActivePlayerNumber = x.MaxActivePlayer,
-                SettleDateTime = x.ReportDate,
+                SettleDateTime = x.To.AddDays(1),
                 SentOn = x.SentOn!.Value
             });
 
@@ -380,13 +384,14 @@ public class PlayerFactory : IPlayerFactory
         GetPlayerAllAgentRebatesDetailQuery request)
         => _context.PlayerAllAgentRebateContributors
             .Where(x => x.BrandId == request.BrandId)
-            .Where(x => x.ReportDate == request.SettleDateTime)
+            .Where(x => x.SettleDate == request.SettleDateTime)
+            .Where(x => x.PlayerCode == request.PlayerCode)
             .Join(_context.Players,
                 record => record.ChildPlayerCode,
                 p => p.PlayerCode,
                 (a, b) => new
                 {
-                    a.ReportDate,
+                    a.SettleDate,
                     a.PlayerCode,
                     a.SportsTurnover,
                     a.VirtualSportsTurnover,
@@ -430,7 +435,7 @@ public class PlayerFactory : IPlayerFactory
         GetPlayerAllAgentRebateDetailGameTypesQuery request)
         => _context.PlayerAllAgentRebateRecords.Where(x => x.BrandId == request.BrandId)
             .Where(x => x.PlayerCode == request.PlayerCode)
-            .Where(x => x.ReportDate == request.SettleDateTime)
+            .Where(x => x.SettleDate == request.SettleDateTime)
             .Where(x => x.AllAgentRebateType == (int)AllAgentRebateType.ValidBet)
             .Select(x => new PlayerAllAgentRebateDetailGameTypeModel
             {

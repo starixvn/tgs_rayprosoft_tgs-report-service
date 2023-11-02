@@ -73,13 +73,13 @@ public partial class Player
 
     public string? Birthday { get; set; }
 
+    public Guid? SnapshotEventId { get; set; }
+
     public virtual Agent? Agent { get; set; }
 
     public virtual Brand Brand { get; set; } = null!;
 
     public virtual ICollection<DepositForm> DepositForms { get; set; } = new List<DepositForm>();
-
-    public virtual ICollection<PlayerBucket> PlayerBuckets { get; set; } = new List<PlayerBucket>();
 
     public virtual ICollection<PlayerIpRecord> PlayerIpRecords { get; set; } = new List<PlayerIpRecord>();
 
