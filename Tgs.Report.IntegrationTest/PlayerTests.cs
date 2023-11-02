@@ -242,13 +242,13 @@ public class PlayerTests
         });
     }
 
-    private static Fixture CreatePlayerAllAgentRebateContributorFixture(Guid brandId, DateTimeOffset reportDate, decimal sportsTurnoverRebate)
+    private static Fixture CreatePlayerAllAgentRebateContributorFixture(Guid brandId, DateTimeOffset settleDate, decimal sportsTurnoverRebate)
     {
         var fixture = new Fixture();
 
         fixture.Customize<PlayerAllAgentRebateContributor>(u => u
             .With(s => s.BrandId, brandId)
-            .With(s => s.ReportDate, reportDate)
+            .With(s => s.SettleDate, settleDate)
             .With(s => s.SportsTurnoverRebate, sportsTurnoverRebate));
 
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
