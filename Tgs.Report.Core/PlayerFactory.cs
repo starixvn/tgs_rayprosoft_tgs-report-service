@@ -376,7 +376,7 @@ public class PlayerFactory : IPlayerFactory
                 ValidBet = x.ValidBet,
                 Rebate = x.Rebate,
                 MaxActivePlayerNumber = x.MaxActivePlayer,
-                SettleDateTime = x.To.AddDays(1),
+                SettleDateTime = x.To,
                 SentOn = x.SentOn!.Value
             });
 
