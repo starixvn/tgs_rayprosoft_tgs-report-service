@@ -330,12 +330,13 @@ public class PlayerFactory : IPlayerFactory
         => _context.PlayerAllAgentRebateContributors
             .Where(x => x.BrandId == request.BrandId)
             .Where(x => x.SettleDate >= request.From && x.SettleDate < request.To)
-            .GroupBy(x => new { x.From, x.To, x.PlayerCode })
+            .GroupBy(x => new { x.SettleDate, x.From, x.To, x.PlayerCode })
             .Select(x => new
             {
                 x.Key.PlayerCode,
                 x.Key.From,
                 x.Key.To,
+                x.Key.SettleDate,
                 SentOn = x.Max(m => m.SentOn),
                 MaxActivePlayer = x.Count(),
                 ValidBet =
@@ -361,6 +362,7 @@ public class PlayerFactory : IPlayerFactory
                 {
                     a.From,
                     a.To,
+                    a.SettleDate,
                     a.PlayerCode,
                     a.SentOn,
                     a.MaxActivePlayer,
@@ -376,7 +378,7 @@ public class PlayerFactory : IPlayerFactory
                 ValidBet = x.ValidBet,
                 Rebate = x.Rebate,
                 MaxActivePlayerNumber = x.MaxActivePlayer,
-                SettleDateTime = x.To,
+                SettleDateTime = x.SettleDate,
                 SentOn = x.SentOn!.Value,
                 From = x.From,
                 To = x.To
