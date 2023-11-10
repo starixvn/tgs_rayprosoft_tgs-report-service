@@ -428,14 +428,12 @@ public class PlayerFactory : IPlayerFactory
                 CardGameRebate = x.Sum(s => s.CardGameTurnoverRebate),
                 SlotRebate = x.Sum(s => s.SlotTurnoverRebate),
                 LotteryRebate = x.Sum(s => s.LotteryTurnoverRebate),
-                RebateSubTotal = x.Sum(s => Math.Truncate((s.SportsTurnoverRebate +
-                                                           s.VirtualSportsTurnoverRebate +
-                                                           s.LiveDealerTurnoverRebate +
-                                                           s.CardGameTurnoverRebate +
-                                                           s.SlotTurnoverRebate +
-                                                           s.LotteryTurnoverRebate) *
-                                                          (decimal)Math.Pow(10, 2)) /
-                                            (decimal)Math.Pow(10, 2))
+                RebateSubTotal = x.Sum(s => s.SportsTurnoverRebate +
+                                            s.VirtualSportsTurnoverRebate +
+                                            s.LiveDealerTurnoverRebate +
+                                            s.CardGameTurnoverRebate +
+                                            s.SlotTurnoverRebate +
+                                            s.LotteryTurnoverRebate)
             });
 
     public IQueryable<PlayerAllAgentRebateDetailGameTypeModel> GetPlayerAllAgentRebateDetailGameTypesQueryable(
