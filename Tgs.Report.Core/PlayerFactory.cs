@@ -416,24 +416,24 @@ public class PlayerFactory : IPlayerFactory
             {
                 Username = x.Key.Username,
                 PlayerCode = x.Key.PlayerCode,
-                SportsbookValidBet = x.Sum(s => s.SportsTurnover),
-                VirtualSportsValidBet = x.Sum(s => s.VirtualSportsTurnover),
-                LiveDealerValidBet = x.Sum(s => s.LiveDealerTurnover),
-                CardGameValidBet = x.Sum(s => s.CardGameTurnover),
-                SlotValidBet = x.Sum(s => s.SlotTurnover),
-                LotteryValidBet = x.Sum(s => s.LotteryTurnover),
-                SportsbookRebate = x.Sum(s => s.SportsTurnoverRebate),
-                VirtualSportsRebate = x.Sum(s => s.VirtualSportsTurnoverRebate),
-                LiveDealerRebate = x.Sum(s => s.LiveDealerTurnoverRebate),
-                CardGameRebate = x.Sum(s => s.CardGameTurnoverRebate),
-                SlotRebate = x.Sum(s => s.SlotTurnoverRebate),
-                LotteryRebate = x.Sum(s => s.LotteryTurnoverRebate),
-                RebateSubTotal = x.Sum(s => s.SportsTurnoverRebate +
-                                            s.VirtualSportsTurnoverRebate +
-                                            s.LiveDealerTurnoverRebate +
-                                            s.CardGameTurnoverRebate +
-                                            s.SlotTurnoverRebate +
-                                            s.LotteryTurnoverRebate)
+                SportsbookValidBet = x.Sum(s => Math.Truncate(s.SportsTurnover * (decimal)Math.Pow(10, 2)) / (decimal)Math.Pow(10, 2)),
+                VirtualSportsValidBet = x.Sum(s => Math.Truncate(s.VirtualSportsTurnover * (decimal)Math.Pow(10, 2)) / (decimal)Math.Pow(10, 2)),
+                LiveDealerValidBet = x.Sum(s => Math.Truncate(s.LiveDealerTurnover * (decimal)Math.Pow(10, 2)) / (decimal)Math.Pow(10, 2)),
+                CardGameValidBet = x.Sum(s => Math.Truncate(s.CardGameTurnover * (decimal)Math.Pow(10, 2)) / (decimal)Math.Pow(10, 2)),
+                SlotValidBet = x.Sum(s => Math.Truncate(s.SlotTurnover * (decimal)Math.Pow(10, 2)) / (decimal)Math.Pow(10, 2)),
+                LotteryValidBet = x.Sum(s => Math.Truncate(s.LotteryTurnover * (decimal)Math.Pow(10, 2)) / (decimal)Math.Pow(10, 2)),
+                SportsbookRebate = x.Sum(s => Math.Truncate(s.SportsTurnoverRebate * (decimal)Math.Pow(10, 2)) / (decimal)Math.Pow(10, 2)),
+                VirtualSportsRebate = x.Sum(s => Math.Truncate(s.VirtualSportsTurnoverRebate * (decimal)Math.Pow(10, 2)) / (decimal)Math.Pow(10, 2)),
+                LiveDealerRebate = x.Sum(s => Math.Truncate(s.LiveDealerTurnoverRebate * (decimal)Math.Pow(10, 2)) / (decimal)Math.Pow(10, 2)),
+                CardGameRebate = x.Sum(s => Math.Truncate(s.CardGameTurnoverRebate * (decimal)Math.Pow(10, 2)) / (decimal)Math.Pow(10, 2)),
+                SlotRebate = x.Sum(s => Math.Truncate(s.SlotTurnoverRebate * (decimal)Math.Pow(10, 2)) / (decimal)Math.Pow(10, 2)),
+                LotteryRebate = x.Sum(s => Math.Truncate(s.LotteryTurnoverRebate * (decimal)Math.Pow(10, 2)) / (decimal)Math.Pow(10, 2)),
+                RebateSubTotal = x.Sum(s => Math.Truncate((s.SportsTurnoverRebate +
+                                                           s.VirtualSportsTurnoverRebate +
+                                                           s.LiveDealerTurnoverRebate +
+                                                           s.CardGameTurnoverRebate +
+                                                           s.SlotTurnoverRebate +
+                                                           s.LotteryTurnoverRebate) * (decimal)Math.Pow(10, 2)) / (decimal)Math.Pow(10, 2))
             });
 
     public IQueryable<PlayerAllAgentRebateDetailGameTypeModel> GetPlayerAllAgentRebateDetailGameTypesQueryable(
