@@ -330,12 +330,13 @@ public class PlayerFactory : IPlayerFactory
         => _context.PlayerAllAgentRebateContributors
             .Where(x => x.BrandId == request.BrandId)
             .Where(x => x.SettleDate >= request.From && x.SettleDate < request.To)
-            .GroupBy(x => new { x.From, x.To, x.PlayerCode })
+            .GroupBy(x => new { x.SettleDate, x.From, x.To, x.PlayerCode })
             .Select(x => new
             {
                 x.Key.PlayerCode,
                 x.Key.From,
                 x.Key.To,
+                x.Key.SettleDate,
                 SentOn = x.Max(m => m.SentOn),
                 MaxActivePlayer = x.Count(),
                 ValidBet =
@@ -361,6 +362,7 @@ public class PlayerFactory : IPlayerFactory
                 {
                     a.From,
                     a.To,
+                    a.SettleDate,
                     a.PlayerCode,
                     a.SentOn,
                     a.MaxActivePlayer,
@@ -376,7 +378,7 @@ public class PlayerFactory : IPlayerFactory
                 ValidBet = x.ValidBet,
                 Rebate = x.Rebate,
                 MaxActivePlayerNumber = x.MaxActivePlayer,
-                SettleDateTime = x.To,
+                SettleDateTime = x.SettleDate,
                 SentOn = x.SentOn!.Value,
                 From = x.From,
                 To = x.To
@@ -409,28 +411,29 @@ public class PlayerFactory : IPlayerFactory
                     a.LotteryTurnoverRebate,
                     b.Username
                 })
+            .GroupBy(x => new { x.Username, x.PlayerCode })
             .Select(x => new PlayerAllAgentRebateDetailModel
             {
-                Username = x.Username,
-                PlayerCode = x.PlayerCode,
-                SportsbookValidBet = x.SportsTurnover,
-                VirtualSportsValidBet = x.VirtualSportsTurnover,
-                LiveDealerValidBet = x.LiveDealerTurnover,
-                CardGameValidBet = x.CardGameTurnover,
-                SlotValidBet = x.SlotTurnover,
-                LotteryValidBet = x.LotteryTurnover,
-                SportsbookRebate = x.SportsTurnoverRebate,
-                VirtualSportsRebate = x.VirtualSportsTurnoverRebate,
-                LiveDealerRebate = x.LiveDealerTurnoverRebate,
-                CardGameRebate = x.CardGameTurnoverRebate,
-                SlotRebate = x.SlotTurnoverRebate,
-                LotteryRebate = x.LotteryTurnoverRebate,
-                RebateSubTotal = x.SportsTurnoverRebate +
-                                 x.VirtualSportsTurnoverRebate +
-                                 x.LiveDealerTurnoverRebate +
-                                 x.CardGameTurnoverRebate +
-                                 x.SlotTurnoverRebate +
-                                 x.LotteryTurnoverRebate
+                Username = x.Key.Username,
+                PlayerCode = x.Key.PlayerCode,
+                SportsbookValidBet = x.Sum(s => s.SportsTurnover),
+                VirtualSportsValidBet = x.Sum(s => s.VirtualSportsTurnover),
+                LiveDealerValidBet = x.Sum(s => s.LiveDealerTurnover),
+                CardGameValidBet = x.Sum(s => s.CardGameTurnover),
+                SlotValidBet = x.Sum(s => s.SlotTurnover),
+                LotteryValidBet = x.Sum(s => s.LotteryTurnover),
+                SportsbookRebate = x.Sum(s => s.SportsTurnoverRebate),
+                VirtualSportsRebate = x.Sum(s => s.VirtualSportsTurnoverRebate),
+                LiveDealerRebate = x.Sum(s => s.LiveDealerTurnoverRebate),
+                CardGameRebate = x.Sum(s => s.CardGameTurnoverRebate),
+                SlotRebate = x.Sum(s => s.SlotTurnoverRebate),
+                LotteryRebate = x.Sum(s => s.LotteryTurnoverRebate),
+                RebateSubTotal = x.Sum(s => s.SportsTurnoverRebate +
+                                            s.VirtualSportsTurnoverRebate +
+                                            s.LiveDealerTurnoverRebate +
+                                            s.CardGameTurnoverRebate +
+                                            s.SlotTurnoverRebate +
+                                            s.LotteryTurnoverRebate)
             });
 
     public IQueryable<PlayerAllAgentRebateDetailGameTypeModel> GetPlayerAllAgentRebateDetailGameTypesQueryable(
