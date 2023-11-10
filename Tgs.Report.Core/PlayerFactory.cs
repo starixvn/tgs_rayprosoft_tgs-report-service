@@ -377,7 +377,9 @@ public class PlayerFactory : IPlayerFactory
                 Rebate = x.Rebate,
                 MaxActivePlayerNumber = x.MaxActivePlayer,
                 SettleDateTime = x.To,
-                SentOn = x.SentOn!.Value
+                SentOn = x.SentOn!.Value,
+                From = x.From,
+                To = x.To
             });
 
     public IQueryable<PlayerAllAgentRebateDetailModel> GetPlayerAllAgentRebateDetailsQueryable(

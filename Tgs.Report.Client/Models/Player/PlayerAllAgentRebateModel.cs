@@ -9,5 +9,7 @@
         public decimal Rebate { get; set; }
         public DateTimeOffset SettleDateTime { get; set; }
         public DateTimeOffset SentOn { get; set; }
+        public DateTimeOffset From { get; set; }
+        public DateTimeOffset To { get; set; }
     }
 }
