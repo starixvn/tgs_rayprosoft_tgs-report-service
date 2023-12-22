@@ -77,7 +77,8 @@ push-docker-image:
   only:
     - main
   script:
-    - dotnet build "Tgs.Report.Service/Tgs.Report.Service.csproj" -c $BuildConfiguration -t:ContainerBuild -p:DockerfileTag="$ImageName:$Tag" --no-restore
+    - export Tag="$(date -d $CI_PIPELINE_CREATED_AT +%Y%m%d%H%M).$CI_PIPELINE_IID"
+    - docker build -t "$ImageName:$Tag" --build-arg [BuildConfiguration]=$BuildConfiguration -f "AgentApi/Dockerfile" . --no-cache
     - docker push $ImageName:$Tag
   cache:
     key: BuildCacheKey
