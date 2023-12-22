@@ -55,7 +55,7 @@ public class GetMarketsCacheHandler : IRequestHandler<GetMarketsRequest, PagedRe
             key,
             async entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(1D);
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5D);
 
                 return await _handler
                     .Handle(request, cancellationToken)
