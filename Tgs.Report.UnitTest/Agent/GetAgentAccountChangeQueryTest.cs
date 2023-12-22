@@ -41,8 +41,8 @@ public sealed class GetGameActionsQueryTest : BaseTest
 
         var response = await sut.Handle(request, default);
 
-        Assert.IsTrue(response.Valid);
-        Assert.AreEqual(1, response.Items?.Length);
+        Assert.That(response.Valid, Is.True);
+        Assert.That(response.Items?.Length, Is.EqualTo(1));
     }
 
     private static Fixture CreateAgentTransactionFixture()

@@ -93,8 +93,7 @@ public class RoundTests
             To = createdOn.AddDays(1)
         });
 
-        Assert.IsNotNull(actual.Datas);
-        Assert.IsTrue(actual.Datas.Length == 3);
+        Assert.That(actual.Datas, Has.Length.EqualTo(3));
     }
 
     private static Fixture CreateRoundFixture(Guid brandId, DateTimeOffset createdOn, Guid gameProviderId, string? playerCode)

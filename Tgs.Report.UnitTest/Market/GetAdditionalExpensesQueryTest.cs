@@ -41,8 +41,8 @@ public sealed class GetAdditionalExpensesQueryTest : BaseTest
 
         var response = await sut.Handle(request, default);
 
-        Assert.AreEqual(playerAggregates.Sum(x => x.AllAgentRebateAmount),
-            response.AdditionalExpenses.First().Amount);
+        Assert.That(response.AdditionalExpenses.First().Amount,
+            Is.EqualTo(playerAggregates.Sum(x => x.AllAgentRebateAmount)));
     }
 
     private static Fixture CreatePlayerAggregateFixture(Guid brandId, DateTimeOffset reportDate)

@@ -53,7 +53,7 @@ public sealed class GetPlayerAccountChangeQueryTest : BaseTest
 
         var response = await sut.Handle(request, default);
 
-        Assert.AreEqual(1, response.TotalCount);
+        Assert.That(response.TotalCount, Is.EqualTo(1));
     }
 
     [Test]

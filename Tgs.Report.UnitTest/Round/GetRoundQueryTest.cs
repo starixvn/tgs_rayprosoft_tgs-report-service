@@ -38,6 +38,6 @@ public sealed class GetRoundQueryTest : BaseTest
 
         var response = await sut.Handle(request, default);
 
-        Assert.IsNotNull(response);
+        Assert.That(response != null, Is.True);
     }
 }
