@@ -81,11 +81,11 @@ spec:
         - name: appsettings
           projected:
             sources:
-              configMap:
-                name: configmap-{{ include "report-api.fullname" . }}
-                items:
-                  - key: appsettings.json
-                    path: appsettings.json
+              - configMap:
+                  name: configmap-{{ include "report-api.fullname" . }}
+                  items:
+                    - key: appsettings.json
+                      path: appsettings.json
         {{- if eq .Release.Namespace "prod" }}
         - name: rds-combined-ca-bundle
           configMap:
