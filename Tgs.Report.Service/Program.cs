@@ -10,10 +10,6 @@ using Tgs.Report.ViewModel;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration
-    .AddJsonFile("/config/appsettings.json", true)
-    .AddEnvironmentVariables();
-
 builder.Services
     .AddHttpClient()
     .AddReportRepository((sp, optionsBuilder) =>
