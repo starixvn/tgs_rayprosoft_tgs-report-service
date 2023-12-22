@@ -49,7 +49,7 @@ public sealed class GetGameProviderRoundsQueryTest
 
         var response = await sut.Handle(request, default);
 
-        Assert.AreEqual(1, response.TotalCount);
+        Assert.That(response.TotalCount, Is.EqualTo(1));
     }
 
     private static Fixture CreateGameProviderFixture(Guid id)

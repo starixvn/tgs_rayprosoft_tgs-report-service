@@ -37,8 +37,8 @@ public sealed class GetDownLineAgentWinLossQueryTest : BaseTest
 
         var response = await sut.Handle(request, default);
 
-        Assert.IsTrue(response.Valid);
-        Assert.AreEqual(10, response.Items?.Length);
+        Assert.That(response.Valid, Is.True);
+        Assert.That(response.Items?.Length, Is.EqualTo(10));
     }
 
     private static Fixture CreateAgentWinLossFixture()

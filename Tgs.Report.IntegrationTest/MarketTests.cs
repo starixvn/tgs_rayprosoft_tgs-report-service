@@ -98,8 +98,7 @@ public class MarketTests
             To = reportDate.AddDays(1)
         });
 
-        Assert.IsNotNull(actual);
-        Assert.IsTrue(actual.Items.Length == 1);
+        Assert.That(actual.Items, Has.Length.EqualTo(1));
     }
 
     private static Fixture CreatePlayerAggregateFixture(Guid brandId, DateTimeOffset reportDate)

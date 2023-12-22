@@ -39,7 +39,7 @@ public sealed class GetAgentPlayerSpecialDetailQueryTest : BaseTest
 
         var response = await sut.Handle(request, default);
 
-        Assert.AreEqual(agentPlayerSpecialDetail.First().Bonus, response.Bonus);
+        Assert.That(response.Bonus, Is.EqualTo(agentPlayerSpecialDetail.First().Bonus));
     }
 
     private static Fixture CreateAgentPlayerSpecialDetailFixture()

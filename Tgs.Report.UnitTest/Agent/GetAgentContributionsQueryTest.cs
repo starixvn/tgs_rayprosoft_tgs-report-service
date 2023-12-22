@@ -100,8 +100,8 @@ public sealed class GetAgentContributionsQueryTest : BaseTest
 
         var response = await sut.Handle(request, default);
 
-        Assert.IsTrue(response.Valid);
-        Assert.AreEqual(players.Count(), response.Items?.Length);
+        Assert.That(response.Valid, Is.True);
+        Assert.That(response.Items?.Length, Is.EqualTo(players.Count()));
     }
 
     private static Fixture CreateAgentFixture(Guid brandId, string username)

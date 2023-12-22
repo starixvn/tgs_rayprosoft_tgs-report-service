@@ -56,9 +56,9 @@ public sealed class GetCompanyTotalDetailQueryTest : BaseTest
 
         var response = await sut.Handle(request, default);
 
-        Assert.AreEqual(3, response.Count());
-        Assert.AreEqual(agentWinLosses.Where(x => x.Percentage == 70).Sum(x => x.WinLoss),
-            -response.Where(x => x.Percentage == 30).Sum(x => x.PlayerWinLoss));
+        Assert.That(response.Count(), Is.EqualTo(3));
+        Assert.That(-response.Where(x => x.Percentage == 30).Sum(x => x.PlayerWinLoss),
+            Is.EqualTo(agentWinLosses.Where(x => x.Percentage == 70).Sum(x => x.WinLoss)));
     }
 
     private static Fixture CreateAgentTotalDetailFixture(DateTimeOffset reportDate, decimal percentage)

@@ -106,8 +106,8 @@ internal class GetRoundsTotalQueryTest : BaseTest
 
         var response = await sut.Handle(request, default);
 
-        Assert.AreEqual(10, response.BetAmount);
-        Assert.AreEqual(10, response!.ValidBetAmount);
-        Assert.AreEqual(15, response!.WinLoss);
+        Assert.That(response.BetAmount, Is.EqualTo(10));
+        Assert.That(response!.ValidBetAmount, Is.EqualTo(10));
+        Assert.That(response!.WinLoss, Is.EqualTo(15));
     }
 }

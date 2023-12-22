@@ -143,7 +143,7 @@ public class GetAgentPlayerRoundsQueryTest : BaseTest
         var actual = await sut.Handle(request, default);
 
         //Assert
-        Assert.AreEqual(2, actual.Items!.Length);
+        Assert.That(actual.Items!.Length, Is.EqualTo(2));
     }
 
     [Test]
@@ -263,6 +263,6 @@ public class GetAgentPlayerRoundsQueryTest : BaseTest
         var actual = await sut.Handle(request, default);
 
         //Assert
-        Assert.AreEqual(0, actual.Items!.Length);
+        Assert.That(actual.Items!.Length, Is.EqualTo(0));
     }
 }

@@ -79,7 +79,7 @@ public sealed class GetResellerMarketsQueryTest : BaseTest
 
         var response = await sut.Handle(request, default);
 
-        Assert.AreEqual(1, response.Datas?.TotalCount);
+        Assert.That(response.Datas?.TotalCount, Is.EqualTo(1));
     }
 
     private static Fixture CreateBrandFixture(Guid brandId, Guid licenseeId, Guid resellerId)

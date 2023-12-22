@@ -54,7 +54,7 @@ public sealed class GetPlayersAccountChangeQueryTest : BaseTest
 
         var response = await sut.Handle(request, default);
 
-        Assert.AreEqual(1, response.Items?.Length);
+        Assert.That(response.Items?.Length, Is.EqualTo(1));
     }
 
     private static Fixture CreateTransactionFixture(Guid brandId, Guid userId)

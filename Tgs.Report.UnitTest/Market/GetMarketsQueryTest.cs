@@ -83,8 +83,7 @@ public sealed class GetMarketsQueryTest : BaseTest
 
         var response = await sut.Handle(request, default);
 
-        Assert.AreEqual(1,
-            response.Items?.Count());
+        Assert.That(response.Items?.Count(), Is.EqualTo(1));
     }
 
     private static Fixture CreatePlayerAggregateFixture(Guid brandId, DateTimeOffset reportDate)
