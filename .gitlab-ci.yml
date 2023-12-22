@@ -22,38 +22,97 @@ stages:
   - deploy-prod
 
 build-code:
-  extends: .build-code-template
+  stage: build
+  script:
+    - dotnet build -c $BuildConfiguration
+  only:
+    - merge_requests    
+    - main
+  cache:
+    key: BuildCacheKey
+    untracked: true
 
 unit-test:
-  extends: .unit-test-template
+  stage: test
   script:
-    - dotnet test "**/bin/$BuildConfiguration/$Framework/*Test.dll" -l:'junit;LogFilePath=TestResults/TestResults.xml'
+    - dotnet test -c $BuildConfiguration -l:"junit;LogFilePath=../TestReports/{assembly}-TestReport.xml" --no-restore --no-build
+  needs:
+    - build-code
+  only:
+    - merge_requests
+    - main
+  cache:
+    key: BuildCacheKey
+    untracked: true
+    policy: pull
+  artifacts:
+    when: always
+    reports:
+      junit: ./TestReports/*-TestReport.xml
 
 push-nuget:
-  extends: .push-nuget-template
+  stage: publish
+  needs:
+    - job: build-code
+      artifacts: true
+    - unit-test
+  only:
+    - main
   script:
-    - push_package "Tgs.Report.Client"
+    - dotnet restore
+    - dotnet pack -c $BuildConfiguration "Tgs.Report.Client/Tgs.Report.Client.csproj" --no-restore
+    - dotnet nuget push "Tgs.Report.Client/bin/$BuildConfiguration/*.nupkg" -s "raypro-baget" -k $NugetApiKey --skip-duplicate
   artifacts:
+    name: Nuget
+    untracked: false
+    expire_in: "30 days"
     paths:
       - Tgs.Report.Client/bin/$BuildConfiguration/*.nupkg
 
 push-docker-image:
-  extends: .push-docker-image-template
+  stage: publish
+  needs:
+    - build-code
+    - unit-test
+  only:
+    - main
   script:
-    - push_docker "Tgs.Report.Service" $ImageName $Tag
+    - dotnet build "Tgs.Report.Service/Tgs.Report.Service.csproj" -c $BuildConfiguration -t:ContainerBuild -p:DockerfileTag="$ImageName:$Tag" --no-restore
+    - docker push $ImageName:$Tag
+  cache:
+    key: BuildCacheKey
+    untracked: true
+    policy: pull
 
 push-k8s-template:
-  extends: .push-k8s-template
+  stage: publish
+  needs:
+    - unit-test
+  only:
+    - main
   script:
-    - push_k8s_template $HelmTemplateFolderName $ImageName $Tag
+    - export Tag="$(date -d $CI_PIPELINE_CREATED_AT +%Y%m%d%H%M).$CI_PIPELINE_IID"
+    - mkdir -p artifacts/k8s
+    - cp -R deployment/k8s/$HelmTemplateFolderName artifacts/k8s/
+    - |
+      yq -i e '
+        .image.repository = strenv(ImageName) |
+        .image.tag = strenv(Tag)
+      ' artifacts/k8s/$HelmTemplateFolderName/values.yaml
+  artifacts:
+    name: HelmTemplate
+    untracked: false
+    expire_in: "180 days"
+    paths:
+      - artifacts/**/*
 
 deploy-dev:
   extends: .deploy-template
   variables:
-    namespace: dev
     kube_config: KubeConfig_Raypro_dev
+    namespace: dev
   environment:
-    name: service-dev
+    name: dev
   stage: deploy-dev
   needs:
     - push-docker-image
@@ -61,17 +120,14 @@ deploy-dev:
       artifacts: true
   only:
     - main
-  when: on_success
-  script:
-    - deploy_k8s $TgsSettingKey $HelmTemplateFolderName $namespace
 
 deploy-staging:
   extends: .deploy-template
   variables:
-    namespace: staging
     kube_config: KubeConfig_Raypro_staging
+    namespace: staging
   environment:
-    name: service-staging
+    name: staging
   stage: deploy-staging
   needs:
     - deploy-dev
@@ -79,16 +135,15 @@ deploy-staging:
       artifacts: true
   only:
     - main
-  script:
-    - deploy_k8s $TgsSettingKey $HelmTemplateFolderName $namespace
+  when: manual
 
 deploy-prod:
   extends: .deploy-template
   variables:
-    namespace: prod
     kube_config: KubeConfig_Raypro_prod
+    namespace: prod
   environment:
-    name: service-prod
+    name: prod
   stage: deploy-prod
   needs:
     - deploy-staging
@@ -97,5 +152,3 @@ deploy-prod:
   only:
     - main
   when: manual
-  script:
-    - deploy_k8s $TgsSettingKey $HelmTemplateFolderName $namespace
