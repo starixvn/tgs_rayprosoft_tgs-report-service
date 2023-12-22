@@ -130,6 +130,6 @@ public class GetClosedRoundsQueryTest : BaseTest
 
         var actual = await sut.Handle(request, default);
 
-        Assert.AreEqual(1, actual.Items!.Length);
+        Assert.That(actual.Items!.Length, Is.EqualTo(1));
     }
 }

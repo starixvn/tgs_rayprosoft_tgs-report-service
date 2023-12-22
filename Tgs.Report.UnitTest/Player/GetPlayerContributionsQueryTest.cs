@@ -119,7 +119,7 @@ public sealed class GetPlayerContributionsQueryTest : BaseTest
 
         var response = await sut.Handle(request, default);
 
-        Assert.AreEqual(3, response.Items?.Length);
+        Assert.That(response.Items?.Length, Is.EqualTo(3));
 
         await fakeDbContext.DepositForms.Where(x => x.UpdatedOn == yesterday).GroupBy(x => x.PlayerCode).Select(x => new
         {
@@ -127,7 +127,7 @@ public sealed class GetPlayerContributionsQueryTest : BaseTest
             Amount = x.Sum(s => s.ActualAmount ?? s.Amount)
         }).ForEachAsync(x =>
         {
-            Assert.AreEqual(response.Items!.First(f => f.PlayerCode == x.PlayerCode).DepositAmount, x.Amount);
+            Assert.That(response.Items!.First(f => f.PlayerCode == x.PlayerCode).DepositAmount, Is.EqualTo(x.Amount));
         });
     }
 
@@ -234,7 +234,7 @@ public sealed class GetPlayerContributionsQueryTest : BaseTest
 
         var response = await sut.Handle(request, default);
 
-        Assert.AreEqual(3, response.Items?.Length);
+        Assert.That(response.Items?.Length, Is.EqualTo(3));
 
         await fakeDbContext.DepositForms.Where(x => x.UpdatedOn == reportDate).GroupBy(x => x.PlayerCode)
             .Select(x => new
@@ -243,7 +243,7 @@ public sealed class GetPlayerContributionsQueryTest : BaseTest
                 Amount = x.Sum(s => s.ActualAmount ?? s.Amount)
             }).ForEachAsync(x =>
             {
-                Assert.AreEqual(response.Items!.First(f => f.PlayerCode == x.PlayerCode).DepositAmount, x.Amount);
+                Assert.That(response.Items!.First(f => f.PlayerCode == x.PlayerCode).DepositAmount, Is.EqualTo(x.Amount));
             });
     }
 

@@ -3,7 +3,6 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Exporter;
-using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Tgs.MessageQueue;
@@ -69,37 +68,38 @@ builder.Services
     });
 
 builder.Services
-    .AddOpenTelemetryTracing(builder => builder
+    .AddOpenTelemetry()
+    .WithTracing(builder => builder
         .SetResourceBuilder(ResourceBuilder.CreateDefault()
             .AddEnvironmentVariableDetector())
         .AddSource("Tgs.*")
         .AddSource("TGS.*")
-        .AddAspNetCoreInstrumentation()
+        .AddAspNetCoreInstrumentation(options =>
+        {
+            options.Filter = httpContext =>
+            {
+                return !httpContext.Request.Path.HasValue
+                       || !httpContext.Request.Path.StartsWithSegments("/swagger")
+                       && !httpContext.Request.Path.StartsWithSegments("/healthz")
+                       && !httpContext.Request.Path.StartsWithSegments("/profiler/")
+                       && !new[]
+                       {
+                           "html",
+                           "ico",
+                           "png",
+                           "jpg"
+                       }.Any(
+                           ext => httpContext.Request.Path.Value.EndsWith($".{ext}"));
+            };
+        })
         .AddHttpClientInstrumentation()
         .AddEntityFrameworkCoreInstrumentation(options =>
         {
             options.SetDbStatementForText = true;
         })
         .AddProfileViewExporter()
-        .AddOtlpExporter())
-    .Configure<AspNetCoreInstrumentationOptions>(options =>
-    {
-        options.Filter = httpContext =>
-        {
-            return !httpContext.Request.Path.HasValue
-                || !httpContext.Request.Path.StartsWithSegments("/swagger")
-                && !httpContext.Request.Path.StartsWithSegments("/healthz")
-                && !httpContext.Request.Path.StartsWithSegments("/profiler/")
-                && !new[]
-                {
-                    "html",
-                    "ico",
-                    "png",
-                    "jpg"
-                }.Any(
-                    ext => httpContext.Request.Path.Value.EndsWith($".{ext}"));
-        };
-    });
+        .AddOtlpExporter());
+
 builder.Services.AddProfileViewer();
 
 builder.Services
@@ -157,7 +157,7 @@ app.UseRequestLocalization(option =>
         "zh-CN"
     };
 
-    option
+    _ = option
         .SetDefaultCulture(supportedCultures[0])
         .AddSupportedCultures(supportedCultures)
         .AddSupportedUICultures(supportedCultures);
