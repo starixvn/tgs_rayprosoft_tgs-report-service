@@ -379,7 +379,7 @@ public class PlayerFactory : IPlayerFactory
                 Rebate = x.Rebate,
                 MaxActivePlayerNumber = x.MaxActivePlayer,
                 SettleDateTime = x.SettleDate,
-                SentOn = x.SentOn!.Value,
+                SentOn = x.SentOn,
                 From = x.From,
                 To = x.To
             });
