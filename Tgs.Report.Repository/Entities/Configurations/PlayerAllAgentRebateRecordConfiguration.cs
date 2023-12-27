@@ -18,8 +18,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
 
             entity.ToTable("player_all_agent_rebate_records", "dbo");
 
-            entity.HasIndex(e => new { e.From, e.To, e.BrandId, e.PlayerCode, e.AllAgentRebateType }, "ix_player_all_agent_rebate_records_from_to_brand_id_player_code").IsUnique();
-
             entity.HasIndex(e => new { e.SettleDate, e.BrandId, e.PlayerCode }, "ix_player_all_agent_rebate_records_settle_date_brand_id_player_");
 
             entity.Property(e => e.Id)
@@ -37,7 +35,9 @@ namespace Tgs.Report.Repository.Entities.Configurations
             .HasPrecision(18, 6)
             .HasColumnName("condition_amount");
             entity.Property(e => e.CreatedOn).HasColumnName("created_on");
-            entity.Property(e => e.From).HasColumnName("from");
+            entity.Property(e => e.From)
+            .HasDefaultValueSql("now()")
+            .HasColumnName("from");
             entity.Property(e => e.PlayerCode)
             .HasMaxLength(16)
             .HasColumnName("player_code");
@@ -49,7 +49,9 @@ namespace Tgs.Report.Repository.Entities.Configurations
             .HasPrecision(9, 6)
             .HasColumnName("rebate_percentage");
             entity.Property(e => e.SettleDate).HasColumnName("settle_date");
-            entity.Property(e => e.To).HasColumnName("to");
+            entity.Property(e => e.To)
+            .HasDefaultValueSql("now()")
+            .HasColumnName("to");
 
             OnConfigurePartial(entity);
         }

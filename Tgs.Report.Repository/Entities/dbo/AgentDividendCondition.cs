@@ -17,5 +17,9 @@ public partial class AgentDividendCondition
 
     public decimal DividendPercentage { get; set; }
 
+    public Guid ContractId { get; set; }
+
+    public decimal WinLossAmount { get; set; }
+
     public virtual Agent Agent { get; set; } = null!;
 }

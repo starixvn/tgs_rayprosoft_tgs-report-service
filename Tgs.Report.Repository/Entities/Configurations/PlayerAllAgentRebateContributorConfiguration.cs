@@ -18,8 +18,6 @@ namespace Tgs.Report.Repository.Entities.Configurations
 
             entity.ToTable("player_all_agent_rebate_contributors", "dbo");
 
-            entity.HasIndex(e => new { e.From, e.To, e.PlayerCode, e.ChildPlayerCode }, "ix_player_all_agent_rebate_contributors_from_to_player_code").IsUnique();
-
             entity.HasIndex(e => new { e.SettleDate, e.PlayerCode, e.ChildPlayerCode }, "ix_player_all_agent_rebate_contributors_settle_date_player_code");
 
             entity.Property(e => e.Id)
@@ -42,7 +40,9 @@ namespace Tgs.Report.Repository.Entities.Configurations
             .HasMaxLength(16)
             .HasColumnName("child_player_code");
             entity.Property(e => e.CreatedOn).HasColumnName("created_on");
-            entity.Property(e => e.From).HasColumnName("from");
+            entity.Property(e => e.From)
+            .HasDefaultValueSql("now()")
+            .HasColumnName("from");
             entity.Property(e => e.LiveDealerTurnover)
             .HasPrecision(18, 6)
             .HasColumnName("live_dealer_turnover");
@@ -96,7 +96,9 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.SportsWinLossRebate)
             .HasPrecision(18, 6)
             .HasColumnName("sports_win_loss_rebate");
-            entity.Property(e => e.To).HasColumnName("to");
+            entity.Property(e => e.To)
+            .HasDefaultValueSql("now()")
+            .HasColumnName("to");
             entity.Property(e => e.VirtualSportsTurnover)
             .HasPrecision(18, 6)
             .HasColumnName("virtual_sports_turnover");

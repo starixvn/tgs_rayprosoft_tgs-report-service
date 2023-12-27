@@ -86,6 +86,4 @@ public partial class Player
     public virtual ICollection<PlayerLoginRecord> PlayerLoginRecords { get; set; } = new List<PlayerLoginRecord>();
 
     public virtual VipLevel? Vip { get; set; }
-
-    public virtual ICollection<Wallet> Wallets { get; set; } = new List<Wallet>();
 }

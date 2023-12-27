@@ -45,11 +45,17 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.Name)
             .HasMaxLength(255)
             .HasColumnName("name");
-            entity.Property(e => e.PlaceBetTimeout).HasColumnName("place_bet_timeout");
-            entity.Property(e => e.SettleBetTimeout).HasColumnName("settle_bet_timeout");
+            entity.Property(e => e.PlaceBetTimeout)
+            .HasDefaultValue((short)0)
+            .HasColumnName("place_bet_timeout");
+            entity.Property(e => e.SettleBetTimeout)
+            .HasDefaultValue((short)0)
+            .HasColumnName("settle_bet_timeout");
             entity.Property(e => e.Status).HasColumnName("status");
             entity.Property(e => e.SupportTestPlayer).HasColumnName("support_test_player");
-            entity.Property(e => e.TransferWallet).HasColumnName("transfer_wallet");
+            entity.Property(e => e.TransferWallet)
+            .HasDefaultValue(false)
+            .HasColumnName("transfer_wallet");
             entity.Property(e => e.UniqueId).HasColumnName("unique_id");
             entity.Property(e => e.UpdatedByUsername)
             .HasMaxLength(32)

@@ -25,7 +25,9 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.DailyDepositHandlingFee).HasColumnName("daily_deposit_handling_fee");
             entity.Property(e => e.DailyWithdrawAmount).HasColumnName("daily_withdraw_amount");
             entity.Property(e => e.DailyWithdrawHandlingFee).HasColumnName("daily_withdraw_handling_fee");
-            entity.Property(e => e.DepositPlayers).HasColumnName("deposit_players");
+            entity.Property(e => e.DepositPlayers)
+            .HasDefaultValue(0)
+            .HasColumnName("deposit_players");
             entity.Property(e => e.FirstDepositPlayers).HasColumnName("first_deposit_players");
             entity.Property(e => e.UndepositAgainPlayers).HasColumnName("undeposit_again_players");
 

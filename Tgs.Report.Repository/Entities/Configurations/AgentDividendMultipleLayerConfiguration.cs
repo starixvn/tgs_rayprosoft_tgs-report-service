@@ -37,11 +37,14 @@ namespace Tgs.Report.Repository.Entities.Configurations
             .HasPrecision(18, 6)
             .HasColumnName("agent_dividend_percentage");
             entity.Property(e => e.AgentId).HasColumnName("agent_id");
+            entity.Property(e => e.ContractId).HasColumnName("contract_id");
             entity.Property(e => e.Dividend)
             .HasPrecision(18, 6)
             .HasColumnName("dividend");
             entity.Property(e => e.DividendProviderAgentId).HasColumnName("dividend_provider_agent_id");
-            entity.Property(e => e.DividendProviderId).HasColumnName("dividend_provider_id");
+            entity.Property(e => e.DividendProviderId)
+            .HasDefaultValue(0)
+            .HasColumnName("dividend_provider_id");
             entity.Property(e => e.Layer).HasColumnName("layer");
 
             entity.HasOne(d => d.AgentDividend).WithMany(p => p.AgentDividendMultipleLayers)

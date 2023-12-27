@@ -98,7 +98,9 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.RegisteredCount).HasColumnName("registered_count");
             entity.Property(e => e.ReportDate).HasColumnName("report_date");
             entity.Property(e => e.ReportDateTime).HasColumnName("report_date_time");
-            entity.Property(e => e.RoundCount).HasColumnName("round_count");
+            entity.Property(e => e.RoundCount)
+            .HasDefaultValue(0)
+            .HasColumnName("round_count");
             entity.Property(e => e.SeasonAmount)
             .HasPrecision(18, 6)
             .HasColumnName("season_amount");
