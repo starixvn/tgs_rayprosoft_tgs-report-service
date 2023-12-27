@@ -33,6 +33,11 @@ public class PlayerTests
 
         var playerAllAgentRebates = fixture.CreateMany<PlayerAllAgentRebateModel>(20);
 
+        foreach (var playerAllAgentRebateModel in playerAllAgentRebates)
+        {
+            playerAllAgentRebateModel.SentOn = null;
+        }
+
         _ = fakePlayerFactory.GetPlayerAllAgentRebatesQueryable(Arg.Any<GetPlayerAllAgentRebatesQuery>())
             .Returns(playerAllAgentRebates.AsQueryable());
 
