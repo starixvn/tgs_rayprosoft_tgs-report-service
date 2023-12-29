@@ -44,6 +44,11 @@ public sealed class GetPlayerContributionsQueryTest : BaseTest
             "player3"
         };
 
+        var brands = CreateBrandFixture(brandId, 5)
+            .CreateMany<Brand>(1)
+            .AsQueryable()
+            .BuildMock();
+
         var playerAggregates = playerCodes.SelectMany(x
                 => new[]
                 {
@@ -109,6 +114,7 @@ public sealed class GetPlayerContributionsQueryTest : BaseTest
         var mockDepositForms = GetDbSet(depositForms);
         var mockPlayers = GetDbSet(players);
         var mockPlayerDailyPaymentStatistics = GetDbSet(playerDailyPaymentStatistics);
+        var mockBrands = GetDbSet(brands);
 
         fakeDbContext.PlayerAggregates.Returns(mockPlayerAggregates.Object);
         fakeDbContext.PlayerBonusAggregates.Returns(mockPlayerBonusAggregates.Object);
@@ -116,6 +122,7 @@ public sealed class GetPlayerContributionsQueryTest : BaseTest
         fakeDbContext.DepositForms.Returns(mockDepositForms.Object);
         fakeDbContext.Players.Returns(mockPlayers.Object);
         fakeDbContext.PlayerDailyPaymentStatistics.Returns(mockPlayerDailyPaymentStatistics.Object);
+        fakeDbContext.Brands.Returns(mockBrands.Object);
 
         var response = await sut.Handle(request, default);
 
@@ -152,12 +159,12 @@ public sealed class GetPlayerContributionsQueryTest : BaseTest
 
         var reportDate = new DateTimeOffset(now.Year, now.Month, now.Day, 0, 0, 0, new(8, 0, 0));
 
-        var playerCodes = new[]
-        {
-            "player1",
-            "player2",
-            "player3"
-        };
+        var playerCodes = new[] { "player1", "player2", "player3" };
+
+        var brands = CreateBrandFixture(brandId, 5)
+            .CreateMany<Brand>(1)
+            .AsQueryable()
+            .BuildMock();
 
         var playerAggregates = playerCodes.SelectMany(x
                 => new[]
@@ -213,9 +220,7 @@ public sealed class GetPlayerContributionsQueryTest : BaseTest
 
         var request = new GetPlayerContributionsRequest
         {
-            BrandId = brandId,
-            From = reportDate,
-            To = reportDate.AddDays(1)
+            BrandId = brandId, From = reportDate, To = reportDate.AddDays(1)
         };
 
         var mockPlayerAggregates = GetDbSet(playerAggregates);
@@ -224,6 +229,7 @@ public sealed class GetPlayerContributionsQueryTest : BaseTest
         var mockDepositForms = GetDbSet(depositForms);
         var mockPlayers = GetDbSet(players);
         var mockPlayerDailyPaymentStatistics = GetDbSet(playerDailyPaymentStatistics);
+        var mockBrands = GetDbSet(brands);
 
         fakeDbContext.PlayerAggregates.Returns(mockPlayerAggregates.Object);
         fakeDbContext.PlayerBonusAggregates.Returns(mockPlayerBonusAggregates.Object);
@@ -231,19 +237,33 @@ public sealed class GetPlayerContributionsQueryTest : BaseTest
         fakeDbContext.DepositForms.Returns(mockDepositForms.Object);
         fakeDbContext.Players.Returns(mockPlayers.Object);
         fakeDbContext.PlayerDailyPaymentStatistics.Returns(mockPlayerDailyPaymentStatistics.Object);
+        fakeDbContext.Brands.Returns(mockBrands.Object);
 
         var response = await sut.Handle(request, default);
 
+        var totalNetProfit =
+            playerAggregates.Where(x => x.PlayerCode == "player1" && x.ReportDate == reportDate)
+                .Sum(x =>
+                    x.WinLossAmount -
+                    (x.AgentAdjustAmount - x.NoIncludeNetProfitAgentAdjustAmount) -
+                    (x.BonusAdjustAmount - x.NoIncludeNetProfitBonusAdjustAmount) -
+                    x.PromotionAmount -
+                    x.RebateAmount -
+                    x.WinLossAmount * 5 / 100) -
+            playerBonusAggregates.Where(x => x.PlayerCode == "player1" && x.ReportDate == reportDate)
+                .Sum(x => x.SeasonAmount + x.UpgradeAmount + x.BirthdayAmount);
+
         Assert.That(response.Items?.Length, Is.EqualTo(3));
 
-        await fakeDbContext.DepositForms.Where(x => x.UpdatedOn == reportDate).GroupBy(x => x.PlayerCode)
-            .Select(x => new
+        Assert.That(response.Items.Where(x => x.PlayerCode == "player1").Sum(x => x.NetProfit) == totalNetProfit);
+
+        await fakeDbContext.DepositForms.Where(x => x.UpdatedOn == reportDate)
+            .GroupBy(x => x.PlayerCode)
+            .Select(x => new { PlayerCode = x.Key, Amount = x.Sum(s => s.ActualAmount ?? s.Amount) })
+            .ForEachAsync(x =>
             {
-                PlayerCode = x.Key,
-                Amount = x.Sum(s => s.ActualAmount ?? s.Amount)
-            }).ForEachAsync(x =>
-            {
-                Assert.That(response.Items!.First(f => f.PlayerCode == x.PlayerCode).DepositAmount, Is.EqualTo(x.Amount));
+                Assert.That(response.Items!.First(f => f.PlayerCode == x.PlayerCode).DepositAmount,
+                    Is.EqualTo(x.Amount));
             });
     }
 
@@ -315,6 +335,37 @@ public sealed class GetPlayerContributionsQueryTest : BaseTest
         fixture.Customize<PlayerDailyPaymentStatistic>(u => u
             .With(s => s.PlayerCode, playerCode)
             .With(s => s.ReportDate, new DateOnly(reportDate.Year, reportDate.Month, reportDate.Day)));
+        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        return fixture;
+    }
+
+    private static Fixture CreateBrandFixture(Guid brandId, decimal platformCharge)
+    {
+        var fixture = new Fixture();
+        fixture.Customize<Brand>(u => u
+            .With(s => s.Id, brandId)
+            .With(s => s.PlatformCharge, platformCharge)
+            .With(s => s.VipLevels, new VipLevel[]
+            {
+            })
+            .With(s => s.Transactions, new Transaction[]
+            {
+            })
+            .With(s => s.BrandCurrencies, new BrandCurrency[]
+            {
+            })
+            .With(s => s.Agents, new Repository.Entities.Agent[]
+            {
+            })
+            .With(s => s.Players, new Repository.Entities.Player[]
+            {
+            })
+            .With(s => s.DepositForms, new DepositForm[]
+            {
+            })
+            .With(s => s.PlayerLoginRecords, new PlayerLoginRecord[]
+            {
+            }));
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         return fixture;
     }

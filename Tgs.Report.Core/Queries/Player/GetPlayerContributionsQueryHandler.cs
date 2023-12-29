@@ -53,6 +53,11 @@ public class GetPlayerContributionsQueryHandler
             ? new(yesterday.Year, yesterday.Month, yesterday.Day)
             : new DateOnly(to.Year, to.Month, to.Day);
 
+        var brand = await _context.Brands.Where(x => x.Id == request.BrandId)
+            .Select(x => new { x.PlatformCharge })
+            .FirstAsync(cancellationToken)
+            .ConfigureAwait(false);
+
         var withdrawalByUserIds = to > yesterday
             ? await _context.WithdrawForms
                 .Join(_context.Players,
@@ -272,6 +277,7 @@ public class GetPlayerContributionsQueryHandler
                 WinLossAmount = x.Aggregate.WinLossAmount,
                 NetProfit = x.Aggregate.NetProfit -
                     (x.Aggregate.UpgradeAmount + x.Aggregate.SeasonAmount + x.Aggregate.BirthdayAmount)
+                    - x.Aggregate.WinLossAmount * brand.PlatformCharge / 100
             })
             .Where(x =>
                 playerCodes.Contains(x.PlayerCode)
