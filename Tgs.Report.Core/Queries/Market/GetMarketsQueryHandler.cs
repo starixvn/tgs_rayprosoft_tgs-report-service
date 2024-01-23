@@ -125,6 +125,7 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
             .Select(x => new
             {
                 x.ReportDate,
+                x.FirstDepositPlayers,
                 x.DailyDepositAmount,
                 x.DailyDepositHandlingFee,
                 x.DailyWithdrawAmount
@@ -185,7 +186,6 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                 Turnover = aggregates.Sum(s => s.AgentAggregate.Turnover),
                 WinLossAmount = aggregates.Sum(s => s.AgentAggregate.WinLossAmount),
                 AllAgentRebateAmount = aggregates.Sum(s => s.AgentAggregate.AllAgentRebateAmount),
-                FirstFundInCount = aggregates.Sum(s => s.AgentAggregate.FirstFundInCount),
                 UpgradeAmount = aggregates.Sum(s => s.BonusAggregate == null ? 0M : s.BonusAggregate.UpgradeAmount),
                 SeasonAmount = aggregates.Sum(s => s.BonusAggregate == null ? 0M : s.BonusAggregate.SeasonAmount),
                 BirthdayAmount = aggregates.Sum(s => s.BonusAggregate == null ? 0M : s.BonusAggregate.BirthdayAmount),
@@ -290,7 +290,7 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                             playerLoginRecordsByDates.FirstOrDefault(plr => plr.Date == reportDate.Date)
                                 ?.LoginPlayer ?? 0,
                         RegisteredCount = aggregates.Sum(m => m.MarketAggregate?.RegisteredCount ?? 0),
-                        FirstFundInCount = aggregates.Sum(m => m.MarketAggregate?.FirstFundInCount ?? 0),
+                        FirstFundInCount = aggregates.Sum(m => m.PaymentStatistic?.FirstDepositPlayers ?? 0),
                         DepositAmount =
                             realTimeDeposit?.DepositAmount ??
                             aggregates.Sum(m => m.PaymentStatistic?.DailyDepositAmount ?? 0M),
