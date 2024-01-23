@@ -89,6 +89,21 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                 .ConfigureAwait(false)
             : null;
 
+        var firstDeposits = to > yesterday
+            ? await _context.DepositForms
+                .Where(x => x.BrandId == request.BrandId && x.Status == 8000)
+                .GroupBy(x => x.PlayerCode,
+                    (playerCode, group) => new
+                    {
+                        PlayerCode = playerCode,
+                        FirstDepositOn = group.Min(x => x.UpdatedOn),
+                        LastDepositOn = group.Max(x => x.UpdatedOn)
+                    })
+                .Where(x => x.FirstDepositOn >= yesterday.UtcDateTime && x.FirstDepositOn < to.UtcDateTime)
+                .ToArrayAsync(cancellationToken)
+                .ConfigureAwait(false)
+            : null;
+
         var depositByDates = deposits?
             .GroupBy(x => x.UpdatedOn.ToOffset(offset).Date,
                 (date, deposits) => new
@@ -96,6 +111,14 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                     Date = date,
                     DepositAmount = deposits.Sum(d => d.ActualAmount ?? d.Amount),
                     DepositHandlingFee = deposits.Sum(d => d.HandlingFee)
+                });
+
+        var depositByFirstDates = firstDeposits?
+            .GroupBy(x => x.FirstDepositOn.ToOffset(offset).Date,
+                (date, deposits) => new
+                {
+                    Date = date,
+                    Count = deposits.Count()
                 });
 
         var playerLoginRecordsByDates = await _context.PlayerLoginRecords
@@ -280,6 +303,7 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                 {
                     var realTimeDeposit = depositByDates?.FirstOrDefault(d => d.Date == reportDate.Date);
                     var realTimeWithdraw = withdrawalByDates?.FirstOrDefault(d => d.Date == reportDate.Date);
+                    var realTimeFirstDeposit = depositByFirstDates?.FirstOrDefault(d => d.Date == reportDate.Date);
 
                     return new MarketModel
                     {
@@ -290,7 +314,9 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                             playerLoginRecordsByDates.FirstOrDefault(plr => plr.Date == reportDate.Date)
                                 ?.LoginPlayer ?? 0,
                         RegisteredCount = aggregates.Sum(m => m.MarketAggregate?.RegisteredCount ?? 0),
-                        FirstFundInCount = aggregates.Sum(m => m.PaymentStatistic?.FirstDepositPlayers ?? 0),
+                        FirstFundInCount =
+                            realTimeFirstDeposit?.Count ??
+                            aggregates.Sum(m => m.PaymentStatistic?.FirstDepositPlayers ?? 0),
                         DepositAmount =
                             realTimeDeposit?.DepositAmount ??
                             aggregates.Sum(m => m.PaymentStatistic?.DailyDepositAmount ?? 0M),
