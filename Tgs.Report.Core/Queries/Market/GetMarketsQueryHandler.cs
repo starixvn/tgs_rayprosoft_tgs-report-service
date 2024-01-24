@@ -312,14 +312,17 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                         ActivePlayer = aggregates.Sum(m => m.MarketAggregate?.ActivePlayer ?? 0),
                         LoginPlayer =
                             playerLoginRecordsByDates.FirstOrDefault(plr => plr.Date == reportDate.Date)
-                                ?.LoginPlayer ?? 0,
+                                ?.LoginPlayer ??
+                            0,
                         RegisteredCount = aggregates.Sum(m => m.MarketAggregate?.RegisteredCount ?? 0),
                         FirstFundInCount =
                             realTimeFirstDeposit?.Count ??
                             aggregates.Sum(m => m.PaymentStatistic?.FirstDepositPlayers ?? 0),
                         DepositAmount =
-                            realTimeDeposit?.DepositAmount ??
-                            aggregates.Sum(m => m.PaymentStatistic?.DailyDepositAmount ?? 0M),
+                            (realTimeDeposit?.DepositAmount ??
+                             aggregates.Sum(m => m.PaymentStatistic?.DailyDepositAmount ?? 0M)) -
+                            (realTimeDeposit?.DepositHandlingFee ??
+                             aggregates.Sum(m => m.PaymentStatistic?.DailyDepositHandlingFee ?? 0M)),
                         DepositHandlingFee =
                             realTimeDeposit?.DepositHandlingFee ??
                             aggregates.Sum(m => m.PaymentStatistic?.DailyDepositHandlingFee ?? 0M),
@@ -330,21 +333,21 @@ public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedRe
                             => m.MarketAggregate == null
                                 ? 0M
                                 : m.MarketAggregate.CompanyAdjustAmount -
-                                m.MarketAggregate.NoIncludeNetProfitCompanyAdjustAmount),
+                                  m.MarketAggregate.NoIncludeNetProfitCompanyAdjustAmount),
                         BonusAdjustAmount = aggregates.Sum(m
                             => m.MarketAggregate == null
                                 ? 0M
                                 : m.MarketAggregate.BonusAdjustAmount -
-                                m.MarketAggregate.NoIncludeNetProfitBonusAdjustAmount),
+                                  m.MarketAggregate.NoIncludeNetProfitBonusAdjustAmount),
                         BonusAmount =
                             aggregates.Sum(
                                 m => m.MarketAggregate == null
                                     ? 0
-                                    : m.MarketAggregate.RebateAmount
-                                    + m.MarketAggregate.PromotionAmount
-                                    + m.MarketAggregate.UpgradeAmount
-                                    + m.MarketAggregate.SeasonAmount
-                                    + m.MarketAggregate.BirthdayAmount),
+                                    : m.MarketAggregate.RebateAmount +
+                                      m.MarketAggregate.PromotionAmount +
+                                      m.MarketAggregate.UpgradeAmount +
+                                      m.MarketAggregate.SeasonAmount +
+                                      m.MarketAggregate.BirthdayAmount),
                         BetAmount = aggregates.Sum(m => m.MarketAggregate?.BetAmount ?? 0M),
                         ValidBetAmount = aggregates.Sum(m => m.MarketAggregate?.OriginalTurnover ?? 0M),
                         Turnover = aggregates.Sum(m => m.MarketAggregate?.Turnover ?? 0M),
