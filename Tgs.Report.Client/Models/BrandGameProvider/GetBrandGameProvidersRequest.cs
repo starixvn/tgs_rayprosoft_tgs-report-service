@@ -1,4 +1,4 @@
-﻿using Tgs.Report.Enum;
+﻿using GameType = Tgs.Report.Client.Enum.GameType;
 
 namespace Tgs.Report.Client.Models.BrandGameProvider;
 
