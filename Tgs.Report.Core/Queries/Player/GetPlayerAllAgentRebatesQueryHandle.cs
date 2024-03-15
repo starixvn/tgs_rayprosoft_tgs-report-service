@@ -5,13 +5,10 @@ using Tgs.Report.ViewModel.Player;
 namespace Tgs.Report.Core.Queries.Player;
 
 internal class
-    GetPlayerAllAgentRebatesQueryHandle : IStreamRequestHandler<GetPlayerAllAgentRebatesRequest,
+    GetPlayerAllAgentRebatesQueryHandle(IPlayerFactory playerFactory)
+    : IStreamRequestHandler<GetPlayerAllAgentRebatesRequest,
         PlayerAllAgentRebateModel>
 {
-    private readonly IPlayerFactory _playerFactory;
-
-    public GetPlayerAllAgentRebatesQueryHandle(IPlayerFactory playerFactory) => _playerFactory = playerFactory;
-
     public IAsyncEnumerable<PlayerAllAgentRebateModel> Handle(GetPlayerAllAgentRebatesRequest request,
         CancellationToken cancellationToken)
     {
@@ -35,7 +32,7 @@ internal class
             0,
             requestTo.Offset);
 
-        return _playerFactory
+        return playerFactory
             .GetPlayerAllAgentRebatesQueryable(new GetPlayerAllAgentRebatesQuery(request.BrandId,
                 from.UtcDateTime,
                 to.UtcDateTime,

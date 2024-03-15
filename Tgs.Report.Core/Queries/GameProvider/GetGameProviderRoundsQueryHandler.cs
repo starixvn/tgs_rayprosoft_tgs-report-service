@@ -7,28 +7,20 @@ using Tgs.Report.ViewModel.GameProvider;
 namespace Tgs.Report.Core.Queries.GameProvider;
 
 public class
-    GetGameProviderRoundsQueryHandler : IRequestHandler<GetGameProviderRoundsRequest,
-        PagedResponse<GameProviderRoundsModel>>
-{
-    private readonly ITgsService<GameProviderAggregate> _gameProviderAggregateService;
-    private readonly ITgsService<Repository.Entities.GameProvider> _gameProviderService;
-
-    public GetGameProviderRoundsQueryHandler(
+    GetGameProviderRoundsQueryHandler(
         ITgsService<GameProviderAggregate> gameProviderAggregateService,
         ITgsService<Repository.Entities.GameProvider> gameProviderService)
-    {
-        _gameProviderAggregateService = gameProviderAggregateService;
-        _gameProviderService = gameProviderService;
-    }
-
+    : IRequestHandler<GetGameProviderRoundsRequest,
+        PagedResponse<GameProviderRoundsModel>>
+{
     public Task<PagedResponse<GameProviderRoundsModel>> Handle(
         GetGameProviderRoundsRequest request,
         CancellationToken cancellationToken)
-        => _gameProviderAggregateService.GetQueries()
+        => gameProviderAggregateService.GetQueries()
             .Where(request.GameProviderId, x => x.GameProviderId == request.GameProviderId)
             .Where(request.CurrencyCode, x => x.CurrencyCode == request.CurrencyCode)
             .Where(x => x.ReportDate >= request.From && x.ReportDate < request.To)
-            .Join(_gameProviderService.GetQueries(),
+            .Join(gameProviderService.GetQueries(),
                 a => a.GameProviderId,
                 g => g.Id,
                 (round, gameProvider) => new

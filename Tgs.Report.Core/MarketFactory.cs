@@ -6,12 +6,8 @@ using Tgs.Report.ViewModel.Market;
 
 namespace Tgs.Report.Core
 {
-    internal class MarketFactory : IMarketFactory
+    internal class MarketFactory(TgsContext context) : IMarketFactory
     {
-        private readonly TgsContext _context;
-
-        public MarketFactory(TgsContext context) => _context = context;
-
         public async Task<IEnumerable<MarketAgentProfitDataModel>> GetAgentProfitsAsync(GetMarketAgentProfitsRequest request)
         {
             var spName = """
@@ -93,8 +89,8 @@ namespace Tgs.Report.Core
     limit @pageSize;
     """;
 
-            var conn = _context.Database.GetDbConnection();
-            var transaction = _context.Database.CurrentTransaction?.GetDbTransaction();
+            var conn = context.Database.GetDbConnection();
+            var transaction = context.Database.CurrentTransaction?.GetDbTransaction();
             return await conn.QueryAsync<MarketAgentProfitDataModel>(spName,
                 new Dictionary<string, object>
                 {

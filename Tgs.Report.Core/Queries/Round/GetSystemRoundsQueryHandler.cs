@@ -6,12 +6,10 @@ using Tgs.Report.ViewModel.Round;
 
 namespace Tgs.Report.Core.Queries.Round;
 
-public class GetSystemRoundsQueryHandler : IRequestHandler<GetSystemRoundsRequest, PagedResponse<SystemRoundModel>>
+public class GetSystemRoundsQueryHandler(TgsContext context)
+    : IRequestHandler<GetSystemRoundsRequest, PagedResponse<SystemRoundModel>>
 {
-    private readonly TgsContext _context;
-
-    public GetSystemRoundsQueryHandler(TgsContext context)
-        => _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly TgsContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public Task<PagedResponse<SystemRoundModel>> Handle(
         GetSystemRoundsRequest request,

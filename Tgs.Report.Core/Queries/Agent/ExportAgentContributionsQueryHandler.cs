@@ -5,12 +5,9 @@ using Tgs.Report.ViewModel.Agent;
 
 namespace Tgs.Report.Core.Queries.Agent;
 
-internal class ExportAgentContributionsQueryHandler : IRequestHandler<ExportAgentContributionsRequest, MemoryStream>
+internal class ExportAgentContributionsQueryHandler(IMediator mediator)
+    : IRequestHandler<ExportAgentContributionsRequest, MemoryStream>
 {
-    private readonly IMediator _mediator;
-
-    public ExportAgentContributionsQueryHandler(IMediator mediator) => _mediator = mediator;
-
     public async Task<MemoryStream> Handle(
         ExportAgentContributionsRequest request,
         CancellationToken cancellationToken)
@@ -28,7 +25,7 @@ internal class ExportAgentContributionsQueryHandler : IRequestHandler<ExportAgen
         };
 
         var agentContributions =
-            await _mediator.Send(getAgentContributionsRequest, cancellationToken).ConfigureAwait(false);
+            await mediator.Send(getAgentContributionsRequest, cancellationToken).ConfigureAwait(false);
 
         var exportData = agentContributions.Items?.Select(x => new ExportAgentContributionModel
         {

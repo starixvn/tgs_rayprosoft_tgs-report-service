@@ -119,7 +119,7 @@ public sealed class GetAgentContributionsQueryTest : BaseTest
                 .Sum(x => x.SeasonAmount + x.UpgradeAmount + x.BirthdayAmount);
 
         Assert.That(response.Valid, Is.True);
-        Assert.That(response.Items.Sum(x => x.NetProfit) == totalNetProfit);
+        Assert.That(response.Items?.Sum(x => x.NetProfit) == totalNetProfit);
         Assert.That(response.Items?.Length, Is.EqualTo(players.Count()));
     }
 

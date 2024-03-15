@@ -255,7 +255,7 @@ public sealed class GetPlayerContributionsQueryTest : BaseTest
 
         Assert.That(response.Items?.Length, Is.EqualTo(3));
 
-        Assert.That(response.Items.Where(x => x.PlayerCode == "player1").Sum(x => x.NetProfit) == totalNetProfit);
+        Assert.That(response.Items?.Where(x => x.PlayerCode == "player1").Sum(x => x.NetProfit) == totalNetProfit);
 
         await fakeDbContext.DepositForms.Where(x => x.UpdatedOn == reportDate)
             .GroupBy(x => x.PlayerCode)

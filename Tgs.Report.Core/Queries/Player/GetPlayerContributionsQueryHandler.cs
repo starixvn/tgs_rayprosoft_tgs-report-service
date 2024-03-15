@@ -7,13 +7,10 @@ using Tgs.Report.ViewModel.Player;
 
 namespace Tgs.Report.Core.Queries.Player;
 
-public class GetPlayerContributionsQueryHandler
+public class GetPlayerContributionsQueryHandler(TgsContext context)
     : IRequestHandler<GetPlayerContributionsRequest, PagedResponse<PlayerContributionModel>>
 {
-    private readonly TgsContext _context;
-
-    public GetPlayerContributionsQueryHandler(TgsContext context)
-        => _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly TgsContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async Task<PagedResponse<PlayerContributionModel>> Handle(
         GetPlayerContributionsRequest request,

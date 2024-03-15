@@ -7,12 +7,10 @@ using Tgs.Report.ViewModel.Market;
 namespace Tgs.Report.Core.Queries.Market;
 
 public class
-    GetAdditionalExpensesQueryHandler : IRequestHandler<GetAdditionalExpensesRequest, GetAdditionalExpensesResponse>
+    GetAdditionalExpensesQueryHandler(TgsContext context)
+    : IRequestHandler<GetAdditionalExpensesRequest, GetAdditionalExpensesResponse>
 {
-    private readonly TgsContext _context;
-
-    public GetAdditionalExpensesQueryHandler(TgsContext context)
-        => _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly TgsContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async Task<GetAdditionalExpensesResponse> Handle(
         GetAdditionalExpensesRequest request,

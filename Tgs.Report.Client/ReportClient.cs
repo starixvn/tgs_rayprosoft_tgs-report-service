@@ -989,6 +989,19 @@ public class ReportClient : IReportClient
         return stream;
     }
 
+    public async ValueTask<GetBrandGameProvidersResponse> GetBrandGameProvidersAsync(GetBrandGameProvidersRequest request)
+    {
+        var path = ClientPath.AppendWithProperties("/api/brandGameProviderReport/v2?", request);
+
+        var response = await _client.GetAsync(path).ConfigureAwait(false);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        return JsonSerializer.Deserialize<GetBrandGameProvidersResponse>(
+            await response.Content.ReadAsStringAsync(),
+            _jsonSerializerOptions)!;
+    }
+
     public async ValueTask<PagedResponse<MarketAgentProfitModel>> GetMarketAgentProfitsAsync(GetMarketAgentProfitsRequest request)
     {
         var path = ClientPath.AppendWithProperties("/api/marketReport/agentProfit?", request);

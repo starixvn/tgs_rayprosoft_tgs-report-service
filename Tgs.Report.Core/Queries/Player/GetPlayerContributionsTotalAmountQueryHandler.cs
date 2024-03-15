@@ -6,13 +6,10 @@ using Tgs.Report.ViewModel.Player;
 
 namespace Tgs.Report.Core.Queries.Player;
 
-public class GetPlayerContributionsTotalAmountQueryHandler
+public class GetPlayerContributionsTotalAmountQueryHandler(TgsContext context)
     : IRequestHandler<GetPlayerContributionsTotalAmountRequest, PlayerContributionTotalAmountModel>
 {
-    private readonly TgsContext _context;
-
-    public GetPlayerContributionsTotalAmountQueryHandler(TgsContext context)
-        => _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly TgsContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async Task<PlayerContributionTotalAmountModel> Handle(
         GetPlayerContributionsTotalAmountRequest request,

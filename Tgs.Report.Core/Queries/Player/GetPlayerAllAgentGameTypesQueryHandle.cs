@@ -5,16 +5,13 @@ using Tgs.Report.ViewModel.Player;
 namespace Tgs.Report.Core.Queries.Player;
 
 internal class
-    GetPlayerAllAgentGameTypesQueryHandle : IStreamRequestHandler<GetPlayerAllAgentRebateDetailGameTypesRequest,
+    GetPlayerAllAgentGameTypesQueryHandle(IPlayerFactory playerFactory)
+    : IStreamRequestHandler<GetPlayerAllAgentRebateDetailGameTypesRequest,
         PlayerAllAgentRebateDetailGameTypeModel>
 {
-    private readonly IPlayerFactory _playerFactory;
-
-    public GetPlayerAllAgentGameTypesQueryHandle(IPlayerFactory playerFactory) => _playerFactory = playerFactory;
-
     public IAsyncEnumerable<PlayerAllAgentRebateDetailGameTypeModel> Handle(GetPlayerAllAgentRebateDetailGameTypesRequest request,
         CancellationToken cancellationToken) =>
-        _playerFactory
+        playerFactory
             .GetPlayerAllAgentRebateDetailGameTypesQueryable(new GetPlayerAllAgentRebateDetailGameTypesQuery(request.BrandId,
                 request.PlayerCode,
                 request.SettleDateTime))

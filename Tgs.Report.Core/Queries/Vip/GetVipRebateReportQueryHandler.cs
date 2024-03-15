@@ -7,13 +7,10 @@ using Tgs.Report.ViewModel.Vip;
 
 namespace Tgs.Report.Core.Queries.Vip;
 
-public class GetVipRebateReportQueryHandler
+public class GetVipRebateReportQueryHandler(TgsContext context)
     : IRequestHandler<GetVipRebateReportRequest, PagedResponse<VipRebateModel>>
 {
-    private readonly TgsContext _context;
-
-    public GetVipRebateReportQueryHandler(TgsContext context)
-        => _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly TgsContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async Task<PagedResponse<VipRebateModel>> Handle(
         GetVipRebateReportRequest request,

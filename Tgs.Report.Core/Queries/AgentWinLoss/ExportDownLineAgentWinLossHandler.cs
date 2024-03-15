@@ -5,12 +5,9 @@ using Tgs.Report.ViewModel.AgentWinLoss;
 
 namespace Tgs.Report.Core.Queries.AgentWinLoss;
 
-internal class ExportDownLineAgentWinLossHandler : IRequestHandler<ExportDownLineAgentWinLossRequest, MemoryStream>
+internal class ExportDownLineAgentWinLossHandler(IMediator mediator)
+    : IRequestHandler<ExportDownLineAgentWinLossRequest, MemoryStream>
 {
-    private readonly IMediator _mediator;
-
-    public ExportDownLineAgentWinLossHandler(IMediator mediator) => _mediator = mediator;
-
     public async Task<MemoryStream> Handle(
         ExportDownLineAgentWinLossRequest request,
         CancellationToken cancellationToken)
@@ -26,7 +23,7 @@ internal class ExportDownLineAgentWinLossHandler : IRequestHandler<ExportDownLin
         };
 
         var agentContributions =
-            await _mediator.Send(getAgentWinLossRequest, cancellationToken).ConfigureAwait(false);
+            await mediator.Send(getAgentWinLossRequest, cancellationToken).ConfigureAwait(false);
 
         var exportData = agentContributions.Items?.Select(x => new ExportAgentWinLossModel
         {

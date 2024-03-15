@@ -4,12 +4,9 @@ using Tgs.Report.ViewModel.ResellerMarket;
 
 namespace Tgs.Report.Core.Queries.ResellerMarket;
 
-internal class ExportResellerMarketsQueryHandler : IRequestHandler<ExportResellerMarketsRequest, MemoryStream>
+internal class ExportResellerMarketsQueryHandler(IMediator mediator)
+    : IRequestHandler<ExportResellerMarketsRequest, MemoryStream>
 {
-    private readonly IMediator _mediator;
-
-    public ExportResellerMarketsQueryHandler(IMediator mediator) => _mediator = mediator;
-
     public async Task<MemoryStream> Handle(
         ExportResellerMarketsRequest request,
         CancellationToken cancellationToken)
@@ -25,7 +22,7 @@ internal class ExportResellerMarketsQueryHandler : IRequestHandler<ExportReselle
             SortBy = request.SortBy
         };
 
-        var markets = await _mediator.Send(getMarketsRequest, cancellationToken).ConfigureAwait(false);
+        var markets = await mediator.Send(getMarketsRequest, cancellationToken).ConfigureAwait(false);
 
         var exportData = markets.Datas?.Items?.Select(x => new ExportResellerMarketsModel
         {

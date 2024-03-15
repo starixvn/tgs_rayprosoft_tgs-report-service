@@ -7,11 +7,9 @@ using Tgs.Report.ViewModel.Round;
 
 namespace Tgs.Report.Core;
 
-public class RoundFactory : IRoundFactory
+public class RoundFactory(TgsContext context) : IRoundFactory
 {
-    private readonly TgsContext _context;
-
-    public RoundFactory(TgsContext context) => _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly TgsContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async Task<RoundAggregateModel[]> GenerateRoundAggregateAsync(DateTimeOffset start, DateTimeOffset end)
     {

@@ -4,12 +4,9 @@ using Tgs.Report.ViewModel.LicenseeMarket;
 
 namespace Tgs.Report.Core.Queries.LicenseeMarket;
 
-internal class ExportLicenseeMarketsQueryHandler : IRequestHandler<ExportLicenseeMarketsRequest, MemoryStream>
+internal class ExportLicenseeMarketsQueryHandler(IMediator mediator)
+    : IRequestHandler<ExportLicenseeMarketsRequest, MemoryStream>
 {
-    private readonly IMediator _mediator;
-
-    public ExportLicenseeMarketsQueryHandler(IMediator mediator) => _mediator = mediator;
-
     public async Task<MemoryStream> Handle(
         ExportLicenseeMarketsRequest request,
         CancellationToken cancellationToken)
@@ -25,7 +22,7 @@ internal class ExportLicenseeMarketsQueryHandler : IRequestHandler<ExportLicense
             SortBy = request.SortBy
         };
 
-        var markets = await _mediator.Send(getMarketsRequest, cancellationToken).ConfigureAwait(false);
+        var markets = await mediator.Send(getMarketsRequest, cancellationToken).ConfigureAwait(false);
 
         var exportData = markets.Datas?.Items?.Select(x => new ExportLicenseeMarketsModel
         {

@@ -6,12 +6,9 @@ using Tgs.Report.ViewModel.PlayerDeposit;
 
 namespace Tgs.Report.Core;
 
-public class PlayerDepositFactory : IPlayerDepositFactory
+public class PlayerDepositFactory(TgsContext context) : IPlayerDepositFactory
 {
-    private readonly TgsContext _context;
-
-    public PlayerDepositFactory(TgsContext context)
-        => _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly TgsContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async Task<IEnumerable<PlayerFirstDepositDetailModel>> GetPlayerFirstDepositDetailsAsync(Guid brandId,
         Guid agentId, DateTimeOffset start, DateTimeOffset end)

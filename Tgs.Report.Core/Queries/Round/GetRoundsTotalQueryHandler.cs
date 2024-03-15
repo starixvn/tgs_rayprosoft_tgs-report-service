@@ -4,12 +4,9 @@ using Tgs.Report.ViewModel.Round;
 
 namespace Tgs.Report.Core.Queries.Round;
 
-public class GetRoundsTotalQueryHandler : IRequestHandler<GetRoundsTotalRequest, RoundTotalModel>
+public class GetRoundsTotalQueryHandler(TgsContext context) : IRequestHandler<GetRoundsTotalRequest, RoundTotalModel>
 {
-    private readonly TgsContext _context;
-
-    public GetRoundsTotalQueryHandler(TgsContext context)
-        => _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly TgsContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public Task<RoundTotalModel> Handle(
         GetRoundsTotalRequest request,

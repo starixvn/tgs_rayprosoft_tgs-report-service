@@ -5,12 +5,10 @@ using Tgs.Report.ViewModel.Agent;
 
 namespace Tgs.Report.Core.Queries.Agent;
 
-public class GetAgentTeamInfoQueryHandler : IRequestHandler<GetAgentTeamInfoRequest, PagedResponse<TeamInfoModel>>
+public class GetAgentTeamInfoQueryHandler(TgsContext context)
+    : IRequestHandler<GetAgentTeamInfoRequest, PagedResponse<TeamInfoModel>>
 {
-    private readonly TgsContext _context;
-
-    public GetAgentTeamInfoQueryHandler(TgsContext context)
-        => _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly TgsContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public Task<PagedResponse<TeamInfoModel>> Handle(
         GetAgentTeamInfoRequest request,

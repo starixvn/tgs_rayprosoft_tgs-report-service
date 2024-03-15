@@ -8,13 +8,10 @@ using Tgs.Report.ViewModel.Player;
 namespace Tgs.Report.Core.Queries.Player;
 
 public class
-    GetPlayersAccountChangeQueryHandler : IRequestHandler<GetPlayersAccountChangesRequest,
-        PagedResponse<PlayersAccountChangeModel>>
+    GetPlayersAccountChangeQueryHandler(TgsContext context) : IRequestHandler<GetPlayersAccountChangesRequest,
+    PagedResponse<PlayersAccountChangeModel>>
 {
-    private readonly TgsContext _context;
-
-    public GetPlayersAccountChangeQueryHandler(TgsContext context)
-        => _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly TgsContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async Task<PagedResponse<PlayersAccountChangeModel>> Handle(
         GetPlayersAccountChangesRequest request,

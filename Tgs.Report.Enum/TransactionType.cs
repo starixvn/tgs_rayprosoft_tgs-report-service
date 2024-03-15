@@ -55,6 +55,7 @@ public enum TransactionType
     ///     The dividend all agent rebate
     /// </summary>
     DividendAllAgentRebate = 4100,
+    AgentDividend = 4200,
 
     /// <summary>
     ///     調帳 5000~5999
@@ -69,6 +70,14 @@ public enum TransactionType
     ///     已結算單再調整
     /// </summary>
     AdjustResettledBetManual = 5010,
+
+    // 轉帳 6000~6999
+    Transfer = 6100,
+    TransferCommit = 6200,
+    TransferRollback = 6300,
+    Receive = 6400,
+    ReceiveCommit = 6500,
+    ReceiveRollback = 6600,
 
     /// <summary>
     ///     The game

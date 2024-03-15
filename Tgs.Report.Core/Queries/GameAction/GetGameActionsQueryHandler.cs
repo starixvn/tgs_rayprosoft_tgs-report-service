@@ -6,12 +6,10 @@ using Tgs.Report.ViewModel.GameAction;
 
 namespace Tgs.Report.Core.Queries.GameAction;
 
-public class GetGameActionsQueryHandler : IRequestHandler<GetGameActionsRequest, PagedResponse<GameActionModel>>
+public class GetGameActionsQueryHandler(TgsContext context)
+    : IRequestHandler<GetGameActionsRequest, PagedResponse<GameActionModel>>
 {
-    private readonly TgsContext _context;
-
-    public GetGameActionsQueryHandler(TgsContext context)
-        => _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly TgsContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public Task<PagedResponse<GameActionModel>> Handle(
         GetGameActionsRequest request,

@@ -5,21 +5,14 @@ using Tgs.Report.ViewModel.AgentWinLoss;
 
 namespace Tgs.Report.Core.Queries.AgentWinLoss;
 
-internal class GetPlayerWinLossQueryHandler : IRequestHandler<GetPlayerWinLossRequest,
+internal class GetPlayerWinLossQueryHandler(TgsContext context) : IRequestHandler<GetPlayerWinLossRequest,
     PagedResponse<AgentWinLossModel>>
 {
-    private readonly TgsContext _context;
-
-    public GetPlayerWinLossQueryHandler(TgsContext context)
-    {
-        _context = context;
-    }
-
     public Task<PagedResponse<AgentWinLossModel>> Handle(
         GetPlayerWinLossRequest request,
         CancellationToken cancellationToken)
     {
-        return _context.PlayerAggregates.Where(x => x.ReportDate >= request.From && x.ReportDate < request.To)
+        return context.PlayerAggregates.Where(x => x.ReportDate >= request.From && x.ReportDate < request.To)
             .Where(x => x.PlayerCode == request.PlayerCode)
 
             .Where(x => x.AgentId != null)
@@ -47,7 +40,7 @@ internal class GetPlayerWinLossQueryHandler : IRequestHandler<GetPlayerWinLossRe
                         0.01M) ??
                     0M
             })
-            .Join(_context.Players, aggregate => aggregate.PlayerCode, p => p.PlayerCode,
+            .Join(context.Players, aggregate => aggregate.PlayerCode, p => p.PlayerCode,
                 (agg, player) => new AgentWinLossModel
                 {
                     Id = agg.PlayerCode,

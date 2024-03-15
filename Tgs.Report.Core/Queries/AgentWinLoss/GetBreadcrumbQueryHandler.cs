@@ -6,15 +6,10 @@ using Tgs.Report.ViewModel.AgentWinLoss;
 
 namespace Tgs.Report.Core.Queries.AgentWinLoss;
 
-internal class GetBreadcrumbQueryHandler : IRequestHandler<GetBreadcrumbRequest,
+internal class GetBreadcrumbQueryHandler(TgsContext context) : IRequestHandler<GetBreadcrumbRequest,
     IEnumerable<BreadcrumbModel>>
 {
-    private readonly TgsContext _context;
-
-    public GetBreadcrumbQueryHandler(TgsContext context)
-    {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-    }
+    private readonly TgsContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async Task<IEnumerable<BreadcrumbModel>> Handle(
         GetBreadcrumbRequest request,

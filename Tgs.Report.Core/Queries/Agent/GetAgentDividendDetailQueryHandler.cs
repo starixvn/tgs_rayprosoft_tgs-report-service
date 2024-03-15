@@ -7,13 +7,10 @@ using Tgs.Report.ViewModel.Agent;
 namespace Tgs.Report.Core.Queries.Agent;
 
 public class
-    GetAgentDividendDetailQueryHandler : IRequestHandler<GetAgentDividendDetailsRequest,
-        PagedResponse<AgentDividendDetailModel>>
+    GetAgentDividendDetailQueryHandler(TgsContext context) : IRequestHandler<GetAgentDividendDetailsRequest,
+    PagedResponse<AgentDividendDetailModel>>
 {
-    private readonly TgsContext _context;
-
-    public GetAgentDividendDetailQueryHandler(TgsContext context)
-        => _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly TgsContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async Task<PagedResponse<AgentDividendDetailModel>> Handle(
         GetAgentDividendDetailsRequest request,

@@ -7,6 +7,8 @@ data:
   appsettings.json: |
     {
       "Report": {
-        "GameProvidersPluggableBaseUrl": "http://game-pluggable-service"
+        "GameProvidersPluggableBaseUrl": "http://game-pluggable-service",
+        "PlayerServiceBaseUrl": "http://player-api",
+        "BrandCertificate": "http://brand-cert-api"
       }
     }
