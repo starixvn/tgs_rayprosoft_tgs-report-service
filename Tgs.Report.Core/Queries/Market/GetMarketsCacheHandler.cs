@@ -5,18 +5,11 @@ using Tgs.Report.ViewModel.Market;
 
 namespace Tgs.Report.Core.Queries.Market;
 
-public class GetMarketsCacheHandler : IRequestHandler<GetMarketsRequest, PagedResponse<MarketModel>>
+public class GetMarketsCacheHandler(
+    IMemoryCache memoryCache,
+    IRequestHandler<GetMarketsRequest, PagedResponse<MarketModel>> handler)
+    : IRequestHandler<GetMarketsRequest, PagedResponse<MarketModel>>
 {
-    private readonly IRequestHandler<GetMarketsRequest, PagedResponse<MarketModel>> _handler;
-    private readonly IMemoryCache _memoryCache;
-
-    public GetMarketsCacheHandler(IMemoryCache memoryCache,
-        IRequestHandler<GetMarketsRequest, PagedResponse<MarketModel>> handler)
-    {
-        _memoryCache = memoryCache;
-        _handler = handler;
-    }
-
     public async Task<PagedResponse<MarketModel>> Handle(
         GetMarketsRequest request,
         CancellationToken cancellationToken)
@@ -43,7 +36,7 @@ public class GetMarketsCacheHandler : IRequestHandler<GetMarketsRequest, PagedRe
 
         if (to > today)
         {
-            return await _handler
+            return await handler
                 .Handle(request, cancellationToken)
                 .ConfigureAwait(false);
         }
@@ -51,13 +44,13 @@ public class GetMarketsCacheHandler : IRequestHandler<GetMarketsRequest, PagedRe
         var key =
             $"MarketsReport:{request.BrandId}:{request.From}:{request.To}:{request.Page}:{request.Rows}:{request.OrderBy}:{request.SortBy}:{request.ShowAll}";
 
-        return await _memoryCache.GetOrCreateAsync(
+        return await memoryCache.GetOrCreateAsync(
             key,
             async entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5D);
 
-                return await _handler
+                return await handler
                     .Handle(request, cancellationToken)
                     .ConfigureAwait(false);
             }).ConfigureAwait(false) ?? new PagedResponse<MarketModel>();

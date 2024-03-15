@@ -6,15 +6,9 @@ using Tgs.Report.ViewModel.ResellerMarket;
 
 namespace Tgs.Report.Core.Queries.ResellerMarket;
 
-public class GetResellerMarketsQueryHandler : IRequestHandler<GetResellerMarketsRequest, ResellerMarketsResponse>
+public class GetResellerMarketsQueryHandler(TgsContext context)
+    : IRequestHandler<GetResellerMarketsRequest, ResellerMarketsResponse>
 {
-    private readonly TgsContext _context;
-
-    public GetResellerMarketsQueryHandler(TgsContext context)
-    {
-        _context = context;
-    }
-
     public async Task<ResellerMarketsResponse> Handle(
         GetResellerMarketsRequest request,
         CancellationToken cancellationToken)
@@ -56,7 +50,7 @@ public class GetResellerMarketsQueryHandler : IRequestHandler<GetResellerMarkets
             ? new(yesterday.Year, yesterday.Month, yesterday.Day)
             : new DateOnly(to.Year, to.Month, to.Day);
 
-        var brands = await _context.Brands
+        var brands = await context.Brands
             .Where(x => x.Licensee.ResellerId == request.ResellerId)
             .Where(!string.IsNullOrEmpty(request.CurrencyCode),
                 x => x.BrandCurrencies.Any(c => c.CurrencyCode == request.CurrencyCode))
@@ -75,7 +69,7 @@ public class GetResellerMarketsQueryHandler : IRequestHandler<GetResellerMarkets
         var brandIds = brands.Select(b => b.BrandId).ToArray();
 
         var dailyRealTimeWithdrawals = to > yesterday
-            ? await _context.WithdrawForms
+            ? await context.WithdrawForms
                 .Where(x => brandIds.Contains(x.BrandId))
                 .Where(x => x.UserType == 1 && x.Status == 9000)
                 .Where(from > yesterday, x => x.PaidOn >= from.UtcDateTime && x.PaidOn < to.UtcDateTime)
@@ -91,7 +85,7 @@ public class GetResellerMarketsQueryHandler : IRequestHandler<GetResellerMarkets
             : null;
 
         var dailyRealTimeDeposits = to > yesterday
-            ? await _context.DepositForms
+            ? await context.DepositForms
                 .Where(x => brandIds.Contains(x.BrandId))
                 .Where(x => x.Status == 8000)
                 .Where(from > yesterday, x => x.UpdatedOn >= from.UtcDateTime && x.UpdatedOn < to.UtcDateTime)
@@ -107,7 +101,7 @@ public class GetResellerMarketsQueryHandler : IRequestHandler<GetResellerMarkets
                 .ConfigureAwait(false)
             : null;
 
-        var brandPaymentStatistics = await _context.BrandDailyPaymentStatistics
+        var brandPaymentStatistics = await context.BrandDailyPaymentStatistics
             .Where(x => x.ReportDate >= fromDate && x.ReportDate < toDate)
             .GroupBy(x => x.BrandId,
                 (brandId, statistics) => new
@@ -120,8 +114,8 @@ public class GetResellerMarketsQueryHandler : IRequestHandler<GetResellerMarkets
             .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        var marketAggregates = await _context.Brands
-            .GroupJoin(_context.PlayerAggregates.Where(x => x.ReportDate >= from.UtcDateTime &&
+        var marketAggregates = await context.Brands
+            .GroupJoin(context.PlayerAggregates.Where(x => x.ReportDate >= from.UtcDateTime &&
                     x.ReportDate < to.UtcDateTime),
                 brand => brand.Id,
                 aggregate => aggregate.BrandId,
@@ -141,7 +135,7 @@ public class GetResellerMarketsQueryHandler : IRequestHandler<GetResellerMarkets
                     AgentAggregate = aggregate
                 })
             .Where(x => x.ResellerId == request.ResellerId)
-            .GroupJoin(_context.BrandCurrencies,
+            .GroupJoin(context.BrandCurrencies,
                 agent => agent.BrandId,
                 brandCurrency => brandCurrency.BrandId,
                 (agent, currencies) => new
@@ -163,7 +157,7 @@ public class GetResellerMarketsQueryHandler : IRequestHandler<GetResellerMarkets
                 x => x.BrandCurrencyCode == request.CurrencyCode)
             .Where(request.CurrencyCodes != null,
                 x => request.CurrencyCodes!.Contains(x.BrandCurrencyCode))
-            .GroupJoin(_context.PlayerBonusAggregates,
+            .GroupJoin(context.PlayerBonusAggregates,
                 agent => new
                 {
                     agent.AgentAggregate.ReportDate,

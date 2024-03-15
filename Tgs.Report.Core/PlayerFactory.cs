@@ -11,11 +11,9 @@ using Tgs.Report.ViewModel.Player;
 
 namespace Tgs.Report.Core;
 
-public class PlayerFactory : IPlayerFactory
+public class PlayerFactory(TgsContext context) : IPlayerFactory
 {
-    private readonly TgsContext _context;
-
-    public PlayerFactory(TgsContext context) => _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly TgsContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async ValueTask<(PlayerAccountChangeModel[], int)> GetPlayerAccountChangeAsync(
         Models.GetPlayerAccountChangesQuery request)

@@ -6,16 +6,13 @@ using Tgs.Report.ViewModel.Player;
 namespace Tgs.Report.Core.Queries.Player;
 
 internal class
-    GetPlayerAllAgentRebateTotalAmountQueryHandle : IRequestHandler<GetPlayerAllAgentRebateTotalAmountRequest, PlayerAllAgentRebateTotalAmountModel>
+    GetPlayerAllAgentRebateTotalAmountQueryHandle(IPlayerFactory playerFactory)
+    : IRequestHandler<GetPlayerAllAgentRebateTotalAmountRequest, PlayerAllAgentRebateTotalAmountModel>
 {
-    private readonly IPlayerFactory _playerFactory;
-
-    public GetPlayerAllAgentRebateTotalAmountQueryHandle(IPlayerFactory playerFactory) => _playerFactory = playerFactory;
-
     public async Task<PlayerAllAgentRebateTotalAmountModel> Handle(GetPlayerAllAgentRebateTotalAmountRequest request,
         CancellationToken cancellationToken)
     {
-        var rebates = await _playerFactory.GetPlayerAllAgentRebatesQueryable(new GetPlayerAllAgentRebatesQuery(
+        var rebates = await playerFactory.GetPlayerAllAgentRebatesQueryable(new GetPlayerAllAgentRebatesQuery(
                 request.BrandId,
                 request.From,
                 request.To,

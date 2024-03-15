@@ -8,13 +8,9 @@ using Tgs.Report.Repository.Entities;
 
 namespace Tgs.Report.Repository;
 
-internal class AgentRepository : IAgentRepository
+internal class AgentRepository(TgsContext context) : IAgentRepository
 {
-    private readonly TgsContext _context;
-
-    public AgentRepository(
-        TgsContext context)
-        => _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly TgsContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public Task<AgentWithNLevelInfo?> GetAgentWithNLevelAsync(
         Guid brandId,

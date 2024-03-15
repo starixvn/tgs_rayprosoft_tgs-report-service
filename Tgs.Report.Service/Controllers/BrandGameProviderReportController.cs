@@ -7,15 +7,17 @@ namespace Tgs.Report.Service.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class BrandGameProviderReportController : ControllerBase
+public class BrandGameProviderReportController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public BrandGameProviderReportController(IMediator mediator) => _mediator = mediator;
-
     [HttpGet]
     [Description("Get brand game provider round aggregate")]
     public Task<GetBrandGameProviderRoundsResponse> GetBrandGameProviderRoundsAsync(
         [FromQuery] GetBrandGameProviderRoundsRequest request) =>
-        _mediator.Send(request);
+        mediator.Send(request);
+
+    [HttpGet("V2")]
+    [Description("Get brand game provider aggregate")]
+    public Task<GetBrandGameProvidersResponse> GetBrandGameProvidersAsync(
+        [FromQuery] GetBrandGameProvidersRequest request) =>
+        mediator.Send(request);
 }

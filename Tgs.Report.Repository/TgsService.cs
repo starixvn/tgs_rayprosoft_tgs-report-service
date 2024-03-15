@@ -12,11 +12,10 @@ public interface ITgsService<T>
         bool tracking = false);
 }
 
-public class TgsService<T> : ITgsService<T> where T : class
+public class TgsService<T>(TgsContext context) : ITgsService<T>
+    where T : class
 {
-    private readonly TgsContext _context;
-
-    public TgsService(TgsContext context) => _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly TgsContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public IQueryable<T> GetQueries(Func<IQueryable<T>, IQueryable<T>>? preQuery, bool tracking)
     {

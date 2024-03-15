@@ -9,32 +9,22 @@ using Tgs.Report.ViewModel.Agent;
 namespace Tgs.Report.Core.Queries.Agent;
 
 public class
-    GetAgentContributionsQueryHandler : IRequestHandler<GetAgentContributionsRequest,
-        PagedResponse<AgentContributionModel>>
-{
-    private readonly IAgentRepository _agentRepository;
-    private readonly TgsContext _context;
-    private readonly ITgsService<PlayerAggregate> _playerAggregateService;
-    private readonly ITgsService<PlayerBonusAggregate> _playerBonusAggregate;
-    private readonly ITgsService<Repository.Entities.Player> _playerService;
-    private readonly ITgsService<WithdrawForm> _withdrawFormsService;
-
-    public GetAgentContributionsQueryHandler(
+    GetAgentContributionsQueryHandler(
         IAgentRepository agentRepository,
         ITgsService<WithdrawForm> withdrawFormsService,
         ITgsService<Repository.Entities.Player> playerService,
         ITgsService<PlayerAggregate> playerAggregateService,
         ITgsService<PlayerBonusAggregate> playerBonusAggregate,
         TgsContext context)
-    {
-        _agentRepository = agentRepository ?? throw new ArgumentNullException(nameof(agentRepository));
-        _withdrawFormsService = withdrawFormsService ?? throw new ArgumentNullException(nameof(withdrawFormsService));
-        _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
-        _playerAggregateService =
-            playerAggregateService ?? throw new ArgumentNullException(nameof(playerAggregateService));
-        _playerBonusAggregate = playerBonusAggregate ?? throw new ArgumentNullException(nameof(playerBonusAggregate));
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-    }
+    : IRequestHandler<GetAgentContributionsRequest,
+        PagedResponse<AgentContributionModel>>
+{
+    private readonly IAgentRepository _agentRepository = agentRepository ?? throw new ArgumentNullException(nameof(agentRepository));
+    private readonly TgsContext _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly ITgsService<PlayerAggregate> _playerAggregateService = playerAggregateService ?? throw new ArgumentNullException(nameof(playerAggregateService));
+    private readonly ITgsService<PlayerBonusAggregate> _playerBonusAggregate = playerBonusAggregate ?? throw new ArgumentNullException(nameof(playerBonusAggregate));
+    private readonly ITgsService<Repository.Entities.Player> _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
+    private readonly ITgsService<WithdrawForm> _withdrawFormsService = withdrawFormsService ?? throw new ArgumentNullException(nameof(withdrawFormsService));
 
     public async Task<PagedResponse<AgentContributionModel>> Handle(
         GetAgentContributionsRequest request,

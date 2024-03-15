@@ -4,12 +4,8 @@ using Tgs.Report.ViewModel.Round;
 
 namespace Tgs.Report.Core.Queries.Round;
 
-internal class ExportRoundsQueryHandler : IRequestHandler<ExportRoundsRequest, MemoryStream>
+internal class ExportRoundsQueryHandler(IMediator mediator) : IRequestHandler<ExportRoundsRequest, MemoryStream>
 {
-    private readonly IMediator _mediator;
-
-    public ExportRoundsQueryHandler(IMediator mediator) => _mediator = mediator;
-
     public async Task<MemoryStream> Handle(
         ExportRoundsRequest request,
         CancellationToken cancellationToken)
@@ -34,7 +30,7 @@ internal class ExportRoundsQueryHandler : IRequestHandler<ExportRoundsRequest, M
             SortBy = request.SortBy
         };
 
-        var rounds = await _mediator.Send(getRoundsRequest, cancellationToken).ConfigureAwait(false);
+        var rounds = await mediator.Send(getRoundsRequest, cancellationToken).ConfigureAwait(false);
 
         var exportData = rounds.Items?.Select(x => new ExportRoundsModel
         {

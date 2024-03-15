@@ -8,24 +8,17 @@ using Tgs.Report.ViewModel.Agent;
 namespace Tgs.Report.Core.Queries.Agent;
 
 public class
-    GetAgentDividendTeamDetailQueryHandler : IRequestHandler<GetAgentDividendTeamDetailsRequest,
+    GetAgentDividendTeamDetailQueryHandler(
+        ITgsService<Repository.Entities.Agent> agentService,
+        ITgsService<AgentDividend> agentDividendService)
+    : IRequestHandler<GetAgentDividendTeamDetailsRequest,
         PagedResponse<AgentDividendTeamDetailModel>>
 {
-    private readonly ITgsService<AgentDividend> _agentDividendService;
-    private readonly ITgsService<Repository.Entities.Agent> _agentService;
-
-    public GetAgentDividendTeamDetailQueryHandler(ITgsService<Repository.Entities.Agent> agentService,
-        ITgsService<AgentDividend> agentDividendService)
-    {
-        _agentService = agentService;
-        _agentDividendService = agentDividendService;
-    }
-
     public async Task<PagedResponse<AgentDividendTeamDetailModel>> Handle(
         GetAgentDividendTeamDetailsRequest request,
         CancellationToken cancellationToken)
     {
-        var dividendProviderAgents = await _agentDividendService.GetQueries()
+        var dividendProviderAgents = await agentDividendService.GetQueries()
             .Where(x => x.AgentId == request.AgentId)
             .Where(x => x.AgentDividendPercentage == request.AgentDividendPercentage)
             .Where(x => x.From >= request.From.ToUniversalTime())
@@ -40,14 +33,15 @@ public class
                 s.Dividend,
                 s.ActualDividendPercentage,
                 s.AgentCoveredBonus,
-                s.AgentCoveredBonusAdjust
+                s.AgentCoveredBonusAdjust,
+                s.AgentDividendId
             }))
             .Where(x => x.DividendProviderAgentId != request.AgentId)
             .ToArrayAsync(cancellationToken).ConfigureAwait(false);
 
         var firstLayerAgentDividendIds = dividendProviderAgents.Select(x => x.DividendProviderAgentId).ToArray();
 
-        var allAgentDividends = await _agentDividendService.GetQueries()
+        var allAgentDividends = await agentDividendService.GetQueries()
             .Where(x => firstLayerAgentDividendIds.Contains(x.AgentId))
             .Where(x => x.From >= request.From.ToUniversalTime())
             .Where(x => x.To < request.To.ToUniversalTime())
@@ -83,15 +77,11 @@ public class
         var agentDividends = allAgentDividends
             .GroupJoin(dividendProviderAgents, ad => new
                 {
-                    ad.AgentId,
-                    ad.From,
-                    ad.To
+                    ad.Id
                 },
                 da => new
                 {
-                    AgentId = da.DividendProviderAgentId,
-                    da.From,
-                    da.To
+                    Id = da.AgentDividendId
                 }, (agentDividend, group)
                     => new
                     {
@@ -128,7 +118,7 @@ public class
 
         var agentIds = agentDividends.Select(x => x.AgentId).ToArray();
 
-        var agents = await _agentService.GetQueries().Where(x => agentIds.Contains(x.Id))
+        var agents = await agentService.GetQueries().Where(x => agentIds.Contains(x.Id))
             .Select(x => new
             {
                 x.Id,

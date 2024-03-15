@@ -5,12 +5,9 @@ using Tgs.Report.ViewModel.Vip;
 
 namespace Tgs.Report.Core.Queries.Vip;
 
-public class GetVipReportTotalAmountQueryHandler : IRequestHandler<GetVipReportTotalAmountRequest, VipTotalAmountModel>
+public class GetVipReportTotalAmountQueryHandler(TgsContext context)
+    : IRequestHandler<GetVipReportTotalAmountRequest, VipTotalAmountModel>
 {
-    private readonly TgsContext _context;
-
-    public GetVipReportTotalAmountQueryHandler(TgsContext context) => _context = context;
-
     public async Task<VipTotalAmountModel> Handle(
         GetVipReportTotalAmountRequest request,
         CancellationToken cancellationToken)
@@ -48,11 +45,11 @@ public class GetVipReportTotalAmountQueryHandler : IRequestHandler<GetVipReportT
         var toDate = new DateOnly(to.Year, to.Month, to.Day);
 
         var totalWithdrawal = to > today
-            ? await _context.WithdrawForms
+            ? await context.WithdrawForms
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.UserType == 1 && x.Status == 9000)
                 .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
-                .Join(_context.Players,
+                .Join(context.Players,
                     wf => wf.UserId,
                     p => p.PlayerCode,
                     (wf, p) => new
@@ -70,11 +67,11 @@ public class GetVipReportTotalAmountQueryHandler : IRequestHandler<GetVipReportT
             : 0M;
 
         var totalDeposit = to > today
-            ? await _context.DepositForms
+            ? await context.DepositForms
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.Status == 8000)
                 .Where(x => x.CreatedOn >= from.ToUniversalTime() && x.CreatedOn < to.ToUniversalTime())
-                .Join(_context.Players,
+                .Join(context.Players,
                     wf => wf.PlayerCode,
                     p => p.PlayerCode,
                     (df, p) => new
@@ -91,8 +88,8 @@ public class GetVipReportTotalAmountQueryHandler : IRequestHandler<GetVipReportT
                 .ConfigureAwait(false)
             : 0M;
 
-        var dailyDepositWithdraws = await _context.PlayerDailyPaymentStatistics
-            .Join(_context.Players.Where(x => x.BrandId == request.BrandId), pp => pp.PlayerCode, p => p.PlayerCode,
+        var dailyDepositWithdraws = await context.PlayerDailyPaymentStatistics
+            .Join(context.Players.Where(x => x.BrandId == request.BrandId), pp => pp.PlayerCode, p => p.PlayerCode,
                 (pp, p) => new
                 {
                     pp.ReportDate,
@@ -115,15 +112,15 @@ public class GetVipReportTotalAmountQueryHandler : IRequestHandler<GetVipReportT
             .FirstOrDefaultAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        var vipTotalAmount = await _context.PlayerAggregates
+        var vipTotalAmount = await context.PlayerAggregates
             .Where(x => x.BrandId == request.BrandId)
             .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
-            .Select(x => x.PlayerCode).Union(_context.PlayerBonusAggregates
+            .Select(x => x.PlayerCode).Union(context.PlayerBonusAggregates
                 .Where(x => x.BrandId == request.BrandId)
                 .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
                 .Select(x => x.PlayerCode))
             .GroupBy(x => x, (x, y) => new { PlayerCode = x })
-            .GroupJoin(_context.PlayerAggregates
+            .GroupJoin(context.PlayerAggregates
                     .Where(x => x.BrandId == request.BrandId)
                     .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
                     .GroupBy(x => x.PlayerCode, (playerCode, list) => new
@@ -171,7 +168,7 @@ public class GetVipReportTotalAmountQueryHandler : IRequestHandler<GetVipReportT
                     playerAggregate.WinLossAmount,
                     playerAggregate.NetProfit
                 })
-            .GroupJoin(_context.PlayerBonusAggregates
+            .GroupJoin(context.PlayerBonusAggregates
                     .Where(x => x.BrandId == request.BrandId)
                     .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
                     .GroupBy(x => x.PlayerCode, (playerCode, list) => new
@@ -233,7 +230,7 @@ public class GetVipReportTotalAmountQueryHandler : IRequestHandler<GetVipReportT
                 SeasonAmount = group.Sum(s => s.SeasonAmount),
                 BirthdayAmount = group.Sum(s => s.BirthdayAmount)
             })
-            .Join(_context.Players.Include(x => x.Vip).Select(x => new
+            .Join(context.Players.Include(x => x.Vip).Select(x => new
             {
                 x.BrandId,
                 x.PlayerCode,
@@ -276,7 +273,7 @@ public class GetVipReportTotalAmountQueryHandler : IRequestHandler<GetVipReportT
             .FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
 
 
-        var vipRebateAmount = await _context.PlayerGameRebateAggregates
+        var vipRebateAmount = await context.PlayerGameRebateAggregates
             .Where(x => x.BrandId == request.BrandId)
             .Where(x => x.ReportDate >= from.ToUniversalTime() && x.ReportDate < to.ToUniversalTime())
             .GroupBy(x => new
@@ -290,7 +287,7 @@ public class GetVipReportTotalAmountQueryHandler : IRequestHandler<GetVipReportT
                     x.PlayerCode,
                     RebateAmount = players.Sum(m => m.VipRebateAmount)
                 })
-            .Join(_context.Players.Include(x => x.Vip).Select(x => new
+            .Join(context.Players.Include(x => x.Vip).Select(x => new
             {
                 x.BrandId,
                 x.PlayerCode,

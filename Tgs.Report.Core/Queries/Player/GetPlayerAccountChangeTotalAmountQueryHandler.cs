@@ -4,13 +4,10 @@ using Tgs.Report.ViewModel.Player;
 
 namespace Tgs.Report.Core.Queries.Player;
 
-public class GetPlayerAccountChangeTotalAmountQueryHandler :
+public class GetPlayerAccountChangeTotalAmountQueryHandler(IPlayerFactory playerFactory) :
     IRequestHandler<GetPlayerAccountChangesTotalAmountRequest, decimal>
 {
-    private readonly IPlayerFactory _playerFactory;
-
-    public GetPlayerAccountChangeTotalAmountQueryHandler(IPlayerFactory playerFactory)
-        => _playerFactory = playerFactory ?? throw new ArgumentNullException(nameof(playerFactory));
+    private readonly IPlayerFactory _playerFactory = playerFactory ?? throw new ArgumentNullException(nameof(playerFactory));
 
     public async Task<decimal> Handle(
         GetPlayerAccountChangesTotalAmountRequest request,

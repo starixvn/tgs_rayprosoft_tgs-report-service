@@ -25,6 +25,17 @@ builder.Services
 
         options.BaseUrl = config.GetValue<Uri>("Report:GameProvidersPluggableBaseUrl")!;
     })
+    .AddPlayerServiceClient((options, sp) =>
+    {
+        var config = sp.GetRequiredService<IConfiguration>();
+        options.BaseUrl = config.GetValue<Uri>("Report:PlayerServiceBaseUrl")!;
+    })
+    .AddBrandServiceClient((options, sp) =>
+    {
+        var config = sp.GetRequiredService<IConfiguration>();
+
+        options.BrandCertificateBaseUrl = config.GetValue<Uri>("Report:BrandCertificateUrl")!;
+    })
     .AddMemoryCache();
 
 builder.Services.AddHealthChecks();

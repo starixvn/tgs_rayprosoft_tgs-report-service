@@ -4,12 +4,8 @@ using Tgs.Report.ViewModel.Market;
 
 namespace Tgs.Report.Core.Queries.Market;
 
-internal class ExportMarketsQueryHandler : IRequestHandler<ExportMarketsRequest, MemoryStream>
+internal class ExportMarketsQueryHandler(IMediator mediator) : IRequestHandler<ExportMarketsRequest, MemoryStream>
 {
-    private readonly IMediator _mediator;
-
-    public ExportMarketsQueryHandler(IMediator mediator) => _mediator = mediator;
-
     public async Task<MemoryStream> Handle(
         ExportMarketsRequest request,
         CancellationToken cancellationToken)
@@ -22,7 +18,7 @@ internal class ExportMarketsQueryHandler : IRequestHandler<ExportMarketsRequest,
             ShowAll = true
         };
 
-        var markets = await _mediator.Send(getMarketsRequest, cancellationToken).ConfigureAwait(false);
+        var markets = await mediator.Send(getMarketsRequest, cancellationToken).ConfigureAwait(false);
 
         var exportData = markets.Items?.Select(x => new ExportMarketModel
         {

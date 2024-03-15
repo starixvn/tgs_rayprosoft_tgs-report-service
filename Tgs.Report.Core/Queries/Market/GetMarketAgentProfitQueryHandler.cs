@@ -5,15 +5,10 @@ using Tgs.Report.ViewModel.Market;
 namespace Tgs.Report.Core.Queries.Market;
 
 public class
-    GetMarketAgentProfitQueryHandler : IRequestHandler<GetMarketAgentProfitsRequest,
-        PagedResponse<MarketAgentProfitModel>>
+    GetMarketAgentProfitQueryHandler(IMarketFactory marketFactory) : IRequestHandler<GetMarketAgentProfitsRequest,
+    PagedResponse<MarketAgentProfitModel>>
 {
-    private readonly IMarketFactory _marketFactory;
-
-    public GetMarketAgentProfitQueryHandler(IMarketFactory marketFactory)
-    {
-        _marketFactory = marketFactory ?? throw new ArgumentNullException(nameof(marketFactory));
-    }
+    private readonly IMarketFactory _marketFactory = marketFactory ?? throw new ArgumentNullException(nameof(marketFactory));
 
     public async Task<PagedResponse<MarketAgentProfitModel>> Handle(
         GetMarketAgentProfitsRequest request,

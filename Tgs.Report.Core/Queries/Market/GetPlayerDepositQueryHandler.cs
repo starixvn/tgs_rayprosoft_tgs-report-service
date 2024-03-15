@@ -6,12 +6,10 @@ using Tgs.Report.ViewModel.PlayerDeposit;
 
 namespace Tgs.Report.Core.Queries.Market;
 
-public class GetPlayerDepositQueryHandler : IRequestHandler<GetPlayerDepositsRequest, PagedResponse<PlayerDepositModel>>
+public class GetPlayerDepositQueryHandler(TgsContext context)
+    : IRequestHandler<GetPlayerDepositsRequest, PagedResponse<PlayerDepositModel>>
 {
-    private readonly TgsContext _context;
-
-    public GetPlayerDepositQueryHandler(TgsContext context)
-        => _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly TgsContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async Task<PagedResponse<PlayerDepositModel>> Handle(
         GetPlayerDepositsRequest request,

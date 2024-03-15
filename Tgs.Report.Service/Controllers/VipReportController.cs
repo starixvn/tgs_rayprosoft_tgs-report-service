@@ -8,21 +8,17 @@ namespace Tgs.Report.Service.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class VipReportController : ControllerBase
+public class VipReportController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public VipReportController(IMediator mediator) => _mediator = mediator;
-
     [HttpGet]
     [Description("Get vips")]
     public Task<PagedResponse<VipModel>> GetVipsAsync([FromQuery] GetVipReportRequest request) =>
-        _mediator.Send(request);
+        mediator.Send(request);
 
     [HttpGet("vipTotalAmount")]
     [Description("Get vip total amount")]
     public Task<VipTotalAmountModel> GetVipTotalAmountAsync([FromQuery] GetVipReportTotalAmountRequest request) =>
-        _mediator.Send(request);
+        mediator.Send(request);
 
     [HttpGet("{username}")]
     [Description("Get vip rebates")]
@@ -30,13 +26,13 @@ public class VipReportController : ControllerBase
         [FromQuery] GetVipRebateReportRequest request)
     {
         request.Username = username;
-        return _mediator.Send(request);
+        return mediator.Send(request);
     }
 
     [HttpGet("exportVips")]
     [Description("export vips")]
     public async Task<IActionResult> ExportVipsAsync(
         [FromQuery] ExportVipReportRequest request) => File(
-        await _mediator.Send(request).ConfigureAwait(false),
+        await mediator.Send(request).ConfigureAwait(false),
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 }

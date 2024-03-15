@@ -6,19 +6,14 @@ using Tgs.Report.ViewModel.PlayerDeposit;
 
 namespace Tgs.Report.Core.Queries.Market;
 
-public class GetPlayerNoSecondDepositDetailQueryHandler : IRequestHandler<GetPlayerNoSecondDepositDetailsRequest,
-    PagedResponse<PlayerNoSecondDepositDetailModel>>
+public class GetPlayerNoSecondDepositDetailQueryHandler(
+    IPlayerDepositFactory playerDepositFactory,
+    TgsContext context)
+    : IRequestHandler<GetPlayerNoSecondDepositDetailsRequest,
+        PagedResponse<PlayerNoSecondDepositDetailModel>>
 {
-    private readonly TgsContext _context;
-    private readonly IPlayerDepositFactory _playerDepositFactory;
-
-    public GetPlayerNoSecondDepositDetailQueryHandler(
-        IPlayerDepositFactory playerDepositFactory,
-        TgsContext context)
-    {
-        _playerDepositFactory = playerDepositFactory ?? throw new ArgumentNullException(nameof(playerDepositFactory));
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-    }
+    private readonly TgsContext _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly IPlayerDepositFactory _playerDepositFactory = playerDepositFactory ?? throw new ArgumentNullException(nameof(playerDepositFactory));
 
     public async Task<PagedResponse<PlayerNoSecondDepositDetailModel>> Handle(
         GetPlayerNoSecondDepositDetailsRequest request,

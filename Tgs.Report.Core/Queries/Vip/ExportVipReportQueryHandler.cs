@@ -5,12 +5,8 @@ using Tgs.Report.ViewModel.Vip;
 
 namespace Tgs.Report.Core.Queries.Vip;
 
-internal class ExportVipReportQueryHandler : IRequestHandler<ExportVipReportRequest, MemoryStream>
+internal class ExportVipReportQueryHandler(IMediator mediator) : IRequestHandler<ExportVipReportRequest, MemoryStream>
 {
-    private readonly IMediator _mediator;
-
-    public ExportVipReportQueryHandler(IMediator mediator) => _mediator = mediator;
-
     public async Task<MemoryStream> Handle(
         ExportVipReportRequest request,
         CancellationToken cancellationToken)
@@ -26,7 +22,7 @@ internal class ExportVipReportQueryHandler : IRequestHandler<ExportVipReportRequ
         };
 
         var getVipReport =
-            await _mediator.Send(getVipReportRequest, cancellationToken).ConfigureAwait(false);
+            await mediator.Send(getVipReportRequest, cancellationToken).ConfigureAwait(false);
 
         var exportData = getVipReport.Items?.Select(x => new ExportVipModel
         {

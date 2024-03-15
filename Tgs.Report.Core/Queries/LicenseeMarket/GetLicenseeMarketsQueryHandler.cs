@@ -5,12 +5,10 @@ using Tgs.Report.ViewModel.LicenseeMarket;
 
 namespace Tgs.Report.Core.Queries.LicenseeMarket;
 
-public class GetLicenseeMarketsQueryHandler : IRequestHandler<GetLicenseeMarketsRequest, LicenseeMarketsResponse>
+public class GetLicenseeMarketsQueryHandler(TgsContext context)
+    : IRequestHandler<GetLicenseeMarketsRequest, LicenseeMarketsResponse>
 {
-    private readonly TgsContext _context;
-
-    public GetLicenseeMarketsQueryHandler(TgsContext context)
-        => _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly TgsContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async Task<LicenseeMarketsResponse> Handle(
         GetLicenseeMarketsRequest request,

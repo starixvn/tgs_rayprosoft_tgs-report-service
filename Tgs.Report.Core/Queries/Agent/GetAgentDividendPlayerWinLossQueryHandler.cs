@@ -7,13 +7,11 @@ using Tgs.Report.ViewModel.Agent;
 
 namespace Tgs.Report.Core.Queries.Agent;
 
-internal class GetAgentDividendPlayerWinLossQueryHandler : IRequestHandler<GetAgentDividendPlayerWinLossRequest,
-    PagedResponse<AgentPlayerWinLossModel>>
+internal class GetAgentDividendPlayerWinLossQueryHandler(TgsContext context)
+    : IRequestHandler<GetAgentDividendPlayerWinLossRequest,
+        PagedResponse<AgentPlayerWinLossModel>>
 {
-    private readonly TgsContext _context;
-
-    public GetAgentDividendPlayerWinLossQueryHandler(TgsContext context)
-        => _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly TgsContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async Task<PagedResponse<AgentPlayerWinLossModel>> Handle(
         GetAgentDividendPlayerWinLossRequest request,

@@ -6,12 +6,9 @@ using Tgs.Report.ViewModel.Market;
 
 namespace Tgs.Report.Core.Queries.Market;
 
-public class GetMarketsQueryHandler : IRequestHandler<GetMarketsRequest, PagedResponse<MarketModel>>
+public class GetMarketsQueryHandler(TgsContext context) : IRequestHandler<GetMarketsRequest, PagedResponse<MarketModel>>
 {
-    private readonly TgsContext _context;
-
-    public GetMarketsQueryHandler(TgsContext context)
-        => _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly TgsContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async Task<PagedResponse<MarketModel>> Handle(
         GetMarketsRequest request,

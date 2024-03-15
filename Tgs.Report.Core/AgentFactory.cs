@@ -8,12 +8,8 @@ using Tgs.Report.ViewModel.AgentWinLoss;
 
 namespace Tgs.Report.Core;
 
-internal class AgentFactory : IAgentFactory
+internal class AgentFactory(TgsContext context) : IAgentFactory
 {
-    private readonly TgsContext _context;
-
-    public AgentFactory(TgsContext context) => _context = context;
-
     public async Task<IEnumerable<AgentWinLossModel>> GetMasterAgentWinLossAsync(GetMasterAgentWinLossDataRequest request)
     {
         var spName = @"
@@ -53,8 +49,8 @@ SELECT *
 FROM   agent_win_loss
 WHERE turnover <> 0 OR winloss <> 0 OR special <> 0;";
 
-        var conn = _context.Database.GetDbConnection();
-        var transaction = _context.Database.CurrentTransaction?.GetDbTransaction();
+        var conn = context.Database.GetDbConnection();
+        var transaction = context.Database.CurrentTransaction?.GetDbTransaction();
         return await conn.QueryAsync<AgentWinLossModel>(spName,
             new Dictionary<string, object>
             {
@@ -107,8 +103,8 @@ FROM   (
               FROM   agent_win_loss
               WHERE turnover <> 0 OR winloss <> 0 OR special <> 0) a1;";
 
-        var conn = _context.Database.GetDbConnection();
-        var transaction = _context.Database.CurrentTransaction?.GetDbTransaction();
+        var conn = context.Database.GetDbConnection();
+        var transaction = context.Database.CurrentTransaction?.GetDbTransaction();
         return await conn.QueryAsync<AgentWinLossModel>(spName,
             new Dictionary<string, object>
             {
@@ -182,8 +178,8 @@ SELECT *
 FROM   player_win_loss
 WHERE turnover <> 0 OR winloss <> 0 OR special <> 0;";
 
-        var conn = _context.Database.GetDbConnection();
-        var transaction = _context.Database.CurrentTransaction?.GetDbTransaction();
+        var conn = context.Database.GetDbConnection();
+        var transaction = context.Database.CurrentTransaction?.GetDbTransaction();
         return await conn.QueryAsync<AgentWinLossModel>(spName,
             new Dictionary<string, object>
             {
@@ -212,8 +208,8 @@ WHERE
   AND Jsonb_path_exists(agent_dividend_percentage_tree_data, '$[*] ? (@.AgentId == ""{request.AgentId}"")')
   AND agent_id IS NOT NULL;";
 
-        var conn = _context.Database.GetDbConnection();
-        var transaction = _context.Database.CurrentTransaction?.GetDbTransaction();
+        var conn = context.Database.GetDbConnection();
+        var transaction = context.Database.CurrentTransaction?.GetDbTransaction();
         return await conn.QueryAsync<AgentPlayerSpecialDetailModel>(spName,
             new Dictionary<string, object>
             {
@@ -245,8 +241,8 @@ GROUP BY
 , 2
 , 3;";
 
-        var conn = _context.Database.GetDbConnection();
-        var transaction = _context.Database.CurrentTransaction?.GetDbTransaction();
+        var conn = context.Database.GetDbConnection();
+        var transaction = context.Database.CurrentTransaction?.GetDbTransaction();
         return await conn.QueryAsync<SpecialDetailDataModel>(spName,
             new Dictionary<string, object>
             {

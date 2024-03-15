@@ -7,13 +7,10 @@ using Tgs.Report.ViewModel.Agent;
 namespace Tgs.Report.Core.Queries.Agent;
 
 public class
-    GetAgentAccountChangeQueryHandler : IRequestHandler<GetAgentAccountChangesRequest,
-        PagedResponse<AgentAccountChangeModel>>
+    GetAgentAccountChangeQueryHandler(TgsContext context) : IRequestHandler<GetAgentAccountChangesRequest,
+    PagedResponse<AgentAccountChangeModel>>
 {
-    private readonly TgsContext _context;
-
-    public GetAgentAccountChangeQueryHandler(TgsContext context)
-        => _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly TgsContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public Task<PagedResponse<AgentAccountChangeModel>> Handle(
         GetAgentAccountChangesRequest request,

@@ -5,12 +5,9 @@ using Tgs.Report.ViewModel.Agent;
 
 namespace Tgs.Report.Core.Queries.Agent;
 
-internal class ExportAgentDividendsQueryHandler : IRequestHandler<ExportAgentDividendsRequest, MemoryStream>
+internal class ExportAgentDividendsQueryHandler(IMediator mediator)
+    : IRequestHandler<ExportAgentDividendsRequest, MemoryStream>
 {
-    private readonly IMediator _mediator;
-
-    public ExportAgentDividendsQueryHandler(IMediator mediator) => _mediator = mediator;
-
     public async Task<MemoryStream> Handle(
         ExportAgentDividendsRequest request,
         CancellationToken cancellationToken)
@@ -27,7 +24,7 @@ internal class ExportAgentDividendsQueryHandler : IRequestHandler<ExportAgentDiv
         };
 
         var mainAgentDividends =
-            await _mediator.Send(singleAgentDividendsRequest, cancellationToken).ConfigureAwait(false);
+            await mediator.Send(singleAgentDividendsRequest, cancellationToken).ConfigureAwait(false);
 
         var subAgentDividendsRequest = new GetSubAgentDividendsRequest
         {
@@ -41,7 +38,7 @@ internal class ExportAgentDividendsQueryHandler : IRequestHandler<ExportAgentDiv
         };
 
         var agentDividends =
-            await _mediator.Send(subAgentDividendsRequest, cancellationToken).ConfigureAwait(false);
+            await mediator.Send(subAgentDividendsRequest, cancellationToken).ConfigureAwait(false);
 
         var dividends = agentDividends.Items != null
             ? mainAgentDividends.Items?.Concat(agentDividends.Items)

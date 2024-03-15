@@ -4,16 +4,10 @@ using Tgs.Report.ViewModel.AgentWinLoss;
 
 namespace Tgs.Report.Core.Queries.AgentWinLoss;
 
-internal class GetDownLineAgentWinLossQueryHandler : IRequestHandler<GetDownLineAgentWinLossRequest,
-    PagedResponse<AgentWinLossModel>>
+internal class GetDownLineAgentWinLossQueryHandler(IAgentFactory agentFactory)
+    : IRequestHandler<GetDownLineAgentWinLossRequest,
+        PagedResponse<AgentWinLossModel>>
 {
-    private readonly IAgentFactory _agentFactory;
-
-    public GetDownLineAgentWinLossQueryHandler(IAgentFactory agentFactory)
-    {
-        _agentFactory = agentFactory;
-    }
-
     public async Task<PagedResponse<AgentWinLossModel>> Handle(
         GetDownLineAgentWinLossRequest request,
         CancellationToken cancellationToken)
@@ -27,7 +21,7 @@ internal class GetDownLineAgentWinLossQueryHandler : IRequestHandler<GetDownLine
             To = request.To
         };
 
-        var response = await _agentFactory.GetDownLineAgentWinLossAsync(getRequest);
+        var response = await agentFactory.GetDownLineAgentWinLossAsync(getRequest);
 
         var agentWinLossModels = response as AgentWinLossModel[] ?? response.ToArray();
 

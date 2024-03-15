@@ -8,70 +8,66 @@ namespace Tgs.Report.Service.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class PlayerReportController : ControllerBase
+public class PlayerReportController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public PlayerReportController(IMediator mediator) => _mediator = mediator;
-
     [HttpGet("contribution", Name = "GetPlayerContributions")]
     [Description("Get player contributions")]
     public Task<PagedResponse<PlayerContributionModel>> GetPlayerContributionsAsync(
         [FromQuery] GetPlayerContributionsRequest request)
-        => _mediator.Send(request);
+        => mediator.Send(request);
 
     [HttpGet("contributionTotalAmount", Name = "GetPlayerContributionsTotalAmount")]
     [Description("Get player contribution total amount")]
     public Task<PlayerContributionTotalAmountModel> GetPlayerContributionsTotalAmountAsync(
         [FromQuery] GetPlayerContributionsTotalAmountRequest request)
-        => _mediator.Send(request);
+        => mediator.Send(request);
 
     [HttpGet("accountChanges", Name = "GetPlayerAccountChanges")]
     [Description("Get player account changes")]
     public Task<PagedResponse<PlayerAccountChangeModel>> GetPlayerAccountChangesAsync(
         [FromQuery] GetPlayerAccountChangesRequest request)
-        => _mediator.Send(request);
+        => mediator.Send(request);
 
     [HttpGet("accountChangesTotal", Name = "GetPlayerAccountChangesTotalAmount")]
     [Description("Get player account changes total amount")]
     public Task<decimal> GetPlayerAccountChangesTotalAmountAsync(
         [FromQuery] GetPlayerAccountChangesTotalAmountRequest request)
-        => _mediator.Send(request);
+        => mediator.Send(request);
 
     [HttpGet("exportPlayerContributions", Name = "ExportPlayerContributions")]
     [Description("export player contributions")]
     public async Task<IActionResult> ExportPlayerContributionsAsync(
         [FromQuery] ExportPlayerContributionsRequest request)
-        => File(await _mediator.Send(request).ConfigureAwait(false),
+        => File(await mediator.Send(request).ConfigureAwait(false),
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 
     [HttpGet("playersAccountChanges", Name = "GetPlayersAccountChanges")]
     [Description("Get account changes of multiple players")]
     public Task<PagedResponse<PlayersAccountChangeModel>> GetPlayersAccountChangesAsync(
         [FromQuery] GetPlayersAccountChangesRequest request)
-        => _mediator.Send(request);
+        => mediator.Send(request);
 
     [HttpGet("player-all-agent-rebates", Name = "GetPlayerAllAgentRebates")]
     [Description("Get player all agent rebates")]
     public IAsyncEnumerable<PlayerAllAgentRebateModel> GetPlayerAllAgentRebatesAsync(
         [FromQuery] GetPlayerAllAgentRebatesRequest request)
-        => _mediator.CreateStream(request);
+        => mediator.CreateStream(request);
 
     [HttpGet("player-all-agent-rebates-total-amount", Name = "GetPlayerAllAgentRebatesTotalAmount")]
     [Description("Get player all agent rebates total amount")]
     public Task<PlayerAllAgentRebateTotalAmountModel> GetPlayerAllAgentRebatesTotalAmountAsync(
         [FromQuery] GetPlayerAllAgentRebateTotalAmountRequest request)
-        => _mediator.Send(request);
+        => mediator.Send(request);
 
     [HttpGet("player-all-agent-rebate-detail-game-types", Name = "GetPlayerAllAgentRebateDetailGameTypes")]
     [Description("Get player all agent rebate detail game types")]
     public IAsyncEnumerable<PlayerAllAgentRebateDetailGameTypeModel> GetPlayerAllAgentRebateDetailGameTypesAsync(
         [FromQuery] GetPlayerAllAgentRebateDetailGameTypesRequest request)
-        => _mediator.CreateStream(request);
+        => mediator.CreateStream(request);
 
     [HttpGet("player-all-agent-rebate-details", Name = "GetPlayerAllAgentRebateDetails")]
     [Description("Get player all agent rebate details")]
     public IAsyncEnumerable<PlayerAllAgentRebateDetailModel> GetPlayerAllAgentRebateDetailsAsync(
         [FromQuery] GetPlayerAllAgentRebateDetailsRequest request)
-        => _mediator.CreateStream(request);
+        => mediator.CreateStream(request);
 }

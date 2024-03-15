@@ -6,12 +6,9 @@ using Tgs.Report.ViewModel.Player;
 namespace Tgs.Report.Core.Queries.Player;
 
 internal class
-    ExportPlayerContributionsQueryHandler : IRequestHandler<ExportPlayerContributionsRequest, MemoryStream>
+    ExportPlayerContributionsQueryHandler(IMediator mediator)
+    : IRequestHandler<ExportPlayerContributionsRequest, MemoryStream>
 {
-    private readonly IMediator _mediator;
-
-    public ExportPlayerContributionsQueryHandler(IMediator mediator) => _mediator = mediator;
-
     public async Task<MemoryStream> Handle(
         ExportPlayerContributionsRequest request,
         CancellationToken cancellationToken)
@@ -30,7 +27,7 @@ internal class
         var resource = new ResourceManager(typeof(PlayerContribution));
 
         var playerContributions =
-            await _mediator.Send(getPlayerContributionsRequest, cancellationToken).ConfigureAwait(false);
+            await mediator.Send(getPlayerContributionsRequest, cancellationToken).ConfigureAwait(false);
 
         var exportData = playerContributions.Items?.Select(x => new ExportPlayerContributionModel
         {

@@ -7,18 +7,14 @@ using Tgs.Report.ViewModel.Player;
 namespace Tgs.Report.Core.Queries.Player;
 
 public class
-    GetPlayerAccountChangeQueryHandler : IRequestHandler<GetPlayerAccountChangesRequest,
-        PagedResponse<PlayerAccountChangeModel>>
+    GetPlayerAccountChangeQueryHandler(IPlayerFactory playerFactory) : IRequestHandler<GetPlayerAccountChangesRequest,
+    PagedResponse<PlayerAccountChangeModel>>
 {
-    private readonly IPlayerFactory _playerFactory;
-
-    public GetPlayerAccountChangeQueryHandler(IPlayerFactory playerFactory) => _playerFactory = playerFactory;
-
     public async Task<PagedResponse<PlayerAccountChangeModel>> Handle(
         GetPlayerAccountChangesRequest request,
         CancellationToken cancellationToken)
     {
-        var (playerAccountChanges, totalCount) = await _playerFactory.GetPlayerAccountChangeAsync(new GetPlayerAccountChangesQuery
+        var (playerAccountChanges, totalCount) = await playerFactory.GetPlayerAccountChangeAsync(new GetPlayerAccountChangesQuery
         {
             BrandId = request.BrandId,
             PlayerCode = request.PlayerCode,

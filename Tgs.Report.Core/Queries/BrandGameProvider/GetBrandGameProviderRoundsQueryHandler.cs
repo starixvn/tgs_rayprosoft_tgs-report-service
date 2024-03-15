@@ -7,30 +7,21 @@ using Tgs.Report.ViewModel.BrandGameProvider;
 namespace Tgs.Report.Core.Queries.BrandGameProvider;
 
 public class
-    GetBrandGameProviderRoundsQueryHandler : IRequestHandler<GetBrandGameProviderRoundsRequest,
+    GetBrandGameProviderRoundsQueryHandler(
+        ITgsService<BrandGameProviderAggregate> brandGameProviderAggregateService,
+        ITgsService<Brand> brandService,
+        ITgsService<Repository.Entities.GameProvider> gameProviderService)
+    : IRequestHandler<GetBrandGameProviderRoundsRequest,
         GetBrandGameProviderRoundsResponse>
 {
-    private readonly ITgsService<BrandGameProviderAggregate> _brandGameProviderAggregateService;
-    private readonly ITgsService<Brand> _brandService;
-    private readonly ITgsService<Repository.Entities.GameProvider> _gameProviderService;
-
-    public GetBrandGameProviderRoundsQueryHandler(
-        ITgsService<BrandGameProviderAggregate> brandGameProviderAggregateService, ITgsService<Brand> brandService,
-        ITgsService<Repository.Entities.GameProvider> gameProviderService)
-    {
-        _brandGameProviderAggregateService = brandGameProviderAggregateService;
-        _brandService = brandService;
-        _gameProviderService = gameProviderService;
-    }
-
     public async Task<GetBrandGameProviderRoundsResponse> Handle(
         GetBrandGameProviderRoundsRequest request,
         CancellationToken cancellationToken)
     {
-        var response = await _brandGameProviderAggregateService.GetQueries()
+        var response = await brandGameProviderAggregateService.GetQueries()
             .Where(x => x.BrandId == request.BrandId)
             .Where(x => x.ReportDate >= request.From && x.ReportDate < request.To)
-            .Join(_gameProviderService.GetQueries(),
+            .Join(gameProviderService.GetQueries(),
                 a => a.GameProviderId,
                 g => g.Id,
                 (round, gameProvider) => new
@@ -49,7 +40,7 @@ public class
                 })
             .Where(request.GameProviderCode, x => x.GameProviderCode == request.GameProviderCode)
             .Where(request.GameType is not null, x => x.GameType == (short)request.GameType!)
-            .Join(_brandService.GetQueries(),
+            .Join(brandService.GetQueries(),
                 a => a.BrandId,
                 brand => brand.Id,
                 (group, brand) => new

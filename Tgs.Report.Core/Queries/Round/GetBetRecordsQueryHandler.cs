@@ -7,42 +7,26 @@ using Tgs.Report.ViewModel.Round;
 
 namespace Tgs.Report.Core.Queries.Round;
 
-public class GetBetRecordsQueryHandler : IRequestHandler<GetBetRecordsRequest, GetBetRecordsResponse>
+public class GetBetRecordsQueryHandler(
+    ITgsService<Repository.Entities.Round> roundService,
+    ITgsService<Repository.Entities.Player> playerService,
+    ITgsService<Game> gameService,
+    ITgsService<RoundDetail> roundDetailService,
+    ITgsService<Repository.Entities.GameProvider> gameProviderService,
+    ITgsService<BrandGame> brandGameService)
+    : IRequestHandler<GetBetRecordsRequest, GetBetRecordsResponse>
 {
-    private readonly ITgsService<BrandGame> _brandGameService;
-    private readonly ITgsService<Repository.Entities.GameProvider> _gameProviderService;
-    private readonly ITgsService<Game> _gameService;
-    private readonly ITgsService<Repository.Entities.Player> _playerService;
-    private readonly ITgsService<RoundDetail> _roundDetailService;
-    private readonly ITgsService<Repository.Entities.Round> _roundService;
-
-    public GetBetRecordsQueryHandler(
-        ITgsService<Repository.Entities.Round> roundService,
-        ITgsService<Repository.Entities.Player> playerService,
-        ITgsService<Game> gameService,
-        ITgsService<RoundDetail> roundDetailService,
-        ITgsService<Repository.Entities.GameProvider> gameProviderService,
-        ITgsService<BrandGame> brandGameService)
-    {
-        _roundService = roundService;
-        _playerService = playerService;
-        _gameService = gameService;
-        _roundDetailService = roundDetailService;
-        _gameProviderService = gameProviderService;
-        _brandGameService = brandGameService;
-    }
-
     public async Task<GetBetRecordsResponse> Handle(
         GetBetRecordsRequest request,
         CancellationToken cancellationToken)
     {
-        var total = await _roundService.GetQueries().Where(x => x.BrandId == request.BrandId)
+        var total = await roundService.GetQueries().Where(x => x.BrandId == request.BrandId)
             .Where(x => x.CreatedOn >= request.From.ToUniversalTime() &&
                 x.CreatedOn <= request.To.ToUniversalTime())
             .Where(request.GameProviderId, x => request.GameProviderId == x.GameProviderId)
             .Where(request.Status, x => (short?)request.Status == x.ClientStatus)
             .Where(x => x.PlayerCode == request.PlayerCode)
-            .GroupJoin(_gameService.GetQueries(),
+            .GroupJoin(gameService.GetQueries(),
                 round => round.GameId, game => game.Id,
                 (round, game) => new
                 {
@@ -78,13 +62,13 @@ public class GetBetRecordsQueryHandler : IRequestHandler<GetBetRecordsRequest, G
             WinLoss = 0M
         };
 
-        var betRecords = await _roundService.GetQueries().Where(x => x.BrandId == request.BrandId)
+        var betRecords = await roundService.GetQueries().Where(x => x.BrandId == request.BrandId)
             .Where(x => x.CreatedOn >= request.From.ToUniversalTime() &&
                 x.CreatedOn <= request.To.ToUniversalTime())
             .Where(request.GameProviderId, x => request.GameProviderId == x.GameProviderId)
             .Where(request.Status, x => (short?)request.Status == x.ClientStatus)
             .Where(x => x.PlayerCode == request.PlayerCode)
-            .GroupJoin(_gameService.GetQueries(),
+            .GroupJoin(gameService.GetQueries(),
                 round => round.GameId, game => game.Id,
                 (round, game) => new
                 {
@@ -134,7 +118,7 @@ public class GetBetRecordsQueryHandler : IRequestHandler<GetBetRecordsRequest, G
             })
             .Where(request.GameType, x => x.GameType == (short?)request.GameType)
             .GroupJoin(
-                _playerService.GetQueries(),
+                playerService.GetQueries(),
                 combine => combine.PlayerCode, player => player.PlayerCode,
                 (combine, player) => new
                 {
@@ -147,7 +131,7 @@ public class GetBetRecordsQueryHandler : IRequestHandler<GetBetRecordsRequest, G
                 player.PlayerCode,
                 player.Username
             })
-            .GroupJoin(_roundDetailService.GetQueries(), c => c.combine.RoundId, detail => detail.RoundId,
+            .GroupJoin(roundDetailService.GetQueries(), c => c.combine.RoundId, detail => detail.RoundId,
                 (combine, detail) => new
                 {
                     combine.combine,
@@ -162,7 +146,7 @@ public class GetBetRecordsQueryHandler : IRequestHandler<GetBetRecordsRequest, G
                 x.Username,
                 detail.AdditionalData
             })
-            .GroupJoin(_gameProviderService.GetQueries(), c => c.combine.GameProviderId,
+            .GroupJoin(gameProviderService.GetQueries(), c => c.combine.GameProviderId,
                 gameProvider => gameProvider.Id,
                 (combine, gameProvider) => new
                 {
@@ -182,7 +166,7 @@ public class GetBetRecordsQueryHandler : IRequestHandler<GetBetRecordsRequest, G
                     GameProviderCode = gameProvider.Code,
                     GameProviderName = gameProvider.Name
                 })
-            .GroupJoin(_brandGameService.GetQueries(),
+            .GroupJoin(brandGameService.GetQueries(),
                 roundGroup => new
                 {
                     roundGroup.combine.BrandId,
