@@ -82,16 +82,18 @@ public class
         return new GetBrandGameProvidersResponse
         {
             Datas = response.AsQueryable().CreatePagedResponse(request),
-            Totals = response.GroupBy(x => new { x.CurrencyCode },
-                (group, items) => new BrandGameProviderTotalModel
-                {
-                    CurrencyCode = group.CurrencyCode,
-                    TransactionCount = items.Sum(i => i.TransactionCount),
-                    BetAmount = items.Sum(i => i.BetAmount),
-                    ValidBetAmount = items.Sum(i => i.ValidBetAmount),
-                    OriginalTurnover = items.Sum(i => i.OriginalTurnover),
-                    CompanyWinLoss = items.Sum(i => i.CompanyWinLoss)
-                }).ToArray()
+            Total = response.GroupBy(x => new { x.CurrencyCode },
+                            (group, items) => new BrandGameProviderTotalModel
+                            {
+                                CurrencyCode = group.CurrencyCode,
+                                TransactionCount = items.Sum(i => i.TransactionCount),
+                                BetAmount = items.Sum(i => i.BetAmount),
+                                ValidBetAmount = items.Sum(i => i.ValidBetAmount),
+                                OriginalTurnover = items.Sum(i => i.OriginalTurnover),
+                                CompanyWinLoss = items.Sum(i => i.CompanyWinLoss)
+                            })
+                        .FirstOrDefault() ??
+                    new BrandGameProviderTotalModel { CurrencyCode = brandCurrency!.CurrencyCode }
         };
     }
 }
