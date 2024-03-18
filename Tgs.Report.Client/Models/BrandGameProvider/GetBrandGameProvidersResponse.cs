@@ -2,7 +2,7 @@
 
 public record GetBrandGameProvidersResponse
 {
-    public PagedResponse<BrandGameProvidersModel>? Datas { get; init; }
+    public PagedResponse<BrandGameProvidersModel> Datas { get; init; } = default!;
 
-    public BrandGameProviderTotalModel[]? Totals { get; init; }
+    public BrandGameProviderTotalModel Total { get; init; } = default!;
 }
