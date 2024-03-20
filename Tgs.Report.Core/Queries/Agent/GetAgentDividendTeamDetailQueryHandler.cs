@@ -30,11 +30,11 @@ public class
                 x.From,
                 x.To,
                 s.DividendProviderAgentId,
+                s.DividendProviderId,
                 s.Dividend,
                 s.ActualDividendPercentage,
                 s.AgentCoveredBonus,
-                s.AgentCoveredBonusAdjust,
-                s.AgentDividendId
+                s.AgentCoveredBonusAdjust
             }))
             .Where(x => x.DividendProviderAgentId != request.AgentId)
             .ToArrayAsync(cancellationToken).ConfigureAwait(false);
@@ -81,7 +81,7 @@ public class
                 },
                 da => new
                 {
-                    Id = da.AgentDividendId
+                    Id = da.DividendProviderId
                 }, (agentDividend, group)
                     => new
                     {
