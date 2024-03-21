@@ -8,7 +8,7 @@ public record BrandGameProvidersModel
     public int TransactionCount { get; set; }
     public decimal BetAmount { get; init; }
     public decimal ValidBetAmount { get; init; }
-    public decimal OriginalTurnover { get; init; }
+    public decimal Turnover { get; init; }
     public decimal CompanyWinLoss { get; init; }
     public int PlayerCount { get; set; }
 }

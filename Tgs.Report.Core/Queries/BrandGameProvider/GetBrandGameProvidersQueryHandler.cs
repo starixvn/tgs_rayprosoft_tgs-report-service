@@ -57,8 +57,7 @@ public class
                 PlayerCount = items.Select(i => i.PlayerCode).Distinct().Count(),
                 TransactionCount = items.Sum(i => i.RoundCount),
                 BetAmount = items.Sum(i => i.BetAmount),
-                OriginalTurnover = items.Sum(i => i.Turnover),
-                ValidBetAmount = items.Sum(i => i.ValidBetAmount),
+                Turnover = items.Sum(i => i.Turnover),
                 CompanyWinLoss = items.Sum(i => i.WinLoss)
             })
             .GroupBy(x => new
@@ -73,8 +72,8 @@ public class
                 PlayerCount = items.Sum(i => i.PlayerCount),
                 TransactionCount = items.Sum(i => i.TransactionCount),
                 BetAmount = items.Sum(i => i.BetAmount),
-                OriginalTurnover = items.Sum(i => i.OriginalTurnover),
-                ValidBetAmount = items.Sum(i => i.ValidBetAmount),
+                Turnover = items.Sum(i => i.Turnover),
+                ValidBetAmount = items.Sum(i => i.Turnover),
                 CompanyWinLoss = items.Sum(i => i.CompanyWinLoss)
             })
             .ToArrayAsync(cancellationToken).ConfigureAwait(false);
@@ -89,7 +88,7 @@ public class
                                 TransactionCount = items.Sum(i => i.TransactionCount),
                                 BetAmount = items.Sum(i => i.BetAmount),
                                 ValidBetAmount = items.Sum(i => i.ValidBetAmount),
-                                OriginalTurnover = items.Sum(i => i.OriginalTurnover),
+                                Turnover = items.Sum(i => i.Turnover),
                                 CompanyWinLoss = items.Sum(i => i.CompanyWinLoss),
                                 PlayerCount = items.Sum(i => i.PlayerCount)
                             })
