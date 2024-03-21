@@ -16,7 +16,7 @@ namespace Tgs.Report.IntegrationTest;
 public class BrandGameProviderTests
 {
     [Test]
-    public async Task Can_Get_Bet_Records()
+    public async Task Can_Get_Brand_Game_Providers()
     {
         var brandId = Guid.NewGuid();
         var gameProviderId = Guid.NewGuid();
