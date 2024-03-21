@@ -36,6 +36,7 @@ public class
                     round.BetAmount,
                     round.ValidBetAmount,
                     round.Turnover,
+                    round.OriginalTurnover,
                     round.WinLoss,
                     round.ReportDate,
                     round.PlayerCode,
@@ -58,6 +59,7 @@ public class
                 TransactionCount = items.Sum(i => i.RoundCount),
                 BetAmount = items.Sum(i => i.BetAmount),
                 Turnover = items.Sum(i => i.Turnover),
+                OriginalTurnover = items.Sum(i => i.OriginalTurnover),
                 CompanyWinLoss = items.Sum(i => i.WinLoss)
             })
             .GroupBy(x => new
@@ -73,7 +75,7 @@ public class
                 TransactionCount = items.Sum(i => i.TransactionCount),
                 BetAmount = items.Sum(i => i.BetAmount),
                 Turnover = items.Sum(i => i.Turnover),
-                ValidBetAmount = items.Sum(i => i.Turnover),
+                ValidBetAmount = items.Sum(i => i.OriginalTurnover),
                 CompanyWinLoss = items.Sum(i => i.CompanyWinLoss)
             })
             .ToArrayAsync(cancellationToken).ConfigureAwait(false);
