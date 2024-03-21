@@ -90,7 +90,8 @@ public class
                                 BetAmount = items.Sum(i => i.BetAmount),
                                 ValidBetAmount = items.Sum(i => i.ValidBetAmount),
                                 OriginalTurnover = items.Sum(i => i.OriginalTurnover),
-                                CompanyWinLoss = items.Sum(i => i.CompanyWinLoss)
+                                CompanyWinLoss = items.Sum(i => i.CompanyWinLoss),
+                                PlayerCount = items.Sum(i => i.PlayerCount)
                             })
                         .FirstOrDefault() ??
                     new BrandGameProviderTotalModel { CurrencyCode = brandCurrency!.CurrencyCode }
