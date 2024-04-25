@@ -9,33 +9,33 @@ public partial class Role
 {
     public Guid Id { get; set; }
 
-    public short RoleType { get; set; }
-
-    public Guid? ResellerId { get; set; }
-
-    public Guid? LicenseeId { get; set; }
-
     public Guid? BrandId { get; set; }
-
-    public bool IsRoot { get; set; }
-
-    public string Name { get; set; } = null!;
-
-    public string? DisplayName { get; set; }
-
-    public string MenuSetting { get; set; } = null!;
-
-    public string? Description { get; set; }
-
-    public short Status { get; set; }
-
-    public DateTime CreatedOn { get; set; }
-
-    public DateTime UpdatedOn { get; set; }
 
     public string CreatedByUsername { get; set; } = null!;
 
+    public DateTime CreatedOn { get; set; }
+
+    public string? Description { get; set; }
+
+    public string? DisplayName { get; set; }
+
+    public bool IsRoot { get; set; }
+
+    public Guid? LicenseeId { get; set; }
+
+    public string MenuSetting { get; set; } = null!;
+
+    public string Name { get; set; } = null!;
+
+    public Guid? ResellerId { get; set; }
+
+    public short RoleType { get; set; }
+
+    public short Status { get; set; }
+
     public string UpdatedByUsername { get; set; } = null!;
+
+    public DateTime UpdatedOn { get; set; }
 
     public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

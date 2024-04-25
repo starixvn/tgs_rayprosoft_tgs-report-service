@@ -1,5 +1,5 @@
 ﻿{
-   "CodeGenerationMode": 3,
+   "CodeGenerationMode": 4,
    "ContextClassName": "TgsContext",
    "ContextNamespace": null,
    "DefaultDacpacSchema": null,
@@ -41,6 +41,14 @@
       },
       {
          "Name": "dbo.agent_dividend_multiple_layers",
+         "ObjectType": 0
+      },
+      {
+         "Name": "dbo.agent_dividend_platform_charges",
+         "ObjectType": 0
+      },
+      {
+         "Name": "dbo.agent_dividend_product_fees",
          "ObjectType": 0
       },
       {
@@ -218,6 +226,7 @@
    "UseDatabaseNames": false,
    "UseDateOnlyTimeOnly": false,
    "UseDbContextSplitting": true,
+   "UseDecimalDataAnnotationForSprocResult": true,
    "UseFluentApiOnly": true,
    "UseHandleBars": false,
    "UseHierarchyId": false,
@@ -225,6 +234,7 @@
    "UseLegacyPluralizer": true,
    "UseManyToManyEntity": true,
    "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
    "UseNoObjectFilter": false,
    "UseNodaTime": false,
    "UseNullableReferences": true,

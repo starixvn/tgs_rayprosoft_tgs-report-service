@@ -162,4 +162,7 @@ public interface IReportClient
 
     ValueTask<GetBrandGameProvidersResponse> GetBrandGameProvidersAsync(
         GetBrandGameProvidersRequest request);
+
+    ValueTask<AgentDividendProductFeeResponse> GetAgentDividendProductFeeAsync(
+        GetAgentDividendProductFeeRequest request);
 }

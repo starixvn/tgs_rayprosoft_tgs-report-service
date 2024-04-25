@@ -9,19 +9,19 @@ public partial class BrandGame
 {
     public Guid Id { get; set; }
 
+    public Guid BrandId { get; set; }
+
+    public int DisplayOrder { get; set; }
+
+    public decimal EffectiveBettingPercentage { get; set; }
+
     public int GameId { get; set; }
 
-    public Guid BrandId { get; set; }
+    public bool Rebate { get; set; }
 
     public short Status { get; set; }
 
     public short Tag { get; set; }
-
-    public int DisplayOrder { get; set; }
-
-    public bool Rebate { get; set; }
-
-    public decimal EffectiveBettingPercentage { get; set; }
 
     public virtual Brand Brand { get; set; } = null!;
 

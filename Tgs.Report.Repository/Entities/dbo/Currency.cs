@@ -9,19 +9,19 @@ public partial class Currency
 {
     public string Code { get; set; } = null!;
 
+    public string CreatedByUsername { get; set; } = null!;
+
+    public DateTime CreatedOn { get; set; }
+
     public string Name { get; set; } = null!;
 
     public string? NativeName { get; set; }
 
     public string? Symbol { get; set; }
 
-    public DateTime CreatedOn { get; set; }
+    public string UpdatedByUsername { get; set; } = null!;
 
     public DateTime UpdatedOn { get; set; }
-
-    public string CreatedByUsername { get; set; } = null!;
-
-    public string UpdatedByUsername { get; set; } = null!;
 
     public virtual ICollection<BrandCurrency> BrandCurrencies { get; set; } = new List<BrandCurrency>();
 

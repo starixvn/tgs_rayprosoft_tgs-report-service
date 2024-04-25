@@ -13,7 +13,7 @@ public partial class BrandGameProviderAggregateRecord
 
     public Guid BrandId { get; set; }
 
-    public string Data { get; set; } = null!;
-
     public DateTime CreatedOn { get; set; }
+
+    public string Data { get; set; } = null!;
 }

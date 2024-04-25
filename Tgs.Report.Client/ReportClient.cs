@@ -1002,6 +1002,20 @@ public class ReportClient : IReportClient
             _jsonSerializerOptions)!;
     }
 
+    public async ValueTask<AgentDividendProductFeeResponse> GetAgentDividendProductFeeAsync(GetAgentDividendProductFeeRequest request)
+    {
+        var path = ClientPath.AppendWithProperties("/api/agentReport/dividend/product-fee?", request);
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+        var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        return JsonSerializer.Deserialize<AgentDividendProductFeeResponse>(
+            await response.Content.ReadAsStringAsync(),
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+    }
+
     public async ValueTask<PagedResponse<MarketAgentProfitModel>> GetMarketAgentProfitsAsync(GetMarketAgentProfitsRequest request)
     {
         var path = ClientPath.AppendWithProperties("/api/marketReport/agentProfit?", request);
