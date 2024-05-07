@@ -60,6 +60,12 @@ public class AgentReportController(IMediator mediator) : ControllerBase
         [FromQuery] GetAgentAccountChangesRequest request) =>
         mediator.Send(request);
 
+    [HttpGet("dividend/product-fee")]
+    [Description("Get agent dividend product fee")]
+    public Task<AgentDividendProductFeeModel> GetAgentDividendProductFeeAsync(
+        [FromQuery] GetAgentDividendProductFeeRequest request) =>
+        mediator.Send(request);
+
     [HttpGet("exportAgentContributions")]
     [Description("export agent contributions")]
     public async Task<IActionResult> ExportAgentContributionsAsync(

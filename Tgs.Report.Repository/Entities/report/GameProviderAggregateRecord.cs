@@ -11,9 +11,9 @@ public partial class GameProviderAggregateRecord
 
     public int AuditLogId { get; set; }
 
-    public Guid GameProviderId { get; set; }
+    public DateTime CreatedOn { get; set; }
 
     public string Data { get; set; } = null!;
 
-    public DateTime CreatedOn { get; set; }
+    public Guid GameProviderId { get; set; }
 }

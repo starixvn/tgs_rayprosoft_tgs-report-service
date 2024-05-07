@@ -9,37 +9,37 @@ public partial class GameProvider
 {
     public Guid Id { get; set; }
 
-    public short Status { get; set; }
-
-    public string? Description { get; set; }
+    public bool AllowKickPlayer { get; set; }
 
     public bool AutoCloseRound { get; set; }
 
-    public bool SupportTestPlayer { get; set; }
+    public string? Description { get; set; }
 
-    public bool AllowKickPlayer { get; set; }
+    public string? Localization { get; set; }
 
     public short PlaceBetTimeout { get; set; }
 
     public short SettleBetTimeout { get; set; }
 
-    public int UniqueId { get; set; }
+    public short Status { get; set; }
+
+    public bool SupportTestPlayer { get; set; }
 
     public bool TransferWallet { get; set; }
 
+    public int UniqueId { get; set; }
+
     public string Code { get; set; } = null!;
-
-    public string Name { get; set; } = null!;
-
-    public DateTime CreatedOn { get; set; }
-
-    public DateTime UpdatedOn { get; set; }
 
     public string CreatedByUsername { get; set; } = null!;
 
+    public DateTime CreatedOn { get; set; }
+
+    public string Name { get; set; } = null!;
+
     public string UpdatedByUsername { get; set; } = null!;
 
-    public string? Localization { get; set; }
+    public DateTime UpdatedOn { get; set; }
 
     public virtual ICollection<Game> Games { get; set; } = new List<Game>();
 

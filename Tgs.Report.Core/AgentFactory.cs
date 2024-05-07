@@ -1,9 +1,7 @@
 ﻿using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using Tgs.Report.Core.Queries.Agent;
 using Tgs.Report.Repository.Entities;
-using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.AgentWinLoss;
 
 namespace Tgs.Report.Core;
@@ -191,14 +189,14 @@ WHERE turnover <> 0 OR winloss <> 0 OR special <> 0;";
             }, transaction);
     }
 
-    public async Task<IEnumerable<AgentPlayerSpecialDetailModel>> GetAgentPlayerSpecialDetailAsync(
-        GetAgentPlayerSpecialDetailDataRequest request)
+    public async Task<AgentPlayerSpecialFeesModel> GetAgentPlayerSpecialFeesAsync(
+        GetAgentPlayerSpecialFeesDataRequest request)
     {
         var spName = $@"
 SELECT
   Sum(rebate_amount       + promotion_amount + upgrade_amount + season_amount + birthday_amount) as bonus
 , Sum(bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)                           as bonusAdjust
-, Sum(win_loss_amount     * @platformcharge * 0.01)                                              as productFee
+, Sum(win_loss_amount     * platform_charge_percentage / 100)                                              as platformCharge
 FROM
   report.player_aggregates
 WHERE
@@ -210,17 +208,23 @@ WHERE
 
         var conn = context.Database.GetDbConnection();
         var transaction = context.Database.CurrentTransaction?.GetDbTransaction();
-        return await conn.QueryAsync<AgentPlayerSpecialDetailModel>(spName,
+        var response = (await conn.QueryAsync<AgentPlayerSpecialFeesModel>(spName,
             new Dictionary<string, object>
             {
                 { "brandId", request.BrandId },
                 { "from", request.From },
-                { "to", request.To },
-                { "platformCharge", request.PlatformCharge }
-            }, transaction);
+                { "to", request.To }
+            }, transaction)).FirstOrDefault();
+
+        return new AgentPlayerSpecialFeesModel
+        {
+            Bonus = response?.Bonus ?? 0M,
+            BonusAdjust = response?.BonusAdjust ?? 0M,
+            PlatformCharge = response?.PlatformCharge ?? 0M
+        };
     }
 
-    public async Task<IEnumerable<SpecialDetailDataModel>> GetSpecialDetailAsync(GetSpecialDetailDataRequest request)
+    public Task<IEnumerable<SpecialDetailDataModel>> GetSpecialDetailAsync(GetSpecialDetailDataRequest request)
     {
         var spName = $@"
 SELECT
@@ -243,7 +247,7 @@ GROUP BY
 
         var conn = context.Database.GetDbConnection();
         var transaction = context.Database.CurrentTransaction?.GetDbTransaction();
-        return await conn.QueryAsync<SpecialDetailDataModel>(spName,
+        return conn.QueryAsync<SpecialDetailDataModel>(spName,
             new Dictionary<string, object>
             {
                 { "brandId", request.BrandId },
@@ -251,5 +255,35 @@ GROUP BY
                 { "to", request.To },
                 { "platformCharge", request.PlatformCharge }
             }, transaction);
+    }
+
+    public async Task<decimal> GetAgentPlayerSpecialProductFeeAsync(GetAgentPlayerSpecialProductFeeDataRequest request)
+    {
+        var spName = $@"
+SELECT SUM(pgra.product_fee_percentage * pgra.win_loss / 100) productFee
+	FROM report.player_game_rebate_aggregates pgra
+	join report.player_aggregates pa 
+    on pa.brand_id = pgra.brand_id 
+    and pa.agent_id = pgra.agent_id 
+    and pa.player_code = pgra.player_code 
+    and pa.report_date = pgra.report_date 
+    and pa.""hour"" = pgra.""hour""
+  where pgra.brand_id = @brandid
+  AND pgra.report_date >= @from
+  AND pgra.report_date  < @to
+  AND Jsonb_path_exists(pa.agent_dividend_percentage_tree_data, '$[*] ? (@.AgentId == ""{request.AgentId}"")')
+  AND pgra.agent_id IS NOT NULL;";
+
+        var conn = context.Database.GetDbConnection();
+        var transaction = context.Database.CurrentTransaction?.GetDbTransaction();
+        var response = await conn.QueryAsync<decimal>(spName,
+            new Dictionary<string, object>
+            {
+                { "brandId", request.BrandId },
+                { "from", request.From },
+                { "to", request.To }
+            }, transaction);
+
+        return response.First();
     }
 }

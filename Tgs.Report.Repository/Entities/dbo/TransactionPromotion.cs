@@ -7,9 +7,9 @@ namespace Tgs.Report.Repository.Entities;
 
 public partial class TransactionPromotion
 {
-    public Guid TransactionId { get; set; }
-
     public Guid PromotionId { get; set; }
+
+    public Guid TransactionId { get; set; }
 
     public Guid PromotionBonusId { get; set; }
 

@@ -9,47 +9,47 @@ public partial class Game
 {
     public int Id { get; set; }
 
-    public short Status { get; set; }
+    public string AvailableCurrencies { get; set; } = null!;
 
-    public string ExternalId { get; set; } = null!;
+    public bool AvailableToBrand { get; set; }
 
     public string? Description { get; set; }
 
     public string? EndpointPath { get; set; }
 
-    public string? RuleUrl { get; set; }
+    public string ExternalId { get; set; } = null!;
 
     public Guid GameProviderId { get; set; }
-
-    public short Type { get; set; }
-
-    public short PlatformType { get; set; }
-
-    public bool SubGame { get; set; }
-
-    public bool AvailableToBrand { get; set; }
 
     public bool HasTurnoverOnTieBet { get; set; }
 
     public bool Html5 { get; set; }
 
-    public string AvailableCurrencies { get; set; } = null!;
+    public string? Localization { get; set; }
+
+    public short PlatformType { get; set; }
+
+    public string? RuleUrl { get; set; }
+
+    public short Status { get; set; }
+
+    public bool SubGame { get; set; }
+
+    public string? SubGameProviderCode { get; set; }
+
+    public short Type { get; set; }
 
     public string Code { get; set; } = null!;
 
-    public string Name { get; set; } = null!;
+    public string CreatedByUsername { get; set; } = null!;
 
     public DateTime CreatedOn { get; set; }
 
-    public DateTime UpdatedOn { get; set; }
-
-    public string CreatedByUsername { get; set; } = null!;
+    public string Name { get; set; } = null!;
 
     public string UpdatedByUsername { get; set; } = null!;
 
-    public string? Localization { get; set; }
-
-    public string? SubGameProviderCode { get; set; }
+    public DateTime UpdatedOn { get; set; }
 
     public virtual ICollection<BrandGame> BrandGames { get; set; } = new List<BrandGame>();
 

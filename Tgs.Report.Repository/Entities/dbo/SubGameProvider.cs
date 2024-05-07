@@ -9,7 +9,9 @@ public partial class SubGameProvider
 {
     public string Code { get; set; } = null!;
 
-    public string Name { get; set; } = null!;
+    public string CreatedByUsername { get; set; } = null!;
+
+    public DateTime CreatedOn { get; set; }
 
     public string? Description { get; set; }
 
@@ -17,13 +19,11 @@ public partial class SubGameProvider
 
     public string? Localization { get; set; }
 
-    public DateTime CreatedOn { get; set; }
-
-    public DateTime UpdatedOn { get; set; }
-
-    public string CreatedByUsername { get; set; } = null!;
+    public string Name { get; set; } = null!;
 
     public string UpdatedByUsername { get; set; } = null!;
+
+    public DateTime UpdatedOn { get; set; }
 
     public virtual GameProvider GameProvider { get; set; } = null!;
 

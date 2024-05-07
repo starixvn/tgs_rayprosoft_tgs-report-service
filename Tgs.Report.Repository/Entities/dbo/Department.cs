@@ -9,23 +9,23 @@ public partial class Department
 {
     public Guid Id { get; set; }
 
-    public string Name { get; set; } = null!;
-
-    public string Description { get; set; } = null!;
-
-    public DateTime CreatedOn { get; set; }
-
-    public DateTime UpdatedOn { get; set; }
+    public Guid? BrandId { get; set; }
 
     public string CreatedByUsername { get; set; } = null!;
 
-    public string UpdatedByUsername { get; set; } = null!;
+    public DateTime CreatedOn { get; set; }
 
-    public Guid? ResellerId { get; set; }
+    public string Description { get; set; } = null!;
 
     public Guid? LicenseeId { get; set; }
 
-    public Guid? BrandId { get; set; }
+    public string Name { get; set; } = null!;
+
+    public Guid? ResellerId { get; set; }
+
+    public string UpdatedByUsername { get; set; } = null!;
+
+    public DateTime UpdatedOn { get; set; }
 
     public virtual Brand? Brand { get; set; }
 

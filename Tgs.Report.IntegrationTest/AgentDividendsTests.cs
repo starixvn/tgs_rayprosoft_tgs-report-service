@@ -214,23 +214,39 @@ public class AgentDividendsTests
                     CreatePlayerDailyPaymentStatisticsFixture().CreateMany<PlayerDailyPaymentStatistic>(5).AsQueryable()
                         .BuildMock();
 
+                var fees = agentDividends
+                    .Select(x => CreateAgentDividendProductFeeFixture(x.Id).Create<AgentDividendProductFee>())
+                    .AsQueryable()
+                    .BuildMock();
+
+                var platformCharges = agentDividends
+                    .Select(x => CreateAgentDividendPlatformChargeFixture(x.Id).Create<AgentDividendPlatformCharge>())
+                    .AsQueryable()
+                    .BuildMock();
+
                 var fakeAgentDbSet = Substitute.For<DbSet<Agent>, IQueryable<Agent>>();
                 var fakeAgentDividendDbSet = Substitute.For<DbSet<AgentDividend>, IQueryable<AgentDividend>>();
                 var fakePlayerDbSet = Substitute.For<DbSet<Player>, IQueryable<Player>>();
                 var fakeAgentDividendMultipleLayerDbSet = Substitute.For<DbSet<AgentDividendMultipleLayer>, IQueryable<AgentDividendMultipleLayer>>();
                 var fakePlayerDailyPaymentStatisticDbSet = Substitute.For<DbSet<PlayerDailyPaymentStatistic>, IQueryable<PlayerDailyPaymentStatistic>>();
+                var fakeAgentDividendProductFeeDbSet = Substitute.For<DbSet<AgentDividendProductFee>, IQueryable<AgentDividendProductFee>>();
+                var fakeAgentDividendPlatformChargeDbSet = Substitute.For<DbSet<AgentDividendPlatformCharge>, IQueryable<AgentDividendPlatformCharge>>();
 
                 var fakeAgents = fakeAgentDbSet.Initialize(agents);
                 var fakeAgentDividends = fakeAgentDividendDbSet.Initialize(agentDividends);
                 var fakePlayers = fakePlayerDbSet.Initialize(players);
                 var fakeAgentDividendMultipleLayers = fakeAgentDividendMultipleLayerDbSet.Initialize(agentDividendMultipleLayers);
                 var fakePlayerDailyPaymentStatistics = fakePlayerDailyPaymentStatisticDbSet.Initialize(playerDailyPaymentStatistics);
+                var fakeAgentDividendProductFees = fakeAgentDividendProductFeeDbSet.Initialize(fees);
+                var fakeAgentDividendPlatformCharges = fakeAgentDividendPlatformChargeDbSet.Initialize(platformCharges);
 
                 _ = fakeDbContext.Agents.Returns(fakeAgents);
                 _ = fakeDbContext.AgentDividends.Returns(fakeAgentDividends);
                 _ = fakeDbContext.Players.Returns(fakePlayers);
                 _ = fakeDbContext.AgentDividendMultipleLayers.Returns(fakeAgentDividendMultipleLayers);
                 _ = fakeDbContext.PlayerDailyPaymentStatistics.Returns(fakePlayerDailyPaymentStatistics);
+                _ = fakeDbContext.AgentDividendProductFees.Returns(fakeAgentDividendProductFees);
+                _ = fakeDbContext.AgentDividendPlatformCharges.Returns(fakeAgentDividendPlatformCharges);
 
                 _ = services.AddSingleton(fakeDbContext);
             }));
@@ -299,6 +315,24 @@ public class AgentDividendsTests
         fixture.Customize<PlayerDailyPaymentStatistic>(u => u
             .With(s => s.ReportDate,
                 new DateOnly(DateTimeOffset.UtcNow.Year, DateTimeOffset.UtcNow.Month, DateTimeOffset.UtcNow.Day)));
+        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        return fixture;
+    }
+
+    private static Fixture CreateAgentDividendProductFeeFixture(int agentDividendId)
+    {
+        var fixture = new Fixture();
+        fixture.Customize<AgentDividendProductFee>(u => u
+            .With(s => s.AgentDividendId, agentDividendId));
+        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        return fixture;
+    }
+
+    private static Fixture CreateAgentDividendPlatformChargeFixture(int agentDividendId)
+    {
+        var fixture = new Fixture();
+        fixture.Customize<AgentDividendPlatformCharge>(u => u
+            .With(s => s.AgentDividendId, agentDividendId));
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         return fixture;
     }
