@@ -17,7 +17,7 @@ public class
         GetAgentDividendProductFeeRequest request,
         CancellationToken cancellationToken)
     {
-        var dividendProviderAgents = await agentDividendService.GetQueries()
+        var fee = await agentDividendService.GetQueries()
             .Where(x => x.AgentId == request.AgentId)
             .Where(x => x.AgentDividendPercentage == request.AgentDividendPercentage)
             .Where(x => x.From >= request.From.ToUniversalTime())
@@ -49,6 +49,6 @@ public class
             .FirstOrDefaultAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        return dividendProviderAgents ?? new AgentDividendProductFeeModel();
+        return fee ?? new AgentDividendProductFeeModel();
     }
 }

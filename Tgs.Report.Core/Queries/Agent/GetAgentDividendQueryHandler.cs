@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Tgs.Report.Enum;
 using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Agent;
@@ -16,85 +17,17 @@ public class GetAgentDividendQueryHandler(TgsContext context)
         var mainAgent = await context.Agents.Where(x => x.BrandId == request.BrandId)
             .Where(request.Username, x => request.Username == x.Username)
             .Where(request.AgentId, x => x.Id == request.AgentId)
-            .Select(x => new
-            {
-                x.Id,
-                x.Username
-            })
+            .Select(x => new { x.Id, x.Username })
             .FirstOrDefaultAsync(cancellationToken);
 
         if (mainAgent is null)
-        {
-            return new PagedResponse<AgentDividendModel>
-            {
-                Valid = false,
-                Message = Resources.Agent.NotFound
-            };
-        }
-
-        var offset = new TimeSpan(8, 0, 0);
-        var requestFrom = request.From.ToOffset(offset);
-        var requestTo = request.To.ToOffset(offset);
-
-        var from = new DateTimeOffset(requestFrom.Year,
-            requestFrom.Month,
-            requestFrom.Day,
-            0,
-            0,
-            0,
-            requestFrom.Offset);
-
-        var to = new DateTimeOffset(requestTo.Year,
-            requestTo.Month,
-            requestTo.Day,
-            0,
-            0,
-            0,
-            requestTo.Offset);
-
-        var now = DateTimeOffset.Now.ToOffset(offset);
-        var today = new DateTimeOffset(now.Year,
-            now.Month,
-            now.Day,
-            0,
-            0,
-            0,
-            offset);
-
-        var fromDate = new DateOnly(from.Year, from.Month, from.Day);
-        var toDate = new DateOnly(to.Year, to.Month, to.Day);
-
-        var dailyDepositWithdraws = await context.PlayerDailyPaymentStatistics
-            .Join(context.Players.Where(x => x.BrandId == request.BrandId), pp => pp.PlayerCode, p => p.PlayerCode,
-                (pp, p) => new
-                {
-                    pp.ReportDate,
-                    p.AgentId,
-                    pp.DailyDepositAmount,
-                    pp.DailyWithdrawAmount
-                })
-            .Where(x => x.ReportDate >= fromDate && x.ReportDate < toDate)
-            .GroupBy(x => x.AgentId, (agentId, group) => new
-            {
-                AgentId = agentId,
-                DailyDepositAmount = group.Sum(s => s.DailyDepositAmount),
-                DailyWithdrawAmount = group.Sum(s => s.DailyWithdrawAmount)
-            })
-            .ToArrayAsync(cancellationToken)
-            .ConfigureAwait(false);
+            return new PagedResponse<AgentDividendModel> { Valid = false, Message = Resources.Agent.NotFound };
 
         var subAgents = await context.Agents.Where(x => x.ParentAgentId == mainAgent.Id)
-            .Select(x => new
-            {
-                x.Id,
-                x.Username
-            })
+            .Select(x => new { x.Id, x.Username })
             .ToListAsync(cancellationToken);
 
-        var agents = subAgents.Union(new[]
-        {
-            mainAgent
-        }).ToArray();
+        var agents = subAgents.Union(new[] { mainAgent }).ToArray();
 
         var agentIds = agents.Select(x => x.Id).ToArray();
 
@@ -104,43 +37,28 @@ public class GetAgentDividendQueryHandler(TgsContext context)
             .Where(x => x.From >= request.From.ToUniversalTime())
             .Where(x => x.To < request.To.ToUniversalTime())
             .Where(x => agentIds.Contains(x.AgentId))
-            .GroupJoin(context.AgentDividendPlatformCharges,
-                a => a.Id,
-                a => a.AgentDividendId,
-                (agentDividend, platformCharges) => new { agentDividend, platformCharges })
-            .GroupJoin(context.AgentDividendProductFees,
-                a => a.agentDividend.Id,
-                a => a.AgentDividendId,
-                (group, productFees) => new { group.agentDividend, group.platformCharges, productFees })
-            .GroupBy(x => new { x.agentDividend.AgentId, x.agentDividend.AgentDividendPercentage },
+            .GroupBy(x => new { x.AgentId, x.AgentDividendPercentage },
                 (x, list) => new
                 {
                     x.AgentId,
                     x.AgentDividendPercentage,
-                    CompanyAdjustAmount = list.Sum(l => l.agentDividend.CompanyAdjustAmount),
-                    AgentAdjustAmount = list.Sum(l => l.agentDividend.AgentAdjustAmount),
-                    BonusAdjustAmount = list.Sum(l => l.agentDividend.BonusAdjustAmount),
-                    BonusAmount = list.Sum(l => l.agentDividend.BonusAmount),
-                    BetAmount = list.Sum(l => l.agentDividend.BetAmount),
-                    OriginalTurnover = list.Sum(l => l.agentDividend.OriginalTurnover),
-                    WinLossAmount = list.Sum(l => l.agentDividend.WinLossAmount),
-                    NetProfit = list.Sum(l => l.agentDividend.NetProfit),
-                    AgentDividendAmount =
-                        list.Sum(l => l.agentDividend.BeforeDividendAmount ?? l.agentDividend.AgentDividendAmount),
-                    NoIncludeNetProfitAgentAdjustAmount =
-                        list.Sum(l => l.agentDividend.NoIncludeNetProfitAgentAdjustAmount),
-                    NoIncludeNetProfitBonusAdjustAmount =
-                        list.Sum(l => l.agentDividend.NoIncludeNetProfitBonusAdjustAmount),
+                    CompanyAdjustAmount = list.Sum(l => l.CompanyAdjustAmount),
+                    AgentAdjustAmount = list.Sum(l => l.AgentAdjustAmount),
+                    BonusAdjustAmount = list.Sum(l => l.BonusAdjustAmount),
+                    BonusAmount = list.Sum(l => l.BonusAmount),
+                    BetAmount = list.Sum(l => l.BetAmount),
+                    OriginalTurnover = list.Sum(l => l.OriginalTurnover),
+                    WinLossAmount = list.Sum(l => l.WinLossAmount),
+                    NetProfit = list.Sum(l => l.NetProfit),
+                    AgentDividendAmount = list.Sum(l => l.BeforeDividendAmount ?? l.AgentDividendAmount),
+                    NoIncludeNetProfitAgentAdjustAmount = list.Sum(l => l.NoIncludeNetProfitAgentAdjustAmount),
+                    NoIncludeNetProfitBonusAdjustAmount = list.Sum(l => l.NoIncludeNetProfitBonusAdjustAmount),
                     FromPlayerAgentDividendAmount =
-                        list.Sum(l => l.agentDividend.AgentDividendMultipleLayers
-                            .Where(m => m.AgentId == m.DividendProviderAgentId)
+                        list.Sum(l => l.AgentDividendMultipleLayers.Where(m => m.AgentId == m.DividendProviderAgentId)
                             .Sum(s => s.Dividend)),
                     FromTeamAgentDividendAmount = list.Sum(l
-                        => l.agentDividend.AgentDividendMultipleLayers
-                            .Where(m => m.AgentId != m.DividendProviderAgentId)
-                            .Sum(s => s.Dividend)),
-                    PlatformCharge = list.Sum(l => l.platformCharges.Sum(s => s.WinLossAmount * s.Percentage / 100)),
-                    ProductFee = list.Sum(l => l.productFees.Sum(s => s.WinLossAmount * s.Percentage / 100))
+                        => l.AgentDividendMultipleLayers.Where(m => m.AgentId != m.DividendProviderAgentId)
+                            .Sum(s => s.Dividend))
                 })
             .ToArrayAsync(cancellationToken);
 
@@ -152,13 +70,73 @@ public class GetAgentDividendQueryHandler(TgsContext context)
             .Where(x => agentIds.Contains(x.AgentId))
             .Where(x => x.AgentId == x.DividendProviderAgentId)
             .Where(x => x.AgentCoveredBonus != null || x.AgentCoveredBonusAdjust != null)
-            .GroupBy(x => x.AgentId, (agentId, list) => new
-            {
-                AgentId = agentId,
-                AgentCoveredBonus = list.Sum(l => l.AgentCoveredBonus),
-                AgentCoveredBonusAdjust = list.Sum(l => l.AgentCoveredBonusAdjust)
-            })
+            .GroupBy(x => new { x.AgentId, x.AgentDividendPercentage },
+                (agent, list) => new
+                {
+                    agent.AgentId,
+                    agent.AgentDividendPercentage,
+                    AgentCoveredBonus = list.Sum(l => l.AgentCoveredBonus),
+                    AgentCoveredBonusAdjust = list.Sum(l => l.AgentCoveredBonusAdjust)
+                })
             .ToArrayAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        var fees = await context.AgentDividends
+            .Where(x => x.BrandId == request.BrandId)
+            .Where(x => x.AgentId == request.AgentId)
+            .Where(x => agentIds.Contains(x.AgentId))
+            .Where(x => x.From >= request.From.ToUniversalTime())
+            .Where(x => x.To < request.To.ToUniversalTime())
+            .GroupJoin(context.AgentDividendProductFees,
+                a => a.Id,
+                a => a.AgentDividendId,
+                (agentDividend, productFees) => new { agentDividend, productFees })
+            .GroupBy(x => new { x.agentDividend.AgentId, x.agentDividend.AgentDividendPercentage }, (agent, fees) => new
+            {
+                agent.AgentId,
+                agent.AgentDividendPercentage,
+                CardGameAmount =
+                    fees.SelectMany(s => s.productFees).Where(w => w.GameType == (short)GameType.CardGame)
+                        .Sum(s => s.WinLossAmount * s.Percentage / 100),
+                LiveDealerAmount =
+                    fees.SelectMany(s => s.productFees).Where(w => w.GameType == (short)GameType.LiveDealer)
+                        .Sum(s => s.WinLossAmount * s.Percentage / 100),
+                LotteryAmount =
+                    fees.SelectMany(s => s.productFees).Where(w => w.GameType == (short)GameType.Lottery)
+                        .Sum(s => s.WinLossAmount * s.Percentage / 100),
+                SportsAmount =
+                    fees.SelectMany(s => s.productFees)
+                        .Where(w => Consts.SportsGroup.Select(s => (short)s).Contains(w.GameType))
+                        .Sum(s => s.WinLossAmount * s.Percentage / 100),
+                SlotAmount =
+                    fees.SelectMany(s => s.productFees)
+                        .Where(w => Consts.SlotGroup.Select(s => (short)s).Contains(w.GameType))
+                        .Sum(s => s.WinLossAmount * s.Percentage / 100),
+                VirtualSportsAmount = fees.SelectMany(s => s.productFees)
+                    .Where(w => w.GameType == (short)GameType.VirtualSports)
+                    .Sum(s => s.WinLossAmount * s.Percentage / 100)
+            }).ToArrayAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        var platformCharges = await context.AgentDividends
+            .Where(x => x.BrandId == request.BrandId)
+            .Where(x => x.AgentId == request.AgentId)
+            .Where(x => agentIds.Contains(x.AgentId))
+            .Where(x => x.From >= request.From.ToUniversalTime())
+            .Where(x => x.To < request.To.ToUniversalTime())
+            .GroupJoin(context.AgentDividendPlatformCharges,
+                a => a.Id,
+                a => a.AgentDividendId,
+                (agentDividend, platformCharges) => new { agentDividend, platformCharges })
+            .GroupBy(x => new { x.agentDividend.AgentId, x.agentDividend.AgentDividendPercentage },
+                (agent, platformCharges) => new
+                {
+                    agent.AgentId,
+                    agent.AgentDividendPercentage,
+                    platformCharge =
+                        platformCharges.SelectMany(s => s.platformCharges)
+                            .Sum(s => s.WinLossAmount * s.Percentage / 100)
+                }).ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
 
         var models = agentDividends.Join(agents,
@@ -167,35 +145,81 @@ public class GetAgentDividendQueryHandler(TgsContext context)
                 (ad, a) => new
                 {
                     Id = ad.AgentId,
-                    Username = a.Username,
-                    CompanyAdjustAmount = ad.CompanyAdjustAmount,
+                    a.Username,
+                    ad.CompanyAdjustAmount,
                     AgentAdjustAmount = ad.AgentAdjustAmount - ad.NoIncludeNetProfitAgentAdjustAmount,
                     BonusAdjustAmount = ad.BonusAdjustAmount - ad.NoIncludeNetProfitBonusAdjustAmount,
-                    BonusAmount = ad.BonusAmount,
-                    BetAmount = ad.BetAmount,
+                    ad.BonusAmount,
+                    ad.BetAmount,
                     ValidBetAmount = ad.OriginalTurnover,
-                    WinLossAmount = ad.WinLossAmount,
-                    NetProfit = ad.NetProfit,
-                    AgentDividendAmount = ad.AgentDividendAmount,
-                    FromPlayerAgentDividendAmount = ad.FromPlayerAgentDividendAmount,
-                    FromTeamAgentDividendAmount = ad.FromTeamAgentDividendAmount,
-                    AgentDividendPercentage = ad.AgentDividendPercentage,
-                    PlatformCharge = ad.PlatformCharge,
-                    ProductFee = ad.ProductFee
+                    ad.WinLossAmount,
+                    ad.NetProfit,
+                    ad.AgentDividendAmount,
+                    ad.FromPlayerAgentDividendAmount,
+                    ad.FromTeamAgentDividendAmount,
+                    ad.AgentDividendPercentage
                 })
             .GroupJoin(agentCovered,
-                x => x.Id,
-                c => c.AgentId,
+                x => new { x.Id, x.AgentDividendPercentage },
+                c => new { Id = c.AgentId, c.AgentDividendPercentage },
                 (ad, list) => new { ad, list })
             .SelectMany(x => x.list.DefaultIfEmpty(), (x, covered) => new { x.ad, covered })
+            .Select(x => new
+            {
+                x.ad.Id,
+                x.ad.Username,
+                x.ad.CompanyAdjustAmount,
+                x.ad.AgentAdjustAmount,
+                x.ad.BonusAdjustAmount,
+                x.ad.BonusAmount,
+                x.ad.BetAmount,
+                x.ad.ValidBetAmount,
+                x.ad.WinLossAmount,
+                x.ad.NetProfit,
+                x.ad.AgentDividendAmount,
+                x.ad.FromPlayerAgentDividendAmount,
+                x.ad.FromTeamAgentDividendAmount,
+                x.ad.AgentDividendPercentage,
+                x.covered?.AgentCoveredBonus,
+                x.covered?.AgentCoveredBonusAdjust
+            })
+            .GroupJoin(fees,
+                x => new { x.Id, x.AgentDividendPercentage },
+                c => new { Id = c.AgentId, c.AgentDividendPercentage },
+                (ad, list) => new { ad, list })
+            .SelectMany(x => x.list.DefaultIfEmpty(), (x, fee) => new { x.ad, fee })
+            .Select(x => new
+            {
+                x.ad.Id,
+                x.ad.Username,
+                x.ad.CompanyAdjustAmount,
+                x.ad.AgentAdjustAmount,
+                x.ad.BonusAdjustAmount,
+                x.ad.BonusAmount,
+                x.ad.BetAmount,
+                x.ad.ValidBetAmount,
+                x.ad.WinLossAmount,
+                x.ad.NetProfit,
+                x.ad.AgentDividendAmount,
+                x.ad.FromPlayerAgentDividendAmount,
+                x.ad.FromTeamAgentDividendAmount,
+                x.ad.AgentDividendPercentage,
+                x.ad.AgentCoveredBonus,
+                x.ad.AgentCoveredBonusAdjust,
+                ProductFee = x.fee == null
+                    ? 0M
+                    : x.fee.CardGameAmount + x.fee.LiveDealerAmount + x.fee.LotteryAmount + x.fee.SlotAmount +
+                      x.fee.SportsAmount + x.fee.VirtualSportsAmount
+            })
+            .GroupJoin(platformCharges,
+                x => new { x.Id, x.AgentDividendPercentage },
+                c => new { Id = c.AgentId, c.AgentDividendPercentage },
+                (ad, list) => new { ad, list })
+            .SelectMany(x => x.list.DefaultIfEmpty(), (x, platformCharge) => new { x.ad, platformCharge })
             .Select(x => new AgentDividendModel
             {
                 Id = x.ad.Id,
                 Username = x.ad.Username,
-                DepositAmount = dailyDepositWithdraws.FirstOrDefault(a => a.AgentId == x.ad.Id)?.DailyDepositAmount ??
-                                0M,
-                WithdrawalAmount =
-                    dailyDepositWithdraws.FirstOrDefault(a => a.AgentId == x.ad.Id)?.DailyWithdrawAmount ?? 0M,
                 CompanyAdjustAmount = x.ad.CompanyAdjustAmount,
                 AgentAdjustAmount = x.ad.AgentAdjustAmount,
                 BonusAdjustAmount = x.ad.BonusAdjustAmount,
@@ -208,9 +232,9 @@ public class GetAgentDividendQueryHandler(TgsContext context)
                 FromPlayerAgentDividendAmount = x.ad.FromPlayerAgentDividendAmount,
                 FromTeamAgentDividendAmount = x.ad.FromTeamAgentDividendAmount,
                 AgentDividendPercentage = x.ad.AgentDividendPercentage,
-                AgentCoveredBonus = x.covered?.AgentCoveredBonus,
-                AgentCoveredBonusAdjust = x.covered?.AgentCoveredBonusAdjust,
-                PlatformCharge = x.ad.PlatformCharge,
+                AgentCoveredBonus = x.ad.AgentCoveredBonus,
+                AgentCoveredBonusAdjust = x.ad.AgentCoveredBonusAdjust,
+                PlatformCharge = x.platformCharge?.platformCharge ?? 0M,
                 ProductFee = x.ad.ProductFee
             })
             .ToArray();
