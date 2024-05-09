@@ -260,7 +260,7 @@ GROUP BY
     public async Task<decimal> GetAgentPlayerSpecialProductFeeAsync(GetAgentPlayerSpecialProductFeeDataRequest request)
     {
         var spName = $@"
-SELECT SUM(pgra.product_fee_percentage * pgra.win_loss / 100) productFee
+SELECT coalesce(SUM(pgra.product_fee_percentage * pgra.win_loss / 100),0) productFee
 	FROM report.player_game_rebate_aggregates pgra
 	join report.player_aggregates pa 
     on pa.brand_id = pgra.brand_id 
