@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MockQueryable.Moq;
 using NSubstitute;
 using Tgs.Report.Client;
+using Tgs.Report.Client.Enum;
 using Tgs.Report.Repository.Entities;
 
 namespace Tgs.Report.IntegrationTest;
@@ -21,6 +22,36 @@ public class AgentDividendsTests
         var brandId = Guid.NewGuid();
         var agentUsername = "username";
 
+        var agentId = Guid.NewGuid();
+
+        var agent1 = CreateAgentFixture(brandId, agentId, agentUsername)
+            .Create<Agent>();
+
+        var agents = new[]
+        {
+            agent1
+        }.AsQueryable().BuildMock();
+
+        var agentDividends = CreateAgentDividendFixture(brandId, agentId).CreateMany<AgentDividend>(1)
+            .AsQueryable().BuildMock();
+
+        var agentDividendMultipleLayers = agentDividends.SelectMany(x => x.AgentDividendMultipleLayers);
+
+        var players = agents.SelectMany(x => x.Players);
+
+        var playerDailyPaymentStatistics =
+            CreatePlayerDailyPaymentStatisticsFixture().CreateMany<PlayerDailyPaymentStatistic>(5).AsQueryable().BuildMock();
+
+        var fees = agentDividends
+            .Select(x => CreateAgentDividendProductFeeFixture(x.Id,10,100,GameType.Slot).Create<AgentDividendProductFee>())
+            .AsQueryable()
+            .BuildMock();
+
+        var platformCharges = agentDividends
+            .Select(x => CreateAgentDividendPlatformChargeFixture(x.Id).Create<AgentDividendPlatformCharge>())
+            .AsQueryable()
+            .BuildMock();
+
         await using var web = new TestReportApplication(builder => builder
             .ConfigureServices(services =>
             {
@@ -32,36 +63,6 @@ public class AgentDividendsTests
                 var fakePlayerDailyPaymentStatisticDbSet = Substitute.For<DbSet<PlayerDailyPaymentStatistic>, IQueryable<PlayerDailyPaymentStatistic>>();
                 var fakeAgentDividendProductFeeDbSet = Substitute.For<DbSet<AgentDividendProductFee>, IQueryable<AgentDividendProductFee>>();
                 var fakeAgentDividendPlatformChargeDbSet = Substitute.For<DbSet<AgentDividendPlatformCharge>, IQueryable<AgentDividendPlatformCharge>>();
-
-                var agentId = Guid.NewGuid();
-
-                var agent1 = CreateAgentFixture(brandId, agentId, agentUsername)
-                    .Create<Agent>();
-
-                var agents = new[]
-                    {
-                        agent1
-                    }.AsQueryable().BuildMock();
-
-                var agentDividends = CreateAgentDividendFixture(brandId, agentId).CreateMany<AgentDividend>(1)
-                    .AsQueryable().BuildMock();
-
-                var agentDividendMultipleLayers = agentDividends.SelectMany(x => x.AgentDividendMultipleLayers);
-
-                var players = agents.SelectMany(x => x.Players);
-
-                var playerDailyPaymentStatistics =
-                    CreatePlayerDailyPaymentStatisticsFixture().CreateMany<PlayerDailyPaymentStatistic>(5).AsQueryable().BuildMock();
-
-                var fees = agentDividends
-                    .Select(x => CreateAgentDividendProductFeeFixture(x.Id).Create<AgentDividendProductFee>())
-                    .AsQueryable()
-                    .BuildMock();
-
-                var platformCharges = agentDividends
-                    .Select(x => CreateAgentDividendPlatformChargeFixture(x.Id).Create<AgentDividendPlatformCharge>())
-                    .AsQueryable()
-                    .BuildMock();
 
                 var fakeAgents = fakeAgentDbSet.Initialize(agents);
                 var fakeAgentDividends = fakeAgentDividendDbSet.Initialize(agentDividends);
@@ -98,6 +99,11 @@ public class AgentDividendsTests
 
         Assert.That(actual, Is.Not.Null);
         Assert.That(actual.Items, Has.Length.EqualTo(1));
+
+        foreach (var agentDividendModel in actual.Items)
+        {
+            Assert.That(agentDividendModel.ProductFee, Is.EqualTo(fees.Sum(x => x.WinLossAmount * x.Percentage / 100)));
+        }
     }
 
     [Test]
@@ -144,7 +150,7 @@ public class AgentDividendsTests
                         .BuildMock();
 
                 var fees = agentDividends
-                    .Select(x => CreateAgentDividendProductFeeFixture(x.Id).Create<AgentDividendProductFee>())
+                    .Select(x => CreateAgentDividendProductFeeFixture(x.Id, 10, 100, GameType.Slot).Create<AgentDividendProductFee>())
                     .AsQueryable()
                     .BuildMock();
 
@@ -247,7 +253,7 @@ public class AgentDividendsTests
                         .BuildMock();
 
                 var fees = agentDividends
-                    .Select(x => CreateAgentDividendProductFeeFixture(x.Id).Create<AgentDividendProductFee>())
+                    .Select(x => CreateAgentDividendProductFeeFixture(x.Id, 10, 100, GameType.Slot).Create<AgentDividendProductFee>())
                     .AsQueryable()
                     .BuildMock();
 
@@ -351,11 +357,15 @@ public class AgentDividendsTests
         return fixture;
     }
 
-    private static Fixture CreateAgentDividendProductFeeFixture(int agentDividendId)
+    private static Fixture CreateAgentDividendProductFeeFixture(int agentDividendId, decimal percentage = 10,
+        decimal winLoss = 100, GameType gameType = GameType.Slot)
     {
         var fixture = new Fixture();
         fixture.Customize<AgentDividendProductFee>(u => u
-            .With(s => s.AgentDividendId, agentDividendId));
+            .With(s => s.AgentDividendId, agentDividendId)
+            .With(s => s.GameType, (short)gameType)
+            .With(s => s.Percentage, percentage)
+            .With(s => s.WinLossAmount, winLoss));
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         return fixture;
     }

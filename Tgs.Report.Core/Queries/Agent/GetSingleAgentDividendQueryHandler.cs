@@ -91,7 +91,7 @@ public class
 
         var fees = await context.AgentDividends
             .Where(x => x.BrandId == request.BrandId)
-            .Where(x => x.AgentId == request.AgentId)
+            .Where(x => x.AgentId == agent.Id)
             .Where(x => x.From >= request.From.ToUniversalTime())
             .Where(x => x.To < request.To.ToUniversalTime())
             .GroupJoin(context.AgentDividendProductFees,
@@ -127,7 +127,7 @@ public class
 
         var platformCharges = await context.AgentDividends
             .Where(x => x.BrandId == request.BrandId)
-            .Where(x => x.AgentId == request.AgentId)
+            .Where(x => x.AgentId == agent.Id)
             .Where(x => x.From >= request.From.ToUniversalTime())
             .Where(x => x.To < request.To.ToUniversalTime())
             .GroupJoin(context.AgentDividendPlatformCharges,
