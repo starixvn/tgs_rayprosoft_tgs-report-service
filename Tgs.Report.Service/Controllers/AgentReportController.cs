@@ -18,6 +18,7 @@ public class AgentReportController(IMediator mediator) : ControllerBase
         [FromQuery] GetAgentContributionsRequest request) =>
         mediator.Send(request);
 
+    [Obsolete("substituted singleAgentDividends for it.")]
     [HttpGet("dividends")]
     [Description("Get agent dividends report")]
     public Task<PagedResponse<AgentDividendModel>>

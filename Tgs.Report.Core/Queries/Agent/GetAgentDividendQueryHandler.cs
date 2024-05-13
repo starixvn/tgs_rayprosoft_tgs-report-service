@@ -83,7 +83,6 @@ public class GetAgentDividendQueryHandler(TgsContext context)
 
         var fees = await context.AgentDividends
             .Where(x => x.BrandId == request.BrandId)
-            .Where(x => x.AgentId == request.AgentId)
             .Where(x => agentIds.Contains(x.AgentId))
             .Where(x => x.From >= request.From.ToUniversalTime())
             .Where(x => x.To < request.To.ToUniversalTime())
@@ -120,7 +119,6 @@ public class GetAgentDividendQueryHandler(TgsContext context)
 
         var platformCharges = await context.AgentDividends
             .Where(x => x.BrandId == request.BrandId)
-            .Where(x => x.AgentId == request.AgentId)
             .Where(x => agentIds.Contains(x.AgentId))
             .Where(x => x.From >= request.From.ToUniversalTime())
             .Where(x => x.To < request.To.ToUniversalTime())
