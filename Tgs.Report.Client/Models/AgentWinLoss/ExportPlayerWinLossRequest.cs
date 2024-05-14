@@ -1,4 +1,4 @@
 ﻿namespace Tgs.Report.Client.Models.AgentWinLoss;
 
-public record ExportPlayerWinLossRequest(string PlayerCode, decimal PlatformCharge,
+public record ExportPlayerWinLossRequest(string PlayerCode,
     DateTimeOffset From, DateTimeOffset To);

@@ -14,7 +14,6 @@ internal class GetAgentTotalDetailQueryHandler(IAgentFactory agentFactory) : IRe
         {
             BrandId = request.BrandId,
             AgentId = request.AgentId,
-            PlatformCharge = request.PlatformCharge,
             From = request.From,
             To = request.To
         };

@@ -17,7 +17,7 @@ WITH agent_data AS
                   (Jsonb_path_query(agent_dividend_percentage_tree_data, '$[*] ? (@.ParentAgentId == null).DividendPercentage'))::NUMERIC                                                                                   AS agentdividendpercentage ,
                   SUM(turnover)                                                                                                                                                                                             AS turnover ,
                   SUM(win_loss_amount)                                                                                                                                                                                      AS win_loss_amount ,
-                  SUM(rebate_amount + promotion_amount + upgrade_amount + season_amount + birthday_amount + (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount) + (win_loss_amount * @platformcharge * 0.01)) AS bonus_amount ,
+                  SUM(rebate_amount + promotion_amount + upgrade_amount + season_amount + birthday_amount + (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount) + (win_loss_amount * platform_charge_percentage * 0.01)) AS bonus_amount ,
                   SUM(round_count)                                                                                                                                                                                          AS roundcount
          FROM     report.player_aggregates
          WHERE    brand_id = @brandid
@@ -30,13 +30,13 @@ WITH agent_data AS
          SELECT   ad.masterid AS id ,
                   a.username ,
                   'agent'                                                                AS membertype ,
-                  SUM(ad.turnover)                                                       AS turnover ,
-                  -SUM(ad.win_loss_amount)                                                AS winloss ,
-                  SUM(ad.win_loss_amount * ad.agentdividendpercentage / 100.0)           AS agentwinloss ,
-                  SUM(ad.win_loss_amount * (100.0 - ad.agentdividendpercentage) / 100.0) AS companywinloss ,
-                  SUM(ad.bonus_amount)                                                   AS special ,
-                  -SUM(ad.bonus_amount * ad.agentdividendpercentage / 100.0)              AS agentspecial ,
-                  -SUM(ad.bonus_amount * (100.0 - ad.agentdividendpercentage) / 100.0)    AS companyspecial ,
+                  TRUNC(SUM(ad.turnover), 6)                                                       AS turnover ,
+                  TRUNC(-SUM(ad.win_loss_amount), 6)                                                AS winloss ,
+                  TRUNC(SUM(ad.win_loss_amount * ad.agentdividendpercentage / 100.0), 6)           AS agentwinloss ,
+                  TRUNC(SUM(ad.win_loss_amount * (100.0 - ad.agentdividendpercentage) / 100.0), 6) AS companywinloss ,
+                  TRUNC(SUM(ad.bonus_amount), 6)                                                   AS special ,
+                  TRUNC(-SUM(ad.bonus_amount * ad.agentdividendpercentage / 100.0), 6)              AS agentspecial ,
+                  TRUNC(-SUM(ad.bonus_amount * (100.0 - ad.agentdividendpercentage) / 100.0), 6)    AS companyspecial ,
                   SUM(roundcount)                                                           roundcount
          FROM     agent_data ad
          join     dbo.agents a
@@ -54,8 +54,7 @@ WHERE turnover <> 0 OR winloss <> 0 OR special <> 0;";
             {
                 { "brandId", request.BrandId },
                 { "from", request.From },
-                { "to", request.To },
-                { "platformCharge", request.PlatformCharge }
+                { "to", request.To }
             }, transaction);
     }
 
@@ -68,7 +67,7 @@ WITH agent_data AS
                   (Jsonb_path_query(agent_dividend_percentage_tree_data, '$[*] ? (@.AgentId == ""{request.AgentId}"").DividendPercentage'))::NUMERIC                                                                        AS agentdividendpercentage ,
                   SUM(turnover)                                                                                                                                                                                             AS turnover ,
                   SUM(win_loss_amount)                                                                                                                                                                                      AS win_loss_amount ,
-                  SUM(rebate_amount + promotion_amount + upgrade_amount + season_amount + birthday_amount + (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount) + (win_loss_amount * @platformcharge * 0.01)) AS bonus_amount ,
+                  SUM(rebate_amount + promotion_amount + upgrade_amount + season_amount + birthday_amount + (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount) + (win_loss_amount * platform_charge_percentage * 0.01)) AS bonus_amount ,
                   SUM(round_count)                                                                                                                                                                                          AS roundcount
          FROM     report.player_aggregates
          WHERE    brand_id = @brandid
@@ -81,13 +80,13 @@ WITH agent_data AS
          SELECT   ad.masterid AS id ,
                   a.username ,
                   'agent'                                                                AS membertype ,
-                  SUM(ad.turnover)                                                       AS turnover ,
-                  -SUM(ad.win_loss_amount)                                                AS winloss ,
-                  SUM(ad.win_loss_amount * ad.agentdividendpercentage / 100.0)           AS agentwinloss ,
-                  SUM(ad.win_loss_amount * (100.0 - ad.agentdividendpercentage) / 100.0) AS companywinloss ,
-                  SUM(ad.bonus_amount)                                                   AS special ,
-                  -SUM(ad.bonus_amount * ad.agentdividendpercentage / 100.0)              AS agentspecial ,
-                  -SUM(ad.bonus_amount * (100.0 - ad.agentdividendpercentage) / 100.0)    AS companyspecial ,
+                  TRUNC(SUM(ad.turnover), 6)                                                       AS turnover ,
+                  TRUNC(-SUM(ad.win_loss_amount), 6)                                                AS winloss ,
+                  TRUNC(SUM(ad.win_loss_amount * ad.agentdividendpercentage / 100.0), 6)           AS agentwinloss ,
+                  TRUNC(SUM(ad.win_loss_amount * (100.0 - ad.agentdividendpercentage) / 100.0), 6) AS companywinloss ,
+                  TRUNC(SUM(ad.bonus_amount), 6)                                                   AS special ,
+                  TRUNC(-SUM(ad.bonus_amount * ad.agentdividendpercentage / 100.0), 6)              AS agentspecial ,
+                  TRUNC(-SUM(ad.bonus_amount * (100.0 - ad.agentdividendpercentage) / 100.0), 6)    AS companyspecial ,
                   SUM(roundcount)                                                           roundcount
          FROM     agent_data ad
          join     dbo.agents a
@@ -108,8 +107,7 @@ FROM   (
             {
                 { "brandId", request.BrandId },
                 { "from", request.From },
-                { "to", request.To },
-                { "platformCharge", request.PlatformCharge }
+                { "to", request.To }
             }, transaction);
     }
 
@@ -122,7 +120,7 @@ WITH agent_data AS
                   (Jsonb_path_query(agent_dividend_percentage_tree_data, '$[*] ? (@.ParentAgentId == ""{request.AgentId}"").DividendPercentage'))::NUMERIC                                                                  AS agentdividendpercentage,
                   SUM(turnover)                                                                                                                                                                                             AS turnover,
                   SUM(win_loss_amount)                                                                                                                                                                                      AS win_loss_amount,
-                  SUM(rebate_amount + promotion_amount + upgrade_amount + season_amount + birthday_amount + (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount) + (win_loss_amount * @platformcharge * 0.01)) AS bonus_amount,
+                  SUM(rebate_amount + promotion_amount + upgrade_amount + season_amount + birthday_amount + (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount) + (win_loss_amount * platform_charge_percentage * 0.01)) AS bonus_amount,
                   SUM(round_count)                                                                                                                                                                                          AS round_count
          FROM     report.player_aggregates
          WHERE    report_date >= @FROM
@@ -152,13 +150,13 @@ WITH agent_data AS
          SELECT   pa.player_code                                                                                                                                                                                                        AS id,
                   p.username                                                                                                                                                                                                        AS username,
                   'player'                                                                                                                                                                                                        AS membertype,
-                  SUM(pa.turnover)                                                                                                                                                                                                        AS turnover,
-                  -SUM(pa.win_loss_amount)                                                                                                                                                                                                        AS winloss,
-                  SUM(pa.win_loss_amount * pa.agent_dividend_percentage / 100.0)                                                                                                                                                                                               AS agentwinloss,
-                  SUM(pa.win_loss_amount * (100.0 - pa.agent_dividend_percentage) / 100.0)                                                                                                                                                                                     AS companywinloss,
-                  SUM(rebate_amount      + promotion_amount + upgrade_amount + season_amount + birthday_amount + (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount) + (win_loss_amount * @platformcharge * 0.01))                                               AS special ,
-                  -SUM((rebate_amount + promotion_amount + upgrade_amount + season_amount + birthday_amount + (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount) + (win_loss_amount * @platformcharge * 0.01)) * pa.agent_dividend_percentage / 100.0)           AS agentspecial ,
-                  -SUM((rebate_amount + promotion_amount + upgrade_amount + season_amount + birthday_amount + (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount) + (win_loss_amount * @platformcharge * 0.01)) * (100.0 - pa.agent_dividend_percentage) / 100.0) AS companyspecial ,
+                  TRUNC(SUM(pa.turnover), 6)                                                                                                                                                                                                        AS turnover,
+                  TRUNC(-SUM(pa.win_loss_amount), 6)                                                                                                                                                                                                        AS winloss,
+                  TRUNC(SUM(pa.win_loss_amount * pa.agent_dividend_percentage / 100.0), 6)                                                                                                                                                                                               AS agentwinloss,
+                  TRUNC(SUM(pa.win_loss_amount * (100.0 - pa.agent_dividend_percentage) / 100.0), 6)                                                                                                                                                                                     AS companywinloss,
+                  TRUNC(SUM(rebate_amount      + promotion_amount + upgrade_amount + season_amount + birthday_amount + (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount) + (win_loss_amount * platform_charge_percentage * 0.01)), 6)                                               AS special ,
+                  TRUNC(-SUM((rebate_amount + promotion_amount + upgrade_amount + season_amount + birthday_amount + (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount) + (win_loss_amount * platform_charge_percentage * 0.01)) * pa.agent_dividend_percentage / 100.0), 6)           AS agentspecial ,
+                  TRUNC(-SUM((rebate_amount + promotion_amount + upgrade_amount + season_amount + birthday_amount + (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount) + (win_loss_amount * platform_charge_percentage * 0.01)) * (100.0 - pa.agent_dividend_percentage) / 100.0), 6) AS companyspecial ,
                   SUM(round_count)                                                                                                                                                                                                        AS roundcount
          FROM     report.player_aggregates pa
          join     dbo.players p
@@ -184,8 +182,7 @@ WHERE turnover <> 0 OR winloss <> 0 OR special <> 0;";
                 { "brandId", request.BrandId },
                 { "agentId", request.AgentId },
                 { "from", request.From },
-                { "to", request.To },
-                { "platformCharge", request.PlatformCharge }
+                { "to", request.To }
             }, transaction);
     }
 
@@ -194,9 +191,9 @@ WHERE turnover <> 0 OR winloss <> 0 OR special <> 0;";
     {
         var spName = $@"
 SELECT
-  Sum(rebate_amount       + promotion_amount + upgrade_amount + season_amount + birthday_amount) as bonus
-, Sum(bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)                           as bonusAdjust
-, Sum(win_loss_amount     * platform_charge_percentage / 100)                                              as platformCharge
+  TRUNC(Sum(rebate_amount       + promotion_amount + upgrade_amount + season_amount + birthday_amount), 6) as bonus
+, TRUNC(Sum(bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount), 6)                           as bonusAdjust
+, TRUNC(Sum(win_loss_amount     * platform_charge_percentage / 100), 6)                                              as platformCharge
 FROM
   report.player_aggregates
 WHERE
@@ -231,8 +228,8 @@ SELECT
   report_date                                                                                                                                                                                     AS ReportDate
 , Jsonb_path_query(agent_dividend_percentage_tree_data, '$[*] ? (@.AgentId == ""{request.AgentId}"")') ->> 'AgentId'                                                                              AS AgentId
 , ( Jsonb_path_query(agent_dividend_percentage_tree_data, '$[*] ? (@.AgentId == ""{request.AgentId}"").DividendPercentage') ) :: NUMERIC                                                          AS Percentage
-, Sum(win_loss_amount)                                                                                                                                                                            AS WinLoss
-, Sum(rebate_amount + promotion_amount + upgrade_amount + season_amount + birthday_amount + ( bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount ) + ( win_loss_amount * 0 * 0.01 )) AS BonusAmount
+, TRUNC(Sum(win_loss_amount), 6)                                                                                                                                                                            AS WinLoss
+, TRUNC(Sum(rebate_amount + promotion_amount + upgrade_amount + season_amount + birthday_amount + ( bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount ) + ( win_loss_amount * platform_charge_percentage * 0.01 )), 6) AS BonusAmount
 FROM
   report.player_aggregates
 WHERE
@@ -252,8 +249,7 @@ GROUP BY
             {
                 { "brandId", request.BrandId },
                 { "from", request.From },
-                { "to", request.To },
-                { "platformCharge", request.PlatformCharge }
+                { "to", request.To }
             }, transaction);
     }
 

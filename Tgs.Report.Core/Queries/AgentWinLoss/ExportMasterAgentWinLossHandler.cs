@@ -15,7 +15,6 @@ internal class ExportMasterAgentWinLossHandler(IMediator mediator)
         var getMasterAgentWinLossRequest = new GetMasterAgentWinLossRequest
         {
             BrandId = request.BrandId,
-            PlatformCharge = request.PlatformCharge,
             From = request.From,
             To = request.To,
             ShowAll = true

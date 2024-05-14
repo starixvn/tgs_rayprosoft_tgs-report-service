@@ -16,7 +16,6 @@ internal class ExportDownLineAgentWinLossHandler(IMediator mediator)
         {
             BrandId = request.BrandId,
             AgentId = request.AgentId,
-            PlatformCharge = request.PlatformCharge,
             From = request.From,
             To = request.To,
             ShowAll = true
