@@ -15,7 +15,6 @@ internal class ExportAgentWinLossHandler(IMediator mediator) : IRequestHandler<E
         {
             BrandId = request.BrandId,
             AgentId = request.AgentId,
-            PlatformCharge = request.PlatformCharge,
             From = request.From,
             To = request.To,
             ShowAll = true

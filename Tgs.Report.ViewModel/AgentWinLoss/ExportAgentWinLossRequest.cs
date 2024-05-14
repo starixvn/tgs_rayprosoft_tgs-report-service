@@ -4,5 +4,5 @@ using MediatR;
 
 namespace Tgs.Report.ViewModel.AgentWinLoss;
 
-public record ExportAgentWinLossRequest(Guid BrandId, Guid AgentId, decimal PlatformCharge,
+public record ExportAgentWinLossRequest(Guid BrandId, Guid AgentId,
     DateTimeOffset From, DateTimeOffset To) : IRequest<MemoryStream>;

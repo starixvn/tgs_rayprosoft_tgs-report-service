@@ -15,7 +15,6 @@ internal class GetMasterAgentWinLossQueryHandler(IAgentFactory agentFactory)
         var getRequest = new GetMasterAgentWinLossDataRequest
         {
             BrandId = request.BrandId,
-            PlatformCharge = request.PlatformCharge,
             From = request.From,
             To = request.To
         };

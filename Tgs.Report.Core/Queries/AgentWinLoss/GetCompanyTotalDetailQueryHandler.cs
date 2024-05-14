@@ -15,7 +15,6 @@ internal class GetCompanyTotalDetailQueryHandler(IAgentFactory agentFactory)
         {
             BrandId = request.BrandId,
             AgentId = request.AgentId,
-            PlatformCharge = request.PlatformCharge,
             From = request.From,
             To = request.To
         };

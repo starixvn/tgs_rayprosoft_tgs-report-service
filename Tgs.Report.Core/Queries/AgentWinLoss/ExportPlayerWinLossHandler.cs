@@ -15,7 +15,6 @@ internal class ExportPlayerWinLossHandler(IMediator mediator)
         var getAgentWinLossRequest = new GetPlayerWinLossRequest
         {
             PlayerCode = request.PlayerCode,
-            PlatformCharge = request.PlatformCharge,
             From = request.From,
             To = request.To,
             ShowAll = true
