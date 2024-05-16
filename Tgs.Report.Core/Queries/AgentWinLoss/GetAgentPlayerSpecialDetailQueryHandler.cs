@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Tgs.Report.Enum;
 using Tgs.Report.ViewModel.AgentWinLoss;
 
 namespace Tgs.Report.Core.Queries.AgentWinLoss;
@@ -16,18 +17,10 @@ internal class GetAgentPlayerSpecialDetailQueryHandler(IAgentFactory agentFactor
             BrandId = request.BrandId, AgentId = request.AgentId, From = request.From, To = request.To
         });
 
-        var productFeeResponse = await agentFactory.GetAgentPlayerSpecialProductFeeAsync(
-            new GetAgentPlayerSpecialProductFeeDataRequest
-            {
-                BrandId = request.BrandId, AgentId = request.AgentId, From = request.From, To = request.To
-            });
-
         return new AgentPlayerSpecialDetailModel
         {
             Bonus = response.Bonus,
-            BonusAdjust = response.BonusAdjust,
-            PlatformCharge = response.PlatformCharge,
-            ProductFee = productFeeResponse
+            BonusAdjust = response.BonusAdjust
         };
     }
 }

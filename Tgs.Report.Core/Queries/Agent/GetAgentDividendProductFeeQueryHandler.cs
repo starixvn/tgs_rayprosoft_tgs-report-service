@@ -26,25 +26,36 @@ public class
                 a => a.Id,
                 a => a.AgentDividendId,
                 (agentDividend, productFees) => new { agentDividend, productFees })
-            .Select(x => new AgentDividendProductFeeModel
+            .Select(x => new
             {
+                x.agentDividend.AgentId,
                 CardGameAmount =
                     x.productFees.Where(w => w.GameType == (short)GameType.CardGame)
-                        .Sum(s => s.WinLossAmount * s.Percentage / 100),
+                        .Sum(s => (s.WinLossAmount < 0 ? 0 : s.WinLossAmount) * s.Percentage / 100),
                 LiveDealerAmount =
                     x.productFees.Where(w => w.GameType == (short)GameType.LiveDealer)
-                        .Sum(s => s.WinLossAmount * s.Percentage / 100),
+                        .Sum(s => (s.WinLossAmount < 0 ? 0 : s.WinLossAmount) * s.Percentage / 100),
                 LotteryAmount =
                     x.productFees.Where(w => w.GameType == (short)GameType.Lottery)
-                        .Sum(s => s.WinLossAmount * s.Percentage / 100),
+                        .Sum(s => (s.WinLossAmount < 0 ? 0 : s.WinLossAmount) * s.Percentage / 100),
                 SportsAmount =
                     x.productFees.Where(w => Consts.SportsGroup.Select(s => (short)s).Contains(w.GameType))
-                        .Sum(s => s.WinLossAmount * s.Percentage / 100),
+                        .Sum(s => (s.WinLossAmount < 0 ? 0 : s.WinLossAmount) * s.Percentage / 100),
                 SlotAmount =
                     x.productFees.Where(w => Consts.SlotGroup.Select(s => (short)s).Contains(w.GameType))
-                        .Sum(s => s.WinLossAmount * s.Percentage / 100),
+                        .Sum(s => (s.WinLossAmount < 0 ? 0 : s.WinLossAmount) * s.Percentage / 100),
                 VirtualSportsAmount = x.productFees.Where(w => w.GameType == (short)GameType.VirtualSports)
-                    .Sum(s => s.WinLossAmount * s.Percentage / 100),
+                    .Sum(s => (s.WinLossAmount < 0 ? 0 : s.WinLossAmount) * s.Percentage / 100),
+            })
+            .GroupBy(x => x.AgentId)
+            .Select(x => new AgentDividendProductFeeModel
+            {
+                CardGameAmount = x.Sum(s => s.CardGameAmount),
+                LiveDealerAmount = x.Sum(s => s.LiveDealerAmount),
+                LotteryAmount = x.Sum(s => s.LotteryAmount),
+                SportsAmount = x.Sum(s => s.SportsAmount),
+                SlotAmount = x.Sum(s => s.SlotAmount),
+                VirtualSportsAmount = x.Sum(s => s.VirtualSportsAmount),
             })
             .FirstOrDefaultAsync(cancellationToken)
             .ConfigureAwait(false);

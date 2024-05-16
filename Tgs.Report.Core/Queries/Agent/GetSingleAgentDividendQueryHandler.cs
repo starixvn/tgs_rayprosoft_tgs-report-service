@@ -104,24 +104,24 @@ public class
                 agent.AgentDividendPercentage,
                 CardGameAmount =
                     fees.SelectMany(s => s.productFees).Where(w => w.GameType == (short)GameType.CardGame)
-                        .Sum(s => s.WinLossAmount * s.Percentage / 100),
+                        .Sum(s => (s.WinLossAmount < 0 ? 0 : s.WinLossAmount) * s.Percentage / 100),
                 LiveDealerAmount =
                     fees.SelectMany(s => s.productFees).Where(w => w.GameType == (short)GameType.LiveDealer)
-                        .Sum(s => s.WinLossAmount * s.Percentage / 100),
+                        .Sum(s => (s.WinLossAmount < 0 ? 0 : s.WinLossAmount) * s.Percentage / 100),
                 LotteryAmount =
                     fees.SelectMany(s => s.productFees).Where(w => w.GameType == (short)GameType.Lottery)
-                        .Sum(s => s.WinLossAmount * s.Percentage / 100),
+                        .Sum(s => (s.WinLossAmount < 0 ? 0 : s.WinLossAmount) * s.Percentage / 100),
                 SportsAmount =
                     fees.SelectMany(s => s.productFees)
                         .Where(w => Consts.SportsGroup.Select(s => (short)s).Contains(w.GameType))
-                        .Sum(s => s.WinLossAmount * s.Percentage / 100),
+                        .Sum(s => (s.WinLossAmount < 0 ? 0 : s.WinLossAmount) * s.Percentage / 100),
                 SlotAmount =
                     fees.SelectMany(s => s.productFees)
                         .Where(w => Consts.SlotGroup.Select(s => (short)s).Contains(w.GameType))
-                        .Sum(s => s.WinLossAmount * s.Percentage / 100),
+                        .Sum(s => (s.WinLossAmount < 0 ? 0 : s.WinLossAmount) * s.Percentage / 100),
                 VirtualSportsAmount = fees.SelectMany(s => s.productFees)
                     .Where(w => w.GameType == (short)GameType.VirtualSports)
-                    .Sum(s => s.WinLossAmount * s.Percentage / 100)
+                    .Sum(s => (s.WinLossAmount < 0 ? 0 : s.WinLossAmount) * s.Percentage / 100)
             }).ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
 

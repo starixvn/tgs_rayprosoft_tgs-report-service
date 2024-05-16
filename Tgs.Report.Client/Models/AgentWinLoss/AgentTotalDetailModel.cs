@@ -9,5 +9,6 @@ public record AgentTotalDetailModel
     public decimal PlayerSpecial { get; set; }
     public decimal AgentWinLoss { get; set; }
     public decimal AgentSpecial { get; set; }
+    public decimal PlatformChargeAmount { get; set; }
     public decimal AgentTotal { get; set; }
 }
