@@ -16,5 +16,4 @@ public record AgentWinLossModel
     public decimal AgentTotal { get; set; }
     public decimal CompanyTotal { get; set; }
     public decimal PlatformChargeAmount { get; set; }
-    public decimal FeeAmount { get; set; }
 }
