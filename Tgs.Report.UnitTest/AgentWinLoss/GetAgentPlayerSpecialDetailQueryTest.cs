@@ -25,27 +25,9 @@ public sealed class GetAgentPlayerSpecialDetailQueryTest : BaseTest
 
         var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
         var agentId = new Guid("aac22220-20f6-4f0d-6982-08d9dbdc0473");
-        var agentId2 = new Guid("aac22220-20f6-4f0d-6982-08d9dbdc0474");
-
-
-        var productFees = new ProductFeeDataModel[]
-        {
-            CreateProductFeeDataModelFixture(agentId, 10, GameType.CardGame, 100).Create<ProductFeeDataModel>(),
-            CreateProductFeeDataModelFixture(agentId, 10, GameType.Lottery, 1000).Create<ProductFeeDataModel>(),
-            CreateProductFeeDataModelFixture(agentId, 10, GameType.Slot, 100).Create<ProductFeeDataModel>(),
-            CreateProductFeeDataModelFixture(agentId, 10, GameType.Fishing, 1000).Create<ProductFeeDataModel>(),
-            CreateProductFeeDataModelFixture(agentId, 10, GameType.Sportsbook, -1000).Create<ProductFeeDataModel>(),
-            CreateProductFeeDataModelFixture(agentId, 10, GameType.ESports, 2000).Create<ProductFeeDataModel>(),
-            CreateProductFeeDataModelFixture(agentId, 10, GameType.VirtualSports, -1000).Create<ProductFeeDataModel>(),
-            CreateProductFeeDataModelFixture(agentId2, 10, GameType.Lottery, 1000).Create<ProductFeeDataModel>(),
-            CreateProductFeeDataModelFixture(agentId2, 10, GameType.Slot, 1000).Create<ProductFeeDataModel>(),
-        };
 
         _ = fakeAgentFactory.GetAgentPlayerSpecialFeesAsync(Arg.Any<GetAgentPlayerSpecialFeesDataRequest>())
             .Returns(agentPlayerSpecialDetail);
-
-        _ = fakeAgentFactory.GetAgentPlayerSpecialProductFeeAsync(Arg.Any<GetAgentPlayerSpecialProductFeeDataRequest>())
-            .Returns(productFees.ToAsyncEnumerable());
 
         var sut = new GetAgentPlayerSpecialDetailQueryHandler(fakeAgentFactory);
 
@@ -60,7 +42,6 @@ public sealed class GetAgentPlayerSpecialDetailQueryTest : BaseTest
         var response = await sut.Handle(request, default);
 
         Assert.That(response.Bonus, Is.EqualTo(agentPlayerSpecialDetail.Bonus));
-        Assert.That(response.ProductFee, Is.EqualTo(520));
     }
     
     private static Fixture CreateAgentPlayerSpecialDetailFixture()
