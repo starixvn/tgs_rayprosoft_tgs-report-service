@@ -54,7 +54,8 @@ internal class GetAgentTotalDetailQueryHandler(IAgentFactory agentFactory) : IRe
             AgentSpecial = -list.Sum(s => s.BonusAmount) * group.Percentage * 0.01M,
             PlatformChargeAmount = list.Sum(s => s.PlatformChargeAmount),
             AgentTotal = list.Sum(s => s.WinLoss) * group.Percentage * 0.01M -
-                list.Sum(s => s.BonusAmount) * group.Percentage * 0.01M
+                list.Sum(s => s.BonusAmount) * group.Percentage * 0.01M +
+                list.Sum(s => s.PlatformChargeAmount)
         });
     }
 }
