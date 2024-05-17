@@ -9,6 +9,5 @@ public record CompanyTotalDetailModel
     public decimal PlayerSpecial { get; set; }
     public decimal CompanyWinLoss { get; set; }
     public decimal CompanySpecial { get; set; }
-    public decimal PlatformChargeAmount { get; set; }
     public decimal CompanyTotal { get; set; }
 }

@@ -37,8 +37,7 @@ internal class GetCompanyTotalDetailQueryHandler(IAgentFactory agentFactory)
                 x.ReportDate,
                 x.WinLoss,
                 x.Percentage,
-                x.BonusAmount,
-                x.PlatformChargeAmount
+                x.BonusAmount
             };
         }).GroupBy(x => new
         {
@@ -53,10 +52,8 @@ internal class GetCompanyTotalDetailQueryHandler(IAgentFactory agentFactory)
             PlayerSpecial = list.Sum(s => s.BonusAmount),
             CompanyWinLoss = list.Sum(s => s.WinLoss) * (100 - group.Percentage) * 0.01M,
             CompanySpecial = -list.Sum(s => s.BonusAmount) * (100 - group.Percentage) * 0.01M,
-            PlatformChargeAmount = -list.Sum(s => s.PlatformChargeAmount),
             CompanyTotal = list.Sum(s => s.WinLoss) * (100 - group.Percentage) * 0.01M -
-                list.Sum(s => s.BonusAmount) * (100 - group.Percentage) * 0.01M - 
-                list.Sum(s => s.PlatformChargeAmount)
+                list.Sum(s => s.BonusAmount) * (100 - group.Percentage) * 0.01M
         });
     }
 }

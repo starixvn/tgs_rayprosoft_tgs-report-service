@@ -36,8 +36,7 @@ internal class GetAgentTotalDetailQueryHandler(IAgentFactory agentFactory) : IRe
                 x.ReportDate,
                 x.WinLoss,
                 x.Percentage,
-                x.BonusAmount,
-                x.PlatformChargeAmount
+                x.BonusAmount
             };
         }).GroupBy(x => new
         {
@@ -52,10 +51,8 @@ internal class GetAgentTotalDetailQueryHandler(IAgentFactory agentFactory) : IRe
             PlayerSpecial = list.Sum(s => s.BonusAmount),
             AgentWinLoss = list.Sum(s => s.WinLoss) * group.Percentage * 0.01M,
             AgentSpecial = -list.Sum(s => s.BonusAmount) * group.Percentage * 0.01M,
-            PlatformChargeAmount = list.Sum(s => s.PlatformChargeAmount),
             AgentTotal = list.Sum(s => s.WinLoss) * group.Percentage * 0.01M -
-                list.Sum(s => s.BonusAmount) * group.Percentage * 0.01M +
-                list.Sum(s => s.PlatformChargeAmount)
+                list.Sum(s => s.BonusAmount) * group.Percentage * 0.01M
         });
     }
 }

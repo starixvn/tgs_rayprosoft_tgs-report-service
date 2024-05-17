@@ -8,5 +8,4 @@ public record SpecialDetailDataModel
     public decimal Percentage { get; set; }
     public decimal WinLoss { get; set; }
     public decimal BonusAmount { get; set; }
-    public decimal PlatformChargeAmount { get; set; }
 }

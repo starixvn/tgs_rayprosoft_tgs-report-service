@@ -15,5 +15,4 @@ public record ExportAgentWinLossModel
     public decimal CompanyWinLoss { get; set; }
     public decimal CompanySpecial { get; set; }
     public decimal CompanyTotal { get; set; }
-    public decimal PlatformChargeAmount { get; set; }
 }

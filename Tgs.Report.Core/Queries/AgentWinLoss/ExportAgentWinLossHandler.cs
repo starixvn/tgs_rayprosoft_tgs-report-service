@@ -36,8 +36,7 @@ internal class ExportAgentWinLossHandler(IMediator mediator) : IRequestHandler<E
             AgentSpecial = x.AgentSpecial.Truncate(2),
             CompanySpecial = x.CompanySpecial.Truncate(2),
             AgentTotal = x.AgentTotal.Truncate(2),
-            CompanyTotal = x.CompanyTotal.Truncate(2),
-            PlatformChargeAmount = x.PlatformChargeAmount.Truncate(2),
+            CompanyTotal = x.CompanyTotal.Truncate(2)
         });
 
         var resource = new ResourceManager(typeof(AgentWinLossRes));
