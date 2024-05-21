@@ -20,16 +20,16 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.HasIndex(e => e.PlayerCode, "ix_player_buckets_player_code");
 
             entity.Property(e => e.Id)
-            .ValueGeneratedNever()
-            .HasColumnName("id");
+                .ValueGeneratedNever()
+                .HasColumnName("id");
             entity.Property(e => e.BucketAmount)
-            .HasPrecision(18, 6)
-            .HasColumnName("bucket_amount");
+                .HasPrecision(18, 6)
+                .HasColumnName("bucket_amount");
             entity.Property(e => e.BucketType).HasColumnName("bucket_type");
             entity.Property(e => e.CreatedOn).HasColumnName("created_on");
             entity.Property(e => e.CurrentBucketAmount)
-            .HasPrecision(18, 6)
-            .HasColumnName("current_bucket_amount");
+                .HasPrecision(18, 6)
+                .HasColumnName("current_bucket_amount");
             entity.Property(e => e.IsFull).HasColumnName("is_full");
             entity.Property(e => e.PlayerCode).HasColumnName("player_code");
             entity.Property(e => e.SnapshotId).HasColumnName("snapshot_id");

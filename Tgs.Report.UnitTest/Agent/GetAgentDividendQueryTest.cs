@@ -57,11 +57,6 @@ public sealed class GetAgentDividendQueryTest : BaseTest
             .AsQueryable()
             .BuildMock();
 
-        var platformCharges = agentDividends
-            .Select(x => CreateAgentDividendPlatformChargeFixture(x.Id).Create<AgentDividendPlatformCharge>())
-            .AsQueryable()
-            .BuildMock();
-
         var mockAgents = GetDbSet(agents);
         var mockWithdrawForms = GetDbSet(withdrawForms);
         var mockAgentDividends = GetDbSet(agentDividends);
@@ -69,7 +64,6 @@ public sealed class GetAgentDividendQueryTest : BaseTest
         var mockAgentDividendMultipleLayers = GetDbSet(agentDividendMultipleLayers);
         var mockPlayerDailyPaymentStatistics = GetDbSet(playerDailyPaymentStatistics);
         var mockAgentDividendProductFees = GetDbSet(fees);
-        var mockAgentDividendPlatformCharges = GetDbSet(platformCharges);
 
         _ = fakeDbContext.Agents.Returns(mockAgents.Object);
         _ = fakeDbContext.WithdrawForms.Returns(mockWithdrawForms.Object);
@@ -78,7 +72,6 @@ public sealed class GetAgentDividendQueryTest : BaseTest
         _ = fakeDbContext.AgentDividendMultipleLayers.Returns(mockAgentDividendMultipleLayers.Object);
         _ = fakeDbContext.PlayerDailyPaymentStatistics.Returns(mockPlayerDailyPaymentStatistics.Object);
         _ = fakeDbContext.AgentDividendProductFees.Returns(mockAgentDividendProductFees.Object);
-        _ = fakeDbContext.AgentDividendPlatformCharges.Returns(mockAgentDividendPlatformCharges.Object);
 
         var response = await sut.Handle(request, default);
 
@@ -130,18 +123,12 @@ public sealed class GetAgentDividendQueryTest : BaseTest
             .AsQueryable()
             .BuildMock();
 
-        var platformCharges = agentDividends
-            .Select(x => CreateAgentDividendPlatformChargeFixture(x.Id).Create<AgentDividendPlatformCharge>())
-            .AsQueryable()
-            .BuildMock();
-
         var mockAgents = GetDbSet(agents);
         var mockAgentDividends = GetDbSet(agentDividends);
         var mockPlayers = GetDbSet(players);
         var mockAgentDividendMultipleLayers = GetDbSet(agentDividendMultipleLayers);
         var mockPlayerDailyPaymentStatistics = GetDbSet(playerDailyPaymentStatistics);
         var mockAgentDividendProductFees = GetDbSet(fees);
-        var mockAgentDividendPlatformCharges = GetDbSet(platformCharges);
 
         _ = fakeDbContext.Agents.Returns(mockAgents.Object);
         _ = fakeDbContext.AgentDividends.Returns(mockAgentDividends.Object);
@@ -149,7 +136,6 @@ public sealed class GetAgentDividendQueryTest : BaseTest
         _ = fakeDbContext.AgentDividendMultipleLayers.Returns(mockAgentDividendMultipleLayers.Object);
         _ = fakeDbContext.PlayerDailyPaymentStatistics.Returns(mockPlayerDailyPaymentStatistics.Object);
         _ = fakeDbContext.AgentDividendProductFees.Returns(mockAgentDividendProductFees.Object);
-        _ = fakeDbContext.AgentDividendPlatformCharges.Returns(mockAgentDividendPlatformCharges.Object);
 
         var response = await sut.Handle(request, default);
 
@@ -209,18 +195,12 @@ public sealed class GetAgentDividendQueryTest : BaseTest
             .AsQueryable()
             .BuildMock();
 
-        var platformCharges = agentDividends
-            .Select(x => CreateAgentDividendPlatformChargeFixture(x.Id).Create<AgentDividendPlatformCharge>())
-            .AsQueryable()
-            .BuildMock();
-
         var mockAgents = GetDbSet(agents);
         var mockAgentDividends = GetDbSet(agentDividends);
         var mockPlayers = GetDbSet(players);
         var mockAgentDividendMultipleLayers = GetDbSet(agentDividendMultipleLayers);
         var mockPlayerDailyPaymentStatistics = GetDbSet(playerDailyPaymentStatistics);
         var mockAgentDividendProductFees = GetDbSet(fees);
-        var mockAgentDividendPlatformCharges = GetDbSet(platformCharges);
 
         fakeDbContext.Agents.Returns(mockAgents.Object);
         fakeDbContext.AgentDividends.Returns(mockAgentDividends.Object);
@@ -228,7 +208,6 @@ public sealed class GetAgentDividendQueryTest : BaseTest
         fakeDbContext.AgentDividendMultipleLayers.Returns(mockAgentDividendMultipleLayers.Object);
         fakeDbContext.PlayerDailyPaymentStatistics.Returns(mockPlayerDailyPaymentStatistics.Object);
         _ = fakeDbContext.AgentDividendProductFees.Returns(mockAgentDividendProductFees.Object);
-        _ = fakeDbContext.AgentDividendPlatformCharges.Returns(mockAgentDividendPlatformCharges.Object);
 
         var response = await sut.Handle(request, default);
 
@@ -289,15 +268,6 @@ public sealed class GetAgentDividendQueryTest : BaseTest
     {
         var fixture = new Fixture();
         fixture.Customize<AgentDividendProductFee>(u => u
-            .With(s => s.AgentDividendId, agentDividendId));
-        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-        return fixture;
-    }
-
-    private static Fixture CreateAgentDividendPlatformChargeFixture(int agentDividendId)
-    {
-        var fixture = new Fixture();
-        fixture.Customize<AgentDividendPlatformCharge>(u => u
             .With(s => s.AgentDividendId, agentDividendId));
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         return fixture;

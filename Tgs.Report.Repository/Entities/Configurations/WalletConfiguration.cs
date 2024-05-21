@@ -20,33 +20,33 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.HasIndex(e => e.CurrencyCode, "ix_wallets_currency_code");
 
             entity.Property(e => e.Id)
-            .ValueGeneratedNever()
-            .HasColumnName("id");
+                .ValueGeneratedNever()
+                .HasColumnName("id");
             entity.Property(e => e.Balance)
-            .HasPrecision(18, 6)
-            .HasColumnName("balance");
+                .HasPrecision(18, 6)
+                .HasColumnName("balance");
             entity.Property(e => e.BrandId).HasColumnName("brand_id");
             entity.Property(e => e.CashType)
-            .HasDefaultValueSql("'Player'::text")
-            .HasColumnName("cash_type");
+                .HasDefaultValueSql("'Player'::text")
+                .HasColumnName("cash_type");
             entity.Property(e => e.CreatedOn).HasColumnName("created_on");
             entity.Property(e => e.CurrencyCode)
-            .HasMaxLength(16)
-            .HasColumnName("currency_code");
+                .HasMaxLength(16)
+                .HasColumnName("currency_code");
             entity.Property(e => e.ExternalCurrencyCode)
-            .HasMaxLength(16)
-            .HasColumnName("external_currency_code");
+                .HasMaxLength(16)
+                .HasColumnName("external_currency_code");
             entity.Property(e => e.LockedBalance)
-            .HasPrecision(18, 6)
-            .HasColumnName("locked_balance");
+                .HasPrecision(18, 6)
+                .HasColumnName("locked_balance");
             entity.Property(e => e.PlayerCode).HasColumnName("player_code");
             entity.Property(e => e.SnapshotId).HasColumnName("snapshot_id");
             entity.Property(e => e.UpdatedOn).HasColumnName("updated_on");
 
             entity.HasOne(d => d.CurrencyCodeNavigation).WithMany(p => p.Wallets)
-            .HasForeignKey(d => d.CurrencyCode)
-            .OnDelete(DeleteBehavior.Restrict)
-            .HasConstraintName("fk_wallets_currencies_currency_code");
+                .HasForeignKey(d => d.CurrencyCode)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("fk_wallets_currencies_currency_code");
 
             OnConfigurePartial(entity);
         }

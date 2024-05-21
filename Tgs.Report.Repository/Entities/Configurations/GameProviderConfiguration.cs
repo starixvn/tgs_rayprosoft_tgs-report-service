@@ -18,41 +18,41 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.ToTable("game_providers", "dbo");
 
             entity.Property(e => e.Id)
-            .ValueGeneratedNever()
-            .HasColumnName("id");
+                .ValueGeneratedNever()
+                .HasColumnName("id");
             entity.Property(e => e.AllowKickPlayer).HasColumnName("allow_kick_player");
             entity.Property(e => e.AutoCloseRound).HasColumnName("auto_close_round");
             entity.Property(e => e.Code)
-            .HasMaxLength(16)
-            .HasColumnName("code");
+                .HasMaxLength(16)
+                .HasColumnName("code");
             entity.Property(e => e.CreatedByUsername)
-            .HasMaxLength(32)
-            .HasColumnName("created_by_username");
+                .HasMaxLength(32)
+                .HasColumnName("created_by_username");
             entity.Property(e => e.CreatedOn).HasColumnName("created_on");
             entity.Property(e => e.Description)
-            .HasMaxLength(128)
-            .HasColumnName("description");
+                .HasMaxLength(128)
+                .HasColumnName("description");
             entity.Property(e => e.Localization)
-            .HasColumnType("jsonb")
-            .HasColumnName("localization");
+                .HasColumnType("jsonb")
+                .HasColumnName("localization");
             entity.Property(e => e.Name)
-            .HasMaxLength(255)
-            .HasColumnName("name");
+                .HasMaxLength(255)
+                .HasColumnName("name");
             entity.Property(e => e.PlaceBetTimeout)
-            .HasDefaultValue((short)0)
-            .HasColumnName("place_bet_timeout");
+                .HasDefaultValue((short)0)
+                .HasColumnName("place_bet_timeout");
             entity.Property(e => e.SettleBetTimeout)
-            .HasDefaultValue((short)0)
-            .HasColumnName("settle_bet_timeout");
+                .HasDefaultValue((short)0)
+                .HasColumnName("settle_bet_timeout");
             entity.Property(e => e.Status).HasColumnName("status");
             entity.Property(e => e.SupportTestPlayer).HasColumnName("support_test_player");
             entity.Property(e => e.TransferWallet)
-            .HasDefaultValue(false)
-            .HasColumnName("transfer_wallet");
+                .HasDefaultValue(false)
+                .HasColumnName("transfer_wallet");
             entity.Property(e => e.UniqueId).HasColumnName("unique_id");
             entity.Property(e => e.UpdatedByUsername)
-            .HasMaxLength(32)
-            .HasColumnName("updated_by_username");
+                .HasMaxLength(32)
+                .HasColumnName("updated_by_username");
             entity.Property(e => e.UpdatedOn).HasColumnName("updated_on");
 
             OnConfigurePartial(entity);

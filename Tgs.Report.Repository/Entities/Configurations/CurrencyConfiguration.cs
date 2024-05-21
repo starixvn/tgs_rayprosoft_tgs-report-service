@@ -18,24 +18,24 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.ToTable("currencies", "dbo");
 
             entity.Property(e => e.Code)
-            .HasMaxLength(16)
-            .HasColumnName("code");
+                .HasMaxLength(16)
+                .HasColumnName("code");
             entity.Property(e => e.CreatedByUsername)
-            .HasMaxLength(32)
-            .HasColumnName("created_by_username");
+                .HasMaxLength(32)
+                .HasColumnName("created_by_username");
             entity.Property(e => e.CreatedOn).HasColumnName("created_on");
             entity.Property(e => e.Name)
-            .HasMaxLength(64)
-            .HasColumnName("name");
+                .HasMaxLength(64)
+                .HasColumnName("name");
             entity.Property(e => e.NativeName)
-            .HasMaxLength(64)
-            .HasColumnName("native_name");
+                .HasMaxLength(64)
+                .HasColumnName("native_name");
             entity.Property(e => e.Symbol)
-            .HasMaxLength(6)
-            .HasColumnName("symbol");
+                .HasMaxLength(6)
+                .HasColumnName("symbol");
             entity.Property(e => e.UpdatedByUsername)
-            .HasMaxLength(32)
-            .HasColumnName("updated_by_username");
+                .HasMaxLength(32)
+                .HasColumnName("updated_by_username");
             entity.Property(e => e.UpdatedOn).HasColumnName("updated_on");
 
             OnConfigurePartial(entity);

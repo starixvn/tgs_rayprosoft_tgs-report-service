@@ -24,16 +24,16 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.From).HasColumnName("from");
             entity.Property(e => e.PlayerBucketId).HasColumnName("player_bucket_id");
             entity.Property(e => e.PlayerCode)
-            .HasMaxLength(16)
-            .HasColumnName("player_code");
+                .HasMaxLength(16)
+                .HasColumnName("player_code");
             entity.Property(e => e.RoundData)
-            .HasDefaultValueSql("'{}'::jsonb")
-            .HasColumnType("jsonb")
-            .HasColumnName("round_data");
+                .HasDefaultValueSql("'{}'::jsonb")
+                .HasColumnType("jsonb")
+                .HasColumnName("round_data");
             entity.Property(e => e.To).HasColumnName("to");
             entity.Property(e => e.Turnover)
-            .HasPrecision(18, 6)
-            .HasColumnName("turnover");
+                .HasPrecision(18, 6)
+                .HasColumnName("turnover");
 
             OnConfigurePartial(entity);
         }

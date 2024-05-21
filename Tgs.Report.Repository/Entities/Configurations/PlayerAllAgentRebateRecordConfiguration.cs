@@ -20,37 +20,37 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.HasIndex(e => new { e.SettleDate, e.BrandId, e.PlayerCode }, "ix_player_all_agent_rebate_records_settle_date_brand_id_player_");
 
             entity.Property(e => e.Id)
-            .ValueGeneratedNever()
-            .HasColumnName("id");
+                .ValueGeneratedNever()
+                .HasColumnName("id");
             entity.Property(e => e.ActiveNumber).HasColumnName("active_number");
             entity.Property(e => e.ActualConditionAmount)
-            .HasPrecision(18, 6)
-            .HasColumnName("actual_condition_amount");
+                .HasPrecision(18, 6)
+                .HasColumnName("actual_condition_amount");
             entity.Property(e => e.ActualPlayerNumber).HasColumnName("actual_player_number");
             entity.Property(e => e.AllAgentGameType).HasColumnName("all_agent_game_type");
             entity.Property(e => e.AllAgentRebateType).HasColumnName("all_agent_rebate_type");
             entity.Property(e => e.BrandId).HasColumnName("brand_id");
             entity.Property(e => e.ConditionAmount)
-            .HasPrecision(18, 6)
-            .HasColumnName("condition_amount");
+                .HasPrecision(18, 6)
+                .HasColumnName("condition_amount");
             entity.Property(e => e.CreatedOn).HasColumnName("created_on");
             entity.Property(e => e.From)
-            .HasDefaultValueSql("now()")
-            .HasColumnName("from");
+                .HasDefaultValueSql("now()")
+                .HasColumnName("from");
             entity.Property(e => e.PlayerCode)
-            .HasMaxLength(16)
-            .HasColumnName("player_code");
+                .HasMaxLength(16)
+                .HasColumnName("player_code");
             entity.Property(e => e.Rank).HasColumnName("rank");
             entity.Property(e => e.RebateAmount)
-            .HasPrecision(18, 6)
-            .HasColumnName("rebate_amount");
+                .HasPrecision(18, 6)
+                .HasColumnName("rebate_amount");
             entity.Property(e => e.RebatePercentage)
-            .HasPrecision(9, 6)
-            .HasColumnName("rebate_percentage");
+                .HasPrecision(9, 6)
+                .HasColumnName("rebate_percentage");
             entity.Property(e => e.SettleDate).HasColumnName("settle_date");
             entity.Property(e => e.To)
-            .HasDefaultValueSql("now()")
-            .HasColumnName("to");
+                .HasDefaultValueSql("now()")
+                .HasColumnName("to");
 
             OnConfigurePartial(entity);
         }

@@ -20,34 +20,34 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.HasIndex(e => e.ResellerId, "ix_licensees_reseller_id");
 
             entity.Property(e => e.Id)
-            .ValueGeneratedNever()
-            .HasColumnName("id");
+                .ValueGeneratedNever()
+                .HasColumnName("id");
             entity.Property(e => e.Code)
-            .HasMaxLength(16)
-            .HasColumnName("code");
+                .HasMaxLength(16)
+                .HasColumnName("code");
             entity.Property(e => e.CreatedByUsername)
-            .HasMaxLength(32)
-            .HasColumnName("created_by_username");
+                .HasMaxLength(32)
+                .HasColumnName("created_by_username");
             entity.Property(e => e.CreatedOn).HasColumnName("created_on");
             entity.Property(e => e.Description)
-            .HasMaxLength(256)
-            .HasColumnName("description");
+                .HasMaxLength(256)
+                .HasColumnName("description");
             entity.Property(e => e.Name)
-            .HasMaxLength(255)
-            .HasColumnName("name");
+                .HasMaxLength(255)
+                .HasColumnName("name");
             entity.Property(e => e.OperationalEmail)
-            .HasMaxLength(128)
-            .HasColumnName("operational_email");
+                .HasMaxLength(128)
+                .HasColumnName("operational_email");
             entity.Property(e => e.ResellerId).HasColumnName("reseller_id");
             entity.Property(e => e.Status).HasColumnName("status");
             entity.Property(e => e.UpdatedByUsername)
-            .HasMaxLength(32)
-            .HasColumnName("updated_by_username");
+                .HasMaxLength(32)
+                .HasColumnName("updated_by_username");
             entity.Property(e => e.UpdatedOn).HasColumnName("updated_on");
 
             entity.HasOne(d => d.Reseller).WithMany(p => p.Licensees)
-            .HasForeignKey(d => d.ResellerId)
-            .HasConstraintName("fk_licensees_resellers_reseller_id");
+                .HasForeignKey(d => d.ResellerId)
+                .HasConstraintName("fk_licensees_resellers_reseller_id");
 
             OnConfigurePartial(entity);
         }

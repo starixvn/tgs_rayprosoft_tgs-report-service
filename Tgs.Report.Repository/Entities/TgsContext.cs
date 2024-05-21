@@ -14,10 +14,6 @@ public partial class TgsContext : DbContext
     {
     }
 
-    public TgsContext()
-    {
-    }
-
     public virtual DbSet<AdjustPlayerRecord> AdjustPlayerRecords { get; set; }
 
     public virtual DbSet<Agent> Agents { get; set; }
@@ -29,8 +25,6 @@ public partial class TgsContext : DbContext
     public virtual DbSet<AgentDividendCondition> AgentDividendConditions { get; set; }
 
     public virtual DbSet<AgentDividendMultipleLayer> AgentDividendMultipleLayers { get; set; }
-
-    public virtual DbSet<AgentDividendPlatformCharge> AgentDividendPlatformCharges { get; set; }
 
     public virtual DbSet<AgentDividendProductFee> AgentDividendProductFees { get; set; }
 
@@ -124,8 +118,7 @@ public partial class TgsContext : DbContext
     {
         modelBuilder
             .HasPostgresExtension("ltree")
-            .HasPostgresExtension("pg_trgm")
-            .HasPostgresExtension("uuid-ossp");
+            .HasPostgresExtension("pg_trgm");
 
         modelBuilder.ApplyConfiguration(new Configurations.AdjustPlayerRecordConfiguration());
         modelBuilder.ApplyConfiguration(new Configurations.AgentConfiguration());
@@ -133,7 +126,6 @@ public partial class TgsContext : DbContext
         modelBuilder.ApplyConfiguration(new Configurations.AgentDividendConfiguration());
         modelBuilder.ApplyConfiguration(new Configurations.AgentDividendConditionConfiguration());
         modelBuilder.ApplyConfiguration(new Configurations.AgentDividendMultipleLayerConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.AgentDividendPlatformChargeConfiguration());
         modelBuilder.ApplyConfiguration(new Configurations.AgentDividendProductFeeConfiguration());
         modelBuilder.ApplyConfiguration(new Configurations.AgentTransactionConfiguration());
         modelBuilder.ApplyConfiguration(new Configurations.BrandConfiguration());

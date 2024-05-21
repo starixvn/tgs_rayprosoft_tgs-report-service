@@ -26,62 +26,62 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.HasIndex(e => e.RoundId, "ix_game_actions_round_id");
 
             entity.Property(e => e.Id)
-            .ValueGeneratedNever()
-            .HasColumnName("id");
+                .ValueGeneratedNever()
+                .HasColumnName("id");
             entity.Property(e => e.Amount)
-            .HasPrecision(18, 6)
-            .HasColumnName("amount");
+                .HasPrecision(18, 6)
+                .HasColumnName("amount");
             entity.Property(e => e.Balance)
-            .HasPrecision(18, 6)
-            .HasColumnName("balance");
+                .HasPrecision(18, 6)
+                .HasColumnName("balance");
             entity.Property(e => e.BetType)
-            .HasMaxLength(128)
-            .HasColumnName("bet_type");
+                .HasMaxLength(128)
+                .HasColumnName("bet_type");
             entity.Property(e => e.ClosingRoundExplicitRequest).HasColumnName("closing_round_explicit_request");
             entity.Property(e => e.ExternalBetId)
-            .HasMaxLength(128)
-            .HasColumnName("external_bet_id");
+                .HasMaxLength(128)
+                .HasColumnName("external_bet_id");
             entity.Property(e => e.ExternalGameActionGroupId)
-            .HasMaxLength(128)
-            .HasColumnName("external_game_action_group_id");
+                .HasMaxLength(128)
+                .HasColumnName("external_game_action_group_id");
             entity.Property(e => e.ExternalTransactionId)
-            .HasMaxLength(128)
-            .HasColumnName("external_transaction_id");
+                .HasMaxLength(128)
+                .HasColumnName("external_transaction_id");
             entity.Property(e => e.ExtraData).HasColumnName("extra_data");
             entity.Property(e => e.GameActionBatchId).HasColumnName("game_action_batch_id");
             entity.Property(e => e.IsClosingRound).HasColumnName("is_closing_round");
             entity.Property(e => e.JackpotContribution)
-            .HasColumnType("jsonb")
-            .HasColumnName("jackpot_contribution");
+                .HasColumnType("jsonb")
+                .HasColumnName("jackpot_contribution");
             entity.Property(e => e.PlayerCode).HasColumnName("player_code");
             entity.Property(e => e.PlayerIp)
-            .HasMaxLength(128)
-            .HasColumnName("player_ip");
+                .HasMaxLength(128)
+                .HasColumnName("player_ip");
             entity.Property(e => e.RecordedOn).HasColumnName("recorded_on");
             entity.Property(e => e.ReferencedGameActionId).HasColumnName("referenced_game_action_id");
             entity.Property(e => e.RoundId).HasColumnName("round_id");
             entity.Property(e => e.SentOn).HasColumnName("sent_on");
             entity.Property(e => e.StoredOn)
-            .HasDefaultValueSql("now()")
-            .HasColumnName("stored_on");
+                .HasDefaultValueSql("now()")
+                .HasColumnName("stored_on");
             entity.Property(e => e.Turnover)
-            .HasPrecision(18, 6)
-            .HasColumnName("turnover");
+                .HasPrecision(18, 6)
+                .HasColumnName("turnover");
             entity.Property(e => e.Type).HasColumnName("type");
             entity.Property(e => e.UnsettledBets)
-            .HasPrecision(18, 6)
-            .HasColumnName("unsettled_bets");
+                .HasPrecision(18, 6)
+                .HasColumnName("unsettled_bets");
             entity.Property(e => e.WinLoss)
-            .HasPrecision(18, 6)
-            .HasColumnName("win_loss");
+                .HasPrecision(18, 6)
+                .HasColumnName("win_loss");
 
             entity.HasOne(d => d.ReferencedGameAction).WithMany(p => p.InverseReferencedGameAction)
-            .HasForeignKey(d => d.ReferencedGameActionId)
-            .HasConstraintName("fk_game_actions_referenced_game_action_id");
+                .HasForeignKey(d => d.ReferencedGameActionId)
+                .HasConstraintName("fk_game_actions_referenced_game_action_id");
 
             entity.HasOne(d => d.Round).WithMany(p => p.GameActions)
-            .HasForeignKey(d => d.RoundId)
-            .HasConstraintName("fk_game_actions_rounds_round_id");
+                .HasForeignKey(d => d.RoundId)
+                .HasConstraintName("fk_game_actions_rounds_round_id");
 
             OnConfigurePartial(entity);
         }

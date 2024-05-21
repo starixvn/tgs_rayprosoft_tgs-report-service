@@ -329,7 +329,7 @@ public class GetPlayerContributionsTotalAmountQueryHandler(TgsContext context)
                     Turnover = x.Sum(p => p.Turnover),
                     WinLossAmount = x.Sum(p => p.WinLossAmount),
                     NetProfit = x.Sum(p => p.NetProfit - (p.UpgradeAmount + p.SeasonAmount + p.BirthdayAmount)
-                    - p.WinLossAmount * brand.PlatformCharge / 100)
+                    - p.WinLossAmount * brand.PlatformCharge / 100).Truncate(6)
                 })
                 .FirstOrDefaultAsync(cancellationToken)
                 .ConfigureAwait(false)

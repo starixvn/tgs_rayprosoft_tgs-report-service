@@ -20,30 +20,30 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.HasIndex(e => e.GameProviderId, "ix_sub_game_providers_game_provider_id");
 
             entity.Property(e => e.Code)
-            .HasMaxLength(16)
-            .HasColumnName("code");
+                .HasMaxLength(16)
+                .HasColumnName("code");
             entity.Property(e => e.CreatedByUsername)
-            .HasMaxLength(32)
-            .HasColumnName("created_by_username");
+                .HasMaxLength(32)
+                .HasColumnName("created_by_username");
             entity.Property(e => e.CreatedOn).HasColumnName("created_on");
             entity.Property(e => e.Description)
-            .HasMaxLength(128)
-            .HasColumnName("description");
+                .HasMaxLength(128)
+                .HasColumnName("description");
             entity.Property(e => e.GameProviderId).HasColumnName("game_provider_id");
             entity.Property(e => e.Localization)
-            .HasColumnType("jsonb")
-            .HasColumnName("localization");
+                .HasColumnType("jsonb")
+                .HasColumnName("localization");
             entity.Property(e => e.Name)
-            .HasMaxLength(255)
-            .HasColumnName("name");
+                .HasMaxLength(255)
+                .HasColumnName("name");
             entity.Property(e => e.UpdatedByUsername)
-            .HasMaxLength(32)
-            .HasColumnName("updated_by_username");
+                .HasMaxLength(32)
+                .HasColumnName("updated_by_username");
             entity.Property(e => e.UpdatedOn).HasColumnName("updated_on");
 
             entity.HasOne(d => d.GameProvider).WithMany(p => p.SubGameProviders)
-            .HasForeignKey(d => d.GameProviderId)
-            .HasConstraintName("fk_sub_game_providers_game_providers_game_provider_id");
+                .HasForeignKey(d => d.GameProviderId)
+                .HasConstraintName("fk_sub_game_providers_game_providers_game_provider_id");
 
             OnConfigurePartial(entity);
         }

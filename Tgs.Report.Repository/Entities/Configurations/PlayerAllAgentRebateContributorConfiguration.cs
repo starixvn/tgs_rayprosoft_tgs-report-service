@@ -20,96 +20,96 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.HasIndex(e => new { e.SettleDate, e.PlayerCode, e.ChildPlayerCode }, "ix_player_all_agent_rebate_contributors_settle_date_player_code");
 
             entity.Property(e => e.Id)
-            .ValueGeneratedNever()
-            .HasColumnName("id");
+                .ValueGeneratedNever()
+                .HasColumnName("id");
             entity.Property(e => e.BrandId).HasColumnName("brand_id");
             entity.Property(e => e.CardGameTurnover)
-            .HasPrecision(18, 6)
-            .HasColumnName("card_game_turnover");
+                .HasPrecision(18, 6)
+                .HasColumnName("card_game_turnover");
             entity.Property(e => e.CardGameTurnoverRebate)
-            .HasPrecision(18, 6)
-            .HasColumnName("card_game_turnover_rebate");
+                .HasPrecision(18, 6)
+                .HasColumnName("card_game_turnover_rebate");
             entity.Property(e => e.CardGameWinLoss)
-            .HasPrecision(18, 6)
-            .HasColumnName("card_game_win_loss");
+                .HasPrecision(18, 6)
+                .HasColumnName("card_game_win_loss");
             entity.Property(e => e.CardGameWinLossRebate)
-            .HasPrecision(18, 6)
-            .HasColumnName("card_game_win_loss_rebate");
+                .HasPrecision(18, 6)
+                .HasColumnName("card_game_win_loss_rebate");
             entity.Property(e => e.ChildPlayerCode)
-            .HasMaxLength(16)
-            .HasColumnName("child_player_code");
+                .HasMaxLength(16)
+                .HasColumnName("child_player_code");
             entity.Property(e => e.CreatedOn).HasColumnName("created_on");
             entity.Property(e => e.From)
-            .HasDefaultValueSql("now()")
-            .HasColumnName("from");
+                .HasDefaultValueSql("now()")
+                .HasColumnName("from");
             entity.Property(e => e.LiveDealerTurnover)
-            .HasPrecision(18, 6)
-            .HasColumnName("live_dealer_turnover");
+                .HasPrecision(18, 6)
+                .HasColumnName("live_dealer_turnover");
             entity.Property(e => e.LiveDealerTurnoverRebate)
-            .HasPrecision(18, 6)
-            .HasColumnName("live_dealer_turnover_rebate");
+                .HasPrecision(18, 6)
+                .HasColumnName("live_dealer_turnover_rebate");
             entity.Property(e => e.LiveDealerWinLoss)
-            .HasPrecision(18, 6)
-            .HasColumnName("live_dealer_win_loss");
+                .HasPrecision(18, 6)
+                .HasColumnName("live_dealer_win_loss");
             entity.Property(e => e.LiveDealerWinLossRebate)
-            .HasPrecision(18, 6)
-            .HasColumnName("live_dealer_win_loss_rebate");
+                .HasPrecision(18, 6)
+                .HasColumnName("live_dealer_win_loss_rebate");
             entity.Property(e => e.LotteryTurnover)
-            .HasPrecision(18, 6)
-            .HasColumnName("lottery_turnover");
+                .HasPrecision(18, 6)
+                .HasColumnName("lottery_turnover");
             entity.Property(e => e.LotteryTurnoverRebate)
-            .HasPrecision(18, 6)
-            .HasColumnName("lottery_turnover_rebate");
+                .HasPrecision(18, 6)
+                .HasColumnName("lottery_turnover_rebate");
             entity.Property(e => e.LotteryWinLoss)
-            .HasPrecision(18, 6)
-            .HasColumnName("lottery_win_loss");
+                .HasPrecision(18, 6)
+                .HasColumnName("lottery_win_loss");
             entity.Property(e => e.LotteryWinLossRebate)
-            .HasPrecision(18, 6)
-            .HasColumnName("lottery_win_loss_rebate");
+                .HasPrecision(18, 6)
+                .HasColumnName("lottery_win_loss_rebate");
             entity.Property(e => e.PlayerCode)
-            .HasMaxLength(16)
-            .HasColumnName("player_code");
+                .HasMaxLength(16)
+                .HasColumnName("player_code");
             entity.Property(e => e.SentOn).HasColumnName("sent_on");
             entity.Property(e => e.SettleDate).HasColumnName("settle_date");
             entity.Property(e => e.SlotTurnover)
-            .HasPrecision(18, 6)
-            .HasColumnName("slot_turnover");
+                .HasPrecision(18, 6)
+                .HasColumnName("slot_turnover");
             entity.Property(e => e.SlotTurnoverRebate)
-            .HasPrecision(18, 6)
-            .HasColumnName("slot_turnover_rebate");
+                .HasPrecision(18, 6)
+                .HasColumnName("slot_turnover_rebate");
             entity.Property(e => e.SlotWinLoss)
-            .HasPrecision(18, 6)
-            .HasColumnName("slot_win_loss");
+                .HasPrecision(18, 6)
+                .HasColumnName("slot_win_loss");
             entity.Property(e => e.SlotWinLossRebate)
-            .HasPrecision(18, 6)
-            .HasColumnName("slot_win_loss_rebate");
+                .HasPrecision(18, 6)
+                .HasColumnName("slot_win_loss_rebate");
             entity.Property(e => e.SportsTurnover)
-            .HasPrecision(18, 6)
-            .HasColumnName("sports_turnover");
+                .HasPrecision(18, 6)
+                .HasColumnName("sports_turnover");
             entity.Property(e => e.SportsTurnoverRebate)
-            .HasPrecision(18, 6)
-            .HasColumnName("sports_turnover_rebate");
+                .HasPrecision(18, 6)
+                .HasColumnName("sports_turnover_rebate");
             entity.Property(e => e.SportsWinLoss)
-            .HasPrecision(18, 6)
-            .HasColumnName("sports_win_loss");
+                .HasPrecision(18, 6)
+                .HasColumnName("sports_win_loss");
             entity.Property(e => e.SportsWinLossRebate)
-            .HasPrecision(18, 6)
-            .HasColumnName("sports_win_loss_rebate");
+                .HasPrecision(18, 6)
+                .HasColumnName("sports_win_loss_rebate");
             entity.Property(e => e.To)
-            .HasDefaultValueSql("now()")
-            .HasColumnName("to");
+                .HasDefaultValueSql("now()")
+                .HasColumnName("to");
             entity.Property(e => e.VirtualSportsTurnover)
-            .HasPrecision(18, 6)
-            .HasColumnName("virtual_sports_turnover");
+                .HasPrecision(18, 6)
+                .HasColumnName("virtual_sports_turnover");
             entity.Property(e => e.VirtualSportsTurnoverRebate)
-            .HasPrecision(18, 6)
-            .HasColumnName("virtual_sports_turnover_rebate");
+                .HasPrecision(18, 6)
+                .HasColumnName("virtual_sports_turnover_rebate");
             entity.Property(e => e.VirtualSportsWinLoss)
-            .HasPrecision(18, 6)
-            .HasColumnName("virtual_sports_win_loss");
+                .HasPrecision(18, 6)
+                .HasColumnName("virtual_sports_win_loss");
             entity.Property(e => e.VirtualSportsWinLossRebate)
-            .HasPrecision(18, 6)
-            .HasColumnName("virtual_sports_win_loss_rebate");
+                .HasPrecision(18, 6)
+                .HasColumnName("virtual_sports_win_loss_rebate");
 
             OnConfigurePartial(entity);
         }
