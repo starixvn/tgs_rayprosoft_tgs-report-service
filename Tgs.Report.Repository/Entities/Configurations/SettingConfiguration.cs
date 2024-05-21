@@ -18,18 +18,18 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.ToTable("settings", "dbo");
 
             entity.Property(e => e.Key)
-            .HasMaxLength(32)
-            .HasColumnName("key");
+                .HasMaxLength(32)
+                .HasColumnName("key");
             entity.Property(e => e.CreatedByUsername)
-            .HasMaxLength(32)
-            .HasColumnName("created_by_username");
+                .HasMaxLength(32)
+                .HasColumnName("created_by_username");
             entity.Property(e => e.CreatedOn).HasColumnName("created_on");
             entity.Property(e => e.Description)
-            .HasMaxLength(256)
-            .HasColumnName("description");
+                .HasMaxLength(256)
+                .HasColumnName("description");
             entity.Property(e => e.UpdatedByUsername)
-            .HasMaxLength(32)
-            .HasColumnName("updated_by_username");
+                .HasMaxLength(32)
+                .HasColumnName("updated_by_username");
             entity.Property(e => e.UpdatedOn).HasColumnName("updated_on");
             entity.Property(e => e.Value).HasColumnName("value");
 

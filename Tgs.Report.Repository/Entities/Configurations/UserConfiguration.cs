@@ -22,42 +22,42 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.HasIndex(e => e.RoleId, "ix_users_role_id");
 
             entity.Property(e => e.Id)
-            .ValueGeneratedNever()
-            .HasColumnName("id");
+                .ValueGeneratedNever()
+                .HasColumnName("id");
             entity.Property(e => e.CreatedByUsername)
-            .HasMaxLength(32)
-            .HasColumnName("created_by_username");
+                .HasMaxLength(32)
+                .HasColumnName("created_by_username");
             entity.Property(e => e.CreatedOn).HasColumnName("created_on");
             entity.Property(e => e.DepartmentId).HasColumnName("department_id");
             entity.Property(e => e.LastLoginIp)
-            .HasMaxLength(128)
-            .HasColumnName("last_login_ip");
+                .HasMaxLength(128)
+                .HasColumnName("last_login_ip");
             entity.Property(e => e.LastLoginTime).HasColumnName("last_login_time");
             entity.Property(e => e.Name)
-            .HasMaxLength(30)
-            .HasColumnName("name");
+                .HasMaxLength(30)
+                .HasColumnName("name");
             entity.Property(e => e.Password).HasColumnName("password");
             entity.Property(e => e.RoleId).HasColumnName("role_id");
             entity.Property(e => e.Salt).HasColumnName("salt");
             entity.Property(e => e.Status).HasColumnName("status");
             entity.Property(e => e.TimeZone)
-            .HasMaxLength(256)
-            .HasColumnName("time_zone");
+                .HasMaxLength(256)
+                .HasColumnName("time_zone");
             entity.Property(e => e.UpdatedByUsername)
-            .HasMaxLength(32)
-            .HasColumnName("updated_by_username");
+                .HasMaxLength(32)
+                .HasColumnName("updated_by_username");
             entity.Property(e => e.UpdatedOn).HasColumnName("updated_on");
             entity.Property(e => e.Username)
-            .HasMaxLength(50)
-            .HasColumnName("username");
+                .HasMaxLength(50)
+                .HasColumnName("username");
 
             entity.HasOne(d => d.Department).WithMany(p => p.Users)
-            .HasForeignKey(d => d.DepartmentId)
-            .HasConstraintName("fk_users_departments_department_id");
+                .HasForeignKey(d => d.DepartmentId)
+                .HasConstraintName("fk_users_departments_department_id");
 
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
-            .HasForeignKey(d => d.RoleId)
-            .HasConstraintName("fk_users_roles_role_id");
+                .HasForeignKey(d => d.RoleId)
+                .HasConstraintName("fk_users_roles_role_id");
 
             OnConfigurePartial(entity);
         }

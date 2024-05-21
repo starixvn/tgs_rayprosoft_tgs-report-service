@@ -22,27 +22,27 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.HasIndex(e => e.PlayerCode, "ix_player_login_records_player_code");
 
             entity.Property(e => e.Id)
-            .ValueGeneratedNever()
-            .HasColumnName("id");
+                .ValueGeneratedNever()
+                .HasColumnName("id");
             entity.Property(e => e.BrandId).HasColumnName("brand_id");
             entity.Property(e => e.CreatedOn).HasColumnName("created_on");
             entity.Property(e => e.ExpiredOn).HasColumnName("expired_on");
             entity.Property(e => e.IpAddress).HasColumnName("ip_address");
             entity.Property(e => e.PlatformType).HasColumnName("platform_type");
             entity.Property(e => e.PlayerCode)
-            .HasMaxLength(16)
-            .HasColumnName("player_code");
+                .HasMaxLength(16)
+                .HasColumnName("player_code");
             entity.Property(e => e.Status).HasColumnName("status");
 
             entity.HasOne(d => d.Brand).WithMany(p => p.PlayerLoginRecords)
-            .HasForeignKey(d => d.BrandId)
-            .OnDelete(DeleteBehavior.Restrict)
-            .HasConstraintName("fk_player_login_records_brands_brand_id");
+                .HasForeignKey(d => d.BrandId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("fk_player_login_records_brands_brand_id");
 
             entity.HasOne(d => d.PlayerCodeNavigation).WithMany(p => p.PlayerLoginRecords)
-            .HasForeignKey(d => d.PlayerCode)
-            .OnDelete(DeleteBehavior.Restrict)
-            .HasConstraintName("fk_player_login_records_players_player_code");
+                .HasForeignKey(d => d.PlayerCode)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("fk_player_login_records_players_player_code");
 
             OnConfigurePartial(entity);
         }

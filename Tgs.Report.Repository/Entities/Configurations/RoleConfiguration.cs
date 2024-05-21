@@ -18,33 +18,33 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.ToTable("roles", "dbo");
 
             entity.Property(e => e.Id)
-            .ValueGeneratedNever()
-            .HasColumnName("id");
+                .ValueGeneratedNever()
+                .HasColumnName("id");
             entity.Property(e => e.BrandId).HasColumnName("brand_id");
             entity.Property(e => e.CreatedByUsername)
-            .HasMaxLength(32)
-            .HasColumnName("created_by_username");
+                .HasMaxLength(32)
+                .HasColumnName("created_by_username");
             entity.Property(e => e.CreatedOn).HasColumnName("created_on");
             entity.Property(e => e.Description)
-            .HasMaxLength(128)
-            .HasColumnName("description");
+                .HasMaxLength(128)
+                .HasColumnName("description");
             entity.Property(e => e.DisplayName)
-            .HasMaxLength(50)
-            .HasColumnName("display_name");
+                .HasMaxLength(50)
+                .HasColumnName("display_name");
             entity.Property(e => e.IsRoot).HasColumnName("is_root");
             entity.Property(e => e.LicenseeId).HasColumnName("licensee_id");
             entity.Property(e => e.MenuSetting)
-            .HasColumnType("jsonb")
-            .HasColumnName("menu_setting");
+                .HasColumnType("jsonb")
+                .HasColumnName("menu_setting");
             entity.Property(e => e.Name)
-            .HasMaxLength(50)
-            .HasColumnName("name");
+                .HasMaxLength(50)
+                .HasColumnName("name");
             entity.Property(e => e.ResellerId).HasColumnName("reseller_id");
             entity.Property(e => e.RoleType).HasColumnName("role_type");
             entity.Property(e => e.Status).HasColumnName("status");
             entity.Property(e => e.UpdatedByUsername)
-            .HasMaxLength(32)
-            .HasColumnName("updated_by_username");
+                .HasMaxLength(32)
+                .HasColumnName("updated_by_username");
             entity.Property(e => e.UpdatedOn).HasColumnName("updated_on");
 
             OnConfigurePartial(entity);

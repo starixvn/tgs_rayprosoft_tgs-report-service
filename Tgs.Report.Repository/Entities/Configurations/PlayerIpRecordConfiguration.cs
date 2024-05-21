@@ -18,22 +18,22 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.ToTable("player_ip_records", "dbo");
 
             entity.Property(e => e.PlayerCode)
-            .HasMaxLength(16)
-            .HasColumnName("player_code");
+                .HasMaxLength(16)
+                .HasColumnName("player_code");
             entity.Property(e => e.IpType).HasColumnName("ip_type");
             entity.Property(e => e.Host)
-            .HasMaxLength(250)
-            .HasColumnName("host");
+                .HasMaxLength(250)
+                .HasColumnName("host");
             entity.Property(e => e.Ip)
-            .HasMaxLength(64)
-            .HasColumnName("ip");
+                .HasMaxLength(64)
+                .HasColumnName("ip");
             entity.Property(e => e.RecordOn)
-            .HasDefaultValueSql("now()")
-            .HasColumnName("record_on");
+                .HasDefaultValueSql("now()")
+                .HasColumnName("record_on");
 
             entity.HasOne(d => d.PlayerCodeNavigation).WithMany(p => p.PlayerIpRecords)
-            .HasForeignKey(d => d.PlayerCode)
-            .HasConstraintName("fk_player_ip_records_players_player_code");
+                .HasForeignKey(d => d.PlayerCode)
+                .HasConstraintName("fk_player_ip_records_players_player_code");
 
             OnConfigurePartial(entity);
         }

@@ -43,12 +43,7 @@ public class AgentDividendsTests
             CreatePlayerDailyPaymentStatisticsFixture().CreateMany<PlayerDailyPaymentStatistic>(5).AsQueryable().BuildMock();
 
         var fees = agentDividends
-            .Select(x => CreateAgentDividendProductFeeFixture(x.Id,10,100,GameType.Slot).Create<AgentDividendProductFee>())
-            .AsQueryable()
-            .BuildMock();
-
-        var platformCharges = agentDividends
-            .Select(x => CreateAgentDividendPlatformChargeFixture(x.Id).Create<AgentDividendPlatformCharge>())
+            .Select(x => CreateAgentDividendProductFeeFixture(x.Id,0, 0, 0, 0, 0, 0, 10, 100, 0, 0, 0, 0).Create<AgentDividendProductFee>())
             .AsQueryable()
             .BuildMock();
 
@@ -62,7 +57,6 @@ public class AgentDividendsTests
                 var fakeAgentDividendMultipleLayerDbSet = Substitute.For<DbSet<AgentDividendMultipleLayer>, IQueryable<AgentDividendMultipleLayer>>();
                 var fakePlayerDailyPaymentStatisticDbSet = Substitute.For<DbSet<PlayerDailyPaymentStatistic>, IQueryable<PlayerDailyPaymentStatistic>>();
                 var fakeAgentDividendProductFeeDbSet = Substitute.For<DbSet<AgentDividendProductFee>, IQueryable<AgentDividendProductFee>>();
-                var fakeAgentDividendPlatformChargeDbSet = Substitute.For<DbSet<AgentDividendPlatformCharge>, IQueryable<AgentDividendPlatformCharge>>();
 
                 var fakeAgents = fakeAgentDbSet.Initialize(agents);
                 var fakeAgentDividends = fakeAgentDividendDbSet.Initialize(agentDividends);
@@ -70,7 +64,6 @@ public class AgentDividendsTests
                 var fakeAgentDividendMultipleLayers = fakeAgentDividendMultipleLayerDbSet.Initialize(agentDividendMultipleLayers);
                 var fakePlayerDailyPaymentStatistics = fakePlayerDailyPaymentStatisticDbSet.Initialize(playerDailyPaymentStatistics);
                 var fakeAgentDividendProductFees = fakeAgentDividendProductFeeDbSet.Initialize(fees);
-                var fakeAgentDividendPlatformCharges = fakeAgentDividendPlatformChargeDbSet.Initialize(platformCharges);
 
                 _ = fakeDbContext.Agents.Returns(fakeAgents);
                 _ = fakeDbContext.AgentDividends.Returns(fakeAgentDividends);
@@ -78,7 +71,6 @@ public class AgentDividendsTests
                 _ = fakeDbContext.AgentDividendMultipleLayers.Returns(fakeAgentDividendMultipleLayers);
                 _ = fakeDbContext.PlayerDailyPaymentStatistics.Returns(fakePlayerDailyPaymentStatistics);
                 _ = fakeDbContext.AgentDividendProductFees.Returns(fakeAgentDividendProductFees);
-                _ = fakeDbContext.AgentDividendPlatformCharges.Returns(fakeAgentDividendPlatformCharges);
 
                 _ = services.AddSingleton(fakeDbContext);
             }));
@@ -102,7 +94,7 @@ public class AgentDividendsTests
 
         foreach (var agentDividendModel in actual.Items)
         {
-            Assert.That(agentDividendModel.ProductFee, Is.EqualTo(fees.Sum(x => x.WinLossAmount * x.Percentage / 100)));
+            Assert.That(agentDividendModel.ProductFee, Is.EqualTo(fees.Sum(x => x.SlotWinLossAmount * x.SlotPercentage / 100)));
         }
     }
 
@@ -150,12 +142,7 @@ public class AgentDividendsTests
                         .BuildMock();
 
                 var fees = agentDividends
-                    .Select(x => CreateAgentDividendProductFeeFixture(x.Id, 10, 100, GameType.Slot).Create<AgentDividendProductFee>())
-                    .AsQueryable()
-                    .BuildMock();
-
-                var platformCharges = agentDividends
-                    .Select(x => CreateAgentDividendPlatformChargeFixture(x.Id).Create<AgentDividendPlatformCharge>())
+                    .Select(x => CreateAgentDividendProductFeeFixture(x.Id, 0, 0, 0, 0, 0, 0, 10, 100, 0, 0, 0, 0).Create<AgentDividendProductFee>())
                     .AsQueryable()
                     .BuildMock();
 
@@ -165,7 +152,6 @@ public class AgentDividendsTests
                 var fakeAgentDividendMultipleLayerDbSet = Substitute.For<DbSet<AgentDividendMultipleLayer>, IQueryable<AgentDividendMultipleLayer>>();
                 var fakePlayerDailyPaymentStatisticDbSet = Substitute.For<DbSet<PlayerDailyPaymentStatistic>, IQueryable<PlayerDailyPaymentStatistic>>();
                 var fakeAgentDividendProductFeeDbSet = Substitute.For<DbSet<AgentDividendProductFee>, IQueryable<AgentDividendProductFee>>();
-                var fakeAgentDividendPlatformChargeDbSet = Substitute.For<DbSet<AgentDividendPlatformCharge>, IQueryable<AgentDividendPlatformCharge>>();
 
                 var fakeAgents = fakeAgentDbSet.Initialize(agents);
                 var fakeAgentDividends = fakeAgentDividendDbSet.Initialize(agentDividends);
@@ -173,7 +159,6 @@ public class AgentDividendsTests
                 var fakeAgentDividendMultipleLayers = fakeAgentDividendMultipleLayerDbSet.Initialize(agentDividendMultipleLayers);
                 var fakePlayerDailyPaymentStatistics = fakePlayerDailyPaymentStatisticDbSet.Initialize(playerDailyPaymentStatistics);
                 var fakeAgentDividendProductFees = fakeAgentDividendProductFeeDbSet.Initialize(fees);
-                var fakeAgentDividendPlatformCharges = fakeAgentDividendPlatformChargeDbSet.Initialize(platformCharges);
 
                 _ = fakeDbContext.Agents.Returns(fakeAgents);
                 _ = fakeDbContext.AgentDividends.Returns(fakeAgentDividends);
@@ -181,7 +166,6 @@ public class AgentDividendsTests
                 _ = fakeDbContext.AgentDividendMultipleLayers.Returns(fakeAgentDividendMultipleLayers);
                 _ = fakeDbContext.PlayerDailyPaymentStatistics.Returns(fakePlayerDailyPaymentStatistics);
                 _ = fakeDbContext.AgentDividendProductFees.Returns(fakeAgentDividendProductFees);
-                _ = fakeDbContext.AgentDividendPlatformCharges.Returns(fakeAgentDividendPlatformCharges);
 
                 _ = services.AddSingleton(fakeDbContext);
             }));
@@ -253,12 +237,7 @@ public class AgentDividendsTests
                         .BuildMock();
 
                 var fees = agentDividends
-                    .Select(x => CreateAgentDividendProductFeeFixture(x.Id, 10, 100, GameType.Slot).Create<AgentDividendProductFee>())
-                    .AsQueryable()
-                    .BuildMock();
-
-                var platformCharges = agentDividends
-                    .Select(x => CreateAgentDividendPlatformChargeFixture(x.Id).Create<AgentDividendPlatformCharge>())
+                    .Select(x => CreateAgentDividendProductFeeFixture(x.Id, 0, 0, 0, 0, 0, 0, 10, 100, 0, 0, 0, 0).Create<AgentDividendProductFee>())
                     .AsQueryable()
                     .BuildMock();
 
@@ -268,7 +247,6 @@ public class AgentDividendsTests
                 var fakeAgentDividendMultipleLayerDbSet = Substitute.For<DbSet<AgentDividendMultipleLayer>, IQueryable<AgentDividendMultipleLayer>>();
                 var fakePlayerDailyPaymentStatisticDbSet = Substitute.For<DbSet<PlayerDailyPaymentStatistic>, IQueryable<PlayerDailyPaymentStatistic>>();
                 var fakeAgentDividendProductFeeDbSet = Substitute.For<DbSet<AgentDividendProductFee>, IQueryable<AgentDividendProductFee>>();
-                var fakeAgentDividendPlatformChargeDbSet = Substitute.For<DbSet<AgentDividendPlatformCharge>, IQueryable<AgentDividendPlatformCharge>>();
 
                 var fakeAgents = fakeAgentDbSet.Initialize(agents);
                 var fakeAgentDividends = fakeAgentDividendDbSet.Initialize(agentDividends);
@@ -276,7 +254,6 @@ public class AgentDividendsTests
                 var fakeAgentDividendMultipleLayers = fakeAgentDividendMultipleLayerDbSet.Initialize(agentDividendMultipleLayers);
                 var fakePlayerDailyPaymentStatistics = fakePlayerDailyPaymentStatisticDbSet.Initialize(playerDailyPaymentStatistics);
                 var fakeAgentDividendProductFees = fakeAgentDividendProductFeeDbSet.Initialize(fees);
-                var fakeAgentDividendPlatformCharges = fakeAgentDividendPlatformChargeDbSet.Initialize(platformCharges);
 
                 _ = fakeDbContext.Agents.Returns(fakeAgents);
                 _ = fakeDbContext.AgentDividends.Returns(fakeAgentDividends);
@@ -284,7 +261,6 @@ public class AgentDividendsTests
                 _ = fakeDbContext.AgentDividendMultipleLayers.Returns(fakeAgentDividendMultipleLayers);
                 _ = fakeDbContext.PlayerDailyPaymentStatistics.Returns(fakePlayerDailyPaymentStatistics);
                 _ = fakeDbContext.AgentDividendProductFees.Returns(fakeAgentDividendProductFees);
-                _ = fakeDbContext.AgentDividendPlatformCharges.Returns(fakeAgentDividendPlatformCharges);
 
                 _ = services.AddSingleton(fakeDbContext);
             }));
@@ -357,24 +333,29 @@ public class AgentDividendsTests
         return fixture;
     }
 
-    private static Fixture CreateAgentDividendProductFeeFixture(int agentDividendId, decimal percentage = 10,
-        decimal winLoss = 100, GameType gameType = GameType.Slot)
+    private static Fixture CreateAgentDividendProductFeeFixture(int agentDividendId,
+        decimal cardGamePercentage, decimal cardGameWinLoss,
+        decimal liveDealerPercentage, decimal liveDealerWinLoss,
+        decimal lotteryPercentage, decimal lotteryWinLoss,
+        decimal slotPercentage, decimal slotWinLoss,
+        decimal sportsPercentage, decimal sportsWinLoss,
+        decimal virtualSportsPercentage, decimal virtualSportsWinLoss)
     {
         var fixture = new Fixture();
         fixture.Customize<AgentDividendProductFee>(u => u
             .With(s => s.AgentDividendId, agentDividendId)
-            .With(s => s.GameType, (short)gameType)
-            .With(s => s.Percentage, percentage)
-            .With(s => s.WinLossAmount, winLoss));
-        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-        return fixture;
-    }
-
-    private static Fixture CreateAgentDividendPlatformChargeFixture(int agentDividendId)
-    {
-        var fixture = new Fixture();
-        fixture.Customize<AgentDividendPlatformCharge>(u => u
-            .With(s => s.AgentDividendId, agentDividendId));
+            .With(s => s.CardGameWinLossAmount, cardGameWinLoss)
+            .With(s => s.CardGamePercentage, cardGamePercentage)
+            .With(s => s.LiveDealerWinLossAmount, liveDealerWinLoss)
+            .With(s => s.LiveDealerPercentage, liveDealerPercentage)
+            .With(s => s.LotteryWinLossAmount, lotteryWinLoss)
+            .With(s => s.LotteryPercentage, lotteryPercentage)
+            .With(s => s.SlotWinLossAmount, slotWinLoss)
+            .With(s => s.SlotPercentage, slotPercentage)
+            .With(s => s.SportsWinLossAmount, sportsWinLoss)
+            .With(s => s.SportsPercentage, sportsPercentage)
+            .With(s => s.VirtualSportsWinLossAmount, virtualSportsWinLoss)
+            .With(s => s.VirtualSportsPercentage, virtualSportsPercentage));
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         return fixture;
     }

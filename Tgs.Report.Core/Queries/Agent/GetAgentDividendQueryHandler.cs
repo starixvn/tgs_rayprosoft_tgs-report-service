@@ -95,46 +95,24 @@ public class GetAgentDividendQueryHandler(TgsContext context)
                 agent.AgentId,
                 agent.AgentDividendPercentage,
                 CardGameAmount =
-                    fees.SelectMany(s => s.productFees).Where(w => w.GameType == (short)GameType.CardGame)
-                        .Sum(s => s.WinLossAmount * s.Percentage / 100),
+                    fees.SelectMany(s => s.productFees)
+                        .Sum(s => s.CardGameWinLossAmount <= 0M ? 0M : s.CardGameWinLossAmount * s.CardGamePercentage / 100),
                 LiveDealerAmount =
-                    fees.SelectMany(s => s.productFees).Where(w => w.GameType == (short)GameType.LiveDealer)
-                        .Sum(s => s.WinLossAmount * s.Percentage / 100),
+                    fees.SelectMany(s => s.productFees)
+                        .Sum(s => s.LiveDealerWinLossAmount <= 0M ? 0M : s.LiveDealerWinLossAmount * s.LiveDealerPercentage / 100),
                 LotteryAmount =
-                    fees.SelectMany(s => s.productFees).Where(w => w.GameType == (short)GameType.Lottery)
-                        .Sum(s => s.WinLossAmount * s.Percentage / 100),
+                    fees.SelectMany(s => s.productFees)
+                        .Sum(s => s.LotteryWinLossAmount <= 0M ? 0M : s.LotteryWinLossAmount * s.LotteryPercentage / 100),
                 SportsAmount =
                     fees.SelectMany(s => s.productFees)
-                        .Where(w => Consts.SportsGroup.Select(s => (short)s).Contains(w.GameType))
-                        .Sum(s => s.WinLossAmount * s.Percentage / 100),
+                        .Sum(s => s.SportsWinLossAmount <= 0M ? 0M : s.SportsWinLossAmount * s.SportsPercentage / 100),
                 SlotAmount =
                     fees.SelectMany(s => s.productFees)
-                        .Where(w => Consts.SlotGroup.Select(s => (short)s).Contains(w.GameType))
-                        .Sum(s => s.WinLossAmount * s.Percentage / 100),
-                VirtualSportsAmount = fees.SelectMany(s => s.productFees)
-                    .Where(w => w.GameType == (short)GameType.VirtualSports)
-                    .Sum(s => s.WinLossAmount * s.Percentage / 100)
+                        .Sum(s => s.SlotWinLossAmount <= 0M ? 0M : s.SlotWinLossAmount * s.SlotPercentage / 100),
+                VirtualSportsAmount =
+                    fees.SelectMany(s => s.productFees)
+                        .Sum(s => s.VirtualSportsWinLossAmount <= 0M ? 0M : s.VirtualSportsWinLossAmount * s.VirtualSportsPercentage / 100),
             }).ToArrayAsync(cancellationToken)
-            .ConfigureAwait(false);
-
-        var platformCharges = await context.AgentDividends
-            .Where(x => x.BrandId == request.BrandId)
-            .Where(x => agentIds.Contains(x.AgentId))
-            .Where(x => x.From >= request.From.ToUniversalTime())
-            .Where(x => x.To < request.To.ToUniversalTime())
-            .GroupJoin(context.AgentDividendPlatformCharges,
-                a => a.Id,
-                a => a.AgentDividendId,
-                (agentDividend, platformCharges) => new { agentDividend, platformCharges })
-            .GroupBy(x => new { x.agentDividend.AgentId, x.agentDividend.AgentDividendPercentage },
-                (agent, platformCharges) => new
-                {
-                    agent.AgentId,
-                    agent.AgentDividendPercentage,
-                    platformCharge =
-                        platformCharges.SelectMany(s => s.platformCharges)
-                            .Sum(s => s.WinLossAmount * s.Percentage / 100)
-                }).ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
 
         var models = agentDividends.Join(agents,
@@ -186,34 +164,6 @@ public class GetAgentDividendQueryHandler(TgsContext context)
                 c => new { Id = c.AgentId, c.AgentDividendPercentage },
                 (ad, list) => new { ad, list })
             .SelectMany(x => x.list.DefaultIfEmpty(), (x, fee) => new { x.ad, fee })
-            .Select(x => new
-            {
-                x.ad.Id,
-                x.ad.Username,
-                x.ad.CompanyAdjustAmount,
-                x.ad.AgentAdjustAmount,
-                x.ad.BonusAdjustAmount,
-                x.ad.BonusAmount,
-                x.ad.BetAmount,
-                x.ad.ValidBetAmount,
-                x.ad.WinLossAmount,
-                x.ad.NetProfit,
-                x.ad.AgentDividendAmount,
-                x.ad.FromPlayerAgentDividendAmount,
-                x.ad.FromTeamAgentDividendAmount,
-                x.ad.AgentDividendPercentage,
-                x.ad.AgentCoveredBonus,
-                x.ad.AgentCoveredBonusAdjust,
-                ProductFee = x.fee == null
-                    ? 0M
-                    : x.fee.CardGameAmount + x.fee.LiveDealerAmount + x.fee.LotteryAmount + x.fee.SlotAmount +
-                      x.fee.SportsAmount + x.fee.VirtualSportsAmount
-            })
-            .GroupJoin(platformCharges,
-                x => new { x.Id, x.AgentDividendPercentage },
-                c => new { Id = c.AgentId, c.AgentDividendPercentage },
-                (ad, list) => new { ad, list })
-            .SelectMany(x => x.list.DefaultIfEmpty(), (x, platformCharge) => new { x.ad, platformCharge })
             .Select(x => new AgentDividendModel
             {
                 Id = x.ad.Id,
@@ -232,8 +182,10 @@ public class GetAgentDividendQueryHandler(TgsContext context)
                 AgentDividendPercentage = x.ad.AgentDividendPercentage,
                 AgentCoveredBonus = x.ad.AgentCoveredBonus,
                 AgentCoveredBonusAdjust = x.ad.AgentCoveredBonusAdjust,
-                PlatformCharge = x.platformCharge?.platformCharge ?? 0M,
-                ProductFee = x.ad.ProductFee
+                ProductFee = x.fee == null
+                    ? 0M
+                    : x.fee.CardGameAmount + x.fee.LiveDealerAmount + x.fee.LotteryAmount + x.fee.SlotAmount +
+                      x.fee.SportsAmount + x.fee.VirtualSportsAmount
             })
             .ToArray();
 

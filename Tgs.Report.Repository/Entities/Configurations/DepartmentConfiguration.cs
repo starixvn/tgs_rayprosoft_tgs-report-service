@@ -24,40 +24,40 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.HasIndex(e => e.ResellerId, "ix_departments_reseller_id");
 
             entity.Property(e => e.Id)
-            .ValueGeneratedNever()
-            .HasColumnName("id");
+                .ValueGeneratedNever()
+                .HasColumnName("id");
             entity.Property(e => e.BrandId).HasColumnName("brand_id");
             entity.Property(e => e.CreatedByUsername)
-            .HasMaxLength(32)
-            .HasColumnName("created_by_username");
+                .HasMaxLength(32)
+                .HasColumnName("created_by_username");
             entity.Property(e => e.CreatedOn).HasColumnName("created_on");
             entity.Property(e => e.Description)
-            .HasMaxLength(128)
-            .HasColumnName("description");
+                .HasMaxLength(128)
+                .HasColumnName("description");
             entity.Property(e => e.LicenseeId).HasColumnName("licensee_id");
             entity.Property(e => e.Name)
-            .HasMaxLength(50)
-            .HasColumnName("name");
+                .HasMaxLength(50)
+                .HasColumnName("name");
             entity.Property(e => e.ResellerId).HasColumnName("reseller_id");
             entity.Property(e => e.UpdatedByUsername)
-            .HasMaxLength(32)
-            .HasColumnName("updated_by_username");
+                .HasMaxLength(32)
+                .HasColumnName("updated_by_username");
             entity.Property(e => e.UpdatedOn).HasColumnName("updated_on");
 
             entity.HasOne(d => d.Brand).WithMany(p => p.Departments)
-            .HasForeignKey(d => d.BrandId)
-            .OnDelete(DeleteBehavior.Restrict)
-            .HasConstraintName("fk_departments_brands_brand_id");
+                .HasForeignKey(d => d.BrandId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("fk_departments_brands_brand_id");
 
             entity.HasOne(d => d.Licensee).WithMany(p => p.Departments)
-            .HasForeignKey(d => d.LicenseeId)
-            .OnDelete(DeleteBehavior.Restrict)
-            .HasConstraintName("fk_departments_licensees_licensee_id");
+                .HasForeignKey(d => d.LicenseeId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("fk_departments_licensees_licensee_id");
 
             entity.HasOne(d => d.Reseller).WithMany(p => p.Departments)
-            .HasForeignKey(d => d.ResellerId)
-            .OnDelete(DeleteBehavior.Restrict)
-            .HasConstraintName("fk_departments_resellers_reseller_id");
+                .HasForeignKey(d => d.ResellerId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("fk_departments_resellers_reseller_id");
 
             OnConfigurePartial(entity);
         }

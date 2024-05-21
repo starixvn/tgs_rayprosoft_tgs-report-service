@@ -23,8 +23,8 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.AuditLogId).HasColumnName("audit_log_id");
             entity.Property(e => e.CreatedOn).HasColumnName("created_on");
             entity.Property(e => e.Data)
-            .HasColumnType("jsonb")
-            .HasColumnName("data");
+                .HasColumnType("jsonb")
+                .HasColumnName("data");
             entity.Property(e => e.GameProviderId).HasColumnName("game_provider_id");
 
             OnConfigurePartial(entity);

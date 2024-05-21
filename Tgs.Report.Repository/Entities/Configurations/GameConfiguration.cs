@@ -22,60 +22,60 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.HasIndex(e => e.SubGameProviderCode, "ix_games_sub_game_provider_code");
 
             entity.Property(e => e.Id)
-            .ValueGeneratedNever()
-            .HasColumnName("id");
+                .ValueGeneratedNever()
+                .HasColumnName("id");
             entity.Property(e => e.AvailableCurrencies)
-            .HasMaxLength(1024)
-            .HasDefaultValueSql("''::character varying")
-            .HasColumnName("available_currencies");
+                .HasMaxLength(1024)
+                .HasDefaultValueSql("''::character varying")
+                .HasColumnName("available_currencies");
             entity.Property(e => e.AvailableToBrand).HasColumnName("available_to_brand");
             entity.Property(e => e.Code)
-            .HasMaxLength(128)
-            .HasColumnName("code");
+                .HasMaxLength(128)
+                .HasColumnName("code");
             entity.Property(e => e.CreatedByUsername)
-            .HasMaxLength(32)
-            .HasColumnName("created_by_username");
+                .HasMaxLength(32)
+                .HasColumnName("created_by_username");
             entity.Property(e => e.CreatedOn).HasColumnName("created_on");
             entity.Property(e => e.Description)
-            .HasMaxLength(128)
-            .HasColumnName("description");
+                .HasMaxLength(128)
+                .HasColumnName("description");
             entity.Property(e => e.EndpointPath)
-            .HasMaxLength(2048)
-            .HasColumnName("endpoint_path");
+                .HasMaxLength(2048)
+                .HasColumnName("endpoint_path");
             entity.Property(e => e.ExternalId)
-            .HasMaxLength(32)
-            .HasColumnName("external_id");
+                .HasMaxLength(32)
+                .HasColumnName("external_id");
             entity.Property(e => e.GameProviderId).HasColumnName("game_provider_id");
             entity.Property(e => e.HasTurnoverOnTieBet).HasColumnName("has_turnover_on_tie_bet");
             entity.Property(e => e.Html5).HasColumnName("html5");
             entity.Property(e => e.Localization)
-            .HasColumnType("jsonb")
-            .HasColumnName("localization");
+                .HasColumnType("jsonb")
+                .HasColumnName("localization");
             entity.Property(e => e.Name)
-            .HasMaxLength(255)
-            .HasColumnName("name");
+                .HasMaxLength(255)
+                .HasColumnName("name");
             entity.Property(e => e.PlatformType).HasColumnName("platform_type");
             entity.Property(e => e.RuleUrl)
-            .HasMaxLength(512)
-            .HasColumnName("rule_url");
+                .HasMaxLength(512)
+                .HasColumnName("rule_url");
             entity.Property(e => e.Status).HasColumnName("status");
             entity.Property(e => e.SubGame).HasColumnName("sub_game");
             entity.Property(e => e.SubGameProviderCode)
-            .HasMaxLength(16)
-            .HasColumnName("sub_game_provider_code");
+                .HasMaxLength(16)
+                .HasColumnName("sub_game_provider_code");
             entity.Property(e => e.Type).HasColumnName("type");
             entity.Property(e => e.UpdatedByUsername)
-            .HasMaxLength(32)
-            .HasColumnName("updated_by_username");
+                .HasMaxLength(32)
+                .HasColumnName("updated_by_username");
             entity.Property(e => e.UpdatedOn).HasColumnName("updated_on");
 
             entity.HasOne(d => d.GameProvider).WithMany(p => p.Games)
-            .HasForeignKey(d => d.GameProviderId)
-            .HasConstraintName("fk_games_game_providers_game_provider_id");
+                .HasForeignKey(d => d.GameProviderId)
+                .HasConstraintName("fk_games_game_providers_game_provider_id");
 
             entity.HasOne(d => d.SubGameProviderCodeNavigation).WithMany(p => p.Games)
-            .HasForeignKey(d => d.SubGameProviderCode)
-            .HasConstraintName("fk_games_sub_game_providers_sub_game_provider_code");
+                .HasForeignKey(d => d.SubGameProviderCode)
+                .HasConstraintName("fk_games_sub_game_providers_sub_game_provider_code");
 
             OnConfigurePartial(entity);
         }

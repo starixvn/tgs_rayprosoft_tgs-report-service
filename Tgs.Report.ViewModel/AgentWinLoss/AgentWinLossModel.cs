@@ -13,7 +13,6 @@ public record AgentWinLossModel
     public decimal Special { get; set; }
     public decimal AgentSpecial { get; set; }
     public decimal CompanySpecial { get; set; }
-    public decimal PlatformChargeAmount { get; set; }
     public decimal AgentTotal => GetAgentTotal();
     public decimal CompanyTotal => GetCompanyTotal();
 

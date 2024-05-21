@@ -21,19 +21,19 @@ namespace Tgs.Report.Repository.Entities.Configurations
 
             entity.Property(e => e.BrandId).HasColumnName("brand_id");
             entity.Property(e => e.CurrencyCode)
-            .HasMaxLength(16)
-            .HasColumnName("currency_code");
+                .HasMaxLength(16)
+                .HasColumnName("currency_code");
             entity.Property(e => e.BrandCurrencyCode)
-            .HasMaxLength(32)
-            .HasColumnName("brand_currency_code");
+                .HasMaxLength(32)
+                .HasColumnName("brand_currency_code");
 
             entity.HasOne(d => d.Brand).WithMany(p => p.BrandCurrencies)
-            .HasForeignKey(d => d.BrandId)
-            .HasConstraintName("fk_brand_currencies_brands_brand_id");
+                .HasForeignKey(d => d.BrandId)
+                .HasConstraintName("fk_brand_currencies_brands_brand_id");
 
             entity.HasOne(d => d.CurrencyCodeNavigation).WithMany(p => p.BrandCurrencies)
-            .HasForeignKey(d => d.CurrencyCode)
-            .HasConstraintName("fk_brand_currencies_currencies_currency_code");
+                .HasForeignKey(d => d.CurrencyCode)
+                .HasConstraintName("fk_brand_currencies_currencies_currency_code");
 
             OnConfigurePartial(entity);
         }
