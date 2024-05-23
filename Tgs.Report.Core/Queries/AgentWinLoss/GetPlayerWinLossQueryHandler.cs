@@ -27,16 +27,13 @@ internal class GetPlayerWinLossQueryHandler(TgsContext context) : IRequestHandle
                 Special =
                     list.Sum(s => s.RebateAmount + s.PromotionAmount + s.UpgradeAmount + s.SeasonAmount +
                         s.BirthdayAmount +
-                        (s.BonusAdjustAmount - s.NoIncludeNetProfitBonusAdjustAmount) +
-                        (s.WinLossAmount * s.PlatformChargePercentage * 0.01M)),
+                        (s.BonusAdjustAmount - s.NoIncludeNetProfitBonusAdjustAmount)),
                 AgentSpecial =
                     list.Sum(s => (s.RebateAmount + s.PromotionAmount + s.UpgradeAmount + s.SeasonAmount +
-                        s.BirthdayAmount + (s.BonusAdjustAmount - s.NoIncludeNetProfitBonusAdjustAmount) +
-                        (s.WinLossAmount * s.PlatformChargePercentage * 0.01M)) * s.AgentDividendPercentage * 0.01M) ?? 0M,
+                        s.BirthdayAmount + (s.BonusAdjustAmount - s.NoIncludeNetProfitBonusAdjustAmount)) * s.AgentDividendPercentage * 0.01M) ?? 0M,
                 CompanySpecial = list.Sum(s
                         => (s.RebateAmount + s.PromotionAmount + s.UpgradeAmount + s.SeasonAmount + s.BirthdayAmount +
-                            (s.BonusAdjustAmount - s.NoIncludeNetProfitBonusAdjustAmount) +
-                            (s.WinLossAmount * s.PlatformChargePercentage * 0.01M)) * (100M - s.AgentDividendPercentage) *
+                            (s.BonusAdjustAmount - s.NoIncludeNetProfitBonusAdjustAmount)) * (100M - s.AgentDividendPercentage) *
                         0.01M) ??
                     0M
             })

@@ -45,11 +45,6 @@ public class
             };
         }
 
-        var brand = await _context.Brands.Where(x => x.Id == request.BrandId)
-            .Select(x => new { x.PlatformCharge })
-            .FirstAsync(cancellationToken)
-            .ConfigureAwait(false);
-
         var offset = new TimeSpan(8, 0, 0);
         var requestFrom = request.From.ToOffset(offset);
         var requestTo = request.To.ToOffset(offset);
@@ -379,7 +374,7 @@ public class
                         ValidBetAmount = x.OriginalTurnover,
                         Turnover = x.Turnover,
                         WinLossAmount = x.WinLossAmount,
-                        NetProfit = x.NetProfit - (x.UpgradeAmount + x.SeasonAmount + x.BirthdayAmount) - x.WinLossAmount * brand.PlatformCharge / 100
+                        NetProfit = x.NetProfit - (x.UpgradeAmount + x.SeasonAmount + x.BirthdayAmount)
                     };
                 }).ToArray()
         };
@@ -589,8 +584,7 @@ public class
                             : p.AgentPlayerAggregate.NetProfit -
                             p.AgentPlayerAggregate.UpgradeAmount -
                             p.AgentPlayerAggregate.SeasonAmount -
-                            p.AgentPlayerAggregate.BirthdayAmount -
-                            p.AgentPlayerAggregate.WinLossAmount * brand.PlatformCharge / 100)
+                            p.AgentPlayerAggregate.BirthdayAmount)
                     };
                 }).ToArray();
 
