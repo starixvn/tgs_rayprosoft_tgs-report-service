@@ -34,11 +34,6 @@ public sealed class GetAgentContributionsQueryTest : BaseTest
         var agentUsername = "agentUsername";
         var reportDate = new DateTimeOffset(2022, 1, 21, 0, 0, 0, new(8, 0, 0));
 
-        var brands = CreateBrandFixture(brandId, 5)
-            .CreateMany<Brand>(1)
-            .AsQueryable()
-            .BuildMock();
-
         var agents = CreateAgentFixture(brandId, agentUsername)
             .CreateMany<Repository.Entities.Agent>(1)
             .AsQueryable()
@@ -81,12 +76,10 @@ public sealed class GetAgentContributionsQueryTest : BaseTest
         var mockAgentDailyPaymentStatistics = GetDbSet(agentDailyPaymentStatistics);
         var mockPlayerDailyPaymentStatistics = GetDbSet(playerDailyPaymentStatistics);
         var mockPlayers = GetDbSet(players);
-        var mockBrands = GetDbSet(brands);
 
         fakeContext.AgentDailyPaymentStatistics.Returns(mockAgentDailyPaymentStatistics.Object);
         fakeContext.PlayerDailyPaymentStatistics.Returns(mockPlayerDailyPaymentStatistics.Object);
         fakeContext.Players.Returns(mockPlayers.Object);
-        fakeContext.Brands.Returns(mockBrands.Object);
 
         fakeAgentRepository.GetAgentWithNLevelAsync(
                 Arg.Is(brandId),
@@ -113,8 +106,7 @@ public sealed class GetAgentContributionsQueryTest : BaseTest
                     x.WinLossAmount -
                     (x.BonusAdjustAmount - x.NoIncludeNetProfitBonusAdjustAmount) -
                     x.PromotionAmount -
-                    x.RebateAmount -
-                    x.WinLossAmount * 5 / 100) -
+                    x.RebateAmount) -
             playerBonusAggregates.Where(x => x.ReportDate == reportDate)
                 .Sum(x => x.SeasonAmount + x.UpgradeAmount + x.BirthdayAmount);
 
@@ -199,37 +191,6 @@ public sealed class GetAgentContributionsQueryTest : BaseTest
         fixture.Customize<AgentDailyPaymentStatistic>(u => u
             .With(s => s.ReportDate,
                 DateOnly.FromDateTime(DateTimeOffset.UtcNow.AddDays(-1).DateTime)));
-        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-        return fixture;
-    }
-
-    private static Fixture CreateBrandFixture(Guid brandId, decimal platformCharge)
-    {
-        var fixture = new Fixture();
-        fixture.Customize<Brand>(u => u
-            .With(s => s.Id, brandId)
-            .With(s => s.PlatformCharge, platformCharge)
-            .With(s => s.VipLevels, new VipLevel[]
-            {
-            })
-            .With(s => s.Transactions, new Transaction[]
-            {
-            })
-            .With(s => s.BrandCurrencies, new BrandCurrency[]
-            {
-            })
-            .With(s => s.Agents, new Repository.Entities.Agent[]
-            {
-            })
-            .With(s => s.Players, new Repository.Entities.Player[]
-            {
-            })
-            .With(s => s.DepositForms, new DepositForm[]
-            {
-            })
-            .With(s => s.PlayerLoginRecords, new PlayerLoginRecord[]
-            {
-            }));
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         return fixture;
     }

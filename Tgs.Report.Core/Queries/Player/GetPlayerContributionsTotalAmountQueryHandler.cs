@@ -49,11 +49,6 @@ public class GetPlayerContributionsTotalAmountQueryHandler(TgsContext context)
             ? new(yesterday.Year, yesterday.Month, yesterday.Day)
             : new DateOnly(to.Year, to.Month, to.Day);
 
-        var brand = await _context.Brands.Where(x => x.Id == request.BrandId)
-            .Select(x => new { x.PlatformCharge })
-            .FirstAsync(cancellationToken)
-            .ConfigureAwait(false);
-
         var withdrawRealTimeSummary = to > yesterday
             ? await _context.WithdrawForms
                 .Join(_context.Players,
@@ -328,8 +323,7 @@ public class GetPlayerContributionsTotalAmountQueryHandler(TgsContext context)
                     ValidBetAmount = x.Sum(p => p.ValidBetAmount),
                     Turnover = x.Sum(p => p.Turnover),
                     WinLossAmount = x.Sum(p => p.WinLossAmount),
-                    NetProfit = x.Sum(p => p.NetProfit - (p.UpgradeAmount + p.SeasonAmount + p.BirthdayAmount)
-                    - p.WinLossAmount * brand.PlatformCharge / 100).Truncate(6)
+                    NetProfit = x.Sum(p => p.NetProfit - (p.UpgradeAmount + p.SeasonAmount + p.BirthdayAmount)).Truncate(6)
                 })
                 .FirstOrDefaultAsync(cancellationToken)
                 .ConfigureAwait(false)
