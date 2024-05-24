@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using NSubstitute;
 using NUnit.Framework;
@@ -53,7 +52,7 @@ public sealed class GetAgentDividendQueryTest : BaseTest
                 .BuildMock();
 
         var fees = agentDividends
-            .Select(x => CreateAgentDividendProductFeeFixture(x.Id).Create<AgentDividendProductFee>())
+            .Select(x => CreateAgentDividendProductFeeFixture(x.Id, x.AgentId).Create<AgentDividendProductFee>())
             .AsQueryable()
             .BuildMock();
 
@@ -84,7 +83,7 @@ public sealed class GetAgentDividendQueryTest : BaseTest
     {
         var fakeDbContext = Substitute.For<TgsContext>();
 
-        var sut = new GetAgentDividendQueryHandler(fakeDbContext);
+        var sut = new GetSingleAgentDividendQueryHandler(fakeDbContext);
 
         var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
         var agentId = new Guid("aac11120-20f6-4f0d-6982-08d9dbdc0473");
@@ -105,7 +104,7 @@ public sealed class GetAgentDividendQueryTest : BaseTest
 
         var players = agents.SelectMany(x => x.Players);
 
-        var request = new GetAgentDividendsRequest
+        var request = new GetSingleAgentDividendsRequest
         {
             BrandId = brandId,
             AgentId = agentId,
@@ -119,7 +118,7 @@ public sealed class GetAgentDividendQueryTest : BaseTest
                 .BuildMock();
 
         var fees = agentDividends
-            .Select(x => CreateAgentDividendProductFeeFixture(x.Id).Create<AgentDividendProductFee>())
+            .Select(x => CreateAgentDividendProductFeeFixture(x.Id, x.AgentId).Create<AgentDividendProductFee>())
             .AsQueryable()
             .BuildMock();
 
@@ -148,7 +147,7 @@ public sealed class GetAgentDividendQueryTest : BaseTest
     {
         var fakeDbContext = Substitute.For<TgsContext>();
 
-        var sut = new GetAgentDividendQueryHandler(fakeDbContext);
+        var sut = new GetSubAgentDividendQueryHandler(fakeDbContext);
 
         var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
         var agentId = new Guid("aac11120-20f6-4f0d-6982-08d9dbdc0473");
@@ -177,7 +176,7 @@ public sealed class GetAgentDividendQueryTest : BaseTest
 
         var players = agents.SelectMany(x => x.Players);
 
-        var request = new GetAgentDividendsRequest
+        var request = new GetSubAgentDividendsRequest
         {
             BrandId = brandId,
             AgentId = agentId,
@@ -191,7 +190,7 @@ public sealed class GetAgentDividendQueryTest : BaseTest
                 .BuildMock();
 
         var fees = agentDividends
-            .Select(x => CreateAgentDividendProductFeeFixture(x.Id).Create<AgentDividendProductFee>())
+            .Select(x => CreateAgentDividendProductFeeFixture(x.Id, x.AgentId).Create<AgentDividendProductFee>())
             .AsQueryable()
             .BuildMock();
 
@@ -202,11 +201,11 @@ public sealed class GetAgentDividendQueryTest : BaseTest
         var mockPlayerDailyPaymentStatistics = GetDbSet(playerDailyPaymentStatistics);
         var mockAgentDividendProductFees = GetDbSet(fees);
 
-        fakeDbContext.Agents.Returns(mockAgents.Object);
-        fakeDbContext.AgentDividends.Returns(mockAgentDividends.Object);
-        fakeDbContext.Players.Returns(mockPlayers.Object);
-        fakeDbContext.AgentDividendMultipleLayers.Returns(mockAgentDividendMultipleLayers.Object);
-        fakeDbContext.PlayerDailyPaymentStatistics.Returns(mockPlayerDailyPaymentStatistics.Object);
+        _ = fakeDbContext.Agents.Returns(mockAgents.Object);
+        _ = fakeDbContext.AgentDividends.Returns(mockAgentDividends.Object);
+        _ = fakeDbContext.Players.Returns(mockPlayers.Object);
+        _ = fakeDbContext.AgentDividendMultipleLayers.Returns(mockAgentDividendMultipleLayers.Object);
+        _ = fakeDbContext.PlayerDailyPaymentStatistics.Returns(mockPlayerDailyPaymentStatistics.Object);
         _ = fakeDbContext.AgentDividendProductFees.Returns(mockAgentDividendProductFees.Object);
 
         var response = await sut.Handle(request, default);
@@ -264,11 +263,12 @@ public sealed class GetAgentDividendQueryTest : BaseTest
         return fixture;
     }
 
-    private static Fixture CreateAgentDividendProductFeeFixture(int agentDividendId)
+    private static Fixture CreateAgentDividendProductFeeFixture(int agentDividendId, Guid agentId)
     {
         var fixture = new Fixture();
         fixture.Customize<AgentDividendProductFee>(u => u
-            .With(s => s.AgentDividendId, agentDividendId));
+            .With(s => s.AgentDividendId, agentDividendId)
+            .With(s => s.AgentId, agentId));
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         return fixture;
     }
