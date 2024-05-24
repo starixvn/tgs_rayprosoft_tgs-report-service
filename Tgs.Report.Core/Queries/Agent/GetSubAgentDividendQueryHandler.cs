@@ -72,9 +72,7 @@ public class
                     AgentDividendAmount = list.Sum(l => l.BeforeDividendAmount ?? l.AgentDividendAmount),
                     NoIncludeNetProfitAgentAdjustAmount = list.Sum(l => l.NoIncludeNetProfitAgentAdjustAmount),
                     NoIncludeNetProfitBonusAdjustAmount = list.Sum(l => l.NoIncludeNetProfitBonusAdjustAmount),
-                    FromPlayerAgentDividendAmount =
-                        list.Sum(l => l.AgentDividendMultipleLayers.Where(m => m.AgentId == m.DividendProviderAgentId)
-                            .Sum(s => s.Dividend)),
+                    FromPlayerAgentDividendAmount = list.Sum(l => l.NetProfit * l.AgentDividendPercentage / 100),
                     FromTeamAgentDividendAmount = list.Sum(l
                         => l.AgentDividendMultipleLayers.Where(m => m.AgentId != m.DividendProviderAgentId)
                             .Sum(s => s.Dividend))
