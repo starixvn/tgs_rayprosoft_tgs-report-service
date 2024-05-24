@@ -1,6 +1,5 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Tgs.Report.Enum;
 using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Agent;
@@ -214,7 +213,10 @@ public class
                 ValidBetAmount = x.ad.ValidBetAmount,
                 WinLossAmount = x.ad.WinLossAmount,
                 NetProfit = x.ad.NetProfit,
-                AgentDividendAmount = x.ad.AgentDividendAmount,
+                AgentDividendAmount = x.ad.AgentDividendAmount - (x.fee == null
+                    ? 0M
+                    : x.fee.CardGameAmount + x.fee.LiveDealerAmount + x.fee.LotteryAmount + x.fee.SlotAmount +
+                      x.fee.SportsAmount + x.fee.VirtualSportsAmount),
                 FromPlayerAgentDividendAmount = x.ad.FromPlayerAgentDividendAmount,
                 FromTeamAgentDividendAmount = x.ad.FromTeamAgentDividendAmount,
                 AgentDividendPercentage = x.ad.AgentDividendPercentage,
