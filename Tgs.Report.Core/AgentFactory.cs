@@ -22,8 +22,8 @@ WITH agent_data AS
                       upgrade_amount + 
                       season_amount + 
                       birthday_amount + 
-                      (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)) +
-                      (company_adjust_amount - no_include_net_profit_company_adjust_amount)) +
+                      (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount) +
+                      (company_adjust_amount - no_include_net_profit_company_adjust_amount) +
                       (agent_adjust_amount - no_include_net_profit_agent_adjust_amount))                                                                                                                                    AS bonus_amount ,
                   SUM(round_count)                                                                                                                                                                                          AS round_count
          FROM     report.player_aggregates
@@ -80,8 +80,8 @@ WITH agent_data AS
                       upgrade_amount + 
                       season_amount + 
                       birthday_amount + 
-                      (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)) +
-                      (company_adjust_amount - no_include_net_profit_company_adjust_amount)) +
+                      (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount) +
+                      (company_adjust_amount - no_include_net_profit_company_adjust_amount) +
                       (agent_adjust_amount - no_include_net_profit_agent_adjust_amount))                                                                                                                                    AS bonus_amount ,
                   SUM(round_count)                                                                                                                                                                                          AS round_count
          FROM     report.player_aggregates
@@ -141,8 +141,8 @@ WITH agent_data AS
                       upgrade_amount + 
                       season_amount + 
                       birthday_amount + 
-                      (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)) +
-                      (company_adjust_amount - no_include_net_profit_company_adjust_amount)) +
+                      (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount) +
+                      (company_adjust_amount - no_include_net_profit_company_adjust_amount) +
                       (agent_adjust_amount - no_include_net_profit_agent_adjust_amount))                                                                                                                                    AS bonus_amount,
                   SUM(round_count)                                                                                                                                                                                          AS round_count
          FROM     report.player_aggregates
@@ -183,24 +183,24 @@ agent_win_loss AS
                       upgrade_amount + 
                       season_amount + 
                       birthday_amount + 
-                      (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)) +
-                      (company_adjust_amount - no_include_net_profit_company_adjust_amount)) +
+                      (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount) +
+                      (company_adjust_amount - no_include_net_profit_company_adjust_amount) +
                       (agent_adjust_amount - no_include_net_profit_agent_adjust_amount)), 6)                                                                                                                                                                                                                     AS special ,
                   TRUNC(-SUM((rebate_amount + 
                       promotion_amount + 
                       upgrade_amount + 
                       season_amount + 
                       birthday_amount + 
-                      (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)) +
-                      (company_adjust_amount - no_include_net_profit_company_adjust_amount)) +
+                      (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount) +
+                      (company_adjust_amount - no_include_net_profit_company_adjust_amount) +
                       (agent_adjust_amount - no_include_net_profit_agent_adjust_amount)) * pa.agent_dividend_percentage / 100.0), 6)                                                                                                                                                                             AS agentspecial ,
                   TRUNC(-SUM((rebate_amount + 
                       promotion_amount + 
                       upgrade_amount + 
                       season_amount + 
                       birthday_amount + 
-                      (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)) +
-                      (company_adjust_amount - no_include_net_profit_company_adjust_amount)) +
+                      (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount) +
+                      (company_adjust_amount - no_include_net_profit_company_adjust_amount) +
                       (agent_adjust_amount - no_include_net_profit_agent_adjust_amount)) * (100.0 - pa.agent_dividend_percentage) / 100.0), 6)                                                                                                                                                                   AS companyspecial ,
                   SUM(round_count)                                                                                                                                                                                                                                                                               AS roundcount
          FROM     report.player_aggregates pa
@@ -281,8 +281,8 @@ SELECT
                       upgrade_amount + 
                       season_amount + 
                       birthday_amount + 
-                      (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)) +
-                      (company_adjust_amount - no_include_net_profit_company_adjust_amount)) +
+                      (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount) +
+                      (company_adjust_amount - no_include_net_profit_company_adjust_amount) +
                       (agent_adjust_amount - no_include_net_profit_agent_adjust_amount)), 6)                                                                                                      AS BonusAmount
 FROM
   report.player_aggregates
