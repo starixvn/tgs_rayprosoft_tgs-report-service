@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using NSubstitute;
@@ -42,8 +41,11 @@ public sealed class GetAgentPlayerSpecialDetailQueryTest : BaseTest
         var response = await sut.Handle(request, default);
 
         Assert.That(response.Bonus, Is.EqualTo(agentPlayerSpecialDetail.Bonus));
+        Assert.That(response.CompanyAdjust, Is.EqualTo(agentPlayerSpecialDetail.CompanyAdjust));
+        Assert.That(response.BonusAdjust, Is.EqualTo(agentPlayerSpecialDetail.BonusAdjust));
+        Assert.That(response.AgentAdjust, Is.EqualTo(agentPlayerSpecialDetail.AgentAdjust));
     }
-    
+
     private static Fixture CreateAgentPlayerSpecialDetailFixture()
     {
         var fixture = new Fixture();

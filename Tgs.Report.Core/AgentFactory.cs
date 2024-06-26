@@ -17,7 +17,14 @@ WITH agent_data AS
                   (Jsonb_path_query(agent_dividend_percentage_tree_data, '$[*] ? (@.ParentAgentId == null).DividendPercentage'))::NUMERIC                                                                                   AS agentdividendpercentage ,
                   SUM(turnover)                                                                                                                                                                                             AS turnover ,
                   SUM(win_loss_amount)                                                                                                                                                                                      AS win_loss_amount ,
-                  SUM(rebate_amount + promotion_amount + upgrade_amount + season_amount + birthday_amount + (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount))                                              AS bonus_amount ,
+                  SUM(rebate_amount + 
+                      promotion_amount + 
+                      upgrade_amount + 
+                      season_amount + 
+                      birthday_amount + 
+                      (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)) +
+                      (company_adjust_amount - no_include_net_profit_company_adjust_amount)) +
+                      (agent_adjust_amount - no_include_net_profit_agent_adjust_amount))                                                                                                                                    AS bonus_amount ,
                   SUM(round_count)                                                                                                                                                                                          AS round_count
          FROM     report.player_aggregates
          WHERE    brand_id = @brandid
@@ -68,7 +75,14 @@ WITH agent_data AS
                   (Jsonb_path_query(agent_dividend_percentage_tree_data, '$[*] ? (@.AgentId == ""{request.AgentId}"").DividendPercentage'))::NUMERIC                                                                        AS agentdividendpercentage ,
                   SUM(turnover)                                                                                                                                                                                             AS turnover ,
                   SUM(win_loss_amount)                                                                                                                                                                                      AS win_loss_amount ,
-                  SUM(rebate_amount + promotion_amount + upgrade_amount + season_amount + birthday_amount + (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount))                                              AS bonus_amount ,
+                  SUM(rebate_amount + 
+                      promotion_amount + 
+                      upgrade_amount + 
+                      season_amount + 
+                      birthday_amount + 
+                      (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)) +
+                      (company_adjust_amount - no_include_net_profit_company_adjust_amount)) +
+                      (agent_adjust_amount - no_include_net_profit_agent_adjust_amount))                                                                                                                                    AS bonus_amount ,
                   SUM(round_count)                                                                                                                                                                                          AS round_count
          FROM     report.player_aggregates
          WHERE    brand_id = @brandid
@@ -122,7 +136,14 @@ WITH agent_data AS
                   (Jsonb_path_query(agent_dividend_percentage_tree_data, '$[*] ? (@.ParentAgentId == ""{request.AgentId}"").DividendPercentage'))::NUMERIC                                                                  AS agentdividendpercentage,
                   SUM(turnover)                                                                                                                                                                                             AS turnover,
                   SUM(win_loss_amount)                                                                                                                                                                                      AS win_loss_amount,
-                  SUM(rebate_amount + promotion_amount + upgrade_amount + season_amount + birthday_amount + (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount))                                              AS bonus_amount,
+                  SUM(rebate_amount + 
+                      promotion_amount + 
+                      upgrade_amount + 
+                      season_amount + 
+                      birthday_amount + 
+                      (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)) +
+                      (company_adjust_amount - no_include_net_profit_company_adjust_amount)) +
+                      (agent_adjust_amount - no_include_net_profit_agent_adjust_amount))                                                                                                                                    AS bonus_amount,
                   SUM(round_count)                                                                                                                                                                                          AS round_count
          FROM     report.player_aggregates
          WHERE    report_date >= @FROM
@@ -157,9 +178,30 @@ agent_win_loss AS
                   TRUNC(-SUM(pa.win_loss_amount), 6)                                                                                                                                                                                                                                                             AS winloss,
                   TRUNC(SUM(pa.win_loss_amount * pa.agent_dividend_percentage / 100.0), 6)                                                                                                                                                                                                                       AS agentwinloss,
                   TRUNC(SUM(pa.win_loss_amount * (100.0 - pa.agent_dividend_percentage) / 100.0), 6)                                                                                                                                                                                                             AS companywinloss,
-                  TRUNC(SUM(rebate_amount      + promotion_amount + upgrade_amount + season_amount + birthday_amount + (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)), 6)                                                                                                                    AS special ,
-                  TRUNC(-SUM((rebate_amount + promotion_amount + upgrade_amount + season_amount + birthday_amount + (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)) * pa.agent_dividend_percentage / 100.0), 6)           AS agentspecial ,
-                  TRUNC(-SUM((rebate_amount + promotion_amount + upgrade_amount + season_amount + birthday_amount + (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)) * (100.0 - pa.agent_dividend_percentage) / 100.0), 6) AS companyspecial ,
+                  TRUNC(SUM(rebate_amount + 
+                      promotion_amount + 
+                      upgrade_amount + 
+                      season_amount + 
+                      birthday_amount + 
+                      (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)) +
+                      (company_adjust_amount - no_include_net_profit_company_adjust_amount)) +
+                      (agent_adjust_amount - no_include_net_profit_agent_adjust_amount)), 6)                                                                                                                                                                                                                     AS special ,
+                  TRUNC(-SUM((rebate_amount + 
+                      promotion_amount + 
+                      upgrade_amount + 
+                      season_amount + 
+                      birthday_amount + 
+                      (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)) +
+                      (company_adjust_amount - no_include_net_profit_company_adjust_amount)) +
+                      (agent_adjust_amount - no_include_net_profit_agent_adjust_amount)) * pa.agent_dividend_percentage / 100.0), 6)                                                                                                                                                                             AS agentspecial ,
+                  TRUNC(-SUM((rebate_amount + 
+                      promotion_amount + 
+                      upgrade_amount + 
+                      season_amount + 
+                      birthday_amount + 
+                      (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)) +
+                      (company_adjust_amount - no_include_net_profit_company_adjust_amount)) +
+                      (agent_adjust_amount - no_include_net_profit_agent_adjust_amount)) * (100.0 - pa.agent_dividend_percentage) / 100.0), 6)                                                                                                                                                                   AS companyspecial ,
                   SUM(round_count)                                                                                                                                                                                                                                                                               AS roundcount
          FROM     report.player_aggregates pa
          join     dbo.players p
@@ -196,6 +238,8 @@ WHERE turnover <> 0 OR winloss <> 0 OR special <> 0;";
 SELECT
   TRUNC(Sum(rebate_amount       + promotion_amount + upgrade_amount + season_amount + birthday_amount), 6) as bonus
 , TRUNC(Sum(bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount), 6)                           as bonusAdjust
+, TRUNC(Sum(company_adjust_amount - no_include_net_profit_company_adjust_amount), 6)                       as companyAdjust
+, TRUNC(Sum(agent_adjust_amount - no_include_net_profit_agent_adjust_amount), 6)                           as agentAdjust
 FROM
   report.player_aggregates
 WHERE
@@ -219,6 +263,8 @@ WHERE
         {
             Bonus = response?.Bonus ?? 0M,
             BonusAdjust = response?.BonusAdjust ?? 0M,
+            CompanyAdjust = response?.CompanyAdjust ?? 0M,
+            AgentAdjust = response?.AgentAdjust ?? 0M,
         };
     }
 
@@ -230,7 +276,14 @@ SELECT
 , Jsonb_path_query(agent_dividend_percentage_tree_data, '$[*] ? (@.AgentId == ""{request.AgentId}"")') ->> 'AgentId'                                                                              AS AgentId
 , ( Jsonb_path_query(agent_dividend_percentage_tree_data, '$[*] ? (@.AgentId == ""{request.AgentId}"").DividendPercentage') ) :: NUMERIC                                                          AS Percentage
 , TRUNC(Sum(win_loss_amount), 6)                                                                                                                                                                  AS WinLoss
-, TRUNC(Sum(rebate_amount + promotion_amount + upgrade_amount + season_amount + birthday_amount + ( bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount )), 6)                        AS BonusAmount
+, TRUNC(Sum(rebate_amount + 
+                      promotion_amount + 
+                      upgrade_amount + 
+                      season_amount + 
+                      birthday_amount + 
+                      (bonus_adjust_amount - no_include_net_profit_bonus_adjust_amount)) +
+                      (company_adjust_amount - no_include_net_profit_company_adjust_amount)) +
+                      (agent_adjust_amount - no_include_net_profit_agent_adjust_amount)), 6)                                                                                                      AS BonusAmount
 FROM
   report.player_aggregates
 WHERE
