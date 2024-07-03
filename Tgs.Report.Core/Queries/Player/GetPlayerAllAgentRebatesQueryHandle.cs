@@ -36,7 +36,8 @@ internal class
             .GetPlayerAllAgentRebatesQueryable(new GetPlayerAllAgentRebatesQuery(request.BrandId,
                 from.UtcDateTime,
                 to.UtcDateTime,
-                request.Username))
+                request.Username,
+                request.PlayerCode))
             .CreateResponseAsyncEnumerable(request);
     }
 }

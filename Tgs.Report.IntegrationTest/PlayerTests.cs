@@ -132,6 +132,70 @@ public class PlayerTests
     }
 
     [Test]
+    public async Task Can_Get_Player_All_Agent_Rebates_By_Player_Code_Filter()
+    {
+        var fakeTgsContext = Substitute.For<TgsContext>();
+
+        var brandId = Guid.NewGuid();
+        var createdOn = new DateTimeOffset(2022, 1, 21, 0, 0, 0, new TimeSpan(8, 0, 0));
+
+        var playerAllAgentRebates = CreatePlayerAllAgentRebateContributorFixture(brandId, createdOn, 10.0032M)
+            .CreateMany<PlayerAllAgentRebateContributor>(10).ToArray();
+
+        var players = playerAllAgentRebates.Select(x => x.PlayerCode)
+            .Distinct()
+            .Select(playerCode => CreatePlayerFixture(playerCode, playerCode).Create<Player>());
+
+        var fakePlayerAllAgentRebateContributorDbSet = Substitute
+            .For<DbSet<PlayerAllAgentRebateContributor>, IQueryable<PlayerAllAgentRebateContributor>>();
+        var fakePlayerDbSet = Substitute.For<DbSet<Player>, IQueryable<Player>>();
+
+        var fakePlayerAllAgentRebateContributors =
+            fakePlayerAllAgentRebateContributorDbSet.Initialize(playerAllAgentRebates.AsQueryable().BuildMock());
+        var fakePlayers = fakePlayerDbSet.Initialize(players.AsQueryable().BuildMock());
+
+        _ = fakeTgsContext.PlayerAllAgentRebateContributors.Returns(fakePlayerAllAgentRebateContributors);
+        _ = fakeTgsContext.Players.Returns(fakePlayers);
+
+        await using var web = new TestReportApplication(builder => builder
+            .ConfigureServices(services =>
+            {
+                _ = services.AddSingleton(fakeTgsContext);
+            }));
+
+        var httpClient = web.CreateClient();
+
+        var sut = new ReportPlayerAllAgentClient(httpClient);
+
+        var actual = await sut.GetPlayerAllAgentRebatesAsync(new GetPlayerAllAgentRebatesRequest
+        {
+            BrandId = brandId,
+            PlayerCode = players.First().PlayerCode,
+            From = createdOn.UtcDateTime,
+            To = createdOn.AddDays(1).UtcDateTime,
+            Page = 1,
+            Rows = 10
+        })
+            .ToArrayAsync();
+
+        Assert.That(actual, Is.Not.Null);
+        Assert.That(actual, Has.Length.EqualTo(1));
+
+        foreach (var playerAllAgentRebateModel in actual)
+        {
+            var playerRebate = playerAllAgentRebates.Where(x => x.PlayerCode == playerAllAgentRebateModel.PlayerCode)
+                .Sum(s => s.SportsTurnoverRebate +
+                          s.VirtualSportsTurnoverRebate +
+                          s.LiveDealerTurnoverRebate +
+                          s.CardGameTurnoverRebate +
+                          s.SlotTurnoverRebate +
+                          s.LotteryTurnoverRebate).Truncate(2);
+
+            Assert.That(playerAllAgentRebateModel.Rebate, Is.EqualTo(playerRebate));
+        }
+    }
+    
+    [Test]
     public async Task Can_Get_Player_All_Agent_Rebate_Detail_Game_Types()
     {
         var fakePlayerFactory = Substitute.For<IPlayerFactory>();

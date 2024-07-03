@@ -16,7 +16,8 @@ internal class
                 request.BrandId,
                 request.From,
                 request.To,
-                request.Username))
+                request.Username,
+                request.PlayerCode))
             .ToArrayAsync(cancellationToken);
 
         return new PlayerAllAgentRebateTotalAmountModel

@@ -328,6 +328,7 @@ public class PlayerFactory(TgsContext context) : IPlayerFactory
         => _context.PlayerAllAgentRebateContributors
             .Where(x => x.BrandId == request.BrandId)
             .Where(x => x.SettleDate >= request.From && x.SettleDate < request.To)
+            .Where(request.PlayerCode ,x => x.PlayerCode == request.PlayerCode)
             .GroupBy(x => new { x.SettleDate, x.From, x.To, x.PlayerCode })
             .Select(x => new
             {
