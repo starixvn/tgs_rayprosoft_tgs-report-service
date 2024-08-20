@@ -15,4 +15,6 @@ public interface IPlayerFactory
 
     IQueryable<PlayerAllAgentRebateDetailGameTypeModel> GetPlayerAllAgentRebateDetailGameTypesQueryable(GetPlayerAllAgentRebateDetailGameTypesQuery request);
 
+    IQueryable<PlayersAccountChangeModel> GetPlayersAccountChangesQueryable(GetPlayersAccountChangesQuery request);
+
 }

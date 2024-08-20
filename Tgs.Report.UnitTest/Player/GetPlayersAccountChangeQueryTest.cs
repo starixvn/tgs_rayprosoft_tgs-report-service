@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using AutoFixture;
 using MockQueryable.Moq;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.Report.Core;
+using Tgs.Report.Core.Models;
 using Tgs.Report.Core.Queries.Player;
-using Tgs.Report.Enum;
-using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel.Player;
 
 namespace Tgs.Report.UnitTest.Player;
@@ -20,22 +19,18 @@ public sealed class GetPlayersAccountChangeQueryTest : BaseTest
     [Test]
     public async Task Can_Get_Players_Account_Change()
     {
-        var fakeDbContext = Substitute.For<TgsContext>();
+        var fakePlayerFactory = Substitute.For<IPlayerFactory>();
 
-        var sut = new GetPlayersAccountChangeQueryHandler(fakeDbContext);
+        var sut = new GetPlayersAccountChangesQueryHandler(fakePlayerFactory);
 
         var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
-        var userId = new Guid("aac11120-20f6-4f0d-6982-08d9dbdc0473");
-        var reportDate = new DateTimeOffset(2022, 1, 21, 0, 0, 0, new(8, 0, 0));
 
-        var transactions = CreateTransactionFixture(brandId, userId).CreateMany<Transaction>(1).AsQueryable()
-            .BuildMock();
+        var fixture = new Fixture();
 
-        var players = CreatePlayerFixture(brandId).CreateMany<Repository.Entities.Player>(1).AsQueryable()
-            .BuildMock();
+        var playerAccountChanges = fixture.CreateMany<PlayersAccountChangeModel>(20).ToArray();
 
-        var users = CreateUserFixture(userId).CreateMany<User>(1).AsQueryable()
-            .BuildMock();
+        _ = fakePlayerFactory.GetPlayersAccountChangesQueryable(Arg.Any<GetPlayersAccountChangesQuery>())
+            .Returns(playerAccountChanges.AsQueryable().BuildMock());
 
         var request = new GetPlayersAccountChangesRequest
         {
@@ -44,54 +39,8 @@ public sealed class GetPlayersAccountChangeQueryTest : BaseTest
             To = DateTimeOffset.UtcNow.AddDays(1)
         };
 
-        var mockTransactions = GetDbSet(transactions);
-        var mockPlayers = GetDbSet(players);
-        var mockUsers = GetDbSet(users);
-
-        fakeDbContext.Transactions.Returns(mockTransactions.Object);
-        fakeDbContext.Players.Returns(mockPlayers.Object);
-        fakeDbContext.Users.Returns(mockUsers.Object);
-
         var response = await sut.Handle(request, default);
 
-        Assert.That(response.Items?.Length, Is.EqualTo(1));
-    }
-
-    private static Fixture CreateTransactionFixture(Guid brandId, Guid userId)
-    {
-        var fixture = new Fixture();
-        fixture.Customize<Transaction>(u => u
-            .With(s => s.BrandId, brandId)
-            .With(s => s.Brand, new Brand())
-            .With(s => s.PlayerCode, "PlayerCode")
-            .With(s => s.Type, (short)TransactionType.CompanyAdjust)
-            .With(s => s.CreatedByUserId, userId)
-            .With(s => s.Description, JsonSerializer.Serialize(new AdjustRemarkModel()))
-            .With(s => s.RecordedOn, DateTime.UtcNow)
-            .With(s => s.Wallet, new Wallet()));
-        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-        return fixture;
-    }
-
-    private static Fixture CreatePlayerFixture(Guid brandId)
-    {
-        var fixture = new Fixture();
-        fixture.Customize<Repository.Entities.Player>(u => u
-            .With(s => s.BrandId, brandId)
-            .With(s => s.PlayerCode, "PlayerCode")
-            .With(s => s.Brand, new Brand())
-            .With(s => s.Birthdate, DateOnly.Parse("2022/05/04")));
-        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-        return fixture;
-    }
-
-    private static Fixture CreateUserFixture(Guid userId)
-    {
-        var fixture = new Fixture();
-        fixture.Customize<User>(u => u
-            .With(s => s.Id, userId)
-            .With(s => s.Department, new Department()));
-        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-        return fixture;
+        Assert.That(response.Items?.Length, Is.EqualTo(20));
     }
 }

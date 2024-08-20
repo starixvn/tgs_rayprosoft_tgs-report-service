@@ -41,6 +41,7 @@ public class PlayerReportController(IMediator mediator) : ControllerBase
         => File(await mediator.Send(request).ConfigureAwait(false),
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 
+    [Obsolete("substituted GetMultiplePlayersAccountChangesAsync for it.")]
     [HttpGet("playersAccountChanges", Name = "GetPlayersAccountChanges")]
     [Description("Get account changes of multiple players")]
     public Task<PagedResponse<PlayersAccountChangeModel>> GetPlayersAccountChangesAsync(
@@ -70,4 +71,23 @@ public class PlayerReportController(IMediator mediator) : ControllerBase
     public IAsyncEnumerable<PlayerAllAgentRebateDetailModel> GetPlayerAllAgentRebateDetailsAsync(
         [FromQuery] GetPlayerAllAgentRebateDetailsRequest request)
         => mediator.CreateStream(request);
+
+    [HttpGet("players-account-changes", Name = "GetMultiplePlayersAccountChanges")]
+    [Description("Get account changes of multiple players")]
+    public async IAsyncEnumerable<PlayersAccountChangeModel> GetMultiplePlayersAccountChangesAsync(
+        [FromQuery] GetPlayersAccountChangesRequest request)
+    {
+        var response = await mediator.Send(request);
+
+        foreach (var item in response.Items)
+        {
+            yield return item;
+        }
+    }
+
+    [HttpGet("players-account-changes-total-amount", Name = "GetPlayersAccountChangesTotalAmount")]
+    [Description("Get account changes total amount of multiple players")]
+    public Task<PlayersAccountChangesTotalAmountModel> GetMultiplePlayersAccountChangesTotalAmountAsync(
+        [FromQuery] GetPlayersAccountChangesTotalAmountRequest request) =>
+        mediator.Send(request);
 }
