@@ -10,6 +10,7 @@ using Tgs.Report.Client;
 using Tgs.Report.Client.Models.Player;
 using Tgs.Report.Core;
 using Tgs.Report.Core.Models;
+using Tgs.Report.Enum;
 using Tgs.Report.Repository.Entities;
 using PlayerAllAgentRebateDetailModel = Tgs.Report.ViewModel.Player.PlayerAllAgentRebateDetailModel;
 using PlayerAllAgentRebateModel = Tgs.Report.ViewModel.Player.PlayerAllAgentRebateModel;
@@ -309,6 +310,96 @@ public class PlayerTests
             Assert.That(actual.ValidBet, Is.EqualTo(playerAllAgentRebates.Sum(s => s.ValidBet)));
             Assert.That(actual.Rebate, Is.EqualTo(playerAllAgentRebates.Sum(s => s.Rebate)));
         });
+    }
+
+    [Test]
+    public async Task Can_Get_Players_Account_Changes_Total_Count()
+    {
+        var fakePlayerFactory = Substitute.For<IPlayerFactory>();
+
+        const string username = "";
+        var brandId = Guid.NewGuid();
+        var createdOn = new DateTimeOffset(2022, 1, 21, 0, 0, 0, new TimeSpan(8, 0, 0));
+
+        var fixture = new Fixture();
+
+        var playerAccountChanges = fixture.CreateMany<Tgs.Report.ViewModel.Player.PlayersAccountChangeModel>(20).ToArray();
+
+        _ = fakePlayerFactory.GetPlayersAccountChangesQueryable(Arg.Any<GetPlayersAccountChangesQuery>())
+            .Returns(playerAccountChanges.AsQueryable().BuildMock());
+
+        await using var web = new TestReportApplication(builder => builder
+            .ConfigureServices(services =>
+            {
+                _ = services.AddSingleton(fakePlayerFactory);
+            }));
+
+        var httpClient = web.CreateClient();
+
+        var sut = new ReportClient(httpClient);
+
+        var actual = await sut.GetMultiplePlayersAccountChangesTotalAmountAsync(new GetPlayersAccountChangesTotalAmountRequest
+        {
+            BrandId = brandId,
+            Username = username,
+            From = createdOn.UtcDateTime,
+            To = createdOn.AddDays(1).UtcDateTime
+        });
+        Assert.Multiple(() =>
+        {
+            Assert.That(actual.TotalCount, Is.EqualTo(playerAccountChanges.Length));
+            Assert.That(actual.Amount, Is.EqualTo(playerAccountChanges.Sum(s => s.Amount)));
+            Assert.That(actual.BeforeBalance, Is.EqualTo(playerAccountChanges.Sum(s => s.BeforeBalance)));
+            Assert.That(actual.AfterBalance, Is.EqualTo(playerAccountChanges.Sum(s => s.AfterBalance)));
+        });
+    }
+
+    [Test]
+    public async Task Can_Get_Multiple_Players_Account_Changes()
+    {
+        var fakePlayerFactory = Substitute.For<IPlayerFactory>();
+
+        const string username = "";
+        var brandId = Guid.NewGuid();
+        var createdOn = new DateTimeOffset(2022, 1, 21, 0, 0, 0, new TimeSpan(8, 0, 0));
+
+        var fixture = new Fixture();
+
+        var playerAccountChanges = fixture.CreateMany<Tgs.Report.ViewModel.Player.PlayersAccountChangeModel>(20).ToArray();
+
+        _ = fakePlayerFactory.GetPlayersAccountChangesQueryable(Arg.Any<GetPlayersAccountChangesQuery>())
+            .Returns(playerAccountChanges.AsQueryable().BuildMock());
+
+        await using var web = new TestReportApplication(builder => builder
+            .ConfigureServices(services =>
+            {
+                _ = services.AddSingleton(fakePlayerFactory);
+            }));
+
+        var httpClient = web.CreateClient();
+
+        var sut = new ReportClient(httpClient);
+
+        var actual = await sut.GetMultiplePlayersAccountChangesAsync(new GetPlayersAccountChangesRequest
+        {
+            BrandId = brandId,
+            Username = username,
+            From = createdOn.UtcDateTime,
+            To = createdOn.AddDays(1).UtcDateTime
+        }).ToArrayAsync();
+
+        foreach (var playersAccountChangeModel in actual)
+        {
+            Assert.Multiple(() =>
+            {
+                Assert.That(playerAccountChanges.Select(x => x.Username), Does.Contain(playersAccountChangeModel.Username));
+                Assert.That(playerAccountChanges.Select(x => x.Amount), Does.Contain(playersAccountChangeModel.Amount));
+                Assert.That(playerAccountChanges.Select(x => x.BeforeBalance), Does.Contain(playersAccountChangeModel.BeforeBalance));
+                Assert.That(playerAccountChanges.Select(x => x.AfterBalance), Does.Contain(playersAccountChangeModel.AfterBalance));
+                Assert.That(playerAccountChanges.Select(x => x.TransactionType), Does.Contain((TransactionType)playersAccountChangeModel.TransactionType));
+                Assert.That(playerAccountChanges.Select(x => x.Operator), Does.Contain(playersAccountChangeModel.Operator));
+            });
+        }
     }
 
     private static Fixture CreatePlayerAllAgentRebateContributorFixture(Guid brandId, DateTimeOffset settleDate, decimal sportsTurnoverRebate)

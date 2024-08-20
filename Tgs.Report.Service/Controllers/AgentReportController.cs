@@ -3,8 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Agent;
-using Tgs.Report.ViewModel.AgentWinLoss;
-using TGS.Core.Infrastructures.Extensions;
 
 namespace Tgs.Report.Service.Controllers;
 

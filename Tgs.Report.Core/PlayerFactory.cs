@@ -447,4 +447,43 @@ public class PlayerFactory(TgsContext context) : IPlayerFactory
                 ActivePlayerNumber = x.ActualPlayerNumber,
                 RebatePercentage = x.RebatePercentage
             });
+
+    public IQueryable<PlayersAccountChangeModel> GetPlayersAccountChangesQueryable(
+        GetPlayersAccountChangesQuery request)
+    {
+        return _context.Transactions
+            .Where(x => x.BrandId == request.BrandId)
+            .Where(x => x.RecordedOn >= request.From.ToUniversalTime() &&
+                        x.RecordedOn < request.To.ToUniversalTime())
+            .Where(request.TransactionType is not null, x => x.Type == (short?)request.TransactionType)
+            .Where(request.TransactionType is null,
+                x => x.Type == (short)TransactionType.CompanyAdjust ||
+                     x.Type > 5000 &&
+                     x.Type < 6000 ||
+                     x.Type == (short)TransactionType.Rebate ||
+                     x.Type == (short)TransactionType.Promotion ||
+                     x.Type == (short)TransactionType.UnsettledBetManual)
+            .Join(_context.Players,
+                transaction => transaction.PlayerCode,
+                player => player.PlayerCode,
+                (transaction, player) => new { Transaction = transaction, Player = player })
+            .Where(!string.IsNullOrEmpty(request.Username), x => x.Player.Username == request.Username)
+            .GroupJoin(_context.Users,
+                group => group.Transaction.CreatedByUserId,
+                user => user.Id,
+                (group, user) => new { Group = group, User = user })
+            .SelectMany(x => x.User.DefaultIfEmpty(),
+                (x, user) => new { x.Group.Transaction, x.Group.Player, User = user })
+            .Select(x => new PlayersAccountChangeModel
+            {
+                Username = x.Player.Username,
+                Amount = x.Transaction.Amount,
+                BeforeBalance = x.Transaction.Balance - x.Transaction.Amount,
+                AfterBalance = x.Transaction.Balance,
+                TransactionType = (TransactionType)x.Transaction.Type,
+                RecordedOn = x.Transaction.RecordedOn,
+                Operator = x.User == null ? "System" : x.User.Username,
+                Description = x.Transaction.Description
+            });
+    }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Net.Http.Json;
 using System.Text.Json;
+using Tgs.Core.Infrastructures.Utility;
 using Tgs.Report.Client.Models;
 using Tgs.Report.Client.Models.Agent;
 using Tgs.Report.Client.Models.AgentWinLoss;
@@ -1014,6 +1015,41 @@ public class ReportClient : IReportClient
         return JsonSerializer.Deserialize<AgentDividendProductFeeResponse>(
             await response.Content.ReadAsStringAsync(),
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+    }
+
+    public async IAsyncEnumerable<PlayersAccountChangeModel> GetMultiplePlayersAccountChangesAsync(
+        GetPlayersAccountChangesRequest request)
+    {
+        var path = ClientPath.AppendWithProperties("/api/playerReport/players-account-changes?", request);
+
+        var response = await _client.GetAsync(path, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+
+        var items = JsonSerializer.DeserializeAsyncEnumerable<PlayersAccountChangeModel>(
+            responseStream,
+            _jsonSerializerOptions);
+
+        await foreach (var item in items)
+        {
+            yield return item!;
+        }
+    }
+
+    public async Task<PlayersAccountChangesTotalAmountModel> GetMultiplePlayersAccountChangesTotalAmountAsync(
+        GetPlayersAccountChangesTotalAmountRequest request)
+    {
+        var path = ClientPath.AppendWithProperties("/api/playerReport/players-account-changes-total-amount?", request);
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Get, path);
+        var response = await _client.SendAsync(httpRequest).ConfigureAwait(false);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        return JsonSerializer.Deserialize<PlayersAccountChangesTotalAmountModel>(await response.Content.ReadAsStringAsync(),
+            _jsonSerializerOptions)!;
     }
 
     public async ValueTask<PagedResponse<MarketAgentProfitModel>> GetMarketAgentProfitsAsync(GetMarketAgentProfitsRequest request)

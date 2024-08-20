@@ -52,6 +52,7 @@ public interface IReportClient
     ValueTask<PagedResponse<PlayerContributionModel>> GetPlayerContributionsAsync(
         GetPlayerContributionsRequest request);
 
+    [Obsolete("substituted singleAgentDividends for it.")]
     ValueTask<PagedResponse<AgentDividendModel>> GetAgentDividendsAsync(GetAgentDividendsRequest request);
 
     ValueTask<PagedResponse<AgentDividendModel>> GetSingleAgentDividendsAsync(GetSingleAgentDividendsRequest request);
@@ -165,4 +166,11 @@ public interface IReportClient
 
     ValueTask<AgentDividendProductFeeResponse> GetAgentDividendProductFeeAsync(
         GetAgentDividendProductFeeRequest request);
+
+    IAsyncEnumerable<PlayersAccountChangeModel> GetMultiplePlayersAccountChangesAsync(
+        GetPlayersAccountChangesRequest request);
+
+    Task<PlayersAccountChangesTotalAmountModel> GetMultiplePlayersAccountChangesTotalAmountAsync(
+        GetPlayersAccountChangesTotalAmountRequest request);
+
 }
