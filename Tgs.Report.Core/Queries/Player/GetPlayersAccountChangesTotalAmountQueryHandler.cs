@@ -23,6 +23,6 @@ public class
                 Amount = x.Sum(s => s.Amount),
                 BeforeBalance = x.Sum(s => s.BeforeBalance),
                 AfterBalance = x.Sum(s => s.AfterBalance)
-            }).FirstAsync(cancellationToken);
+            }).FirstOrDefaultAsync(cancellationToken) ?? new PlayersAccountChangesTotalAmountModel();
     }
 }
