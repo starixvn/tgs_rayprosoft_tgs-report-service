@@ -10,6 +10,8 @@ using Tgs.Report.ViewModel;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.UseSentry();
+
 builder.Configuration.AddJsonFile("appsettings.json",
         optional: true,
         reloadOnChange: true);
@@ -59,9 +61,9 @@ builder.Logging
         options.ParseStateValues = true;
         _ = options.AddFluentdForwardExporter(fluentOptions =>
         {
-            var nodeIp = builder.Configuration.GetValue<string>("NODE_IP");
+            var nodeIp = builder.Configuration.GetValue<string>("Otel:NodeIp");
             fluentOptions.Host = nodeIp!;
-            fluentOptions.Tag = builder.Configuration.GetValue<string>("OTEL_SERVICE_NAME")!;
+            fluentOptions.Tag = builder.Configuration.GetValue<string>("Otel:ServiceName")!;
             fluentOptions.UseMessagePack();
         });
     });
@@ -82,9 +84,8 @@ builder.Services
 
 builder.Services
     .AddOpenTelemetry()
-    .WithTracing(builder => builder
-        .SetResourceBuilder(ResourceBuilder.CreateDefault()
-            .AddEnvironmentVariableDetector())
+    .ConfigureResource(_ => _.AddService(builder.Configuration.GetValue<string>("Otel:ServiceName")))
+    .WithTracing(tracingBuilder => tracingBuilder
         .AddSource("Tgs.*")
         .AddSource("TGS.*")
         .AddAspNetCoreInstrumentation(options =>
@@ -111,7 +112,7 @@ builder.Services
             options.SetDbStatementForText = true;
         })
         .AddProfileViewExporter()
-        .AddOtlpExporter());
+        .AddOtlpExporter(options => options.Endpoint = builder.Configuration.GetValue<Uri>("Otel:Collector")));
 
 builder.Services.AddProfileViewer();
 
@@ -177,5 +178,7 @@ app.UseRequestLocalization(option =>
 
     option.ApplyCurrentCultureToResponseHeaders = true;
 });
+
+SentrySdk.CaptureMessage($"Started result ReportService at {DateTime.Now.ToString()}");
 
 app.Run();
