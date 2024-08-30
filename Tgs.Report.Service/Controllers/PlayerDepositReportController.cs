@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using TGS.Core.Infrastructures.Extensions.Models;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.PlayerDeposit;
 

@@ -1,4 +1,6 @@
-﻿namespace Tgs.Report.Client.Models.GameAction;
+﻿using TGS.Core.Infrastructures.Extensions.Models;
+
+namespace Tgs.Report.Client.Models.GameAction;
 
 public record GetGameActionsRequest : PageableRequest
 {

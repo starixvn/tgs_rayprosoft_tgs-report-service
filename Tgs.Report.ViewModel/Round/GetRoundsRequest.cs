@@ -1,5 +1,6 @@
 ﻿using System;
 using MediatR;
+using TGS.Core.Infrastructures.Extensions.Models;
 using Tgs.Report.Enum;
 
 namespace Tgs.Report.ViewModel.Round;

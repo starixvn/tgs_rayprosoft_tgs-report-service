@@ -1,4 +1,6 @@
-﻿namespace Tgs.Report.Client.Models.Agent;
+﻿using TGS.Core.Infrastructures.Extensions.Models;
+
+namespace Tgs.Report.Client.Models.Agent;
 
 public record GetAgentContributionsRequest : PageableRequest
 {

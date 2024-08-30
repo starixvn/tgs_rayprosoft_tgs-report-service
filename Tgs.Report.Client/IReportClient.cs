@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using TGS.Core.Infrastructures.Extensions.Models;
 using Tgs.Report.Client.Models;
 using Tgs.Report.Client.Models.Agent;
 using Tgs.Report.Client.Models.AgentWinLoss;

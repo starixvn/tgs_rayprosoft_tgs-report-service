@@ -1,4 +1,6 @@
-﻿namespace Tgs.Report.ViewModel.LicenseeMarket;
+﻿using TGS.Core.Infrastructures.Extensions.Models;
+
+namespace Tgs.Report.ViewModel.LicenseeMarket;
 
 public record LicenseeMarketsResponse
 {

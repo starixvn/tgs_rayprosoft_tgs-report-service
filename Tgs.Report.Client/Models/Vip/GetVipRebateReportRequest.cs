@@ -1,4 +1,6 @@
-﻿namespace Tgs.Report.Client.Models.Vip;
+﻿using TGS.Core.Infrastructures.Extensions.Models;
+
+namespace Tgs.Report.Client.Models.Vip;
 
 public record GetVipRebateReportRequest : PageableRequest
 {

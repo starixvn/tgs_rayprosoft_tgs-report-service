@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Net.Http.Json;
 using System.Text.Json;
+using TGS.Core.Infrastructures.Extensions.Models;
 using Tgs.Core.Infrastructures.Utility;
 using Tgs.Report.Client.Models;
 using Tgs.Report.Client.Models.Agent;

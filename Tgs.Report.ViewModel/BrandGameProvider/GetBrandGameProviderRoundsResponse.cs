@@ -1,4 +1,6 @@
-﻿namespace Tgs.Report.ViewModel.BrandGameProvider;
+﻿using TGS.Core.Infrastructures.Extensions.Models;
+
+namespace Tgs.Report.ViewModel.BrandGameProvider;
 
 public record GetBrandGameProviderRoundsResponse
 {

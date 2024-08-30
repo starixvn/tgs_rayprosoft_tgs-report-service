@@ -1,4 +1,6 @@
-﻿namespace Tgs.Report.Client.Models.ResellerMarket;
+﻿using TGS.Core.Infrastructures.Extensions.Models;
+
+namespace Tgs.Report.Client.Models.ResellerMarket;
 
 public record GetResellerMarketsRequest : PageableRequest
 {

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using TGS.Core.Infrastructures.Extensions;
 using Tgs.Report.Enum;
 using Tgs.Report.Repository;
 using Tgs.Report.Repository.Entities;

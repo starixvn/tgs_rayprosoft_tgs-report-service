@@ -1,4 +1,6 @@
-﻿namespace Tgs.Report.Client.Models.LicenseeMarket;
+﻿using TGS.Core.Infrastructures.Extensions.Models;
+
+namespace Tgs.Report.Client.Models.LicenseeMarket;
 
 public record ExportLicenseeMarketsRequest : PageableRequest
 {

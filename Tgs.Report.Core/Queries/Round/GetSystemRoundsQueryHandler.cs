@@ -1,4 +1,6 @@
 ﻿using MediatR;
+using TGS.Core.Infrastructures.Extensions;
+using TGS.Core.Infrastructures.Extensions.Models;
 using Tgs.Report.Enum;
 using Tgs.Report.Repository.Entities;
 using Tgs.Report.ViewModel;

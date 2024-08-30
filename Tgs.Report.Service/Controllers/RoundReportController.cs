@@ -2,6 +2,7 @@
 using System.Text.Json;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using TGS.Core.Infrastructures.Extensions.Models;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Round;
 

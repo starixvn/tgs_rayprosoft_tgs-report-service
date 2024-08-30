@@ -1,4 +1,6 @@
-﻿namespace Tgs.Report.Client.Models.Market;
+﻿using TGS.Core.Infrastructures.Extensions.Models;
+
+namespace Tgs.Report.Client.Models.Market;
 
 public record GetMarketsRequest : PageableRequest
 {

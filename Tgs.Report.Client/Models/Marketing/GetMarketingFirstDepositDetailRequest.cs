@@ -1,4 +1,6 @@
-﻿namespace Tgs.Report.Client.Models.Marketing;
+﻿using TGS.Core.Infrastructures.Extensions.Models;
+
+namespace Tgs.Report.Client.Models.Marketing;
 
 public record GetMarketingFirstDepositDetailRequest : PageableRequest
 {

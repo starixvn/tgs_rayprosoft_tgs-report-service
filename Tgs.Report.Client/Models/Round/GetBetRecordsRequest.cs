@@ -1,4 +1,6 @@
-﻿namespace Tgs.Report.Client.Models.Round;
+﻿using TGS.Core.Infrastructures.Extensions.Models;
+
+namespace Tgs.Report.Client.Models.Round;
 
 public record GetBetRecordsRequest : PageableRequest
 {

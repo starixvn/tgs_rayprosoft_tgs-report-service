@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Caching.Memory;
+using TGS.Core.Infrastructures.Extensions.Models;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Market;
 

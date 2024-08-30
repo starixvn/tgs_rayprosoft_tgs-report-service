@@ -1,4 +1,6 @@
-﻿namespace Tgs.Report.Client.Models.PlayerDeposit;
+﻿using TGS.Core.Infrastructures.Extensions.Models;
+
+namespace Tgs.Report.Client.Models.PlayerDeposit;
 
 public record GetPlayerFirstDepositDetailsRequest : PageableRequest
 {

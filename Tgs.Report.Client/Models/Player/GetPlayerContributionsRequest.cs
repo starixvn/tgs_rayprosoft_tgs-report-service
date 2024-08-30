@@ -1,4 +1,6 @@
-﻿namespace Tgs.Report.Client.Models.Player;
+﻿using TGS.Core.Infrastructures.Extensions.Models;
+
+namespace Tgs.Report.Client.Models.Player;
 
 public record GetPlayerContributionsRequest : PageableRequest
 {

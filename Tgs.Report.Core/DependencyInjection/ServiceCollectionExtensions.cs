@@ -2,6 +2,7 @@
 
 using System.Reflection;
 using MediatR;
+using TGS.Core.Infrastructures.Extensions.Models;
 using Tgs.Report.Core;
 using Tgs.Report.Core.Queries.Market;
 using Tgs.Report.ViewModel;

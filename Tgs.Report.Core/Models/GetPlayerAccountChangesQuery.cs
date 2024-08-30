@@ -1,4 +1,5 @@
-﻿using Tgs.Report.Enum;
+﻿using TGS.Core.Infrastructures.Extensions.Models;
+using Tgs.Report.Enum;
 using Tgs.Report.ViewModel;
 
 namespace Tgs.Report.Core.Models;

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using TGS.Core.Infrastructures.Extensions.Models;
 using Tgs.Report.ViewModel;
 using Tgs.Report.ViewModel.Market;
 

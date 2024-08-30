@@ -1,4 +1,5 @@
-﻿using GameType = Tgs.Report.Client.Enum.GameType;
+﻿using TGS.Core.Infrastructures.Extensions.Models;
+using GameType = Tgs.Report.Client.Enum.GameType;
 
 namespace Tgs.Report.Client.Models.BrandGameProvider;
 

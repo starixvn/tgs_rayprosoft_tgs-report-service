@@ -1,4 +1,6 @@
-﻿namespace Tgs.Report.Client.Models.GameProvider;
+﻿using TGS.Core.Infrastructures.Extensions.Models;
+
+namespace Tgs.Report.Client.Models.GameProvider;
 
 public record GetGameProviderRoundsRequest : PageableRequest
 {

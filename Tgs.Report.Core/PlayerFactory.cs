@@ -1,9 +1,7 @@
-﻿using System.Data;
-using System.Linq;
-using Dapper;
-using DocumentFormat.OpenXml.Drawing.Charts;
+﻿using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using TGS.Core.Infrastructures.Extensions;
 using Tgs.Report.Core.Models;
 using Tgs.Report.Enum;
 using Tgs.Report.Repository.Entities;
