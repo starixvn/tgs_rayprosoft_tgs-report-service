@@ -458,11 +458,11 @@ public class PlayerFactory(TgsContext context) : IPlayerFactory
             .Where(request.TransactionType is not null, x => x.Type == (short?)request.TransactionType)
             .Where(request.TransactionType is null,
                 x => x.Type == (short)TransactionType.CompanyAdjust ||
-                     x.Type > 5000 &&
-                     x.Type < 6000 ||
+                     x.Type == (short)TransactionType.AgentAdjust ||
+                     x.Type == (short)TransactionType.SystemAdjust ||
+                     x.Type == (short)TransactionType.BonusAdjust ||
                      x.Type == (short)TransactionType.Rebate ||
-                     x.Type == (short)TransactionType.Promotion ||
-                     x.Type == (short)TransactionType.UnsettledBetManual)
+                     x.Type == (short)TransactionType.Promotion)
             .Join(_context.Players,
                 transaction => transaction.PlayerCode,
                 player => player.PlayerCode,
