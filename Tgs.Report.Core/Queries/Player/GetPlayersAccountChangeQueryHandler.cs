@@ -28,7 +28,9 @@ public class
                     x.Type < 6000 ||
                     x.Type == (short)TransactionType.Rebate ||
                     x.Type == (short)TransactionType.Promotion ||
-                    x.Type == (short)TransactionType.UnsettledBetManual)
+                    x.Type == (short)TransactionType.UnsettledBetManual ||
+                    x.Type == (short)TransactionType.GameProviderDeductBalance ||
+                    x.Type == (short)TransactionType.GameProviderAddBalance)
             .Join(_context.Players,
                 transaction => transaction.PlayerCode,
                 player => player.PlayerCode,
