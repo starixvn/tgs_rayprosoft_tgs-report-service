@@ -30,7 +30,8 @@ public class
                     x.Type == (short)TransactionType.Promotion ||
                     x.Type == (short)TransactionType.UnsettledBetManual ||
                     x.Type == (short)TransactionType.GameProviderDeductBalance ||
-                    x.Type == (short)TransactionType.GameProviderAddBalance)
+                    x.Type == (short)TransactionType.GameProviderAddBalance ||
+                    x.Type == (short)TransactionType.GameProviderAdjustBalance)
             .Join(_context.Players,
                 transaction => transaction.PlayerCode,
                 player => player.PlayerCode,
