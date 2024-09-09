@@ -74,7 +74,7 @@ public class GetRoundsTotalQueryHandler(TgsContext context) : IRequestHandler<Ge
             {
                 BetAmount = g.Sum(x => x.round.BetAmount),
                 ValidBetAmount = g.Sum(r => r.round.Turnover),
-                WinLoss = g.Sum(r => -r.round.WinLoss),
+                WinLoss = g.Sum(r => r.round.WinLoss),
                 SettleAmount = g.Sum(r => r.round.SettleAmount),
             });
 

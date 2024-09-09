@@ -145,7 +145,7 @@ public class GetOpenRoundsQueryHandler(TgsContext context)
                     combine.round.Turnover * (combine.round.EffectiveBettingPercentage ??
                         (combine.brandGame == null ? 100M : combine.brandGame.EffectiveBettingPercentage)) / 100M,
                 SettleAmount = combine.round.SettleAmount,
-                WinLoss = -combine.round.WinLoss,
+                WinLoss = combine.round.WinLoss,
                 AdditionalData = combine.detail!.AdditionalData
             })
             .OrderByDescending(x => x.CreatedOn)

@@ -53,14 +53,14 @@ public class GetBetRecordsQueryHandler(
                     BetAmount = rounds.Sum(r => r.BetAmount) ?? 0M,
                     ValidBetAmount = rounds.Sum(r => r.Turnover) ?? 0M,
                     SettleAmount = rounds.Sum(r => r.SettleAmount) ?? 0M,
-                    WinLoss = -rounds.Sum(r => r.WinLoss) ?? 0M
+                    WinLoss = rounds.Sum(r => r.WinLoss) ?? 0M
                 }).FirstOrDefaultAsync(cancellationToken) ?? new
-        {
-            BetAmount = 0M,
-            ValidBetAmount = 0M,
-            SettleAmount = 0M,
-            WinLoss = 0M
-        };
+                {
+                    BetAmount = 0M,
+                    ValidBetAmount = 0M,
+                    SettleAmount = 0M,
+                    WinLoss = 0M
+                };
 
         var betRecords = await roundService.GetQueries().Where(x => x.BrandId == request.BrandId)
             .Where(x => x.CreatedOn >= request.From.ToUniversalTime() &&
@@ -225,7 +225,7 @@ public class GetBetRecordsQueryHandler(
                 Turnover = combine.combine.Turnover * (combine.combine.EffectiveBettingPercentage ??
                     (combine.brandGame == null ? 100M : combine.brandGame.EffectiveBettingPercentage)) / 100M,
                 SettleAmount = combine.combine.SettleAmount,
-                WinLoss = -combine.combine.WinLoss,
+                WinLoss = combine.combine.WinLoss,
                 AdditionalData = combine.AdditionalData
             })
             .OrderByDescending(x => x.CreatedOn)

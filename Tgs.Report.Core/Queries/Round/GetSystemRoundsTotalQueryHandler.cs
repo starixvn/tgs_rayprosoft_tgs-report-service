@@ -114,7 +114,7 @@ public class GetSystemRoundsTotalQueryHandler(TgsContext context)
                 Turnover = g.Sum(r => r.round.Turnover * (r.round.EffectiveBettingPercentage ??
                     (r.brandGame == null ? 100M : r.brandGame.EffectiveBettingPercentage)) / 100M),
                 SettleAmount = g.Sum(r => r.round.SettleAmount),
-                WinLoss = g.Sum(r => -r.round.WinLoss)
+                WinLoss = g.Sum(r => r.round.WinLoss)
             });
 
         return Task.FromResult(result.FirstOrDefault() ?? new SystemRoundTotalModel());

@@ -153,7 +153,7 @@ public class GetSystemRoundsQueryHandler(TgsContext context)
                 Turnover = combine.round.Turnover * (combine.round.EffectiveBettingPercentage ??
                     (combine.brandGame == null ? 100M : combine.brandGame.EffectiveBettingPercentage)) / 100M,
                 SettleAmount = combine.round.SettleAmount,
-                WinLoss = -combine.round.WinLoss,
+                WinLoss = combine.round.WinLoss,
                 AdditionalData = combine.detail == null ? "" : combine.detail.AdditionalData,
                 GameProviderCode = combine.game == null ? "" : combine.game.GameProvider.Code,
                 GameId = combine.game == null ? 0 : combine.game.Id
