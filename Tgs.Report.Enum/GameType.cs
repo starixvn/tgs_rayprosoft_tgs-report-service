@@ -19,5 +19,11 @@ public enum GameType
     Lottery = 13,
     LotteryLobby = 14,
     Slot = 15,
-    TableGame = 16
+    TableGame = 16,
+    CockFighting = 17,
+    InstantPlayer = 18,
+    Casino = 19,
+    Keno = 20,
+    Bingo = 21,
+    Racing = 22
 }
