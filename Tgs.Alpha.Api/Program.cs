@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.UseSentry();
+
 // Add services to the container.
 builder.Services
     .AddHttpClient()
@@ -53,5 +55,8 @@ app.MapControllers();
 
 app.MapHealthChecks("/health");
 app.MapHealthChecks("/");
+
+SentrySdk.CaptureMessage($"Started result Alpha.Api Service at {DateTime.Now.ToString()}");
+
 
 app.Run();
