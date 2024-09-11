@@ -20,13 +20,12 @@ public class GetLicenseeWinLossByRefIdQueryHandler(TgsContext context) : IReques
 	                          or 
 		                      (coalesce(TRIM(@referenceId), '') = '' and l.reference_id != '')
 	                    )
-                    select ga.game_provider_id as GameProviderId,
+                    select 
                            gp.code as GameProviderCode,
                            date(r.external_closed_on) as WinLossDate,
 	                       -sum(r.win_loss) as PlayerWinLoss,
 	                       ga.game_provider_currency_code as GameProviderCurrencyCode,
 	                       0 as TypeId,
-	                       dbo.games.code as GameCode,
 	                       l.reference_id as ReferenceId
                     from bet.rounds as r
 	                    join dbo.brands as b on b.id = r.brand_id
@@ -36,24 +35,33 @@ public class GetLicenseeWinLossByRefIdQueryHandler(TgsContext context) : IReques
 	                         on ga.game_provider_id = r.game_provider_id 
 	                         and ga.currency_code = w.currency_code
 	                    join dbo.game_providers as gp on gp.id = ga.game_provider_id
-	                    join dbo.games on dbo.games.id = r.game_id
+	
                     where r.status = 2
 	                      and r.external_closed_on >= @from
 	                      and r.external_closed_on < @to
-                    group by ga.game_provider_id,
+                    group by 
                              date(r.external_closed_on),
 		                     ga.game_provider_currency_code,
 		                     gp.code,
-		                     dbo.games.code,
                              l.reference_id";
         var conn = context.Database.GetDbConnection();
         var transaction = context.Database.CurrentTransaction?.GetDbTransaction();
-        return await conn.QueryAsync<LicenseeWinLossModel>(spName,
+        var result = await conn.QueryAsync<LicenseeWinLossModel>(spName,
             new Dictionary<string, object>
             {
                 { "referenceId", string.IsNullOrEmpty(request.ReferenceId) ? string.Empty : request.ReferenceId },
-                { "from", request.From },
-                { "to", request.To }
+                { "from", request.From.ToUniversalTime() },
+                { "to", request.To.ToUniversalTime() }
             }, transaction);
+
+        foreach (var item in result)
+        {
+            if(!string.IsNullOrEmpty(item.WinLossDate))
+            {
+                item.WinLossDate = DateTime.Parse(item.WinLossDate).ToString("yyyy-MM-dd HH:mm:ss tt +00:00");
+            }
+        };
+
+        return result;
     }
 }
