@@ -2,7 +2,7 @@
 
 namespace Tgs.Report.ViewModel.LicenseeWinLoss;
 
-public record LicenseeWinLossModel
+public record PlayerWinLossModel
 {
     //public Guid GameProviderId { get; init; }
 

@@ -7,9 +7,9 @@ using Dapper;
 
 namespace Tgs.Report.Core.Queries.LicenseeWinLoss;
 
-public class GetLicenseeWinLossByRefIdQueryHandler(TgsContext context) : IRequestHandler<GetLicenseeWinLossByRefIdRequest, IEnumerable<LicenseeWinLossModel>>
+public class GetPlayerWinLossByRefIdQueryHandler(TgsContext context) : IRequestHandler<GetPlayerWinLossByRefIdRequest, IEnumerable<PlayerWinLossModel>>
 {
-    public async Task<IEnumerable<LicenseeWinLossModel>> Handle(GetLicenseeWinLossByRefIdRequest request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<PlayerWinLossModel>> Handle(GetPlayerWinLossByRefIdRequest request, CancellationToken cancellationToken)
     {
         var spName = @"
                     with licenseeIds
@@ -23,7 +23,7 @@ public class GetLicenseeWinLossByRefIdQueryHandler(TgsContext context) : IReques
                     select 
                            gp.code as GameProviderCode,
                            date(r.external_closed_on) as WinLossDate,
-	                       -sum(r.win_loss) as PlayerWinLoss,
+	                       sum(r.win_loss) as PlayerWinLoss,
 	                       ga.game_provider_currency_code as GameProviderCurrencyCode,
 	                       0 as TypeId,
 	                       l.reference_id as ReferenceId
@@ -46,7 +46,7 @@ public class GetLicenseeWinLossByRefIdQueryHandler(TgsContext context) : IReques
                              l.reference_id";
         var conn = context.Database.GetDbConnection();
         var transaction = context.Database.CurrentTransaction?.GetDbTransaction();
-        var result = await conn.QueryAsync<LicenseeWinLossModel>(spName,
+        var result = await conn.QueryAsync<PlayerWinLossModel>(spName,
             new Dictionary<string, object>
             {
                 { "referenceId", string.IsNullOrEmpty(request.ReferenceId) ? string.Empty : request.ReferenceId },

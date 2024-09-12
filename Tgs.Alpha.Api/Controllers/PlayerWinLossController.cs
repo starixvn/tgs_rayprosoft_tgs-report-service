@@ -8,10 +8,10 @@ namespace Tgs.Alpha.Api.Controllers;
 [Route("api/[controller]")]
 [Description("Get licensee win loss by reference id")]
 [ApiController]
-public class LicenseeWinLossController(IMediator mediator) : ControllerBase
+public class PlayerWinLossController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
-    public Task<IEnumerable<LicenseeWinLossModel>> GetWinLossReportByReferenceAsync(
-        [FromQuery] GetLicenseeWinLossByRefIdRequest request) =>
+    public Task<IEnumerable<PlayerWinLossModel>> GetWinLossReportByReferenceAsync(
+        [FromQuery] GetPlayerWinLossByRefIdRequest request) =>
         mediator.Send(request);
 }
