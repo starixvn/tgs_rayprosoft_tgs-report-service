@@ -11,6 +11,7 @@ public class GetPlayerWinLossByRefIdQueryHandler(TgsContext context) : IRequestH
 {
     public async Task<IEnumerable<PlayerWinLossModel>> Handle(GetPlayerWinLossByRefIdRequest request, CancellationToken cancellationToken)
     {
+        var timeOffset = request.From.Offset;
         var spName = @"
                     with licenseeIds
                     as (select l.id, l.reference_id
@@ -22,7 +23,7 @@ public class GetPlayerWinLossByRefIdQueryHandler(TgsContext context) : IRequestH
 	                    )
                     select 
                            gp.code as GameProviderCode,
-                           date(r.external_closed_on) as WinLossDate,
+                           date_trunc('day', external_closed_on AT TIME ZONE 'UTC' AT TIME ZONE @timeZone) as WinLossDate,
 	                       sum(r.win_loss) as PlayerWinLoss,
 	                       ga.game_provider_currency_code as GameProviderCurrencyCode,
 	                       0 as TypeId,
@@ -40,7 +41,7 @@ public class GetPlayerWinLossByRefIdQueryHandler(TgsContext context) : IRequestH
 	                      and r.external_closed_on >= @from
 	                      and r.external_closed_on < @to
                     group by 
-                             date(r.external_closed_on),
+                             date_trunc('day', external_closed_on AT TIME ZONE 'UTC' AT TIME ZONE @timeZone),
 		                     ga.game_provider_currency_code,
 		                     gp.code,
                              l.reference_id";
@@ -51,14 +52,15 @@ public class GetPlayerWinLossByRefIdQueryHandler(TgsContext context) : IRequestH
             {
                 { "referenceId", string.IsNullOrEmpty(request.ReferenceId) ? string.Empty : request.ReferenceId },
                 { "from", request.From.ToUniversalTime() },
-                { "to", request.To.ToUniversalTime() }
+                { "to", request.To.ToUniversalTime() },
+                { "timeZone", timeOffset },
             }, transaction);
 
         foreach (var item in result)
         {
-            if(!string.IsNullOrEmpty(item.WinLossDate))
+            if (!string.IsNullOrEmpty(item.WinLossDate))
             {
-                item.WinLossDate = DateTime.Parse(item.WinLossDate).ToString("yyyy-MM-dd HH:mm:ss tt +00:00");
+                item.WinLossDate = DateTime.Parse(item.WinLossDate).ToString($"yyyy-MM-dd HH:mm:ss tt {(timeOffset < TimeSpan.Zero ? "-" : "+")}{timeOffset:hh\\:mm}");
             }
         };
 
