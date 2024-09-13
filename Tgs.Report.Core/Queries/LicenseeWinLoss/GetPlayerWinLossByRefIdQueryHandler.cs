@@ -12,14 +12,15 @@ public class GetPlayerWinLossByRefIdQueryHandler(TgsContext context) : IRequestH
     public async Task<IEnumerable<PlayerWinLossModel>> Handle(GetPlayerWinLossByRefIdRequest request, CancellationToken cancellationToken)
     {
         var timeOffset = request.From.Offset;
+        var timeZone = $"{(timeOffset < TimeSpan.Zero ? "-" : "+")}{timeOffset:hh\\:mm}";
         var spName = @"
                     with licenseeIds
                     as (select l.id, l.reference_id
                         from dbo.licensees as l
 	                    where 
-	                          (coalesce(TRIM(@referenceId), '') != '' and l.reference_id = @referenceId)
+	                          (array_length(@referenceIds, 1) > 0 and l.reference_id = any(@referenceIds))
 	                          or 
-		                      (coalesce(TRIM(@referenceId), '') = '' and l.reference_id != '')
+		                      (array_length(@referenceIds, 1) is null and l.reference_id != '')
 	                    )
                     select 
                            gp.code as GameProviderCode,
@@ -50,17 +51,17 @@ public class GetPlayerWinLossByRefIdQueryHandler(TgsContext context) : IRequestH
         var result = await conn.QueryAsync<PlayerWinLossModel>(spName,
             new Dictionary<string, object>
             {
-                { "referenceId", string.IsNullOrEmpty(request.ReferenceId) ? string.Empty : request.ReferenceId },
+                { "referenceIds", string.IsNullOrEmpty(request.ReferenceIds) ?  new List<string>() : request.ReferenceIds.Split(",").ToList() },
                 { "from", request.From.ToUniversalTime() },
                 { "to", request.To.ToUniversalTime() },
-                { "timeZone", timeOffset },
+                { "timeZone", timeZone},
             }, transaction);
 
         foreach (var item in result)
         {
             if (!string.IsNullOrEmpty(item.WinLossDate))
             {
-                item.WinLossDate = DateTime.Parse(item.WinLossDate).ToString($"yyyy-MM-dd HH:mm:ss tt {(timeOffset < TimeSpan.Zero ? "-" : "+")}{timeOffset:hh\\:mm}");
+                item.WinLossDate = DateTime.Parse(item.WinLossDate).ToString($"yyyy-MM-dd HH:mm:ss tt {timeZone}");
             }
         };
 

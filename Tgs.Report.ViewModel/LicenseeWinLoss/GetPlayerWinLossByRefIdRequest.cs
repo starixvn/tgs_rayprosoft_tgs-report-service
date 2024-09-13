@@ -6,7 +6,7 @@ namespace Tgs.Report.ViewModel.LicenseeWinLoss;
 
 public record GetPlayerWinLossByRefIdRequest : IRequest<IEnumerable<PlayerWinLossModel>>
 {
-    public string? ReferenceId { get; init; }
+    public string? ReferenceIds { get; init; }
 
     public DateTimeOffset From { get; init; }
 
