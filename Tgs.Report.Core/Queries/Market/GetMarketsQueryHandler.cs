@@ -246,7 +246,7 @@ public class GetMarketsQueryHandler(TgsContext context) : IRequestHandler<GetMar
                             m.AgentAggregate.ChiefAgentDividendPercentage * 0.01M))),
                 PlatformCoveredBonus =
                     aggregates.Sum(
-                        m => 
+                        m =>
                             (m.AgentAggregate.RebateAmount + m.AgentAggregate.PromotionAmount +
                                 (m.BonusAggregate == null
                                     ? 0M
@@ -256,7 +256,7 @@ public class GetMarketsQueryHandler(TgsContext context) : IRequestHandler<GetMar
                                 ? 1
                                 : (100 - m.AgentAggregate.ChiefAgentDividendPercentage) * 0.01M)),
                 PlatformCoveredBonusAdjust =
-                    aggregates.Sum(m => 
+                    aggregates.Sum(m =>
                         (m.AgentAggregate.BonusAdjustAmount - m.AgentAggregate.NoIncludeNetProfitBonusAdjustAmount) *
                         (m.AgentAggregate.AgentId == null
                             ? 1
@@ -348,7 +348,7 @@ public class GetMarketsQueryHandler(TgsContext context) : IRequestHandler<GetMar
                         BetAmount = aggregates.Sum(m => m.MarketAggregate?.BetAmount ?? 0M),
                         ValidBetAmount = aggregates.Sum(m => m.MarketAggregate?.OriginalTurnover ?? 0M),
                         Turnover = aggregates.Sum(m => m.MarketAggregate?.Turnover ?? 0M),
-                        WinLossAmount = aggregates.Sum(m => m.MarketAggregate?.WinLossAmount ?? 0M),
+                        WinLossAmount = -aggregates.Sum(m => m.MarketAggregate?.WinLossAmount ?? 0M),
                         NetProfit = aggregates.Sum(m => m.MarketAggregate?.NetProfit ?? 0M),
                         AdditionalExpenses = aggregates.Sum(m => m.MarketAggregate?.AllAgentRebateAmount ?? 0M),
                         PlatformCoveredBonus =

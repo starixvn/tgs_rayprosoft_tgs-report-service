@@ -266,7 +266,7 @@ public class GetPlayerContributionsQueryHandler(TgsContext context)
                 BetAmount = x.Aggregate.BetAmount,
                 ValidBetAmount = x.Aggregate.ValidBetAmount,
                 Turnover = x.Aggregate.Turnover,
-                WinLossAmount = x.Aggregate.WinLossAmount,
+                WinLossAmount = -x.Aggregate.WinLossAmount,
                 NetProfit = x.Aggregate.NetProfit -
                     (x.Aggregate.UpgradeAmount + x.Aggregate.SeasonAmount + x.Aggregate.BirthdayAmount)
             })

@@ -16,7 +16,7 @@ builder.Configuration.AddJsonFile("appsettings.json",
         optional: true,
         reloadOnChange: true);
 
-builder.WebHost.UseUrls($"http://0.0.0.0:{builder.Configuration["HostingPort"]}");
+//builder.WebHost.UseUrls($"http://0.0.0.0:{builder.Configuration["HostingPort"]}");
 
 builder.Services
     .AddHttpClient()

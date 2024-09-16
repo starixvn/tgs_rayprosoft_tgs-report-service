@@ -76,7 +76,7 @@ public class
                 BetAmount = items.Sum(i => i.BetAmount),
                 Turnover = items.Sum(i => i.Turnover),
                 ValidBetAmount = items.Sum(i => i.OriginalTurnover),
-                CompanyWinLoss = items.Sum(i => i.CompanyWinLoss)
+                CompanyWinLoss = -items.Sum(i => i.CompanyWinLoss)
             })
             .ToArrayAsync(cancellationToken).ConfigureAwait(false);
 

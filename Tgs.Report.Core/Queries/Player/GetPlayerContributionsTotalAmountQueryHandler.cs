@@ -322,7 +322,7 @@ public class GetPlayerContributionsTotalAmountQueryHandler(TgsContext context)
                     BetAmount = x.Sum(p => p.BetAmount),
                     ValidBetAmount = x.Sum(p => p.ValidBetAmount),
                     Turnover = x.Sum(p => p.Turnover),
-                    WinLossAmount = x.Sum(p => p.WinLossAmount),
+                    WinLossAmount = -x.Sum(p => p.WinLossAmount),
                     NetProfit = x.Sum(p => p.NetProfit - (p.UpgradeAmount + p.SeasonAmount + p.BirthdayAmount)).Truncate(6)
                 })
                 .FirstOrDefaultAsync(cancellationToken)
