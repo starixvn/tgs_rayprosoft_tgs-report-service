@@ -58,21 +58,13 @@ public class RoundReportController(IMediator mediator) : ControllerBase
 
     [HttpGet("closedRounds", Name = "GetClosedRounds")]
     [Description("Get closed rounds")]
-    public async Task<PagedResponse<ClosedRoundModel>> GetClosedRoundsAsync([FromQuery] GetClosedRoundsRequest request) 
-    {
-        var res = await mediator.Send(request);
-
-        return res;
-    }
+    public Task<PagedResponse<ClosedRoundModel>> GetClosedRoundsAsync([FromQuery] GetClosedRoundsRequest request) =>
+        mediator.Send(request);
 
     [HttpGet("openRounds", Name = "GetOpenRounds")]
     [Description("Get open rounds")]
-    public async Task<PagedResponse<OpenRoundModel>> GetOpenRoundsAsync([FromQuery] GetOpenRoundsRequest request)
-    {
-        var res = await mediator.Send(request);
-
-        return res;
-    }
+    public Task<PagedResponse<OpenRoundModel>> GetOpenRoundsAsync([FromQuery] GetOpenRoundsRequest request) =>
+        mediator.Send(request);
 
     [HttpGet("exportRounds")]
     [Description("export rounds")]
