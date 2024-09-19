@@ -65,7 +65,7 @@ public class
                 TransactionType = (TransactionType)x.Transaction.Type,
                 RecordedOn = x.Transaction.RecordedOn,
                 Operator = x.User == null ? "System" : x.User.Username,
-                Description = x.Transaction.Description
+                Description = string.IsNullOrEmpty(x.Transaction.Description) ? x.Transaction.Action : x.Transaction.Description
             }).CreatePagedResponseAsync(request);
 
         if (playersAccountChanges.Items == null)

@@ -38,4 +38,6 @@ public partial class Transaction
     public virtual Brand Brand { get; set; } = null!;
 
     public virtual Wallet Wallet { get; set; } = null!;
+
+    public string Action { get; set; } = null!;
 }

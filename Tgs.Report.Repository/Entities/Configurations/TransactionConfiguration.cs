@@ -47,6 +47,7 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.SentOn).HasColumnName("sent_on");
             entity.Property(e => e.Type).HasColumnName("type");
             entity.Property(e => e.WalletId).HasColumnName("wallet_id");
+            entity.Property(e => e.Action).HasColumnName("action");
 
             entity.HasOne(d => d.Brand).WithMany(p => p.Transactions)
                 .HasForeignKey(d => d.BrandId)
