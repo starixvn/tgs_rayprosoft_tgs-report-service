@@ -55,6 +55,8 @@ public record OpenRoundModel
 
     public decimal? SettleAmount { get; init; }
 
+    public decimal? Turnover { get; set; }
+
     public decimal? Commission { get; init; }
 
     public decimal? WinLoss { get; init; }
