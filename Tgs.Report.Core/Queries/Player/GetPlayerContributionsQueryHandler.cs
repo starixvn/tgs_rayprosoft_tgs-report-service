@@ -16,7 +16,7 @@ public class GetPlayerContributionsQueryHandler(TgsContext context)
         GetPlayerContributionsRequest request,
         CancellationToken cancellationToken)
     {
-        var offset = new TimeSpan(8, 0, 0);
+        var offset = new TimeSpan(-4, 0, 0);
         var requestFrom = request.From.ToOffset(offset);
         var requestTo = request.To.ToOffset(offset);
 
