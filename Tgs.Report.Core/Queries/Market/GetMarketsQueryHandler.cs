@@ -348,7 +348,7 @@ public class GetMarketsQueryHandler(TgsContext context) : IRequestHandler<GetMar
                         BetAmount = aggregates.Sum(m => m.MarketAggregate?.BetAmount ?? 0M),
                         ValidBetAmount = aggregates.Sum(m => m.MarketAggregate?.OriginalTurnover ?? 0M),
                         Turnover = aggregates.Sum(m => m.MarketAggregate?.Turnover ?? 0M),
-                        WinLossAmount = -aggregates.Sum(m => m.MarketAggregate?.WinLossAmount ?? 0M),
+                        WinLossAmount = aggregates.Sum(m => m.MarketAggregate?.WinLossAmount ?? 0M),
                         NetProfit = aggregates.Sum(m => m.MarketAggregate?.NetProfit ?? 0M),
                         AdditionalExpenses = aggregates.Sum(m => m.MarketAggregate?.AllAgentRebateAmount ?? 0M),
                         PlatformCoveredBonus =
