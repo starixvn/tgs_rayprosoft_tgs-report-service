@@ -26,24 +26,17 @@ public class GetPlayerWinLossByRefIdQueryHandler(TgsContext context) : IRequestH
                            gp.code as GameProviderCode,
                            date_trunc('day', external_closed_on AT TIME ZONE 'UTC' AT TIME ZONE @timeZone) as WinLossDate,
 	                       sum(r.win_loss) as PlayerWinLoss,
-	                       ga.game_provider_currency_code as GameProviderCurrencyCode,
 	                       0 as TypeId,
 	                       l.reference_id as ReferenceId
                     from bet.rounds as r
 	                    join dbo.brands as b on b.id = r.brand_id
 	                    join licenseeIds as l on l.id = b.licensee_id
-	                    join dbo.wallets as w on w.id = r.wallet_id
-	                    join dbo.game_provider_currencies as ga 
-	                         on ga.game_provider_id = r.game_provider_id 
-	                         and ga.currency_code = w.currency_code
-	                    join dbo.game_providers as gp on gp.id = ga.game_provider_id
-	
+	                    join dbo.game_providers as gp on gp.id = r.game_provider_id
                     where r.status = 2
 	                      and r.external_closed_on >= @from
 	                      and r.external_closed_on < @to
                     group by 
                              date_trunc('day', external_closed_on AT TIME ZONE 'UTC' AT TIME ZONE @timeZone),
-		                     ga.game_provider_currency_code,
 		                     gp.code,
                              l.reference_id";
         var conn = context.Database.GetDbConnection();
@@ -53,7 +46,7 @@ public class GetPlayerWinLossByRefIdQueryHandler(TgsContext context) : IRequestH
             {
                 { "referenceIds", string.IsNullOrEmpty(request.ReferenceIds) ?  new List<string>() : request.ReferenceIds.Split(",").ToList() },
                 { "from", request.From.ToUniversalTime() },
-                { "to", request.To.ToUniversalTime() },
+                { "to", request.To.ToUniversalTime().AddDays(1) },
                 { "timeZone", timeZone},
             }, transaction);
 
