@@ -222,7 +222,7 @@ public class GetMarketsQueryHandler(TgsContext context) : IRequestHandler<GetMar
                             m.AgentAggregate.NoIncludeNetProfitBonusAdjustAmount)) *
                         m.AgentAggregate.ChiefAgentDividendPercentage * 0.01M),
                 NetProfit = aggregates.Sum(m
-                    => m.AgentAggregate.WinLossAmount - (m.AgentAggregate.CompanyAdjustAmount -
+                    => -m.AgentAggregate.WinLossAmount - (m.AgentAggregate.CompanyAdjustAmount -
                         m.AgentAggregate.NoIncludeNetProfitCompanyAdjustAmount) -
                     ((m.AgentAggregate.RebateAmount + m.AgentAggregate.PromotionAmount +
                             (m.BonusAggregate == null
@@ -235,7 +235,7 @@ public class GetMarketsQueryHandler(TgsContext context) : IRequestHandler<GetMar
                             : (100 - m.AgentAggregate.ChiefAgentDividendPercentage) * 0.01M) +
                         (m.AgentAggregate.AgentId == null
                             ? 0M
-                            : (m.AgentAggregate.WinLossAmount - (m.AgentAggregate.RebateAmount +
+                            : (-m.AgentAggregate.WinLossAmount - (m.AgentAggregate.RebateAmount +
                                 m.AgentAggregate.PromotionAmount +
                                 (m.BonusAggregate == null
                                     ? 0M

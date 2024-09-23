@@ -182,7 +182,7 @@ public class GetPlayerContributionsTotalAmountQueryHandler(TgsContext context)
                             ValidBetAmount = list.Sum(p => p.OriginalTurnover),
                             Turnover = list.Sum(p => p.Turnover),
                             WinLossAmount = list.Sum(p => p.WinLossAmount),
-                            NetProfit = list.Sum(p => p.WinLossAmount
+                            NetProfit = list.Sum(p => -p.WinLossAmount
                                 - (p.AgentAdjustAmount -
                                     p.NoIncludeNetProfitAgentAdjustAmount)
                                 - (p.BonusAdjustAmount -
