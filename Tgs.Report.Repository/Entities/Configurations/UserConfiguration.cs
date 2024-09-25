@@ -50,6 +50,9 @@ namespace Tgs.Report.Repository.Entities.Configurations
             entity.Property(e => e.Username)
                 .HasMaxLength(50)
                 .HasColumnName("username");
+            entity.Property(e => e.ReferenceId)
+               .HasMaxLength(30)
+               .HasColumnName("reference_id");
 
             entity.HasOne(d => d.Department).WithMany(p => p.Users)
                 .HasForeignKey(d => d.DepartmentId)

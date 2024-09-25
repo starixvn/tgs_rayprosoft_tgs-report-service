@@ -1,10 +1,12 @@
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.UseSentry();
 
 // Add services to the container.
+builder.Services.AddMediatR(r => r.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
 builder.Services
     .AddHttpClient()
     .AddReportRepository((sp, optionsBuilder) =>

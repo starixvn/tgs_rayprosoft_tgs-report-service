@@ -40,4 +40,7 @@ public partial class User
     public virtual Department Department { get; set; } = null!;
 
     public virtual Role Role { get; set; } = null!;
+
+    public string? ReferenceId { get; set; }
+
 }
