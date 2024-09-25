@@ -142,10 +142,8 @@ public class GetOpenRoundsQueryHandler(TgsContext context)
                 CurrencyCode = combine.round.CurrencyCode,
                 BetAmount = combine.round.BetAmount,
                 Commission = combine.round.Commission,
-                Turnover = combine.round.Turnover,
-                ValidBetAmount =
-                    combine.round.Turnover * (combine.round.EffectiveBettingPercentage ??
-                        (combine.brandGame == null ? 100M : combine.brandGame.EffectiveBettingPercentage)) / 100M,
+                Turnover = combine.round.Turnover * (combine.round.EffectiveBettingPercentage ?? (combine.brandGame == null ? 100M : combine.brandGame.EffectiveBettingPercentage)) / 100M,
+                ValidBetAmount = combine.round.Turnover,
                 SettleAmount = combine.round.SettleAmount,
                 WinLoss = combine.round.WinLoss,
                 AdditionalData = combine.detail!.AdditionalData
