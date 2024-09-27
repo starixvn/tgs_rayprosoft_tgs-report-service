@@ -24,7 +24,7 @@ public class GetPlayerWinLossByRefIdQueryHandler(TgsContext context) : IRequestH
 	                    )
                     select 
                            gp.code as GameProviderCode,
-                           date_trunc('day', external_closed_on AT TIME ZONE 'UTC' AT TIME ZONE @timeZone) as WinLossDate,
+                           date_trunc('day', closed_on AT TIME ZONE 'UTC' AT TIME ZONE @timeZone) as WinLossDate,
 	                       sum(r.win_loss) as PlayerWinLoss,
 	                       0 as TypeId,
 	                       l.reference_id as ReferenceId
@@ -33,10 +33,10 @@ public class GetPlayerWinLossByRefIdQueryHandler(TgsContext context) : IRequestH
 	                    join licenseeIds as l on l.id = b.licensee_id
 	                    join dbo.game_providers as gp on gp.id = r.game_provider_id
                     where r.status = 2
-	                      and r.external_closed_on >= @from
-	                      and r.external_closed_on < @to
+	                      and r.closed_on >= @from
+	                      and r.closed_on < @to
                     group by 
-                             date_trunc('day', external_closed_on AT TIME ZONE 'UTC' AT TIME ZONE @timeZone),
+                             date_trunc('day', closed_on AT TIME ZONE 'UTC' AT TIME ZONE @timeZone),
 		                     gp.code,
                              l.reference_id";
         var conn = context.Database.GetDbConnection();
