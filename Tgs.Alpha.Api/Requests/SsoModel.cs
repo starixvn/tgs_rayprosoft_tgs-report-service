@@ -2,5 +2,5 @@
 
 public class SsoModel
 {
-    public string? ReturnURl { get; set; }
+    public string? ReturnUrl { get; set; }
 }

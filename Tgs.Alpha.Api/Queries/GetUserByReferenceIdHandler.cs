@@ -26,10 +26,10 @@ public class GetUserByReferenceIdHandler(TgsContext context, IConfiguration conf
                     token = Convert.ToHexString(hashMessage);
                 }
 
-                return new SsoModel { ReturnURl = $"{configuration["BackOfficeUrl"]}/login?referenceId={request.ReferenceId}&timestamp={timestamp}&token={token}" };
+                return new SsoModel { ReturnUrl = $"{configuration["BackOfficeUrl"]}/login?referenceId={request.ReferenceId}&timestamp={timestamp}&token={token}" };
             }
         }
 
-        return new SsoModel { ReturnURl = "" };
+        return new SsoModel { ReturnUrl = "" };
     }
 }
