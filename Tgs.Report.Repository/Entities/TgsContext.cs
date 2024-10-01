@@ -96,8 +96,6 @@ public partial class TgsContext : DbContext
 
     public virtual DbSet<RoundAggregate> RoundAggregates { get; set; }
 
-    public virtual DbSet<RoundDetail> RoundDetails { get; set; }
-
     public virtual DbSet<Setting> Settings { get; set; }
 
     public virtual DbSet<SubGameProvider> SubGameProviders { get; set; }
@@ -161,7 +159,6 @@ public partial class TgsContext : DbContext
         modelBuilder.ApplyConfiguration(new Configurations.RoleConfiguration());
         modelBuilder.ApplyConfiguration(new Configurations.RoundConfiguration());
         modelBuilder.ApplyConfiguration(new Configurations.RoundAggregateConfiguration());
-        modelBuilder.ApplyConfiguration(new Configurations.RoundDetailConfiguration());
         modelBuilder.ApplyConfiguration(new Configurations.SettingConfiguration());
         modelBuilder.ApplyConfiguration(new Configurations.SubGameProviderConfiguration());
         modelBuilder.ApplyConfiguration(new Configurations.TransactionConfiguration());

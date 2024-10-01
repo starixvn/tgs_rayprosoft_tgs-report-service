@@ -60,6 +60,4 @@ public partial class Round
     public decimal? WinLoss { get; set; }
 
     public virtual ICollection<GameAction> GameActions { get; set; } = new List<GameAction>();
-
-    public virtual RoundDetail? RoundDetail { get; set; }
 }

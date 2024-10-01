@@ -19,10 +19,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "bet.round_details",
-         "ObjectType": 0
-      },
-      {
          "Name": "bet.rounds",
          "ObjectType": 0
       },

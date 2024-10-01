@@ -38,9 +38,6 @@ public sealed class GetRoundsQueryTest : BaseTest
         var games = CreateGameFixture(gameId).CreateMany<Game>(1).AsQueryable()
             .BuildMock();
 
-        var roundDetails = CreateRoundDetailFixture(roundId).CreateMany<RoundDetail>(1).AsQueryable()
-            .BuildMock();
-
         var gameProviders = CreateGameProviderFixture(gameProviderId)
             .CreateMany<Repository.Entities.GameProvider>(1).AsQueryable()
             .BuildMock();
@@ -58,14 +55,12 @@ public sealed class GetRoundsQueryTest : BaseTest
         var mockRounds = GetDbSet(rounds);
         var mockPlayers = GetDbSet(players);
         var mockGames = GetDbSet(games);
-        var mockRoundDetails = GetDbSet(roundDetails);
         var mockGameProviders = GetDbSet(gameProviders);
         var mockBrandGames = GetDbSet(brandGames);
 
         fakeDbContext.Rounds.Returns(mockRounds.Object);
         fakeDbContext.Players.Returns(mockPlayers.Object);
         fakeDbContext.Games.Returns(mockGames.Object);
-        fakeDbContext.RoundDetails.Returns(mockRoundDetails.Object);
         fakeDbContext.GameProviders.Returns(mockGameProviders.Object);
         fakeDbContext.BrandGames.Returns(mockBrandGames.Object);
 
@@ -97,15 +92,6 @@ public sealed class GetRoundsQueryTest : BaseTest
             .With(s => s.Status, (short)RoundStatus.Open)
             .With(s => s.CreatedOn, DateTime.UtcNow)
             .With(s => s.GameId, gameId));
-        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-        return fixture;
-    }
-
-    private static Fixture CreateRoundDetailFixture(Guid roundId)
-    {
-        var fixture = new Fixture();
-        fixture.Customize<RoundDetail>(u => u
-            .With(s => s.RoundId, roundId));
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         return fixture;
     }

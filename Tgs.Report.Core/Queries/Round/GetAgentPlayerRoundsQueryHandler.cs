@@ -54,21 +54,6 @@ public class GetAgentPlayerRoundsQueryHandler(TgsContext context)
                 x.player,
                 game
             })
-            .GroupJoin(_context.RoundDetails, c => c.round.Id, detail => detail.RoundId,
-                (combine, detail) => new
-                {
-                    combine.round,
-                    combine.player,
-                    combine.game,
-                    detail
-                })
-            .SelectMany(x => x.detail.DefaultIfEmpty(), (x, detail) => new
-            {
-                x.round,
-                x.player,
-                x.game,
-                detail
-            })
             .Where(request.Username, x => request.Username == x.player!.Username)
             .Where(request.GameType, x => x.game!.Type == (short?)request.GameType)
             .GroupJoin(_context.GameProviders, combine => combine.round.GameProviderId,
@@ -78,7 +63,6 @@ public class GetAgentPlayerRoundsQueryHandler(TgsContext context)
                     combine.round,
                     combine.player,
                     combine.game,
-                    combine.detail,
                     gameProvider
                 })
             .SelectMany(x => x.gameProvider.DefaultIfEmpty(),
@@ -87,7 +71,6 @@ public class GetAgentPlayerRoundsQueryHandler(TgsContext context)
                     x.round,
                     x.player,
                     x.game,
-                    x.detail,
                     gameProvider
                 })
             .GroupJoin(_context.BrandGames,
@@ -107,7 +90,6 @@ public class GetAgentPlayerRoundsQueryHandler(TgsContext context)
                     roundGroup.player,
                     roundGroup.game,
                     roundGroup.gameProvider,
-                    roundGroup.detail,
                     brandGame
                 })
             .SelectMany(x => x.brandGame.DefaultIfEmpty(),
@@ -117,7 +99,6 @@ public class GetAgentPlayerRoundsQueryHandler(TgsContext context)
                     x.player,
                     x.game,
                     x.gameProvider,
-                    x.detail,
                     brandGame
                 })
             .Select(combine => new RoundModel
@@ -148,7 +129,7 @@ public class GetAgentPlayerRoundsQueryHandler(TgsContext context)
                     (combine.brandGame == null ? 100M : combine.brandGame.EffectiveBettingPercentage)) / 100M,
                 SettleAmount = combine.round.SettleAmount,
                 WinLoss = -combine.round.WinLoss,
-                AdditionalData = combine.detail == null ? "" : combine.detail.AdditionalData
+                AdditionalData = ""
             })
             .OrderByDescending(x => x.CreatedOn)
             .CreatePagedResponseAsync(request);

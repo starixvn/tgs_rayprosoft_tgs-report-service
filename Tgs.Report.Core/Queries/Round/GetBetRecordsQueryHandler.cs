@@ -11,7 +11,6 @@ public class GetBetRecordsQueryHandler(
     ITgsService<Repository.Entities.Round> roundService,
     ITgsService<Repository.Entities.Player> playerService,
     ITgsService<Game> gameService,
-    ITgsService<RoundDetail> roundDetailService,
     ITgsService<Repository.Entities.GameProvider> gameProviderService,
     ITgsService<BrandGame> brandGameService)
     : IRequestHandler<GetBetRecordsRequest, GetBetRecordsResponse>
@@ -131,21 +130,6 @@ public class GetBetRecordsQueryHandler(
                 player.PlayerCode,
                 player.Username
             })
-            .GroupJoin(roundDetailService.GetQueries(), c => c.combine.RoundId, detail => detail.RoundId,
-                (combine, detail) => new
-                {
-                    combine.combine,
-                    combine.PlayerCode,
-                    combine.Username,
-                    detail
-                })
-            .SelectMany(x => x.detail.DefaultIfEmpty(), (x, detail) => new
-            {
-                x.combine,
-                x.PlayerCode,
-                x.Username,
-                detail.AdditionalData
-            })
             .GroupJoin(gameProviderService.GetQueries(), c => c.combine.GameProviderId,
                 gameProvider => gameProvider.Id,
                 (combine, gameProvider) => new
@@ -153,7 +137,6 @@ public class GetBetRecordsQueryHandler(
                     combine.combine,
                     combine.PlayerCode,
                     combine.Username,
-                    combine.AdditionalData,
                     gameProvider
                 })
             .SelectMany(x => x.gameProvider.DefaultIfEmpty(),
@@ -162,7 +145,6 @@ public class GetBetRecordsQueryHandler(
                     x.combine,
                     x.PlayerCode,
                     x.Username,
-                    x.AdditionalData,
                     GameProviderCode = gameProvider.Code,
                     GameProviderName = gameProvider.Name
                 })
@@ -182,7 +164,6 @@ public class GetBetRecordsQueryHandler(
                     roundGroup.combine,
                     roundGroup.PlayerCode,
                     roundGroup.Username,
-                    roundGroup.AdditionalData,
                     roundGroup.GameProviderCode,
                     roundGroup.GameProviderName,
                     brandGame
@@ -193,7 +174,6 @@ public class GetBetRecordsQueryHandler(
                     x.combine,
                     x.PlayerCode,
                     x.Username,
-                    x.AdditionalData,
                     x.GameProviderCode,
                     x.GameProviderName,
                     brandGame
@@ -226,7 +206,7 @@ public class GetBetRecordsQueryHandler(
                     (combine.brandGame == null ? 100M : combine.brandGame.EffectiveBettingPercentage)) / 100M,
                 SettleAmount = combine.combine.SettleAmount,
                 WinLoss = -combine.combine.WinLoss,
-                AdditionalData = combine.AdditionalData
+                AdditionalData = ""
             })
             .OrderByDescending(x => x.CreatedOn)
             .CreatePagedResponseAsync(request);

@@ -28,7 +28,6 @@ public class RoundTests
             {
                 var fakeDbContext = Substitute.For<TgsContext>();
                 var fakeRoundService = Substitute.For<ITgsService<Round>>();
-                var fakeRoundDetailService = Substitute.For<ITgsService<RoundDetail>>();
                 var fakeGameService = Substitute.For<ITgsService<Game>>();
                 var fakePlayerService = Substitute.For<ITgsService<Player>>();
                 var fakeBrandGameService = Substitute.For<ITgsService<BrandGame>>();
@@ -37,11 +36,6 @@ public class RoundTests
                 var rounds = CreateRoundFixture(brandId, createdOn, gameProviderId, null)
                     .CreateMany<Round>(2).Union(CreateRoundFixture(brandId, createdOn, gameProviderId, playerCode)
                         .CreateMany<Round>(3))
-                    .AsQueryable()
-                    .BuildMock();
-
-                var roundDetails = rounds.Select(x => CreateRoundDetailFixture(x.Id).Create<RoundDetail>())
-                    .ToArray()
                     .AsQueryable()
                     .BuildMock();
 
@@ -67,14 +61,12 @@ public class RoundTests
 
                 _ = fakeRoundService.GetQueries().Returns(rounds);
                 _ = fakeGameService.GetQueries().Returns(games);
-                _ = fakeRoundDetailService.GetQueries().Returns(roundDetails);
                 _ = fakePlayerService.GetQueries().Returns(players);
                 _ = fakeBrandGameService.GetQueries().Returns(brandGames);
                 _ = fakeGameProviderService.GetQueries().Returns(gameProviders);
 
                 _ = services.AddSingleton(fakeDbContext);
                 _ = services.AddTransient(x => fakeRoundService);
-                _ = services.AddTransient(x => fakeRoundDetailService);
                 _ = services.AddTransient(x => fakeGameService);
                 _ = services.AddTransient(x => fakePlayerService);
                 _ = services.AddTransient(x => fakeBrandGameService);
@@ -113,15 +105,6 @@ public class RoundTests
 
             return custom;
         });
-        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-        return fixture;
-    }
-
-    private static Fixture CreateRoundDetailFixture(Guid roundId)
-    {
-        var fixture = new Fixture();
-        fixture.Customize<RoundDetail>(u => u
-            .With(s => s.RoundId, roundId));
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         return fixture;
     }

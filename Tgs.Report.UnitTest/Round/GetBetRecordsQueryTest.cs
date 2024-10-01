@@ -24,11 +24,10 @@ public sealed class GetBetRecordsQueryTest
         var fakeGameProviderService = Substitute.For<ITgsService<Repository.Entities.GameProvider>>();
         var fakeGameService = Substitute.For<ITgsService<Game>>();
         var fakePlayerService = Substitute.For<ITgsService<Repository.Entities.Player>>();
-        var fakeRoundDetailService = Substitute.For<ITgsService<RoundDetail>>();
         var fakeRoundService = Substitute.For<ITgsService<Repository.Entities.Round>>();
 
         var sut = new GetBetRecordsQueryHandler(fakeRoundService, fakePlayerService, fakeGameService,
-            fakeRoundDetailService, fakeGameProviderService, fakeBrandGameService);
+            fakeGameProviderService, fakeBrandGameService);
 
         var brandId = new Guid("aac02420-20f6-4f0d-6982-08d9dbdc0473");
         var roundId = new Guid("aac02111-20f6-4f0d-6982-08d9dbdc0473");
@@ -43,9 +42,6 @@ public sealed class GetBetRecordsQueryTest
             .BuildMock();
 
         var games = CreateGameFixture(gameId).CreateMany<Game>(1).AsQueryable()
-            .BuildMock();
-
-        var roundDetails = CreateRoundDetailFixture(roundId).CreateMany<RoundDetail>(1).AsQueryable()
             .BuildMock();
 
         var gameProviders = CreateGameProviderFixture(gameProviderId)
@@ -67,7 +63,6 @@ public sealed class GetBetRecordsQueryTest
         fakeGameProviderService.GetQueries().Returns(gameProviders);
         fakeGameService.GetQueries().Returns(games);
         fakePlayerService.GetQueries().Returns(players);
-        fakeRoundDetailService.GetQueries().Returns(roundDetails);
         fakeRoundService.GetQueries().Returns(rounds);
 
         var response = await sut.Handle(request, default);
@@ -98,15 +93,6 @@ public sealed class GetBetRecordsQueryTest
             .With(s => s.Status, (short)RoundStatus.Open)
             .With(s => s.CreatedOn, DateTime.UtcNow)
             .With(s => s.GameId, gameId));
-        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-        return fixture;
-    }
-
-    private static Fixture CreateRoundDetailFixture(Guid roundId)
-    {
-        var fixture = new Fixture();
-        fixture.Customize<RoundDetail>(u => u
-            .With(s => s.RoundId, roundId));
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         return fixture;
     }
