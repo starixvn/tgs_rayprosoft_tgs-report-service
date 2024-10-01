@@ -60,21 +60,6 @@ public class GetSystemRoundsTotalQueryHandler(TgsContext context)
                 x.player,
                 game
             })
-            .GroupJoin(_context.RoundDetails, c => c.round.Id, detail => detail.RoundId,
-                (combine, detail) => new
-                {
-                    combine.round,
-                    combine.player,
-                    combine.game,
-                    detail
-                })
-            .SelectMany(x => x.detail.DefaultIfEmpty(), (x, detail) => new
-            {
-                x.round,
-                x.player,
-                x.game,
-                detail
-            })
             .GroupJoin(_context.BrandGames,
                 roundGroup => new
                 {
@@ -91,7 +76,6 @@ public class GetSystemRoundsTotalQueryHandler(TgsContext context)
                     roundGroup.round,
                     roundGroup.player,
                     roundGroup.game,
-                    roundGroup.detail,
                     brandGame
                 })
             .SelectMany(x => x.brandGame.DefaultIfEmpty(),
@@ -100,7 +84,6 @@ public class GetSystemRoundsTotalQueryHandler(TgsContext context)
                     x.round,
                     x.player,
                     x.game,
-                    x.detail,
                     brandGame
                 })
             .Where(request.Username, x => request.Username == x.player!.Username)

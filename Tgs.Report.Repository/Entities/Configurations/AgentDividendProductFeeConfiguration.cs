@@ -13,16 +13,14 @@ namespace Tgs.Report.Repository.Entities.Configurations
     {
         public void Configure(EntityTypeBuilder<AgentDividendProductFee> entity)
         {
-            entity.HasKey(e => e.AgentId).HasName("pk_agent_dividend_product_fees_id");
+            entity.HasKey(e => e.AgentDividendId).HasName("pk_agent_dividend_product_fees_id");
 
             entity.ToTable("agent_dividend_product_fees", "dbo");
 
             entity.HasIndex(e => e.AgentDividendId, "ix_agent_dividend_product_fees_agent_dividend_id");
 
-            entity.Property(e => e.AgentId)
-                .ValueGeneratedNever()
-                .HasColumnName("agent_id");
             entity.Property(e => e.AgentDividendId).HasColumnName("agent_dividend_id");
+            entity.Property(e => e.AgentId).HasColumnName("agent_id");
             entity.Property(e => e.BrandId).HasColumnName("brand_id");
             entity.Property(e => e.CardGamePercentage)
                 .HasPrecision(18, 6)

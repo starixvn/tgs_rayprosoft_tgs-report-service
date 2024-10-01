@@ -46,15 +46,6 @@ public class GetClosedRoundsQueryTest : BaseTest
             }
         }.AsQueryable().BuildMock();
 
-        var roundDetails = new[]
-        {
-            new RoundDetail
-            {
-                RoundId = roundId,
-                AdditionalData = "additionalData"
-            }
-        }.AsQueryable().BuildMock();
-
         var players = new[]
         {
             new Repository.Entities.Player
@@ -107,14 +98,12 @@ public class GetClosedRoundsQueryTest : BaseTest
         }.AsQueryable().BuildMock();
 
         var mockRounds = GetDbSet(rounds);
-        var mockRoundDetails = GetDbSet(roundDetails);
         var mockPlayers = GetDbSet(players);
         var mockGames = GetDbSet(games);
         var mockGameProviders = GetDbSet(gameProviders);
         var mockBrandGames = GetDbSet(brandGames);
 
         fakeDbContext.Rounds.Returns(mockRounds.Object);
-        fakeDbContext.RoundDetails.Returns(mockRoundDetails.Object);
         fakeDbContext.Players.Returns(mockPlayers.Object);
         fakeDbContext.Games.Returns(mockGames.Object);
         fakeDbContext.GameProviders.Returns(mockGameProviders.Object);

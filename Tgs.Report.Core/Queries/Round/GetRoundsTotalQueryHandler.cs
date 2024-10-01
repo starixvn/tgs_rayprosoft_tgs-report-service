@@ -52,21 +52,6 @@ public class GetRoundsTotalQueryHandler(TgsContext context) : IRequestHandler<Ge
                 x.player,
                 game
             })
-            .GroupJoin(_context.RoundDetails, c => c.round.Id, detail => detail.RoundId,
-                (combine, detail) => new
-                {
-                    combine.round,
-                    combine.player,
-                    combine.game,
-                    detail
-                })
-            .SelectMany(x => x.detail.DefaultIfEmpty(), (x, detail) => new
-            {
-                x.round,
-                x.player,
-                x.game,
-                detail
-            })
             .Where(request.Username, x => request.Username == x.player!.Username)
             .Where(request.GameType, x => x.game!.Type == (short?)request.GameType)
             .GroupBy(x => true)

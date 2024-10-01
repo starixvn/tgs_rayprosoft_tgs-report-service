@@ -55,15 +55,6 @@ public class GetAgentPlayerRoundsQueryTest : BaseTest
             }
         }.AsQueryable().BuildMock();
 
-        var roundDetails = new[]
-        {
-            new RoundDetail
-            {
-                RoundId = Guid.Parse("7284B324-7065-CDD8-87A4-69A17C5DF20D"),
-                AdditionalData = "additionalData"
-            }
-        }.AsQueryable().BuildMock();
-
         var players = new[]
         {
             new Repository.Entities.Player
@@ -122,14 +113,12 @@ public class GetAgentPlayerRoundsQueryTest : BaseTest
         }.AsQueryable().BuildMock();
 
         var mockRounds = GetDbSet(rounds);
-        var mockRoundDetails = GetDbSet(roundDetails);
         var mockPlayers = GetDbSet(players);
         var mockGames = GetDbSet(games);
         var mockGameProviders = GetDbSet(gameProviders);
         var mockBrandGames = GetDbSet(brandGames);
 
         fakeDbContext.Rounds.Returns(mockRounds.Object);
-        fakeDbContext.RoundDetails.Returns(mockRoundDetails.Object);
         fakeDbContext.Players.Returns(mockPlayers.Object);
         fakeDbContext.Games.Returns(mockGames.Object);
         fakeDbContext.GameProviders.Returns(mockGameProviders.Object);
@@ -174,14 +163,6 @@ public class GetAgentPlayerRoundsQueryTest : BaseTest
                 Status = (short)RoundStatus.Open,
                 GameProviderId = Guid.Parse("3924FF4E-8ECA-A25F-ABDC-9B8606A46316")
             }
-        }.AsQueryable().BuildMock();
-
-        var roundDetails = new[]
-        {
-            new RoundDetail
-            {
-                RoundId = Guid.Parse("7284B324-7065-CDD8-87A4-69A17C5DF20D"),
-                AdditionalData = "additionalData"            }
         }.AsQueryable().BuildMock();
 
         var players = new[]
@@ -241,14 +222,12 @@ public class GetAgentPlayerRoundsQueryTest : BaseTest
 
 
         var mockRounds = GetDbSet(rounds);
-        var mockRoundDetails = GetDbSet(roundDetails);
         var mockPlayers = GetDbSet(players);
         var mockGames = GetDbSet(games);
         var mockGameProviders = GetDbSet(gameProviders);
         var mockBrandGames = GetDbSet(brandGames);
 
         fakeDbContext.Rounds.Returns(mockRounds.Object);
-        fakeDbContext.RoundDetails.Returns(mockRoundDetails.Object);
         fakeDbContext.Players.Returns(mockPlayers.Object);
         fakeDbContext.Games.Returns(mockGames.Object);
         fakeDbContext.GameProviders.Returns(mockGameProviders.Object);
