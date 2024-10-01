@@ -82,7 +82,7 @@ deploy-staging:
     - job: push-k8s-template
       artifacts: true
   tags:
-    - dev
+    - staging
     - kubernetes
     - deploy
   only:
@@ -103,7 +103,7 @@ deploy-prod:
     - job: push-k8s-template
       artifacts: true
   tags:
-    - dev
+    - prod
     - kubernetes
     - deploy
   only:
